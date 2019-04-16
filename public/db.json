@@ -1,23 +1,23 @@
 {
-  "web": {
-    "lessons" : [
+  web: {
+    lessons : [
       {
-        "id": "web-les-1",
-        "title": "Урок №1",
-        "description": "Работа с графикой для верстальщика",
-        "icon" : "/img/icon/icon-task-5.png",
-        "alt": "task-5"
+        id: "web-les-1",
+        title: "Урок №1",
+        description: "Работа с графикой для верстальщика",
+        icon : "/img/icon/icon-task-5.png",
+        alt: "task-5"
       },
       {
-        "id": "web-les-2",
-        "title": "Дополнительный урок",
-        "description": "Настройка рабочего пространства",
-        "icon" : "/img/icon/icon-task-6.png",
-        "alt": "task-6"
-      }
+        id: "web-les-2",
+        title: "Дополнительный урок",
+        description: "Настройка рабочего пространства",
+        icon : "/img/icon/icon-task-6.png",
+        alt: "task-6"
+      },
     ]
   },
-  "js" : {
+  js : {
 
   }
 }

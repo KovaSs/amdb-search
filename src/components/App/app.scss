@@ -1,13 +1,22 @@
-.logo {
-  height: 50px;
-  background: url(/img/logo.gif) -7% no-repeat;
-  background-size: 170px;
-  margin: 5px 16px;
+.layout .logo {
+  width: 120px;
+  height: 31px;
+  background: rgba(255,255,255,.2);
+  margin: 16px 24px 16px 0;
+  float: left;
 }
 
-.sub-menu a {
-  color: rgba(255, 255, 255, 0.65) !important;
-  &:hover {
-    color: #fff !important;
+.ant-layout{
+  &-content {
+    padding: 0  2rem;
+    margin-top: 2rem;
+    &__data {
+      background: #fff;
+      padding: 2rem 3rem;
+      min-height: 50rem;
+    }
+  }
+  &-footer {
+    text-align: center;
   }
 }
