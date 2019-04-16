@@ -1,0 +1,26 @@
+.lesson {
+  &-header {
+    padding: 30px;
+    border-radius: 5px;
+    background: rgba(145, 143, 143, 0.158);
+    text-align: center;
+    &__prev {
+      text-align: left;
+      // padding-left: 30px;
+    }
+    &__next {
+      // padding-right: 30px;
+      text-align: right;
+    }
+  }
+  &-content {
+    margin-top: 30px;
+    // background: rgba(167, 167, 167, 0.164);
+    &__video {
+
+      &_title {
+        text-align: center;
+      }
+    }
+  }
+}
