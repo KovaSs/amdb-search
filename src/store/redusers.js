@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import lessonReducer from './lessons/redusers';
+import openBillReducer from './openBill/redusers';
 
 export default combineReducers({
-  lessons : lessonReducer
+  openBill : openBillReducer
 }) 
 
 
