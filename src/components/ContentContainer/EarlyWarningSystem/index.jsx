@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import "./open-an-account.scss"
+import "./early-warning-system.scss"
 
 class OpenAnAccount extends Component {
   render() {
     return(
       <div>
-        Hello world!
+        Система раннего предупреждения!
       </div>
     )
   }

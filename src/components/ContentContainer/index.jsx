@@ -1,6 +1,11 @@
 import React, { Component } from "react";
-import SearchContainer from "./SearchContainer";
-import StepsContainer from "./StepsContainer";
+import { Route } from 'react-router-dom';
+import MainPage from "./MainPage";
+import OpenBill from "./OpenBill";
+import CreditConveyor from "./CreditConveyor";
+import EarlyWarningSystem from "./EarlyWarningSystem";
+// import SearchContainer from "./SearchContainer";
+// import StepsContainer from "./StepsContainer";
 import { Layout} from 'antd';
 
 export class ContentContainer extends Component {
@@ -8,14 +13,11 @@ export class ContentContainer extends Component {
     const { Content } = Layout;
     return (
       <Content>
-      {/* <Breadcrumb style={{ margin: "16px 0" }}>
-        <Breadcrumb.Item>Home</Breadcrumb.Item>
-        <Breadcrumb.Item>List</Breadcrumb.Item>
-        <Breadcrumb.Item>App</Breadcrumb.Item>
-      </Breadcrumb> */}
       <div className="ant-layout-content__data">
-        <StepsContainer/>
-        <SearchContainer/>
+        <Route path='/' exact component={MainPage}/>
+        <Route path='/open-bill' exact component={OpenBill}/>
+        <Route path='/credit-conveyor' exact component={CreditConveyor}/>
+        <Route path='/early-warning-system' exact component={EarlyWarningSystem}/>
       </div>
     </Content>
     );
