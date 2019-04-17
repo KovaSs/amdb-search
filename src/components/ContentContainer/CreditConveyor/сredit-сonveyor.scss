@@ -1,8 +1,9 @@
 // CreditConveyor
 .credit-conveyor{
   color: rgba(0, 255, 242, 0.24);
-  .ant-advanced-search-form {
-    padding: 24px;
+  .ant-advanced-search-form,
+  .search-result-table {
+    padding: 24px 24px 10px 24px;
     background: #fbfbfb;
     border: 1px solid #d9d9d9;
     border-radius: 6px;
@@ -12,5 +13,14 @@
     .ant-form-item-control-wrapper {
       flex: 1;
     }
+  }
+  .search-btn {
+    margin-top: 4px;
+  }
+  .search-result-table {
+    color: rgba(0, 0, 0, 0.85);
+    min-height: 450px;
+    margin-top: 2rem;
+    text-align: center;
   }
 }
