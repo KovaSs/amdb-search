@@ -42,12 +42,23 @@ class CreditConveyor extends Component {
     console.log(key);
   }
 
+  showOrganisationIngo = () => {
+    return (
+      <div className="tabs-info__organisation">
+        <Row>
+          <Col span={4} className="lable">Полное название:</Col>
+          <Col span={20} className="info">Общество с ограниченной ответственностью</Col>
+        </Row>
+      </div>
+    )
+  }
+
   showTabs = () => {
     const TabPane = Tabs.TabPane;
     return (
       <div className="tabs-info">
         <Tabs onChange={this.callback} type="card">
-          <TabPane tab="Организация" key="1">Content of Tab Pane 1</TabPane>
+          <TabPane tab="Организация" key="1">{this.showOrganisationIngo()}</TabPane>
           <TabPane tab="Руководители" key="2">Content of Tab Pane 2</TabPane>
         </Tabs>
       </div>
