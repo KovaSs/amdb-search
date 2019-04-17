@@ -1,11 +1,12 @@
 import React, { Component } from "react";
-import { Row, Col, Form, Input, Button, Select } from "antd";
+import { Row, Col, Form, Input, Button, Select, Tabs } from "antd";
 import "./сredit-сonveyor.scss"
 
 class CreditConveyor extends Component {
   state = {
     inn: '',
-    ogrn: ''
+    ogrn: '',
+    showTabs: true
   };
 
   handleSubmit = (e) => {
@@ -29,11 +30,29 @@ class CreditConveyor extends Component {
         }))
       }
       if (!err) {
+        this.setState(({lodad}) => ({
+          showTabs : true
+        }))
         console.log('Полученные значения формы: ', values);
       }
     });
   }
 
+  callback = key => {
+    console.log(key);
+  }
+
+  showTabs = () => {
+    const TabPane = Tabs.TabPane;
+    return (
+      <div className="tabs-info">
+        <Tabs onChange={this.callback} type="card">
+          <TabPane tab="Организация" key="1">Content of Tab Pane 1</TabPane>
+          <TabPane tab="Руководители" key="2">Content of Tab Pane 2</TabPane>
+        </Tabs>
+      </div>
+    )
+  }
 
   getFields = () => {
     const { getFieldDecorator } = this.props.form;
@@ -66,16 +85,21 @@ class CreditConveyor extends Component {
   }
 
   render() {
+    const { showTabs } = this.state
     // console.log(`state`, this.state)
     return (
       <div className="credit-conveyor">
-        <Col style={{ backgroundColor: "rgba(43, 255, 0, 0.24)" }}>
+        <Col>
           <Form className="ant-advanced-search-form" onSubmit={this.handleSubmit}>
             {this.getFields()}
           </Form>
         </Col>
         <Col>
-          <div className="search-result-table">Search Result Table</div>
+          {
+            showTabs ? 
+            this.showTabs() : 
+            <div className="search-result-table">Информация о организации</div>
+          }
         </Col>
       </div>
     );
