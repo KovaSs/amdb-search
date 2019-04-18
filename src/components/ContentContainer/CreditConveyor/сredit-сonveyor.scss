@@ -28,5 +28,23 @@
 
   .tabs-info{
     margin: 2rem 4rem;
+    &__organisation {
+      &-info {
+        margin: 2rem;
+        .lable {
+          font-weight: bold;
+          &:after {
+            content: '.';
+            width: 100%;
+            font-weight: normal;
+            white-space: nowrap;
+            overflow: hidden;
+          }
+        }
+        .descr {
+          
+        }
+      }
+    }
   }
 }

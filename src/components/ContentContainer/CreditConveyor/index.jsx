@@ -13,26 +13,26 @@ class CreditConveyor extends Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       const {prefix, data} = values;
-      if( prefix === 'inn') {
+      if( prefix === 'inn' && data) {
         this.setState(({inn}) => ({
           inn : data,
-          ogrn : ''
+          ogrn : '',
+          showTabs: true
         }))
-      } else if(prefix === 'ogrn') {
+      } else if(prefix === 'ogrn'  && data) {
         this.setState(({ogrn, inn}) => ({
           ogrn : data,
           inn : '',
+          showTabs: true
         }))
       } else {
         this.setState(({ogrn, inn}) => ({
           ogrn : '',
-          inn : ''
+          inn : '',
+          showTabs: false
         }))
       }
       if (!err) {
-        this.setState(({lodad}) => ({
-          showTabs : true
-        }))
         console.log('Полученные значения формы: ', values);
       }
     });
@@ -45,9 +45,57 @@ class CreditConveyor extends Component {
   showOrganisationIngo = () => {
     return (
       <div className="tabs-info__organisation">
-        <Row>
-          <Col span={4} className="lable">Полное название:</Col>
-          <Col span={20} className="info">Общество с ограниченной ответственностью</Col>
+        <Row className="tabs-info__organisation-info">
+          <Col span={6} className="lable">Полное наименование</Col>
+          <Col span={18} className="descr">Общество с ограниченной ответственностью "Группа Компаний "Сервис Телеком"</Col>
+        </Row>
+        <Row className="tabs-info__organisation-info">
+          <Col span={6} className="lable">Сокрашеное наименование</Col>
+          <Col span={18} className="descr">ООО ГК "Сервис Телеком"</Col>
+        </Row>
+        <Row className="tabs-info__organisation-info">
+          <Col span={6} className="lable">Тип компании</Col>
+          <Col span={18} className="descr">Обычная компания</Col>
+        </Row>
+        <Row className="tabs-info__organisation-info">
+          <Col span={6} className="lable">Дата регистрации</Col>
+          <Col span={18} className="descr">02.08.2017г.</Col>
+        </Row>
+        <Row className="tabs-info__organisation-info">
+          <Col span={6} className="lable">Статус</Col>
+          <Col span={18} className="descr">Действующее / Действующее / 15.04.2019</Col>
+        </Row>
+        <Row className="tabs-info__organisation-info">
+          <Col span={6} className="lable">Юридический адресс</Col>
+          <Col span={18} className="descr">г.Москва, улюПятницкая, д.54 корп.2 кв.5</Col>
+        </Row>
+        <Row className="tabs-info__organisation-info">
+          <Col span={6} className="lable">Список телефонов</Col>
+          <Col span={18} className="descr">(916)0383738</Col>
+        </Row>
+        <Row className="tabs-info__organisation-info">
+          <Col span={6} className="lable">Основной ОКВЭД</Col>
+          <Col span={18} className="descr">68.20 / Аренда и управление собственным или арендованным недвижемым имуществом</Col>
+        </Row>
+        <Row className="tabs-info__organisation-info">
+          <Col span={6} className="lable">Численность персонала</Col>
+          <Col span={18} className="descr">0...5</Col>
+        </Row>
+        <Row className="tabs-info__organisation-info">
+          <Col span={6} className="lable">Численность персонала по данным ФНС</Col>
+          <Col span={18} className="descr">0</Col>
+        </Row>
+        <Row className="tabs-info__organisation-info">
+          <Col span={6} className="lable">Уставной капитал</Col>
+          <Col span={18} className="descr">10000</Col>
+        </Row>
+        <Row className="tabs-info__organisation-info">
+          <Col span={6} className="lable">Индекс должносной осмотрительности</Col>
+          <Col span={18} className="descr">23 / Низкий риск</Col>
+        </Row>
+        <Row className="tabs-info__organisation-info">
+          <Col span={6} className="lable">Индекс Финансового риска</Col>
+          <Col span={18} className="descr">88 / высокий риск</Col>
         </Row>
       </div>
     )
