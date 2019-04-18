@@ -2,6 +2,7 @@
 .credit-conveyor{
   color: rgba(0, 255, 242, 0.24);
 
+
   .ant-advanced-search-form,
   .search-result-table {
     margin: 2rem 4rem;
@@ -30,20 +31,24 @@
     margin: 2rem 4rem;
     &__organisation {
       &-info {
-        margin: 2rem;
+        margin: 1rem 2rem;
         .lable {
+          text-align: right;
           font-weight: bold;
+          padding-right: 2rem;
           &:after {
-            content: '.';
-            width: 100%;
+            content: ':';
             font-weight: normal;
-            white-space: nowrap;
-            overflow: hidden;
+            margin-left: 5px;
           }
         }
         .descr {
-          
         }
+      }
+      .lable-table {
+        text-align: center;
+        margin-bottom: 1rem;
+        font-weight: bold;
       }
     }
   }
