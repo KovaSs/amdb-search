@@ -6,29 +6,13 @@ export const data = {
 }
 
 export let oldData = {
-  "full_info_ul_request": {
-    "birthdate": "10.12.1976",
-    "passport": "6602 604372",
-    "address": {
-      "house": "16",
-      "building": "",
-      "street": "СОСНОВАЯ",
-      "build": "",
-      "region_id": 22,
-      "flat": 2,
-      "city": "ТРОИЦК"
-    },
-    "sur_name": "Масютина",
-    "first_name": "Жанна",
-    "last_name": "Ивановна"
-  },
-  "full_info_ul_response": {
-    "html": "TEST"
-  },
+
+  /** Запрос первоначального поиска кампании */
   "company_request": {
     "inn": "7725735213",
     "ogrn": "1117746763672"
   },
+
   "company_response": {
     "founders_fl": [{
       "inn": "670700894121",
@@ -68,12 +52,15 @@ export let oldData = {
       "last_name": "Ивановна"
     }]
   },
+
+    /** Запрос  поиска физического лица */
   "identify_fl_request": {
     "ogrn": "1117746763672",
     "last_name": "Ивановна",
     "sur_name": "Масютина",
     "first_name": "Жанна"
   },
+
   "identify_fl_response": {
     "last_name": "Ивановна",
     "addresses": [
@@ -118,5 +105,28 @@ export let oldData = {
       "6602 604272",
       "6606 287751"
     ]
-  }
+  },
+
+  /** Запрос поиска юридического лица */
+  "full_info_ul_request": {
+    "birthdate": "10.12.1976",
+    "passport": "6602 604372",
+    "address": {
+      "house": "16",
+      "building": "",
+      "street": "СОСНОВАЯ",
+      "build": "",
+      "region_id": 22,
+      "flat": 2,
+      "city": "ТРОИЦК"
+    },
+    "sur_name": "Масютина",
+    "first_name": "Жанна",
+    "last_name": "Ивановна"
+  },
+
+  "full_info_ul_response": {
+    "html": "TEST"
+  },
+
 }

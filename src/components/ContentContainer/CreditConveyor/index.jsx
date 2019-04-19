@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Row, Col, Form, Input, Button, Select, Tabs, Table, Badge, Menu, Dropdown, Icon  } from "antd";
+import { Row, Col, Form, Input, Button, Select, Tabs, Table, Empty, Spin } from "antd";
 import "./сredit-сonveyor.scss"
 
 class CreditConveyor extends Component {
@@ -87,11 +87,11 @@ class CreditConveyor extends Component {
           </Row>
           <Row className="tabs-info__organisation-info">
             <Col span={8} className="lable">Статус</Col>
-            <Col span={16} className="descr">Действующее / Действующее / 15.04.2019</Col>
+            <Col span={16} className="descr">Ликвидировано / Прекратило деятельность при присоединении / 2014-08-19</Col>
           </Row>
           <Row className="tabs-info__organisation-info">
             <Col span={8} className="lable">Юридический адресс</Col>
-            <Col span={16} className="descr">г.Москва, улюПятницкая, д.54 корп.2 кв.5</Col>
+            <Col span={16} className="descr">г. Москва, ул. Орджоникидзе, д. 11 стр. 1А</Col>
           </Row>
           <Row className="tabs-info__organisation-info">
             <Col span={8} className="lable">Список телефонов</Col>
@@ -153,7 +153,7 @@ class CreditConveyor extends Component {
           { title: 'Date', dataIndex: 'date', key: 'date' },
           { title: 'Name', dataIndex: 'name', key: 'name' },
           { title: 'Upgrade Status', dataIndex: 'upgradeNum', key: 'upgradeNum' },
-          { title: 'Проверка в Google', dataIndex: 'operation', key: 'operation', render: () => <Button href="javascript:;">Поиск</Button>},
+          { title: 'Проверка в Google', dataIndex: 'operation', key: 'operation', render: () => <Button>Поиск</Button>},
         ];
     
       const data = [];
@@ -165,38 +165,51 @@ class CreditConveyor extends Component {
           upgradeNum: 'Upgraded: 56',
         });
       }
+
+      let loadingDelay = false
+
       return (
-        <Table
-          columns={columns}
-          dataSource={data}
-          pagination={false}
-        />
+        <>
+          {
+            loadingDelay ? 
+            <Spin spinning={loadingDelay}>
+              <Empty/>
+            </Spin>
+            :
+            <Table
+              className="tabs-info__table-children"
+              columns={columns}
+              dataSource={data}
+              pagination={false}
+            />
+          }
+        </>
       );
     };
 
     const columns = [
       { title: 'ФИО', dataIndex: 'fio', key: 'name' },
-      { title: 'Date', dataIndex: 'createdAt', key: 'createdAt' },
-      { title: 'Проверка', key: 'operation', render: () => <Button href="javascript:;">Поиск</Button> },
+      { title: 'ОГРН', dataIndex: 'ogrn', key: 'createdAt' },
+      { title: 'Проверка в Google', key: 'operation', render: () => <Button>Проверить</Button> },
     ];
 
     const data = [];
-    for (let i = 0; i < 3; ++i) {
+    for (let i = 0; i < 1; ++i) {
       data.push({
         key: i,
         fio: 'Масюгина Жанна Ивановна',
-        createdAt: '2014-12-24 23:12:00',
+        ogrn: '1117746763672',
       });
     }
     
     return (
       <Table
-      className="components-table-demo-nested"
-      columns={columns}
-      expandedRowRender={expandedRowRender}
-      dataSource={data}
-      pagination={false}
-    />
+        className="tabs-info__table-main"
+        columns={columns}
+        expandedRowRender={expandedRowRender}
+        dataSource={data}
+        pagination={false}
+      />
     )
   }
 
