@@ -1,42 +1,12 @@
 import React, { Component } from "react";
-import { Row, Col, Form, Input, Button, Select, Tabs, Table, Empty, Spin } from "antd";
+import { Row, Col, Button, Tabs, Table, Empty, Spin } from "antd";
+import SearchCompany from "./SearchCompany";
 import "./сredit-сonveyor.scss"
 
 class CreditConveyor extends Component {
   state = {
-    inn: '',
-    ogrn: '',
     showTabs: true
   };
-
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      const {prefix, data} = values;
-      if( prefix === 'inn' && data) {
-        this.setState(({inn}) => ({
-          inn : data,
-          ogrn : '',
-          showTabs: true
-        }))
-      } else if(prefix === 'ogrn'  && data) {
-        this.setState(({ogrn, inn}) => ({
-          ogrn : data,
-          inn : '',
-          showTabs: true
-        }))
-      } else {
-        this.setState(({ogrn, inn}) => ({
-          ogrn : '',
-          inn : '',
-          showTabs: false
-        }))
-      }
-      if (!err) {
-        console.log('Полученные значения формы: ', values);
-      }
-    });
-  }
 
   callback = key => {
     console.log(key);
@@ -147,7 +117,7 @@ class CreditConveyor extends Component {
     )
   }
 
-  showHeadsTableInfo = () => {
+  showHeadsTableInfo = (tableName) => {
       const expandedRowRender = () => {
         const columns = [
           { title: 'Date', dataIndex: 'date', key: 'date' },
@@ -194,7 +164,7 @@ class CreditConveyor extends Component {
     ];
 
     const data = [];
-    for (let i = 0; i < 1; ++i) {
+    for (let i = 0; i < 2; ++i) {
       data.push({
         key: i,
         fio: 'Масюгина Жанна Ивановна',
@@ -203,13 +173,16 @@ class CreditConveyor extends Component {
     }
     
     return (
-      <Table
-        className="tabs-info__table-main"
-        columns={columns}
-        expandedRowRender={expandedRowRender}
-        dataSource={data}
-        pagination={false}
-      />
+      <>
+        <Col className="tabs-info__lable-table">{tableName}</Col>
+        <Table
+          className="tabs-info__table-main"
+          columns={columns}
+          expandedRowRender={expandedRowRender}
+          dataSource={data}
+          pagination={false}
+        />
+      </>
     )
   }
 
@@ -219,52 +192,21 @@ class CreditConveyor extends Component {
       <div className="tabs-info">
         <Tabs defaultActiveKey="2" onChange={this.callback} >
           <TabPane tab="Организация" key="1">{this.showOrganisationIngo()}</TabPane>
-          <TabPane tab="Руководители" key="2">{this.showHeadsTableInfo()}</TabPane>
+          <TabPane tab="Руководители" key="2">
+            {this.showHeadsTableInfo('Руководители')}
+            {this.showHeadsTableInfo('Совладельцы')}
+            {this.showHeadsTableInfo('Бенефицары')}
+          </TabPane>
         </Tabs>
       </div>
     )
   }
 
-  getFields = () => {
-    const { getFieldDecorator } = this.props.form;
-    const { Option } = Select;
-    const prefixSelector = getFieldDecorator('prefix', {
-      initialValue: 'inn',
-    })(
-      <Select style={{ width: 80 }}>
-        <Option value="inn">ИНН</Option>
-        <Option value="ogrn">ОГРН</Option>
-      </Select>
-    );
-    return (
-      <Row>
-        <Col span={24}>Поиск организации:</Col>
-        <Col span={23}>
-          <Form.Item >
-            {getFieldDecorator('data', {
-              rules: [{ required: true, message: 'Строка поиска не должна быть пустой!' }],
-            })(
-              <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
-            )}
-          </Form.Item>
-        </Col>
-        <Col span={1}>
-          <Button className="search-btn" type="primary" htmlType="submit">Поиск</Button>
-        </Col>
-      </Row>
-    )
-  }
-
   render() {
     const { showTabs } = this.state
-    // console.log(`state`, this.state)
     return (
       <div className="credit-conveyor">
-        <Col>
-          <Form className="ant-advanced-search-form" onSubmit={this.handleSubmit}>
-            {this.getFields()}
-          </Form>
-        </Col>
+        <SearchCompany/>
         <Col>
           {
             showTabs ? 
@@ -277,7 +219,4 @@ class CreditConveyor extends Component {
   }
 }
 
-const WrappedRegistrationForm = Form.create({ name: 'searh-company' })(CreditConveyor);
-
-
-export default WrappedRegistrationForm;
+export default CreditConveyor;
