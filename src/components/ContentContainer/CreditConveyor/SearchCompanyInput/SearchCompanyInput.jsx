@@ -15,9 +15,7 @@ class SearchCompanyInput extends Component {
         default:
           break;
       }
-      console.log('input-value ->', this.props.form.setFieldsValue.__reactBoundContext.instances.data.state.value)
-      console.log('select-value ->', this.props.form.setFieldsValue.__reactBoundContext.instances.prefix.props.value)
-    }, 200);
+    }, 100);
   }
   
   handleSubmit = (e) => {
