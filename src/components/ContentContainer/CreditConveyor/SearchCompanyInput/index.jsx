@@ -6,7 +6,7 @@ import { Row, Col, Form, Input, Button, Select } from "antd";
 import "./search-company.scss"
 
 
-class SearchCompany extends Component {
+class SearchCompanyInput extends Component {
   state = {
     inn: '',
     ogrn: '',
@@ -83,7 +83,7 @@ class SearchCompany extends Component {
   }
 }
 
-const WrappedRegistrationForm = Form.create({ name: 'searh-company' })(SearchCompany);
+const WrappedRegistrationForm = Form.create({ name: 'searh-company' })(SearchCompanyInput);
 
 const putStateToProps = state => {
   const {creditConveyor : {inn, ogrn}} = state

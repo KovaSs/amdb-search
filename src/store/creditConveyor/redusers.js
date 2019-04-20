@@ -1,5 +1,3 @@
-// import { data } from '../mock'
-// const { companyRequest : { inn, ogrn } } = data;
 import { ACTION_CHANGE_INN, ACTION_CHANGE_OGRN } from "./actions"
 
 const defaultState = {
@@ -22,11 +20,12 @@ const defaultState = {
 const creditConveyorReducer = (state = defaultState, action) => {
   switch (action.type) {
     case ACTION_CHANGE_INN:
-    return { ...state, inn: action.payload};
+      return { ...state, inn: action.payload};
     case ACTION_CHANGE_OGRN:
-    return { ...state, ogrn: action.payload};
+      return { ...state, ogrn: action.payload};
+    default:
+      return state
   }
-  return state
 }
 
 export default creditConveyorReducer

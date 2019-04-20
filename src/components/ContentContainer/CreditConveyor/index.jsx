@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Row, Col, Button, Tabs, Table, Empty, Spin } from "antd";
-import SearchCompany from "./SearchCompany";
+import SearchCompanyInput from "./SearchCompanyInput";
 import "./сredit-сonveyor.scss"
 
 class CreditConveyor extends Component {
@@ -206,7 +206,7 @@ class CreditConveyor extends Component {
     const { showTabs } = this.state
     return (
       <div className="credit-conveyor">
-        <SearchCompany/>
+        <SearchCompanyInput/>
         <Col>
           {
             showTabs ? 
