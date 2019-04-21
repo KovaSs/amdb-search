@@ -48,7 +48,10 @@ class SearchCompanyInput extends Component {
         <Col span={23}>
           <Form.Item >
             {getFieldDecorator('data', {
-              rules: [{ required: true, message: 'Строка поиска не должна быть пустой!' }],
+              rules: [
+                { required: true, message: 'Строка поиска не должна быть пустой!' },
+                { pattern: '^[0-9]+$', message: 'Поисковой запрос должен состоять из цифр!'}
+              ],
             })(
               <Input onChange={this.changeValue} addonBefore={prefixSelector} style={{ width: '100%' }} />
             )}
