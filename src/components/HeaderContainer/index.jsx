@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link, withRouter } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
-// import "./header.scss";
+import "./header.scss";
 
 class HeaderContainer extends Component {
   state = {
@@ -47,7 +47,10 @@ class HeaderContainer extends Component {
     return (
       <Header>
         <Link to='/' onClick={ this.changeActivePage }>
-          <div className="logo" />
+            <div className="logo">
+            <img className="logo-img" src={process.env.PUBLIC_URL + 'img/logo.png'} alt={"logo"} />
+            <label className="logo-label">Газпромбанк</label>
+          </div>
         </Link>
         <Menu
           selectedKeys={[`${activePage}`]}
