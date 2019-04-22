@@ -24,10 +24,11 @@ class SearchCompanyInput extends Component {
   }
   
   handleSubmit = (e) => {  
-    const { loadCompanyInfo } = this.props.store
+    const { loadingCompanyInfo, loadCompanyInfo } = this.props.store
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
+        loadingCompanyInfo()
         setTimeout(() => {
           loadCompanyInfo(companyResponse)
         }, 2000);
