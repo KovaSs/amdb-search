@@ -1,103 +1,9 @@
-import React, { Component } from "react";
+import React from 'react';
 import { Row, Col, Button, Tabs, Table, Empty, Spin } from "antd";
-import TabsContainer from "./TabsContainer";
-import SearchCompanyInput from "./SearchCompanyInput";
-import "./сredit-сonveyor.scss"
 
-//key render item
-import idGenerator from 'react-id-generator';
-const data = [
-  { title: 'Иванов', age: 25, id: 'id1' },
-  { title: 'Петров', age: 34, id: 'id2' },
-  { title: 'Сидоров', age: 23, id: 'id3' },
-  { title: 'Лебедев', age: 14, id: 'id4' },
-  { title: 'Мокин', age: 6, id: 'id5' },
-  { title: 'Исаев', age: 23, id: 'id6' },
-  { title: 'Ванюшин', age: 83, id: 'id7' },
-]
+const TabsItem = () => {
 
-class AddTable extends Component {
-  state = {
-    people : data
-  };
-
-  sort = field => {
-    const { people } = this.state
-    // debugger;
-    // let field = 'title';
-    for (let i = 0; i < people.length; i ++){
-      for (let j = i + 1; j < people.length; j ++){
-        if (people[j][field] > people[i][field]){
-
-          let tmp = people[i];
-          people[i] = people[j];
-          people[j] = tmp;
-        }
-      }
-    }
-
-    this.setState ({people})
-    //people.sort((a,b) => a.title - b.title)
-  }
-
-  addNewPeople = () => {
-    const {people} = this.state
-    // console.log('people', people)
-    people.push({
-      title: 'Семенов', 
-      age: 33,
-      id: idGenerator('id-')
-    })
-    console.log('people', people)
-    this.setState( {
-      people
-    })
-  }
-
-  render() {
-    const {people} = this.state
-    const addLinks = people.map(el => {
-      return (
-        <div key = {el.id}>
-          <span
-            onClick={e => this.sort(e.target.id)}
-            id="title"
-          > 
-            {`${el.title}   `}
-          </span>
-          <span
-            onClick={e => this.sort(e.target.id)}
-            id="age"
-          > 
-            {el.age}
-          </span>
-          <br/>
-        </div>
-      )
-    })
-    return (
-      <div>
-        {addLinks}
-        <button onClick={this.addNewPeople}>Добавить</button>
-      </div>
-    )
-  }
-}
-
-export { AddTable }
-
-
-
-class CreditConveyor extends Component {
-  state = {
-    showTabs: true,
-  };
-
-  callback = key => {
-    console.log(key);
-  }
-
-  showOrganisationIngo = () => {
+  const showOrganisationIngo = () => {
     const columns = [{
       title: 'Роль',
       dataIndex: 'name',
@@ -202,101 +108,11 @@ class CreditConveyor extends Component {
     )
   }
 
-  showHeadsTableInfo = (tableName) => {
-      const expandedRowRender = () => {
-        const columns = [
-          { title: 'Date', dataIndex: 'date', key: 'date' },
-          { title: 'Name', dataIndex: 'name', key: 'name' },
-          { title: 'Upgrade Status', dataIndex: 'upgradeNum', key: 'upgradeNum' },
-          { title: 'Проверка в Google', dataIndex: 'operation', key: 'operation', render: () => <Button>Поиск</Button>},
-        ];
-    
-      const data = [];
-      for (let i = 0; i < 3; ++i) {
-        data.push({
-          key: i,
-          date: '2014-12-24 23:12:00',
-          name: 'This is production name',
-          upgradeNum: 'Upgraded: 56',
-        });
-      }
-
-      let loadingDelay = false
-
-      return (
-        <>
-          {
-            loadingDelay ? 
-            <Spin spinning={loadingDelay}>
-              <Empty/>
-            </Spin>
-            :
-            <Table
-              className="tabs-info__table-children"
-              columns={columns}
-              dataSource={data}
-              pagination={false}
-            />
-          }
-        </>
-      );
-    };
-
-    const columns = [
-      { title: 'ФИО', dataIndex: 'fio', key: 'name' },
-      { title: 'ОГРН', dataIndex: 'ogrn', key: 'createdAt' },
-      { title: 'Проверка в Google', key: 'operation', render: () => <Button>Проверить</Button> },
-    ];
-
-    const data = [];
-    for (let i = 0; i < 2; ++i) {
-      data.push({
-        key: i,
-        fio: 'Масюгина Жанна Ивановна',
-        ogrn: '1117746763672',
-      });
-    }
-
-    return (
-      <>
-        <Col className="tabs-info__lable-table">{tableName}</Col>
-        <Table
-          className="tabs-info__table-main"
-          columns={columns}
-          expandedRowRender={expandedRowRender}
-          dataSource={data}
-          pagination={false}
-        />
-        {/* <AddTable/> */}
-      </>
-    )
-  }
-
-  showTabs = () => {
-    const TabPane = Tabs.TabPane;
-    return (
-      <div className="tabs-info">
-        <Tabs defaultActiveKey="2" onChange={this.callback} >
-          <TabPane tab="Организация" key="1">{this.showOrganisationIngo()}</TabPane>
-          <TabPane tab="Руководители" key="2">
-            {this.showHeadsTableInfo('Руководители')}
-            {this.showHeadsTableInfo('Совладельцы')}
-            {this.showHeadsTableInfo('Бенефицары')}
-          </TabPane>
-        </Tabs>
-      </div>
-    )
-  }
-
-  render() {
-    const { showTabs } = this.state
-    return (
-      <div className="credit-conveyor">
-        <SearchCompanyInput/>
-        <TabsContainer/>
-      </div>
-    );
-  }
+  return (
+    <>
+      { showOrganisationIngo() }
+    </>
+  )
 }
 
-export default CreditConveyor;
+export { TabsItem } 
