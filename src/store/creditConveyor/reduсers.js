@@ -1,28 +1,21 @@
-import { ACTION_CHANGE_INN, ACTION_CHANGE_OGRN } from "./actions"
+import { ACTION_CHANGE_INN, ACTION_CHANGE_OGRN, LOADING_COMPANY_INFO, LOAD_COMPANY_INFO } from "./actions"
 
 const defaultState = {
-  address: "",
-  befenicials: "",
-  capital: "",
-  fouldersFl: "",
-  fouldersUl: "",
-  fullName: "",
   inn: "",
-  menegmentCompany: "",
-  name: "",
   ogrn: "",
-  okved: "",
-  precessors: "",
-  status: "",
-  succesors: ""
+  searchLoading: false
 }
 
 const creditConveyorReducer = (state = defaultState, action) => {
   switch (action.type) {
     case ACTION_CHANGE_INN:
-      return { ...state, inn: action.payload};
+      return { ...state, inn: action.payload };
     case ACTION_CHANGE_OGRN:
-      return { ...state, ogrn: action.payload};
+      return { ...state, ogrn: action.payload };
+    case LOADING_COMPANY_INFO:
+      return { ...state, searchLoading: action.loading };
+    case LOAD_COMPANY_INFO:
+      return { ...state, companyResponse: action.payload, searchLoading: action.loading };
     default:
       return state
   }

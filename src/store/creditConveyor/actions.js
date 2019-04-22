@@ -13,3 +13,21 @@ export const actionChangeOgrn = newOgrn => {
     payload: newOgrn
   }
 }
+
+export const LOADING_COMPANY_INFO = 'LOADING_COMPANY_INFO'
+export const loadingCompanyInfo = () => {
+  return {
+    type: LOADING_COMPANY_INFO,
+    loading: true
+  }
+}
+
+export const LOAD_COMPANY_INFO = 'LOAD_COMPANY_INFO'
+export const loadCompanyInfo = newCompanyInfo => {
+  return {
+    type: LOAD_COMPANY_INFO,
+    payload: newCompanyInfo,
+    loading : false
+  }
+}
+

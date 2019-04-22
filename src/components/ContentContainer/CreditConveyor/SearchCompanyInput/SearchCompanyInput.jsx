@@ -2,8 +2,13 @@ import React, { Component } from 'react'
 import { Row, Col, Form, Input, Button, Select } from "antd";
 import "./search-company.scss"
 
+/** get mock data */
+import { companyResponse } from "../../../../store/mock";
+
+
 
 class SearchCompanyInput extends Component {
+
   changeValue = () => {
     const { actionChangeInn, actionChangeOgrn } = this.props.store
     setTimeout(() => {
@@ -18,14 +23,16 @@ class SearchCompanyInput extends Component {
     }, 100);
   }
   
-  handleSubmit = (e) => {
-    console.log('search-value ->', this.props.form)    
-    const { actionChangeInn, actionChangeOgrn } = this.props.store
+  handleSubmit = (e) => {  
+    const { loadCompanyInfo } = this.props.store
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
+        setTimeout(() => {
+          loadCompanyInfo(companyResponse)
+        }, 2000);
         console.log('Полученные значения формы: ', values);
-        return actionChangeOgrn('') && actionChangeInn('')
+        this.changeValue()
       }
     });
   }
@@ -36,7 +43,7 @@ class SearchCompanyInput extends Component {
     const prefixSelector = getFieldDecorator('prefix', {
       initialValue: 'inn',
     })(
-      <Select style={{ width: 80 }} onChange={this.changeValue}>
+      <Select style={{ width: 80 }} >
         <Option value="inn">ИНН</Option>
         <Option value="ogrn">ОГРН</Option>
       </Select>
@@ -53,7 +60,7 @@ class SearchCompanyInput extends Component {
                 { pattern: '^[0-9]+$', message: 'Поисковой запрос должен состоять из цифр!'}
               ],
             })(
-              <Input onChange={this.changeValue} addonBefore={prefixSelector} style={{ width: '100%' }} />
+              <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
             )}
           </Form.Item>
         </Col>
@@ -68,7 +75,7 @@ class SearchCompanyInput extends Component {
     return (
       <Col>
         <Form className="ant-advanced-search-form" onSubmit={this.handleSubmit}>
-          {this.getFields()}
+          { this.getFields() }
         </Form>
       </Col>
     )

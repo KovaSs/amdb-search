@@ -6,10 +6,11 @@ import { TabsContainer } from "./TabsContainer";
 const Container = props => <TabsContainer store={props}/>
 
 const putStateToProps = state => {
-  const {creditConveyor : {inn, ogrn}} = state
+  const {creditConveyor : {inn, ogrn, companyResponse}} = state
   return {
     inn,
-    ogrn
+    ogrn,
+    companyResponse
   }
 }
 const putActionsToProps =  {

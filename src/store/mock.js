@@ -1,11 +1,67 @@
-export const data = {
-  companyRequest: {
-    inn: "",
-    ogrn: ""
-  }
+export const companyResponse = {
+  "founders_fl": [{
+    "inn": "670700894121",
+    "last_name": "Ивановна",
+    "sur_name": "Масютина",
+    "first_name": "Жанна"
+  }],
+  "heads": [{
+    "inn": "670700894121",
+    "first_name": "Жанна",
+    "sur_name": "Масютина",
+    "last_name": "Ивановна"
+  }],
+  "company_type": "Обычная компания",
+  "registration_date": "02.08.2017г.",
+  "phone_list": ["(916)0383738"],
+  "workers_range": "0...5",
+  "workers_range_fns": "0",
+  "index_of_due_diligence": "23 / Низкий риск",
+  "payment_index": "88 / высокий риск",
+  "failure_score": "",
+  "isponlit_proizvodstva": ["не найдено"],
+  "sanctions": ["не найдено"],
+  "arbiter": {
+    "istec":{
+      "year": "500 руб. (1)",
+      "year3": "500 руб. (1)"
+    },
+    "otvet":{
+      "year": "0 руб (0)",
+      "year3": "0 руб (0)"
+    },
+    "other":[]
+  },
+  "ogrn": "1117746763672",
+  "status": "Ликвидировано / Прекратило деятельность при присоединении / 2014-08-19",
+  "management_companies": [],
+  "address": "г. Москва, ул. Орджоникидзе, д. 11 стр. 1А",
+  "successors": [
+    "2015-10-19 / ООО \"ПРОМЭКС\" / 7721834090 / Исключен из ЕГРЮЛ на основании п.2 ст.21.1 ФЗ от 08.08.2001 №129-ФЗ"
+  ],
+  "capital": "10000",
+  "full_name": "ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ \"БИКОМПАКТ 2.0\"",
+  "inn": "7725735213",
+  "name": "ООО \"БИКОМПАКТ 2.0\"",
+  "okved": "47.5 / Торговля розничная прочими бытовыми изделиями в специализированных магазинах",
+  "precessors": [
+    "2015-10-19 / ООО \"ПРОМЭКС\" / 7721834090 / Исключен из ЕГРЮЛ на основании п.2 ст.21.1 ФЗ от 08.08.2001 №129-ФЗ"
+  ],
+  "founders_ul": [{
+    "name": "ООО \"БИКОМПАКТ 2.0\"",
+    "inn": "7725735213",
+    "full_name": "ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ \"БИКОМПАКТ 2.0\""
+  }],
+  "befenicials": [{
+    "first_name": "Жанна",
+    "sur_name": "Масютина",
+    "last_name": "Ивановна"
+  }]
 }
 
-export let oldData = {
+
+
+export const data = {
 
   /** Запрос первоначального поиска кампании */
   "company_request": {
@@ -26,6 +82,27 @@ export let oldData = {
       "sur_name": "Масютина",
       "last_name": "Ивановна"
     }],
+    "company_type": "Обычная компания",
+    "registration_date": "02.08.2017г.",
+    "phone_list": ["(916)0383738"],
+    "workers_range": "0...5",
+    "workers_range_fns": "0",
+    "index_of_due_diligence": "23 / Низкий риск",
+    "payment_index": "88 / высокий риск",
+    "failure_score": "",
+    "isponlit_proizvodstva": ["не найдено"],
+    "sanctions": ["не найдено"],
+    "arbiter": {
+      "istec":{
+        "year": "500 руб. (1)",
+        "year3": "500 руб. (1)"
+      },
+      "otvet":{
+        "year": "0 руб (0)",
+        "year3": "0 руб (0)"
+      },
+      "other":[]
+    },
     "ogrn": "1117746763672",
     "status": "Ликвидировано / Прекратило деятельность при присоединении / 2014-08-19",
     "management_companies": [],

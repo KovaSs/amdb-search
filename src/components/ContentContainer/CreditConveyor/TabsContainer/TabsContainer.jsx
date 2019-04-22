@@ -9,10 +9,10 @@ class TabsContainer extends Component {
       <div className="tabs-info">
         <Tabs defaultActiveKey="1" onChange={this.callback} >
           <TabPane tab="Организация" key="1">
-            <TabsItem />
+            <TabsItem organistionInfo />
           </TabPane>
           <TabPane tab="Руководители" key="2">
-            Таб №2
+          <TabsItem headers />
           </TabPane>
         </Tabs>
       </div>
