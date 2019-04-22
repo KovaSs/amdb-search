@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Spin } from "antd";
 import TabsContainer from "./TabsContainer";
 import SearchCompanyInput from "./SearchCompanyInput";
 import "./сredit-сonveyor.scss"
@@ -89,17 +91,54 @@ export { AddTable }
 
 class CreditConveyor extends Component {
   state = {
-    showTabs: true,
-  };
+    showTabs : false,
+    loading : false
+  }  
+
+  componentWillReceiveProps(nextProps) {
+    const { companyResponse } = this.props
+    if(nextProps.searchLoading === true) {
+      this.setState({
+        loading: true
+      })
+    } else {
+      this.setState({
+        loading: false
+      })
+    }
+    if(nextProps.companyResponse !== companyResponse) {
+      this.setState({
+        showTabs: true
+      })
+    }
+  }
 
   render() {
+    const { showTabs, loading } = this.state
+
     return (
       <div className="credit-conveyor">
         <SearchCompanyInput />
-        <TabsContainer />
+        { showTabs ?
+          <TabsContainer /> : 
+          <div className="search-result-table">
+            { loading ?
+              <Spin size="large" /> :
+              <div>Для поиска информации об организации введите ИНН или ОГРН в поисковую строку</div>
+            }
+          </div>
+        }
       </div>
     );
   }
 }
 
-export default CreditConveyor;
+const putStateToProps = state => {
+  const {creditConveyor : { companyResponse, searchLoading }} = state
+  return {
+    companyResponse,
+    searchLoading
+  }
+}
+
+export default connect(putStateToProps)(CreditConveyor);

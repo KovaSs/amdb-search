@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from "react-redux";
-import { actionChangeInn, actionChangeOgrn } from "../../../../store/actions";
+// import { actionChangeInn, actionChangeOgrn } from "../../../../store/actions";
 import { TabsContainer } from "./TabsContainer";
 
 const Container = props => <TabsContainer store={props}/>
@@ -13,9 +13,5 @@ const putStateToProps = state => {
     companyResponse
   }
 }
-const putActionsToProps =  {
-    actionChangeInn,
-    actionChangeOgrn
-}
 
-export default connect(putStateToProps, putActionsToProps)(Container)
+export default connect(putStateToProps, null)(Container)
