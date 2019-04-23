@@ -1,8 +1,28 @@
 import React from 'react';
 import { Row, Col, Button, Table, Empty, Spin } from "antd";
+import * as _ from 'lodash'
+import { fieldsArr } from "./fields";
+
+/** Console table */
+const Field = (title, data) => ({ title, data })
+let clgData = {}
+
 
 const TabsItem = props => {
   const { organistionInfo, headers } = props
+
+  const fullOrganistionInfo = fieldsArr.map( item => {
+    const { source: companySource } = props
+    for (const el in companySource) {
+      if(item.id === el) {
+        clgData[el] = new Field(item.title, companySource[el])
+        return  _.assign(item, { "data" : companySource[el]})
+      }
+    }
+    return item
+  })
+
+  console.table(clgData)
 
   const showHeadsTableInfo = (tableName) => {
     const expandedRowRender = () => {
@@ -69,10 +89,22 @@ const TabsItem = props => {
         dataSource={data}
         pagination={false}
       />
-      {/* <AddTable/> */}
     </>
   )
 }
+
+  const renderFieldArr = fullOrganistionInfo.map(item => {
+    if(item.data && item.id !== "arbiter") {
+      return (
+        <Row key={item.id} className="tabs-info__organisation-info">
+          <Col span={8} className="lable">{ item.title }</Col>
+          <Col span={16} className="descr">{`${item.data}` }</Col>
+        </Row>
+      )
+    } else {
+      return null
+    }
+  })
 
   const showOrganisationInfo = () => {
     const columns = [{
@@ -101,70 +133,7 @@ const TabsItem = props => {
     return (
       <Row className="tabs-info__organisation">
         <Col span={18}>
-          <Row className="tabs-info__organisation-info">
-            <Col span={8} className="lable">Полное наименование</Col>
-            <Col span={16} className="descr">Общество с ограниченной ответственностью "Группа Компаний "Сервис Телеком"</Col>
-          </Row>
-          <Row className="tabs-info__organisation-info">
-            <Col span={8} className="lable">Сокрашеное наименование</Col>
-            <Col span={16} className="descr">ООО ГК "Сервис Телеком"</Col>
-          </Row>
-          <Row className="tabs-info__organisation-info">
-            <Col span={8} className="lable">Тип компании</Col>
-            <Col span={16} className="descr">Обычная компания</Col>
-          </Row>
-          <Row className="tabs-info__organisation-info">
-            <Col span={8} className="lable">Дата регистрации</Col>
-            <Col span={16} className="descr">02.08.2017г.</Col>
-          </Row>
-          <Row className="tabs-info__organisation-info">
-            <Col span={8} className="lable">Статус</Col>
-            <Col span={16} className="descr">Ликвидировано / Прекратило деятельность при присоединении / 2014-08-19</Col>
-          </Row>
-          <Row className="tabs-info__organisation-info">
-            <Col span={8} className="lable">Юридический адресс</Col>
-            <Col span={16} className="descr">г. Москва, ул. Орджоникидзе, д. 11 стр. 1А</Col>
-          </Row>
-          <Row className="tabs-info__organisation-info">
-            <Col span={8} className="lable">Список телефонов</Col>
-            <Col span={16} className="descr">(916)0383738</Col>
-          </Row>
-          <Row className="tabs-info__organisation-info">
-            <Col span={8} className="lable">Основной ОКВЭД</Col>
-            <Col span={16} className="descr">68.20 / Аренда и управление собственным или арендованным недвижемым имуществом</Col>
-          </Row>
-          <Row className="tabs-info__organisation-info">
-            <Col span={8} className="lable">Численность персонала</Col>
-            <Col span={16} className="descr">0...5</Col>
-          </Row>
-          <Row className="tabs-info__organisation-info">
-            <Col span={8} className="lable">Численность персонала по данным ФНС</Col>
-            <Col span={16} className="descr">0</Col>
-          </Row>
-          <Row className="tabs-info__organisation-info">
-            <Col span={8} className="lable">Уставной капитал</Col>
-            <Col span={16} className="descr">10000</Col>
-          </Row>
-          <Row className="tabs-info__organisation-info">
-            <Col span={8} className="lable">Индекс должносной осмотрительности</Col>
-            <Col span={16} className="descr">23 / Низкий риск</Col>
-          </Row>
-          <Row className="tabs-info__organisation-info">
-            <Col span={8} className="lable">Индекс Финансового риска</Col>
-            <Col span={16} className="descr">88 / высокий риск</Col>
-          </Row>
-          <Row className="tabs-info__organisation-info">
-            <Col span={8} className="lable">Исполнительные производства</Col>
-            <Col span={16} className="descr">не найдено</Col>
-          </Row>
-          <Row className="tabs-info__organisation-info">
-            <Col span={8} className="lable">ФНС</Col>
-            <Col span={16} className="descr" style={{color : "red"}}>Залоги. Число уведлмлений о заголах движемого имущества (залогодатель) -2</Col>
-          </Row>
-          <Row className="tabs-info__organisation-info">
-            <Col span={8} className="lable">Санкции</Col>
-            <Col span={16} className="descr">не найдено</Col>
-          </Row>
+          { renderFieldArr }
         </Col>
         <Col span={6}>
           <Col className="lable-table">Арбитраж</Col>

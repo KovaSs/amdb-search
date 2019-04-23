@@ -12,6 +12,7 @@ export const companyResponse = {
     "last_name": "Ивановна"
   }],
   "company_type": "Обычная компания",
+  "fns": "Залоги. Число уведомлений о залогах движемуемого имущества (залогодатель) -2",
   "registration_date": "02.08.2017г.",
   "phone_list": ["(916)0383738"],
   "workers_range": "0...5",
@@ -86,6 +87,7 @@ export const data = {
     "registration_date": "02.08.2017г.",
     "phone_list": ["(916)0383738"],
     "workers_range": "0...5",
+    "fns": "Залоги. Число уведомлений о залогах движемуемого имущества (залогодатель) -2",
     "workers_range_fns": "0",
     "index_of_due_diligence": "23 / Низкий риск",
     "payment_index": "88 / высокий риск",
