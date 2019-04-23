@@ -114,7 +114,7 @@ const TabsItem = props => {
   /** Рендеринг информационных полей организации */
   const renderFieldArr = fullOrganistionInfo.map(item => {
     if(item.data && item.id !== "arbiter") {
-      const red = (item.id === "fns") ? " red" : ''
+      const red = (item.id === "fns" || item.id === "sanctions") ? " red" : ''
       return (
         <Row key={item.id} className="tabs-info__organisation-info">
           <Col span={8} className="lable">{ item.title }</Col>

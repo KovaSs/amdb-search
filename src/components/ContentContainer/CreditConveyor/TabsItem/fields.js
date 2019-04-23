@@ -1,34 +1,3 @@
-const fields = {
-  name: { title: "Сокрашеное наименование", data: ""},
-  full_name: { title: "Полное наименование", data: ""},
-  inn: { title: "ИНН", data: ""},
-  ogrn: { title: "ОГРН", data: ""},
-  company_type: { title: "Тип компании", data: ""},
-  registration_date: { title: "Дата регистрации", data: ""},
-  status: { title: "Статус", data: ""},
-  address: { title: "Юридический адресс", data: ""},
-  phone_list: { title: "Список телефонов", data: ""},
-  okved: { title: "Основной ОКВЭД", data: ""},
-  workers_range: { title: "Численность персонала", data: ""},
-  workers_range_fns: { title: "Численность персонала по данным ФНС", data: ""},
-  capital: { title: "Уставной капитал", data: ""},
-  index_of_due_diligence: { title: "Индекс должносной осмотрительности", data: ""},
-  payment_index: { title: "Индекс Финансового риска", data: ""},
-  isponlit_proizvodstva: { title: "Исполнительные производства", data: ""},
-  fns: { title: "ФНС", data: ""},
-  sanctions: { title: "Санкции", data: ""},
-  precessors: { title: "Предшедственники", data: ""},
-  successors: { title: "Приемники", data: ""},
-
-  arbiter: { title: "Арбитраж", data: ""},
-  befenicials: { title: "Бенефициары", data: ""},
-  founders_fl: { title: "Физическое лицо", data: ""},
-  founders_ul: { title: "Юридичекое лицо", data: ""},
-  heads: { title: "Руководители", data: ""},
-  management_companies: { title: "Управляющие кампании", data: ""},
-  failure_score: { title: "", data: ""},
-}
-
 export const fieldsArr = [
   {id: "name", title: "Сокрашеное наименование", data: ""},
   {id: "full_name", title: "Полное наименование", data: ""},
@@ -44,8 +13,8 @@ export const fieldsArr = [
   {id: "workers_range_fns", title: "Численность персонала по данным ФНС", data: ""},
   {id: "capital", title: "Уставной капитал", data: ""},
   {id: "index_of_due_diligence", title: "Индекс должносной осмотрительности", data: ""},
-  {id: "failure_score", title: "Индекс Финансового риска", data: ""},
   {id: "payment_index", title: "Индекс платежной дисциплины", data: ""},
+  {id: "failure_score", title: "Индекс Финансового риска", data: ""},
   {id: "isponlit_proizvodstva", title: "Исполнительные производства", data: ""},
   {id: "fns", title: "ФНС", data: ""},
   {id: "sanctions", title: "Санкции", data: ""},
@@ -59,5 +28,3 @@ export const fieldsArr = [
   {id: "heads", title: "Руководители", data: ""},
   {id: "management_companies", title: "Управляющие кампании", data: ""},
 ]
-
-export default fields

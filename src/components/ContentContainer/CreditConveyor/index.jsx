@@ -38,12 +38,10 @@ class AddTable extends Component {
     }
 
     this.setState ({people})
-    //people.sort((a,b) => a.title - b.title)
   }
 
   addNewPeople = () => {
     const {people} = this.state
-    // console.log('people', people)
     people.push({
       title: 'Семенов', 
       age: 33,
@@ -54,6 +52,10 @@ class AddTable extends Component {
       people
     })
   }
+
+  addBoldStyle = e => {
+    console.log('e.target', e)
+  } 
 
   render() {
     const {people} = this.state
@@ -72,6 +74,8 @@ class AddTable extends Component {
           > 
             {el.age}
           </span>
+          {"     "}
+          <button onClick={this.addBoldStyle}>Х</button>
           <br/>
         </div>
       )
