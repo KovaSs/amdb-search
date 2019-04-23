@@ -46,6 +46,9 @@
           }
         }
         .descr {
+          &.red {
+            color: red;
+          }
         }
       }
       .lable-table {

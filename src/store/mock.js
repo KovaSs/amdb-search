@@ -14,7 +14,7 @@ export const companyResponse = {
   "company_type": "Обычная компания",
   "fns": "Залоги. Число уведомлений о залогах движемуемого имущества (залогодатель) -2",
   "registration_date": "02.08.2017г.",
-  "phone_list": ["(916)0383738"],
+  "phone_list": ["(916)0383738", "  (910)0382438"],
   "workers_range": "0...5",
   "workers_range_fns": "0",
   "index_of_due_diligence": "23 / Низкий риск",

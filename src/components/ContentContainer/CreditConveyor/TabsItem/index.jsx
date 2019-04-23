@@ -13,10 +13,29 @@ const TabsItem = props => {
 
   const fullOrganistionInfo = fieldsArr.map( item => {
     const { source: companySource } = props
+    
+    const _dataTransform = item => {
+      return item = [{
+        key: '1',
+        name: 'Истец',
+        year: item.istec.year,
+        year3: item.istec.year3,
+      }, {
+        key: '2',
+        name: 'Ответчик',
+        year: item.otvet.year,
+        year3: item.otvet.year,
+      }]
+    };
+
     for (const el in companySource) {
-      if(item.id === el) {
+      if(item.id === el && item.id === "arbiter") {
+        let newData = _dataTransform(companySource[el])
+        clgData[el] = new Field(item.title, newData)
+        return _.assign(item, { "data" : newData})
+      } else if(item.id === el ) {
         clgData[el] = new Field(item.title, companySource[el])
-        return  _.assign(item, { "data" : companySource[el]})
+        return _.assign(item, { "data" : companySource[el]})
       }
     }
     return item
@@ -92,13 +111,14 @@ const TabsItem = props => {
     </>
   )
 }
-
+  /** Рендеринг информационных полей организации */
   const renderFieldArr = fullOrganistionInfo.map(item => {
     if(item.data && item.id !== "arbiter") {
+      const red = (item.id === "fns") ? " red" : ''
       return (
         <Row key={item.id} className="tabs-info__organisation-info">
           <Col span={8} className="lable">{ item.title }</Col>
-          <Col span={16} className="descr">{`${item.data}` }</Col>
+          <Col span={16} className={'descr' + red}>{`${item.data}` }</Col>
         </Row>
       )
     } else {
@@ -106,43 +126,42 @@ const TabsItem = props => {
     }
   })
 
-  const showOrganisationInfo = () => {
+  /** Рендеринг информации по арбитражу */
+  const renderArbiterTable = () => {
     const columns = [{
       title: 'Роль',
       dataIndex: 'name',
     }, {
       title: 'За 12 месяцев',
-      dataIndex: 'mounth',
+      dataIndex: 'year',
     }, {
       title: 'За 3 года',
-      dataIndex: 'year',
-    }];
-    
-    const data = [{
-      key: '1',
-      name: 'Истец',
-      mounth: '0 руб (0)',
-      year: '0 руб (0)',
-    }, {
-      key: '2',
-      name: 'Ответчик',
-      mounth: '500 руб. (1)',
-      year: '500 руб. (1)',
+      dataIndex: 'year3',
     }];
 
+    const dataArbiter = fullOrganistionInfo.filter(item => item.id === "arbiter")
+    return (
+      <>
+        <Col className="lable-table">Арбитраж</Col>
+        <Table
+          columns={columns}
+          dataSource={dataArbiter[0].data}
+          bordered
+          pagination={false}
+        />
+      </>
+    )
+  }
+
+
+  const showOrganisationInfo = () => {
     return (
       <Row className="tabs-info__organisation">
         <Col span={18}>
           { renderFieldArr }
         </Col>
         <Col span={6}>
-          <Col className="lable-table">Арбитраж</Col>
-          <Table
-            columns={columns}
-            dataSource={data}
-            bordered
-            pagination={false}
-          />
+          { renderArbiterTable() }
         </Col>
       </Row>
     )
