@@ -23,8 +23,8 @@ export const fieldsArr = [
 
   {id: "arbiter", title: "Арбитраж", data: ""},
   {id: "befenicials", title: "Бенефициары", data: ""},
-  {id: "founders_fl", title: "Физическое лицо", data: ""},
-  {id: "founders_ul", title: "Юридичекое лицо", data: ""},
+  {id: "founders_fl", title: "Физические лица", data: ""},
+  {id: "founders_ul", title: "Юридичекие лица", data: ""},
   {id: "heads", title: "Руководители", data: ""},
   {id: "management_companies", title: "Управляющие кампании", data: ""},
 ]

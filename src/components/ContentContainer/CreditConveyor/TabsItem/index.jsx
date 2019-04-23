@@ -14,7 +14,7 @@ const TabsItem = props => {
   const fullOrganistionInfo = fieldsArr.map( item => {
     const { source: companySource } = props
     
-    const _dataTransform = item => {
+    const _arbiterTransform = item => {
       return item = [{
         key: '1',
         name: 'Истец',
@@ -28,9 +28,28 @@ const TabsItem = props => {
       }]
     };
 
+    const _headersTransform = item => {
+      let i=0, newArr =[]
+      item.map( elem => {
+        newArr.push({
+          key: i,
+          fio: `${elem.sur_name} ${elem.first_name} ${elem.last_name}`,
+          inn: elem.inn,
+        })
+        i++
+        return newArr
+      })
+      return newArr
+    };
+
     for (const el in companySource) {
       if(item.id === el && item.id === "arbiter") {
-        let newData = _dataTransform(companySource[el])
+        let newData = _arbiterTransform(companySource[el])
+        clgData[el] = new Field(item.title, newData)
+        return _.assign(item, { "data" : newData})
+      } else if(item.id === el && item.id === "heads") {
+        console.log('headers', companySource[el])
+        let newData = _headersTransform(companySource[el])
         clgData[el] = new Field(item.title, newData)
         return _.assign(item, { "data" : newData})
       } else if(item.id === el ) {
@@ -40,7 +59,7 @@ const TabsItem = props => {
     }
     return item
   })
-
+  /** Отображение табличной информации об ответе */
   console.table(clgData)
 
   const showHeadsTableInfo = (tableName) => {
@@ -62,7 +81,7 @@ const TabsItem = props => {
       });
     }
 
-    let loadingDelay = false
+    let loadingDelay = true 
 
     return (
       <>
@@ -85,18 +104,11 @@ const TabsItem = props => {
 
   const columns = [
     { title: 'ФИО', dataIndex: 'fio', key: 'name' },
-    { title: 'ОГРН', dataIndex: 'ogrn', key: 'createdAt' },
+    { title: 'ИНН', dataIndex: 'inn', key: 'inn_info' },
     { title: 'Проверка в Google', key: 'operation', render: () => <Button>Проверить</Button> },
   ];
 
-  const data = [];
-  for (let i = 0; i < 2; ++i) {
-    data.push({
-      key: i,
-      fio: 'Масюгина Жанна Ивановна',
-      ogrn: '1117746763672',
-    });
-  }
+  const dataheads = fullOrganistionInfo.filter(item => item.id === "heads")[0].data
 
   return (
     <>
@@ -105,7 +117,7 @@ const TabsItem = props => {
         className="tabs-info__table-main"
         columns={columns}
         expandedRowRender={expandedRowRender}
-        dataSource={data}
+        dataSource={dataheads}
         pagination={false}
       />
     </>
@@ -139,13 +151,13 @@ const TabsItem = props => {
       dataIndex: 'year3',
     }];
 
-    const dataArbiter = fullOrganistionInfo.filter(item => item.id === "arbiter")
+    const dataArbiter = fullOrganistionInfo.filter(item => item.id === "arbiter")[0].data
     return (
       <>
         <Col className="lable-table">Арбитраж</Col>
         <Table
           columns={columns}
-          dataSource={dataArbiter[0].data}
+          dataSource={dataArbiter}
           bordered
           pagination={false}
         />
