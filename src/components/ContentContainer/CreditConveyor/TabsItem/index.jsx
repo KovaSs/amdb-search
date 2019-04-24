@@ -125,7 +125,7 @@ const TabsItem = props => {
 }
   /** Рендеринг информационных полей организации */
   const renderFieldArr = fullOrganistionInfo.map(item => {
-    if(item.data && item.id !== "arbiter") {
+    if(item.data && item.id !== "arbiter" && item.id !== "befenicials" && item.id !== "founders_fl" && item.id !== "founders_ul" && item.id !== "heads"  && item.id !== "management_companies") {
       const red = (item.id === "fns" || item.id === "sanctions") ? " red" : ''
       return (
         <Row key={item.id} className="tabs-info__organisation-info">

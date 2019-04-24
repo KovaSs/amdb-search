@@ -24,8 +24,6 @@ class AddTable extends Component {
 
   sort = field => {
     const { people } = this.state
-    // debugger;
-    // let field = 'title';
     for (let i = 0; i < people.length; i ++){
       for (let j = i + 1; j < people.length; j ++){
         if (people[j][field] > people[i][field]){
@@ -111,6 +109,15 @@ class CreditConveyor extends Component {
       })
     }
     if(nextProps.companyResponse !== companyResponse) {
+      this.setState({
+        showTabs: true
+      })
+    }
+  }
+
+  componentDidMount() {
+    const { companyResponse } = this.props
+    if(companyResponse) {
       this.setState({
         showTabs: true
       })
