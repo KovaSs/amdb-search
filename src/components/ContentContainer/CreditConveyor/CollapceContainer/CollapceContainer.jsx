@@ -7,7 +7,7 @@ const CollapceContainer = props => {
   const { companyResponse } = props.store
   return (
     <div className="table-info">
-      <CollapceItem store={companyResponse}/>
+      <CollapceItem source={companyResponse}/>
     </div>
   );
 };

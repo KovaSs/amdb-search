@@ -7,7 +7,7 @@ import "./сredit-сonveyor.scss"
 
 class CreditConveyor extends Component {
   state = {
-    /** showTable : false */
+    /** propdaction => showTable : false */
     showTable : false,
     loading : false
   }  
@@ -44,7 +44,7 @@ class CreditConveyor extends Component {
 
     return (
       <Row className="credit-conveyor">
-        <Col span={16}>
+        <Col span={18}>
           <SearchCompanyInput />
           { showTable ?
             <CollapceContainer /> : 
@@ -56,7 +56,7 @@ class CreditConveyor extends Component {
             </div>
           }
         </Col>
-        <Col span={8}></Col>
+        <Col span={6}></Col>
       </Row>
     );
   }
