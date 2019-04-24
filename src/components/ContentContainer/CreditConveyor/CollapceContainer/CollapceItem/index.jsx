@@ -1,7 +1,8 @@
 import React from 'react'
 import { Collapse } from 'antd';
 
-const CollapceItem = () => {
+const CollapceItem = props => {
+  console.log('props', props.store)
   const Panel = Collapse.Panel;
 
   const callback = key => {

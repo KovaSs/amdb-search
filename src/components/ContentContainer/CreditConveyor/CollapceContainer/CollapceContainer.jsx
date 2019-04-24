@@ -10,7 +10,7 @@ const CollapceContainer = props => {
     <div className="table-info">
       <Row>
         <Col span={16}>
-          <CollapceItem props={companyResponse}/>
+          <CollapceItem store={companyResponse}/>
         </Col>
         <Col span={8}>
           456
