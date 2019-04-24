@@ -25,6 +25,6 @@ export const fieldsArr = [
   {id: "befenicials", title: "Бенефициары", data: ""},
   {id: "founders_fl", title: "Физические лица", data: ""},
   {id: "founders_ul", title: "Юридичекие лица", data: ""},
-  {id: "heads", title: "Руководители", data: ""},
+  {id: "heads", title: "Руководитcтво", data: ""},
   {id: "management_companies", title: "Управляющие кампании", data: ""},
 ]

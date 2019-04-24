@@ -11,6 +11,7 @@ const CollapceItem = props => {
   console.log('props', props.store)
   const Panel = Collapse.Panel;
 
+  /** Подготовка входящих данных */
   const fullOrganistionInfo = fieldsArr.map( item => {
     const { source: companySource } = props
     
@@ -48,7 +49,6 @@ const CollapceItem = props => {
         clgData[el] = new Field(item.title, newData)
         return _.assign(item, { "data" : newData})
       } else if(item.id === el && item.id === "heads") {
-        console.log('headers', companySource[el])
         let newData = _headersTransform(companySource[el])
         clgData[el] = new Field(item.title, newData)
         return _.assign(item, { "data" : newData})
@@ -83,6 +83,10 @@ const CollapceItem = props => {
     }
   })
 
+  const renderHeadsOrgans = fullOrganistionInfo.filter(item => item.id === "heads" || item.id === "befenicials" || item.id === "founders_ul" || item.id === "founders_fl")
+
+  console.log('renderHeadsOrgans', renderHeadsOrgans)
+
   const text = `A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.`;
 
   return (
@@ -91,10 +95,24 @@ const CollapceItem = props => {
         <div>{renderFieldArr}</div>
       </Panel>
       <Panel header="Руководящие органы" key="2" forceRender>
-        <div>{text}</div>
-      </Panel>
-      <Panel header="Совладельцы" key="3" forceRender>
-      <div>{text}</div>
+        <Collapse onChange={callback}>
+          <Panel header="Связанные лица" key="1" forceRender>
+            <Collapse onChange={callback}>
+              <Panel header="Руководство" key="1" forceRender>
+                <div>{text}</div>
+              </Panel>
+              <Panel header="Собственники" key="2" forceRender>
+                <div>{text}</div>
+              </Panel>
+              <Panel header="Бенефициары" key="3" forceRender>
+                <div>{text}</div>
+              </Panel>
+            </Collapse>
+          </Panel>
+          <Panel header="Совладельцы" key="2" forceRender>
+            <div>{text}</div>
+          </Panel>
+        </Collapse>
       </Panel>
     </Collapse>
   )
