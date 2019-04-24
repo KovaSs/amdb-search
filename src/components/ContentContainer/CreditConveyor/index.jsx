@@ -1,99 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Spin } from "antd";
-import TabsContainer from "./TabsContainer";
+import TableContainer from "./TableContainer";
 import SearchCompanyInput from "./SearchCompanyInput";
 import "./сredit-сonveyor.scss"
 
-//key render item
-import idGenerator from 'react-id-generator';
-const data = [
-  { title: 'Иванов', age: 25, id: 'id1' },
-  { title: 'Петров', age: 34, id: 'id2' },
-  { title: 'Сидоров', age: 23, id: 'id3' },
-  { title: 'Лебедев', age: 14, id: 'id4' },
-  { title: 'Мокин', age: 6, id: 'id5' },
-  { title: 'Исаев', age: 23, id: 'id6' },
-  { title: 'Ванюшин', age: 83, id: 'id7' },
-]
-
-class AddTable extends Component {
-  state = {
-    people : data
-  };
-
-  sort = field => {
-    const { people } = this.state
-    for (let i = 0; i < people.length; i ++){
-      for (let j = i + 1; j < people.length; j ++){
-        if (people[j][field] > people[i][field]){
-
-          let tmp = people[i];
-          people[i] = people[j];
-          people[j] = tmp;
-        }
-      }
-    }
-
-    this.setState ({people})
-  }
-
-  addNewPeople = () => {
-    const {people} = this.state
-    people.push({
-      title: 'Семенов', 
-      age: 33,
-      id: idGenerator('id-')
-    })
-    console.log('people', people)
-    this.setState( {
-      people
-    })
-  }
-
-  addBoldStyle = e => {
-    console.log('e.target', e)
-  } 
-
-  render() {
-    const {people} = this.state
-    const addLinks = people.map(el => {
-      return (
-        <div key = {el.id}>
-          <span
-            onClick={e => this.sort(e.target.id)}
-            id="title"
-          > 
-            {`${el.title}   `}
-          </span>
-          <span
-            onClick={e => this.sort(e.target.id)}
-            id="age"
-          > 
-            {el.age}
-          </span>
-          {"     "}
-          <button onClick={this.addBoldStyle}>Х</button>
-          <br/>
-        </div>
-      )
-    })
-    return (
-      <div>
-        {addLinks}
-        <button onClick={this.addNewPeople}>Добавить</button>
-      </div>
-    )
-  }
-}
-
-export { AddTable }
-
-
-
 class CreditConveyor extends Component {
   state = {
-    showTabs : false,
+    /** showTable : false */
+    showTable : false,
     loading : false
   }  
 
@@ -110,7 +25,7 @@ class CreditConveyor extends Component {
     }
     if(nextProps.companyResponse !== companyResponse) {
       this.setState({
-        showTabs: true
+        showTable: true
       })
     }
   }
@@ -119,19 +34,19 @@ class CreditConveyor extends Component {
     const { companyResponse } = this.props
     if(companyResponse) {
       this.setState({
-        showTabs: true
+        showTable: true
       })
     }
   }
 
   render() {
-    const { showTabs, loading } = this.state
+    const { showTable, loading } = this.state
 
     return (
       <div className="credit-conveyor">
         <SearchCompanyInput />
-        { showTabs ?
-          <TabsContainer /> : 
+        { showTable ?
+          <TableContainer /> : 
           <div className="search-result-table">
             { loading ?
               <Spin size="large" /> :
