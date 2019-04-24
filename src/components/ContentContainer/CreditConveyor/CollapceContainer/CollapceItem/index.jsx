@@ -12,7 +12,7 @@ const CollapceItem = () => {
 
   return (
     <Collapse defaultActiveKey={['1']} onChange={callback}>
-      <Panel header="Общая информация" key="1">
+      <Panel header="Общая информация" key="1" showArrow={false}>
         <p>{text}</p>
       </Panel>
       <Panel header="Руководство" key="2">

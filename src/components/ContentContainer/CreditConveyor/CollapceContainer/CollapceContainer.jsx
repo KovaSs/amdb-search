@@ -5,12 +5,12 @@ import "./table-container.scss";
 
 
 const CollapceContainer = props => {
-  // const { companyResponse } = props.store
+  const { companyResponse } = props.store
   return (
     <div className="table-info">
       <Row>
         <Col span={16}>
-          <CollapceItem />
+          <CollapceItem props={companyResponse}/>
         </Col>
         <Col span={8}>
           456

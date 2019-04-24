@@ -4,6 +4,9 @@
 
   .ant-advanced-search-form,
   .search-result-table {
+    .ant-input-group-addon {
+      background: #24bbf718;
+    }
     margin: 1rem 4rem;
     .ant-form-item {
       display: flex;
@@ -26,7 +29,7 @@
     margin-top: 2rem;
     text-align: center;
     // background: #fbfbfb71;
-    background: #a3d3ff13;
+    background: #24bbf718;
     border: 1px solid #d9d9d9;
     border-radius: 5px;
   }

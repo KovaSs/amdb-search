@@ -8,7 +8,7 @@ import "./сredit-сonveyor.scss"
 class CreditConveyor extends Component {
   state = {
     /** showTable : false */
-    showTable : true,
+    showTable : false,
     loading : false
   }  
 
