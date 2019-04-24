@@ -1,22 +1,22 @@
 import React from "react";
 import { Row, Col } from "antd";
 import "./table-container.scss";
-import { TableItem } from "./TableItem";
 
-const TableContainer = props => {
+
+const CollapceContainer = props => {
   const { companyResponse } = props.store
   return (
     <div className="table-info">
       <Row>
         <Col span={16}>
-          <TableItem props={companyResponse}/>
+          123
         </Col>
         <Col span={8}>
-        
+          456
         </Col>
       </Row>
     </div>
   );
 };
 
-export { TableContainer };
+export { CollapceContainer };

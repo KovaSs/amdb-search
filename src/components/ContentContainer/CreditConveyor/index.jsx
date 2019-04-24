@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Spin } from "antd";
-import TableContainer from "./TableContainer";
+import CollapceContainer from "./CollapceContainer";
 import SearchCompanyInput from "./SearchCompanyInput";
 import "./сredit-сonveyor.scss"
 
@@ -46,7 +46,7 @@ class CreditConveyor extends Component {
       <div className="credit-conveyor">
         <SearchCompanyInput />
         { showTable ?
-          <TableContainer /> : 
+          <CollapceContainer /> : 
           <div className="search-result-table">
             { loading ?
               <Spin size="large" /> :
