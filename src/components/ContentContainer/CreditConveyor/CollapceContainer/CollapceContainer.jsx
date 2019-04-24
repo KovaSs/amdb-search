@@ -1,15 +1,16 @@
 import React from "react";
 import { Row, Col } from "antd";
+import { CollapceItem } from "./CollapceItem";
 import "./table-container.scss";
 
 
 const CollapceContainer = props => {
-  const { companyResponse } = props.store
+  // const { companyResponse } = props.store
   return (
     <div className="table-info">
       <Row>
         <Col span={16}>
-          123
+          <CollapceItem />
         </Col>
         <Col span={8}>
           456
