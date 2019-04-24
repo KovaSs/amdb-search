@@ -5,18 +5,18 @@ const CollapceItem = props => {
   console.log('props', props.store)
   const Panel = Collapse.Panel;
 
+  /** Стандартный функционал отслеживания активный панелей */
   const callback = key => {
-    console.log(key);
   }
 
   const text = `A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.`;
 
   return (
-    <Collapse defaultActiveKey={['1']} onChange={callback}>
+    <Collapse defaultActiveKey={['1', '2']} onChange={callback}>
       <Panel header="Общая информация" key="1" showArrow={false}>
         <p>{text}</p>
       </Panel>
-      <Panel header="Руководство" key="2">
+      <Panel header="Руководство" key="2" forceRender>
         <p>{text}</p>
       </Panel>
       <Panel header="Совладельцы" key="3">

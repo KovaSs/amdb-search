@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Spin } from "antd";
+import { Spin, Col, Row } from "antd";
 import CollapceContainer from "./CollapceContainer";
 import SearchCompanyInput from "./SearchCompanyInput";
 import "./сredit-сonveyor.scss"
@@ -43,18 +43,21 @@ class CreditConveyor extends Component {
     const { showTable, loading } = this.state
 
     return (
-      <div className="credit-conveyor">
-        <SearchCompanyInput />
-        { showTable ?
-          <CollapceContainer /> : 
-          <div className="search-result-table">
-            { loading ?
-              <Spin size="large" /> :
-              <div>Для поиска информации об организации введите ИНН или ОГРН в поисковую строку</div>
-            }
-          </div>
-        }
-      </div>
+      <Row className="credit-conveyor">
+        <Col span={16}>
+          <SearchCompanyInput />
+          { showTable ?
+            <CollapceContainer /> : 
+            <div className="search-result-table">
+              { loading ?
+                <Spin size="large" /> :
+                <div>Для поиска информации об организации введите ИНН или ОГРН в поисковую строку</div>
+              }
+            </div>
+          }
+        </Col>
+        <Col span={8}></Col>
+      </Row>
     );
   }
 }
