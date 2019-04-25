@@ -12,7 +12,7 @@ export class ContentContainer extends Component {
   render() {
     const { Content } = Layout;
     return (
-      <Content style={{ minHeight: "100vh" }}>
+      <Content style={{ minHeight: "80vh" }}>
         <BreadcrumbContainer style={{ margin: "16px 0" }} />
         <div className="ant-layout-content__data">
           <Route path='/' exact component={MainPage}/>

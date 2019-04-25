@@ -12,7 +12,7 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <Layout style={{ minHeight: "90vh" }}>
+        <Layout style={{ minHeight: "80vh" }}>
           <SiderContainer />
           <Layout>
             <Header style={{ background: "#fff", padding: 0 }} />

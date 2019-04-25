@@ -5,7 +5,7 @@ import "./sider-container.scss";
 
 export class SiderContainer extends Component {
   state = {
-    collapsed: false,
+    collapsed: true,
     activePage: null,
     menu : [
       {short: "ОС", full: "Открыть счет", link: "/open-bill", icon: "pie-chart"},
@@ -84,6 +84,7 @@ export class SiderContainer extends Component {
   render() {
     const { activePage, collapsed, menu } = this.state;
     const { Sider } = Layout;
+    const hidden = collapsed ? " hidden" : ' '
     return (
       <Sider
         collapsible
@@ -92,9 +93,9 @@ export class SiderContainer extends Component {
         className="sider-menu"
       >
         <Link to="/" onClick={this.changeActivePage}>
-          <div className="logo">
-            {/* <img className="logo-img" src={process.env.PUBLIC_URL + 'img/logo.png'} alt={"logo"} />
-            <label className="logo-label">Газпромбанк</label> */}
+          <div className={"logo"  + hidden}>
+            <img className="logo-img" src={process.env.PUBLIC_URL + 'img/logo.png'} alt={"logo"} />
+            <label className={"logo-label" + hidden }>Газпромбанк</label>
           </div>
         </Link>
         <Menu selectedKeys={[`${activePage}`]} mode="inline" theme="dark">
