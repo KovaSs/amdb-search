@@ -30,9 +30,14 @@ export class SiderContainer extends Component {
             activePage : "2"
           })
           break;
-        case '/early-warning-system':
+        case '/electronic-bank-garantees':
           this.setState({
             activePage : "3"
+          })
+          break;
+        case '/early-warning-system':
+          this.setState({
+            activePage : "4"
           })
           break;
         default:
@@ -51,7 +56,7 @@ export class SiderContainer extends Component {
   render() {
     const { activePage } = this.state
     const { Item : MenuItem } = Menu
-    const SubMenu = Menu.SubMenu;
+    // const SubMenu = Menu.SubMenu;
     const { Sider } = Layout;
     return (
       <Sider
@@ -78,11 +83,23 @@ export class SiderContainer extends Component {
           </MenuItem>
           <MenuItem key="2" onClick={ this.changeActivePage }>
             <Link to='/credit-conveyor'>
-              <Icon type="desktop" />
+              <Icon type="info-circle" />
               <span>Кредитный конвейер</span>
             </Link>
           </MenuItem>
-          <SubMenu
+          <MenuItem key="3" onClick={ this.changeActivePage }>
+            <Link to='/electronic-bank-garantees'>
+              <Icon type="line-chart" />
+              <span>Электронные банковские гарантии</span>
+            </Link>
+          </MenuItem>
+          <MenuItem key="4" onClick={ this.changeActivePage }>
+            <Link to='/early-warning-system'>
+              <Icon type="desktop" />
+              <span>Система раннего предупреждения</span>
+            </Link>
+          </MenuItem>
+          {/* <SubMenu
             key="sub1"
             title={
               <span>
@@ -94,11 +111,7 @@ export class SiderContainer extends Component {
             <MenuItem key="3">Tom</MenuItem>
             <MenuItem key="4">Bill</MenuItem>
             <MenuItem key="5">Alex</MenuItem>
-          </SubMenu>
-          <Menu.Item key="9">
-            <Icon type="file" />
-            <span>File</span>
-          </Menu.Item>
+          </SubMenu> */}
         </Menu>
       </Sider>
     )
