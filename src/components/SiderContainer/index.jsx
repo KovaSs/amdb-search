@@ -1,121 +1,108 @@
-import React, { Component } from 'react';
-import { Layout, Menu, Icon } from "antd";
-import { Link, withRouter } from 'react-router-dom';
-import './sider-container.scss'
-
+import React, { Component } from "react";
+import { Layout, Menu, Icon, Tooltip } from "antd";
+import { Link, withRouter } from "react-router-dom";
+import "./sider-container.scss";
 
 export class SiderContainer extends Component {
   state = {
     collapsed: false,
-    activePage: null
+    activePage: null,
+    menu : [
+      {short: "ОС", full: "Открыть счет", link: "/open-bill", icon: "pie-chart"},
+      {short: "KK", full: "Кредитный конвейер", link: "/credit-conveyor", icon: "info-circle"},
+      {short: "ЭБГ", full: "Электронные банковские гарантии", link: "/electronic-bank-garantees", icon: "line-chart"},
+      {short: "СРП", full: "Система раннего предупреждения", link: "/early-warning-system", icon: "desktop"},
+    ]
   };
 
   changeActivePage = e => {
     this.setState({
-      activePage : e.key
-    })
-  }
+      activePage: e.key
+    });
+  };
 
   componentDidMount() {
-    const { location } = this.props
+    const { location } = this.props;
     setTimeout(() => {
       switch (location.pathname) {
-        case '/open-bill':
+        case "/open-bill":
           this.setState({
-            activePage : "1"
-          })
+            activePage: "1"
+          });
           break;
-        case '/credit-conveyor':
+        case "/credit-conveyor":
           this.setState({
-            activePage : "2"
-          })
+            activePage: "2"
+          });
           break;
-        case '/electronic-bank-garantees':
+        case "/electronic-bank-garantees":
           this.setState({
-            activePage : "3"
-          })
+            activePage: "3"
+          });
           break;
-        case '/early-warning-system':
+        case "/early-warning-system":
           this.setState({
-            activePage : "4"
-          })
+            activePage: "4"
+          });
           break;
         default:
-        this.setState({
-          activePage : null
-        })
+          this.setState({
+            activePage: null
+          });
       }
     }, 100);
   }
-  
+
   onCollapse = collapsed => {
     console.log(collapsed);
     this.setState({ collapsed });
   };
-  
+
+  renderMenuItem = (data, collapsed, calback) => {
+    const { Item: MenuItem } = Menu;
+    return data.map( (item, key=0) => {
+      return (
+        <MenuItem key={key} onClick={calback}>
+          {!collapsed ? (
+            <Tooltip title={item.full} placement="right" style={{ marginLeft : "10px"}}>
+              <Link to={item.link}>
+                <Icon type={item.icon} />
+                <span>{item.short}</span>
+              </Link>
+            </Tooltip>
+          ) : (
+            <Link to={item.link}>
+              <Icon type={item.icon} />
+              <span>{item.full}</span>
+            </Link>
+          )}
+        </MenuItem>
+      )
+    })
+  }
+
   render() {
-    const { activePage } = this.state
-    const { Item : MenuItem } = Menu
-    // const SubMenu = Menu.SubMenu;
+    const { activePage, collapsed, menu } = this.state;
     const { Sider } = Layout;
     return (
       <Sider
         collapsible
         collapsed={this.state.collapsed}
         onCollapse={this.onCollapse}
+        className="sider-menu"
       >
-        <Link to='/' onClick={ this.changeActivePage }>
+        <Link to="/" onClick={this.changeActivePage}>
           <div className="logo">
-            <img className="logo-img" src={process.env.PUBLIC_URL + 'img/logo.png'} alt={"logo"} />
-            <label className="logo-label">Газпромбанк</label>
+            {/* <img className="logo-img" src={process.env.PUBLIC_URL + 'img/logo.png'} alt={"logo"} />
+            <label className="logo-label">Газпромбанк</label> */}
           </div>
         </Link>
-        <Menu 
-          selectedKeys={[`${activePage}`]} 
-          mode="inline"
-          theme="dark" 
-        >
-          <MenuItem key="1" onClick={ this.changeActivePage }>
-            <Link to='/open-bill'>
-              <Icon type="pie-chart" />
-              <span>Открыть счет</span>
-            </Link>
-          </MenuItem>
-          <MenuItem key="2" onClick={ this.changeActivePage }>
-            <Link to='/credit-conveyor'>
-              <Icon type="info-circle" />
-              <span>Кредитный конвейер</span>
-            </Link>
-          </MenuItem>
-          <MenuItem key="3" onClick={ this.changeActivePage }>
-            <Link to='/electronic-bank-garantees'>
-              <Icon type="line-chart" />
-              <span>Электронные банковские гарантии</span>
-            </Link>
-          </MenuItem>
-          <MenuItem key="4" onClick={ this.changeActivePage }>
-            <Link to='/early-warning-system'>
-              <Icon type="desktop" />
-              <span>Система раннего предупреждения</span>
-            </Link>
-          </MenuItem>
-          {/* <SubMenu
-            key="sub1"
-            title={
-              <span>
-                <Icon type="user" />
-                <span>User</span>
-              </span>
-            }
-          >
-            <MenuItem key="3">Tom</MenuItem>
-            <MenuItem key="4">Bill</MenuItem>
-            <MenuItem key="5">Alex</MenuItem>
-          </SubMenu> */}
+        <Menu selectedKeys={[`${activePage}`]} mode="inline" theme="dark">
+          { this.renderMenuItem(menu, collapsed, this.changeActivePage) }
         </Menu>
       </Sider>
-    )
+    );
   }
 }
 
-export default withRouter(SiderContainer)
+export default withRouter(SiderContainer);

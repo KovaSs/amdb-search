@@ -1,23 +1,39 @@
+/** SiderContainer */
+// .logo {
+//   width: 170px;
+//   height: 44px;
+//   background: #f0f2f5f8;
+//   margin: 10px;
+//   float: left;
+//   padding: 5px;
+//   border-radius: 2px;
+//   &-img {
+//     height: 100%;
+//   }
+//   &-label {
+//     line-height: 0;
+//     text-transform: uppercase;
+//     font-weight: bold;
+//     margin-left: 5px;
+//     color: #0e3152;
+//   }
+// }
+
+// .ant-layout-header {
+//   line-height: 0;
+// }
+
 .logo {
-  width: 170px;
-  height: 44px;
-  background: #f0f2f5f8;
-  margin: 10px;
-  float: left;
-  padding: 5px;
-  border-radius: 2px;
-  &-img {
-    height: 100%;
-  }
-  &-label {
-    line-height: 0;
-    text-transform: uppercase;
-    font-weight: bold;
-    margin-left: 5px;
-    color: #0e3152;
-  }
+  height: 32px;
+  background: rgba(255, 255, 255, .2);
+  margin: 16px;
 }
 
-.ant-layout-header {
-  line-height: 0;
+.sider-menu {
+  .ant-layout-sider-children {
+    span {
+      word-wrap: break-word;
+    }
+  }
+
 }

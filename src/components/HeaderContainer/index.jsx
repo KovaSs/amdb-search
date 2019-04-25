@@ -47,7 +47,7 @@ class HeaderContainer extends Component {
     return (
       <Header>
         <Link to='/' onClick={ this.changeActivePage }>
-            <div className="logo">
+          <div className="logo">
             <img className="logo-img" src={process.env.PUBLIC_URL + 'img/logo.png'} alt={"logo"} />
             <label className="logo-label">Газпромбанк</label>
           </div>
