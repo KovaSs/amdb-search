@@ -1,10 +1,47 @@
 import React, { Component } from 'react';
 import { Layout, Menu, Icon } from "antd";
+import { Link, withRouter } from 'react-router-dom';
+import './sider-container.scss'
+
 
 export class SiderContainer extends Component {
   state = {
-    collapsed: false
+    collapsed: false,
+    activePage: null
   };
+
+  changeActivePage = e => {
+    this.setState({
+      activePage : e.key
+    })
+  }
+
+  componentDidMount() {
+    const { location } = this.props
+    setTimeout(() => {
+      switch (location.pathname) {
+        case '/open-bill':
+          this.setState({
+            activePage : "1"
+          })
+          break;
+        case '/credit-conveyor':
+          this.setState({
+            activePage : "2"
+          })
+          break;
+        case '/early-warning-system':
+          this.setState({
+            activePage : "3"
+          })
+          break;
+        default:
+        this.setState({
+          activePage : null
+        })
+      }
+    }, 100);
+  }
   
   onCollapse = collapsed => {
     console.log(collapsed);
@@ -12,6 +49,8 @@ export class SiderContainer extends Component {
   };
   
   render() {
+    const { activePage } = this.state
+    const { Item : MenuItem } = Menu
     const SubMenu = Menu.SubMenu;
     const { Sider } = Layout;
     return (
@@ -20,16 +59,29 @@ export class SiderContainer extends Component {
         collapsed={this.state.collapsed}
         onCollapse={this.onCollapse}
       >
-        <div className="logo" />
-        <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
-          <Menu.Item key="1">
-            <Icon type="pie-chart" />
-            <span>Option 1</span>
-          </Menu.Item>
-          <Menu.Item key="2">
-            <Icon type="desktop" />
-            <span>Option 2</span>
-          </Menu.Item>
+        <Link to='/' onClick={ this.changeActivePage }>
+          <div className="logo">
+            <img className="logo-img" src={process.env.PUBLIC_URL + 'img/logo.png'} alt={"logo"} />
+            <label className="logo-label">Газпромбанк</label>
+          </div>
+        </Link>
+        <Menu 
+          selectedKeys={[`${activePage}`]} 
+          mode="inline"
+          theme="dark" 
+        >
+          <MenuItem key="1" onClick={ this.changeActivePage }>
+            <Link to='/open-bill'>
+              <Icon type="pie-chart" />
+              <span>Открыть счет</span>
+            </Link>
+          </MenuItem>
+          <MenuItem key="2" onClick={ this.changeActivePage }>
+            <Link to='/credit-conveyor'>
+              <Icon type="desktop" />
+              <span>Кредитный конвейер</span>
+            </Link>
+          </MenuItem>
           <SubMenu
             key="sub1"
             title={
@@ -39,21 +91,9 @@ export class SiderContainer extends Component {
               </span>
             }
           >
-            <Menu.Item key="3">Tom</Menu.Item>
-            <Menu.Item key="4">Bill</Menu.Item>
-            <Menu.Item key="5">Alex</Menu.Item>
-          </SubMenu>
-          <SubMenu
-            key="sub2"
-            title={
-              <span>
-                <Icon type="team" />
-                <span>Team</span>
-              </span>
-            }
-          >
-            <Menu.Item key="6">Team 1</Menu.Item>
-            <Menu.Item key="8">Team 2</Menu.Item>
+            <MenuItem key="3">Tom</MenuItem>
+            <MenuItem key="4">Bill</MenuItem>
+            <MenuItem key="5">Alex</MenuItem>
           </SubMenu>
           <Menu.Item key="9">
             <Icon type="file" />
@@ -65,4 +105,4 @@ export class SiderContainer extends Component {
   }
 }
 
-export default SiderContainer
+export default withRouter(SiderContainer)
