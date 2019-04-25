@@ -1,14 +1,22 @@
-.ant-layout{
+.ant-layout {
   &-content {
-    padding: 0  2rem;
+    padding: 0 2rem;
     margin-top: 2rem;
+
     &__data {
       background: #fff;
       padding: 2rem 3rem;
       min-height: 50rem;
     }
   }
+
   &-footer {
     text-align: center;
   }
+}
+
+.logo {
+  height: 32px;
+  background: rgba(255, 255, 255, .2);
+  margin: 16px;
 }
