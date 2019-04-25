@@ -9,8 +9,10 @@
     padding: 5px;
     border-radius: 2px;
     padding-left: 10px;
+
     &.hidden {
       width: 54px;
+      transition: 0.2s;
     }
     &-img {
       height: 100%;
@@ -22,6 +24,7 @@
       margin-left: 5px;
       color: #0e3152;
       &.hidden {
+        transition: 0s;
         display: none;
       }
     }
