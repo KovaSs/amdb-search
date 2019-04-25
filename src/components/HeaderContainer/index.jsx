@@ -69,6 +69,11 @@ class HeaderContainer extends Component {
             </Link>
           </Menu.Item>
           <Menu.Item key="3" onClick={ this.changeActivePage }>
+            <Link to='/electronic-bank-garantees'>
+              <span>Електронные банковские гарантии</span>
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="4" onClick={ this.changeActivePage }>
             <Link to='/early-warning-system'>
               <span>Система раннего предупреждения</span>
             </Link>

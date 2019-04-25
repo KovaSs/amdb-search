@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<orderBgBankExport xmlns="http://vbankcenter.ru/namespaces/orderbg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vbankcenter.ru/resources/public/xsd/orderbg.xsd">
+    <client>
+        <clientType>COMPANY</clientType>
+        <company>
+            <name>ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ "БЕЛЫЙ ДОМ"</name>
+            <ogrn>1082901005263</ogrn>
+            <inn>2901178314</inn>
+            <shortName>ООО "БЕЛЫЙ ДОМ"</shortName>
+            <opf>ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ</opf>
+            <recordOrgName>ИНСПЕКЦИЯ ФЕДЕРАЛЬНОЙ НАЛОГОВОЙ СЛУЖБЫ ПО Г.АРХАНГЕЛЬСКУ</recordOrgName>
+            <recordDayDate>2008-04-30</recordDayDate>
+            <recordIssueDate>2008-04-30</recordIssueDate>
+            <recordDate>2008-04-30</recordDate>
+            <recordAddress>г. Архангельск, ул. Набережная северной двины, д. 5</recordAddress>
+            <kpp>290101001</kpp>
+            <okpo>83967515</okpo>
+            <okato>11401380000</okato>
+            <okved>45.2</okved>
+            <okvedDesc>СТРОИТЕЛЬСТВО ЗДАНИЙ И СООРУЖЕНИЙ</okvedDesc>
+            <phoneMain>8182286535</phoneMain>
+            <fax>8182286535</fax>
+            <email>nibanin@mail.ru</email>
+            <charterCapital>10000.00</charterCapital>
+            <charterCapitalPartPaid>10000</charterCapitalPartPaid>
+            <addresses>
+                <legalAddress>
+                    <index>63000</index>
+                    <country>Российская Федерация</country>
+                    <region>Архангельская область</region>
+                    <district>Северный район</district>
+                    <city>г. Архангельск</city>
+                    <street>ул. Набережная северной двины</street>
+                    <house>дом 112, корпус 3</house>
+                    <flat>240</flat>
+                </legalAddress>
+                <actualAddress>
+                    <index>63000</index>
+                    <country>Российская Федерация</country>
+                    <region>Архангельская область</region>
+                    <district>Северный район</district>
+                    <city>г. Архангельск</city>
+                    <street>ул. Набережная северной двины</street>
+                    <house>дом 112, корпус 3</house>
+                    <flat>240</flat>
+                </actualAddress>
+                <addressesAreEquals>true</addressesAreEquals>
+            </addresses>
+        </company>
+        <blank>
+            <propertyType>Негосударственная организация</propertyType>
+            <objectivesOfActivity>Благотворительность</objectivesOfActivity>
+            <companyWageFund>От 100 тыс. до 1 млн. руб.</companyWageFund>
+            <finPosition>Стабильное финансовое положение, постоянный положительный финансовый результат в течение последнего налогового периода</finPosition>
+            <companyStaff>От 101 до 250 (включительно)</companyStaff>
+            <organizationType>Коммерческая организация</organizationType>
+            <sourcesFunds>Иное</sourcesFunds>
+            <otherSourcesFunds>субсидии</otherSourcesFunds>
+            <subjectCmb>Да</subjectCmb>
+            <branches>Да</branches>
+            <holding>Да</holding>
+            <teamWork>Да</teamWork>
+            <finPositionDebts>Отсутствует</finPositionDebts>
+            <finPositionLosses>Отсутствует</finPositionLosses>
+            <finPositionViolationTerms>Отсутствует</finPositionViolationTerms>
+            <finPositionUnprofitable>Отсутствует</finPositionUnprofitable>
+            <finPositionZeroValues>Имеется</finPositionZeroValues>
+            <address>г.Москва</address>
+            <staff>123</staff>
+            <openDate>2016-06-01</openDate>
+            <companyName>Компания</companyName>
+            <kindOfActivity>тестовая активность</kindOfActivity>
+            <share>100.00</share>
+            <holdingName>корпорация</holdingName>
+            <otherObjectives>мир</otherObjectives>
+            <amount>30.00</amount>
+            <number>400000</number>
+            <cashNumber>30.00</cashNumber>
+            <cashAmount>300000</cashAmount>
+            <transferNumber>10.00</transferNumber>
+            <transferAmount>100000</transferAmount>
+            <contractType>Договоры в рамках 185-ФЗ</contractType>
+            <otherContract>какойто тип договора</otherContract>
+            <debtsHistory>Задолженность погашалась без просрочек</debtsHistory>
+            <actualDebts>Да</actualDebts>
+            <bankName>БайкалИнвест</bankName>
+            <contractAmount>100000.00</contractAmount>
+            <outstanding>10000.00</outstanding>
+            <maturityDate>2017-04-01</maturityDate>
+            <delay>Да</delay>
+            <actualContracts>Нет</actualContracts>
+            <contractCreditorName>Байкал</contractCreditorName>
+            <contractContractAmount>100000.00</contractContractAmount>
+            <contractOutstanding>1000.00</contractOutstanding>
+            <contractMaturityDate>2015-06-01</contractMaturityDate>
+            <contractDelay>Нет</contractDelay>
+            <debtsStaff>Нет</debtsStaff>
+            <staffActual>99999999.00</staffActual>
+            <staffOverdue>88888888.00</staffOverdue>
+            <staffTotal>1900000000.00</staffTotal>
+            <debtsNalog>Да</debtsNalog>
+            <nalogActual>10.00</nalogActual>
+            <nalogOverdue>1.00</nalogOverdue>
+            <nalogTotal>11.00</nalogTotal>
+            <reputationBankruptcy>Отсутствует</reputationBankruptcy>
+            <reputationInsolvency>Отсутствует</reputationInsolvency>
+            <reputationCourtDecisions>Отсутствует</reputationCourtDecisions>
+            <reputationLiquidation>Отсутствует</reputationLiquidation>
+            <reputationFactsFailure>Отсутствует</reputationFactsFailure>
+            <reputationFactsEmptyCash>Отсутствует</reputationFactsEmptyCash>
+            <reputationCourtCases>Отсутствует</reputationCourtCases>
+            <managementOtherGovernmentName>наблюдательный совет</managementOtherGovernmentName>
+            <managementOtherGovernment>Нет</managementOtherGovernment>
+            <managementOtherExecutiveAgency>Генеральная компания</managementOtherExecutiveAgency>
+            <managementOtherGovernmentFounders>Иванов Иван Иванович</managementOtherGovernmentFounders>
+            <managementExecutiveAgency>Генеральная компания</managementExecutiveAgency>
+            <managementSupremeManagementBody>Генеральная компания</managementSupremeManagementBody>
+        </blank>
+        <bankRequisites>
+            <bankRequisite>
+                <checkAccount>40702810710051000110</checkAccount>
+                <bankName>ОАО АКБ "АВАНГАРД" г. Москва</bankName>
+                <bankBic>044525201</bankBic>
+                <corrAccount>30101810000000000201</corrAccount>
+                <bankSwift>bankSwift</bankSwift>
+                <bankRegNum>1243</bankRegNum>
+            </bankRequisite>
+        </bankRequisites>
+        <licenses>
+            <license>
+                <kindOfActivity>Сбор,треспортирование,обработка отходов 1класса</kindOfActivity>
+                <number>№024 00222</number>
+                <date>2016-02-16</date>
+                <issuer>Федеральная служба по надзору в сфере природопользования по Краснодарскому краю</issuer>
+                <licensedActivities>Cбор отходов 1 класса опасности, транспортирование отходов 1 класса</licensedActivities>
+            </license>
+        </licenses>
+        <management>
+            <founderLegals>
+                <founderLegal>
+                    <fullName>БЮДЖЕТНОЕ УЧРЕЖДЕНИЕ КУЛЬТУРЫ БОЛЬШЕРЕЧЕНСКОГО МУНИЦИПАЛЬНОГО РАЙОНА ОМСКОЙ ОБЛАСТИ В СФЕРЕ КУЛЬТУРНО-ДОСУГОВОЙ ДЕЯТЕЛЬНОСТИ И БИБЛИОТЕЧНОГО ОБСЛУЖИВАНИЯ НАСЕЛЕНИЯ "КУЛЬТУРА"</fullName>
+                    <shortName>БУК "КУЛЬТУРА"</shortName>
+                    <inn>5510009257</inn>
+                    <ogrn>1105510000463</ogrn>
+                    <kpp>551001001</kpp>
+                    <foreign>false</foreign>
+                    <ceoPerson>
+                        <name>ВИКТОР</name>
+                        <surname>ШРЕЙДЕР</surname>
+                        <patronymic>ИВАНОВИЧ</patronymic>
+                    </ceoPerson>
+                    <ceoDate>2010-12-31</ceoDate>
+                    <addresses>
+                        <actualAddress>
+                            <index>646670</index>
+                            <country>Российская Федерация</country>
+                            <region>ОМСКАЯ ОБЛАСТЬ</region>
+                            <district>Омский район</district>
+                            <city>РАБОЧИЙ ПОСЕЛОК БОЛЬШЕРЕЧЬЕ</city>
+                            <street>УЛИЦА СОВЕТОВ</street>
+                            <house>44</house>
+                            <flat>24</flat>
+                        </actualAddress>
+                        <addressesAreEquals>false</addressesAreEquals>
+                    </addresses>
+                    <phone>9998887766</phone>
+                    <percent>2</percent>
+                    <faceValue>213</faceValue>
+                    <okved>91.01</okved>
+                    <charterCapital>232</charterCapital>
+                    <registerDate>2010-12-31</registerDate>
+                    <ceo>false</ceo>
+                    <positionDate>2016-11-02</positionDate>
+                </founderLegal>
+            </founderLegals>
+            <companyPersons>
+                <companyPerson>
+                    <person>
+                        <name>Алексей</name>
+                        <surname>Нибанин</surname>
+                        <patronymic>Сергеевич</patronymic>
+                    </person>
+                    <passport>
+                        <series>1234</series>
+                        <number>123456</number>
+                        <status>Действителен</status>
+                        <issuedWho>ТП №75 ОТДЕЛА УФМС РОССИИ ПО САНКТ-ПЕТЕРБУРГУ и ЛЕНИНГРАДСКОЙ ОБЛ. В ФРУНЗЕНСКОМ Р-НЕ ГОР.САНКТ-ПЕТЕРБУРГА</issuedWho>
+                        <issuedWhen>2011-09-13</issuedWhen>
+                        <subCode>0123456789</subCode>
+                        <birthday>1991-09-13</birthday>
+                        <address>
+                            <index>654321</index>
+                            <country>Российская Федерация</country>
+                            <city>г. Санкт-Петербург</city>
+                            <street>Фрунзенский пр.</street>
+                            <house>дом 12</house>
+                            <flat>кв. 123</flat>
+                        </address>
+                        <birthPlace>РСФСР, г. Санкт-Петербург, роддом №8</birthPlace>
+                    </passport>
+                    <actualAddressEqualsPassportAddress>true</actualAddressEqualsPassportAddress>
+                    <actualAddress>
+                        <index>654321</index>
+                        <country>Российская Федерация</country>
+                        <city>г. Санкт-Петербург</city>
+                        <street>Фрунзенский пр.</street>
+                        <house>дом 12</house>
+                        <flat>кв. 123</flat>
+                    </actualAddress>
+                    <phone>9999990000</phone>
+                    <ceo>true</ceo>
+                    <position>Управляющий - индивидуальный предприниматель</position>
+                    <inn>263212375346</inn>
+                    <percent>50.00</percent>
+                    <faceValue>5000.00</faceValue>
+                    <datePosition>2005-11-15</datePosition>
+                    <foreignPerson>false</foreignPerson>
+                    <foreignPassport>false</foreignPassport>
+                    <identityDocType>PASSPORT</identityDocType>
+                    <beneficiar>true</beneficiar>
+                    <founder>true</founder>
+                    <proxy>false</proxy>
+                </companyPerson>
+                <companyPerson>
+                    <person>
+                        <name>Александр</name>
+                        <surname>Александров</surname>
+                        <patronymic>Александрович</patronymic>
+                    </person>
+                    <passport>
+                        <series>1234</series>
+                        <number>123456</number>
+                        <status>Действителен</status>
+                        <issuedWho>ТП №75 ОТДЕЛА УФМС РОССИИ ПО САНКТ-ПЕТЕРБУРГУ и ЛЕНИНГРАДСКОЙ ОБЛ. В ФРУНЗЕНСКОМ Р-НЕ ГОР.САНКТ-ПЕТЕРБУРГА</issuedWho>
+                        <issuedWhen>2011-09-13</issuedWhen>
+                        <subCode>0123456789</subCode>
+                        <birthday>1991-09-13</birthday>
+                        <address>
+                            <index>654321</index>
+                            <country>Российская Федерация</country>
+                            <city>г. Санкт-Петербург</city>
+                            <street>Фрунзенский пр.</street>
+                            <house>дом 12</house>
+                            <flat>кв. 123</flat>
+                        </address>
+                        <birthPlace>РСФСР, г. Санкт-Петербург, роддом №8</birthPlace>
+                    </passport>
+                    <actualAddressEqualsPassportAddress>true</actualAddressEqualsPassportAddress>
+                    <actualAddress>
+                        <index>654321</index>
+                        <country>Российская Федерация</country>
+                        <city>г. Санкт-Петербург</city>
+                        <street>Фрунзенский пр.</street>
+                        <house>дом 12</house>
+                        <flat>кв. 123</flat>
+                    </actualAddress>
+                    <phone>9999990000</phone>
+                    <ceo>false</ceo>
+                    <inn>123654345987</inn>
+                    <percent>0.00</percent>
+                    <faceValue>0.00</faceValue>
+                    <foreignPerson>false</foreignPerson>
+                    <foreignPassport>false</foreignPassport>
+                    <identityDocType>PASSPORT</identityDocType>
+                    <beneficiar>false</beneficiar>
+                    <founder>false</founder>
+                    <proxy>true</proxy>
+                </companyPerson>
+                <companyPerson>
+                    <person>
+                        <name>Анна</name>
+                        <surname>Нибабина</surname>
+                        <patronymic>Павловна</patronymic>
+                    </person>
+                    <passport>
+                        <series>1234</series>
+                        <number>123456</number>
+                        <status>Действителен</status>
+                        <issuedWho>ТП №75 ОТДЕЛА УФМС РОССИИ ПО САНКТ-ПЕТЕРБУРГУ и ЛЕНИНГРАДСКОЙ ОБЛ. В ФРУНЗЕНСКОМ Р-НЕ ГОР.САНКТ-ПЕТЕРБУРГА</issuedWho>
+                        <issuedWhen>2011-09-13</issuedWhen>
+                        <subCode>0123456789</subCode>
+                        <birthday>1991-09-13</birthday>
+                        <address>
+                            <index>654321</index>
+                            <country>Российская Федерация</country>
+                            <city>г. Санкт-Петербург</city>
+                            <street>Фрунзенский пр.</street>
+                            <house>дом 12</house>
+                            <flat>кв. 123</flat>
+                        </address>
+                        <birthPlace>РСФСР, г. Санкт-Петербург, роддом №8</birthPlace>
+                    </passport>
+                    <actualAddressEqualsPassportAddress>true</actualAddressEqualsPassportAddress>
+                    <actualAddress>
+                        <index>654321</index>
+                        <country>Российская Федерация</country>
+                        <city>г. Санкт-Петербург</city>
+                        <street>Фрунзенский пр.</street>
+                        <house>дом 12</house>
+                        <flat>кв. 123</flat>
+                    </actualAddress>
+                    <phone>9999990000</phone>
+                    <ceo>false</ceo>
+                    <position>директор</position>
+                    <inn>123654345987</inn>
+                    <percent>50.00</percent>
+                    <faceValue>5000.00</faceValue>
+                    <datePosition>2005-11-15</datePosition>
+                    <foreignPerson>false</foreignPerson>
+                    <foreignPassport>false</foreignPassport>
+                    <identityDocType>PASSPORT</identityDocType>
+                    <beneficiar>true</beneficiar>
+                    <founder>true</founder>
+                    <proxy>false</proxy>
+                </companyPerson>
+                <companyPerson>
+                    <person>
+                        <name>Анна</name>
+                        <surname>Нибабина</surname>
+                        <patronymic>Павловна</patronymic>
+                    </person>
+                    <passport>
+                        <series>1234</series>
+                        <number>123456</number>
+                        <status>Действителен</status>
+                        <issuedWho>ТП №75 ОТДЕЛА УФМС РОССИИ ПО САНКТ-ПЕТЕРБУРГУ и ЛЕНИНГРАДСКОЙ ОБЛ. В ФРУНЗЕНСКОМ Р-НЕ ГОР.САНКТ-ПЕТЕРБУРГА</issuedWho>
+                        <issuedWhen>2011-09-13</issuedWhen>
+                        <subCode>0123456789</subCode>
+                        <birthday>1991-09-13</birthday>
+                        <address>
+                            <index>654321</index>
+                            <country>Российская Федерация</country>
+                            <city>г. Санкт-Петербург</city>
+                            <street>Фрунзенский пр.</street>
+                            <house>дом 12</house>
+                            <flat>кв. 123</flat>
+                        </address>
+                        <birthPlace>РСФСР, г. Санкт-Петербург, роддом №8</birthPlace>
+                    </passport>
+                    <actualAddressEqualsPassportAddress>true</actualAddressEqualsPassportAddress>
+                    <actualAddress>
+                        <index>654321</index>
+                        <country>Российская Федерация</country>
+                        <city>г. Санкт-Петербург</city>
+                        <street>Фрунзенский пр.</street>
+                        <house>дом 12</house>
+                        <flat>кв. 123</flat>
+                    </actualAddress>
+                    <phone>9999990000</phone>
+                    <ceo>false</ceo>
+                    <position>продавец</position>
+                    <inn>123654345987</inn>
+                    <percent>25.00</percent>
+                    <foreignPerson>false</foreignPerson>
+                    <foreignPassport>false</foreignPassport>
+                    <identityDocType>PASSPORT</identityDocType>
+                    <beneficiar>false</beneficiar>
+                    <founder>false</founder>
+                    <proxy>false</proxy>
+                </companyPerson>
+            </companyPersons>
+        </management>
+    </client>
+    <order>
+        <id>58</id>
+        <amount>100000.00</amount>
+        <bgType>FZ44</bgType>
+        <bgSubtype>EXEC_CONTRACT</bgSubtype>
+        <comment>Срочно!!!</comment>
+        <dateFrom>2016-03-21</dateFrom>
+        <dateTimeCreate>2016-03-21T12:34:53</dateTimeCreate>
+        <dateTo>2017-03-21</dateTo>
+        <falling>false</falling>
+        <prepay>true</prepay>
+        <deadline>2016-03-19</deadline>
+    </order>
+    <purchase>
+        <notificationId>7782153</notificationId>
+        <purchaseNumber>0148300001516000012</purchaseNumber>
+        <purchaseObjectInfo>Оказание услуг по разработке проектно-сметной документации по капитальному ремонту здания (кадастровый номер 50:26:0170401:603), расположенного по адресу:  г. Москва, поселение Марушкинское, дер. Давыдково.(среди субъектов малого предпринимательства)</purchaseObjectInfo>
+        <publishDate>2016-02-29</publishDate>
+        <customer>АДМИНИСТРАЦИЯ ВНУТРИГОРОДСКОГО МУНИЦИПАЛЬНОГО ОБРАЗОВАНИЯ - ПОСЕЛЕНИЯ МАРУШКИНСКОЕ В ГОРОДЕ МОСКВЕ</customer>
+        <customerInn>5030051650</customerInn>
+        <customerOgrn>1055005626411</customerOgrn>
+        <customerKpp>775101001</customerKpp>
+        <customerPostAddress>143350, г.Москва, д. Марушкино, ул.Липовая аллея, д.5,</customerPostAddress>
+        <customerActualAddress>Российская Федерация, 043350, Москва, Марушкино д, ал Липовая, 5</customerActualAddress>
+        <customerRegNum>01483000015</customerRegNum>
+        <customerRegDate>2015-02-28</customerRegDate>
+        <customerRegOrg>ИНСПЕКЦИЯ ФЕДЕРАЛЬНОЙ НАЛОГОВОЙ СЛУЖБЫ ПО Г.МОСКВЕ</customerRegOrg>
+        <currencyCode>RUB</currencyCode>
+        <currencyName>Российский рубль</currencyName>
+        <maxPrice>2000000</maxPrice>
+        <amount>600000</amount>
+        <collectingEndDatetime>2016-03-21T10:00:00</collectingEndDatetime>
+        <type>FZ44</type>
+    </purchase>
+</orderBgBankExport>
+
