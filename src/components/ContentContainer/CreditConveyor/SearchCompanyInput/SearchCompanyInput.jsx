@@ -66,7 +66,7 @@ class SearchCompanyInput extends Component {
           </Form.Item>
         </Col>
         <Col span={2}>
-          <Button className="search-btn" type="primary" htmlType="submit">Поиск</Button>
+          <Button className="search-btn" type="primary" htmlType="submit" style={{width: "100%"}}>Поиск</Button>
         </Col>
       </Row>
     )

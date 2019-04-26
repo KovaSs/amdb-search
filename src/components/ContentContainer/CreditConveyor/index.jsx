@@ -58,9 +58,12 @@ class CreditConveyor extends Component {
           }
         </Col>
         <Col span={6}>
-          <div style={{margin: "3rem 1rem"}}>
-            <DrawerContainer />
-          </div>
+          {
+            showTable ?
+            <div style={{margin: "3rem 1rem"}}>
+              <DrawerContainer />
+            </div> : null
+          }
         </Col>
       </Row>
     );

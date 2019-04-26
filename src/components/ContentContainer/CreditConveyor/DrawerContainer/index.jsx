@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Drawer, List, Avatar, Divider, Col, Row } from "antd";
+import { Drawer, List, Avatar, Divider, Col, Row, Badge } from "antd";
 import { Link } from 'react-router-dom'
 
 
@@ -47,7 +47,15 @@ class DrawerContainer extends Component {
   };
   render() {
 
-    const data = [{ name: '"ООО "БИКОМПАКТ 2.0"' }, { name: "Lily" }]
+    const { visible } = this.state
+    const data = [{ name: '"ООО "БИКОМПАКТ 2.0"' }]
+    const metaData = ["ИНН: 7725735213"]
+    const { Item : ListItem  } = List
+    const { Meta : ListItemMeta  } = ListItem
+
+    const renderMetaData = metaData.map(item => {
+      return <div>{item}</div>
+    })
 
     return (
       <div>
@@ -55,18 +63,18 @@ class DrawerContainer extends Component {
           dataSource={data}
           bordered
           renderItem={item => (
-            <List.Item
+            <ListItem
               key={item.id}
               actions={[<Link to="#" onClick={this.showDrawer}>View Profile</Link>]}
             >
-              <List.Item.Meta
+              <ListItemMeta
                 avatar={
-                  <Avatar src={process.env.PUBLIC_URL + 'img/logo.png'} />
+                  <Badge count={2}><Avatar src={process.env.PUBLIC_URL + 'img/logo.png'} /></Badge>
                 }
                 title={<Link to="#">{item.name}</Link>}
-                description="Progresser AFX"
+                description={renderMetaData}
               />
-            </List.Item>
+            </ListItem>
           )}
         />
         <Drawer
@@ -74,7 +82,7 @@ class DrawerContainer extends Component {
           placement="right"
           closable={false}
           onClose={this.onClose}
-          visible={this.state.visible}
+          visible={visible}
         >
           <p style={{ ...pStyle, marginBottom: 24 }}>User Profile</p>
           <p style={pStyle}>Personal</p>
