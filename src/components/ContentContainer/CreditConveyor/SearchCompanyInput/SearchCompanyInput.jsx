@@ -53,7 +53,7 @@ class SearchCompanyInput extends Component {
     return (
       <Row>
         <Col span={24}>Поиск организации:</Col>
-        <Col span={23}>
+        <Col span={22}>
           <Form.Item >
             {getFieldDecorator('data', {
               rules: [
@@ -65,8 +65,8 @@ class SearchCompanyInput extends Component {
             )}
           </Form.Item>
         </Col>
-        <Col span={1}>
-          <Button className="search-btn" type="primary" htmlType="submit">Поиск</Button>
+        <Col span={2}>
+          <Button className="search-btn" type="primary" htmlType="submit" style={{width: "100%"}}>Поиск</Button>
         </Col>
       </Row>
     )
@@ -74,11 +74,9 @@ class SearchCompanyInput extends Component {
 
   render() {
     return (
-      <Col>
-        <Form className="ant-advanced-search-form" onSubmit={this.handleSubmit}>
-          { this.getFields() }
-        </Form>
-      </Col>
+      <Form className="ant-advanced-search-form" onSubmit={this.handleSubmit}>
+        { this.getFields() }
+      </Form>
     )
   }
 }

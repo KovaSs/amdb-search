@@ -1,14 +1,24 @@
-.ant-layout{
+.ant-layout {
   &-content {
-    padding: 0  2rem;
-    margin-top: 2rem;
+    padding: 0 2rem;
+
     &__data {
       background: #fff;
-      padding: 2rem 3rem;
-      min-height: 50rem;
+      min-height: 54rem;
+      margin-top: 2rem;
     }
   }
+
   &-footer {
     text-align: center;
+  }
+
+  .breadcrumbs-transparent {
+    color: #f0f2f5;
+    -moz-user-select: none;/* Firefox */
+    -ms-user-select: none;/* Internet Explorer */
+    -khtml-user-select: none;/* KHTML browsers (e.g. Konqueror) */
+    -webkit-user-select: none;/* Chrome, Safari, and Opera */
+    -webkit-touch-callout: none;/* Disable Android and iOS callouts*/
   }
 }

@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<orderBgBankExport xmlns="http://vbankcenter.ru/namespaces/orderbg"> <!-- Карточка информации о заявке на выдачу Банковской гарантии -->
+    <client> <!-- Клиент -->
+        <company> <!-- Компания клиента -->
+            <name>Полное наименование юридического лица на русском языке</name>
+            <shortName>Сокращенное наименование юридического лица на русском языке</shortName>
+            <opf>Полное наименование организационно-правовой формы</opf>
+            <recordOrgName>Наименование регистрирующего(налогового) органа</recordOrgName>
+            <recordDayDate>Дата регистрации юридического лица</recordDayDate>
+            <recordIssueDate>Дата внесения записи в ЕГРЮЛ о создании Юридического лица</recordIssueDate>
+            <recordDate>Дата регистрации юридического лица</recordDate>
+            <recordAddress>Адрес регистрирующего органа</recordAddress>
+            <inn>Идентификационный номер налогоплательщика - организации</inn>
+            <kpp>Код причины постановки на учет (КПП)</kpp>
+            <ogrn>Основной государственный регистрационный номер юридического лица</ogrn>
+            <okpo>Общероссийский классификатор предприятий и организаций</okpo>
+            <okato>Общероссийский классификатор объектов административно-территориального деления</okato>
+            <okved>Код по Общероссийскому классификатору видов экономической деятельности</okved>
+            <okvedDesc>Наименование вида деятельности по Общероссийскому классификатору видов экономической деятельности</okvedDesc>
+            <phoneMain>Основной рабочий телефон</phoneMain>
+            <fax>Факс</fax>
+            <email>Основной e-mail</email>
+            <charterCapital>Заявленный уставной капитал (руб.)</charterCapital>
+            <charterCapitalPartPaid>Оплаченный уставной капитал (руб.)</charterCapitalPartPaid>
+            <addresses>
+                <legalAddress> <!-- Сведения об адресе в РФ, внесенные в ЕГРЮЛ -->
+                    <index>Индекс</index>
+                    <country>Страна</country>
+                    <region>Субъект Российской Федерации</region>
+                    <district>Район (улус и т.п.)</district>
+                    <city>Город (волость и т.п.)/Населенный пункт (село и т.п.)</city>
+                    <street>Улица (проспект, переулок и т.п.)</street>
+                    <house>Дом (владение и т.п.)</house>
+                    <flat>Корпус (строение и т.п.)</flat>
+                </legalAddress>
+                <actualAddress> <!-- Сведения о фактическом адресе. Заполняется только в случае несовпадения адреса с фактическим -->
+                    <index>Индекс</index>
+                    <country>Страна</country>
+                    <region>Субъект Российской Федерации</region>
+                    <district>Район (улус и т.п.)</district>
+                    <city>Город (волость и т.п.)/Населенный пункт (село и т.п.)</city>
+                    <street>Улица (проспект, переулок и т.п.)</street>
+                    <house>Дом (владение и т.п.)</house>
+                    <flat>Корпус (строение и т.п.)</flat>
+                </actualAddress>
+                <addressesAreEquals>Совпадание адреса с фактическим</addressesAreEquals> 
+            </addresses>
+        </company>
+        <blank> <!-- Анкета клиента -->
+            <propertyType>Тип собственности</propertyType>
+            <objectivesOfActivity>Цели финансово-хозяйственной деятельности</objectivesOfActivity>
+            <companyWageFund>Среднемесячный фонд оплаты труда (ФОТ) компании (согласно формы отчетности РСВ-1 ПФР на момент представления сведений)</companyWageFund>
+            <finPosition>Оценка финансового положения</finPosition>
+            <companyStaff>Штатная численность Вашей организации</companyStaff>
+            <organizationType>Тип организации (согласно типа собственности)</organizationType>
+            <sourcesFunds>Сведения об источниках происхождения денежных средств и (или) иного имущества</sourcesFunds>
+            <subjectCmb>Является ли компания субъектом МСП</subjectCmb>
+            <branches>Имеются ли у компании филиалы (представительства)</branches>
+            <holding>Является ли организация частью холдинга</holding>
+            <teamWork>Участие в других организациях или совместная деятельность с другими</teamWork>
+            <finPositionDebts>Имеется ли существенная по суммам и (или) срокам текущая картотека неоплаченных расчетных документов к банковским счетам Клиента</finPositionDebts>
+            <finPositionLosses>Имеются ли скрытые потери (например, неликвидные запасы готовой продукции и (или) требования, безнадежные к взысканию) в размере, равном или превышающем 25 процентов чистых активов Клиента?</finPositionLosses>
+            <finPositionViolationTerms>Имеются ли случаи неисполнения или два и более случаев исполнения Клиентом обязательств по иным договорам с финансирующей организацией с нарушением сроков, предусмотренных договорами, общей продолжительностью от 5 до 30 календарных дней или единичный случай исполнения с нарушением сроков продолжительностью более чем на 30 календарных дней за последние 180 календарных дней либо прекращение Клиентом обязательств по иным договорам с финансирующей организацией предоставлением взамен исполнения обязательства отступного в форме имущества, которое не реализовано финансирующей организацией в течение 180 календарных дней или более, а также при условии, что совокупная величина указанных обязательств превышает 100 000 рублей</finPositionViolationTerms>
+            <finPositionUnprofitable>Имеется ли не предусмотренная планом развития Принципала (бизнес-планом), согласованным с Банком, убыточная деятельность Принципала, приведшая к существенному (25 процентов и более) снижению его чистых активов по сравнению с их максимально достигнутым уровнем в течение последних двенадцати месяцев, а для юридических лиц - Принципалов, с даты регистрации которых прошло менее одного года, - по сравнению с их максимально достигнутым уровнем за период деятельности такого юридического лица</finPositionUnprofitable>
+            <finPositionZeroValues>Имеются ли факты представления Клиентом в налоговые органы формы № 1 «Бухгалтерский баланс», с нулевыми значениями по разделам баланса «Оборотные активы» и «Краткосрочные обязательства» при условии существенных оборотов денежных средств по банковским счетам Клиента, открытым в финансирующей организации, за последние 180 календарных дней</finPositionZeroValues>
+            <address>Местонахождение(филиала)</address>
+            <staff>Штатная численность сотрудников(филиала)</staff>
+            <openDate>Дата открытия(филиала)</openDate>
+            <companyName>Наименование компании (совместная деятельность)</companyName>
+            <kindOfActivity>Вид деятельности (совместная деятельность)</kindOfActivity>
+            <share>Доля участия (%) (совместная деятельность)</share>
+            <holdingName>Наименование холдинга</holdingName>
+            <otherObjectives>Иная цель финансово-хозяйственной деятельности</otherObjectives>
+            <amount>Планируемые суммы операций по счетам в банках в среднем за месяц</amount>
+            <number>Планируемое количество операций по счетам в банках в среднем за месяц</number>
+            <cashNumber>Планируемое количество операций по снятию денежных средств в наличной форме в среднем за месяц</cashNumber>
+            <cashAmount>Планируемые суммы операций по снятию денежных средств в наличной форме в среднем за месяц</cashAmount>
+            <transferNumber>Планируемое количество операций, связанных с переводами денежных средств, в рамках внешнеторговой деятельности в среднем за месяц</transferNumber>
+            <transferAmount>Планируемые суммы операций, связанных с переводами денежных средств, в рамках внешнеторговой деятельности в среднем за месяц</transferAmount>
+            <contractType>Виды договоров, расчеты по которым планируется осуществлять через Банк</contractType>
+            <otherContract>Иной вид договора, расчет по которому планируется осуществлять через Банк</otherContract>
+            <debtsHistory>Кредитная история</debtsHistory>
+            <actualDebts>Действующие кредитные обязательства</actualDebts>
+            <bankName>Наименование банка по действующему кредитному обязательству</bankName>
+            <contractAmount>Сумма по договору, руб. по действующему кредитному обязательству</contractAmount>
+            <outstanding>Остаток задолженности, руб. по действующему кредитному обязательству</outstanding>
+            <maturityDate>Дата погашения по действующему кредитному обязательству</maturityDate>
+            <delay>Наличие просрочки по действующему кредитному обязательству</delay>
+            <actualContracts>Сведения о действующих договорах, в которых организация является залогодателем/поручителем</actualContracts>
+            <contractCreditorName>Кредитор по действующему договору</contractCreditorName>
+            <contractContractAmount>Кредитор по действующему договору</contractContractAmount>
+            <contractOutstanding>Остаток задолженности, руб. по действующему договору</contractOutstanding>
+            <contractMaturityDate>Дата погашения по действующему договору</contractMaturityDate>
+            <contractDelay>Наличие просрочки по действующему договору</contractDelay>
+            <debtsStaff>Имеется ли задолженность перед персоналом организации (руб.)</debtsStaff>
+            <staffActual>Текущая задолженность перед персоналом</staffActual>
+            <staffOverdue>Просроченная задолженность перед персоналом</staffOverdue>
+            <staffTotal>Итого задолженность перед персоналом</staffTotal>
+            <debtsNalog>Имеется ли задолженность по налогам и сборам (руб.)</debtsNalog>
+            <nalogActual>Текущая задолженность по налогам и сборам</nalogActual>
+            <nalogOverdue>Просроченная задолженность по налогам и сборам</nalogOverdue>
+            <nalogTotal>Итого задолженность по налогам и сборам</nalogTotal>
+            <reputationBankruptcy>Наличие процедур банкротства за последние 5 лет</reputationBankruptcy>
+            <reputationInsolvency>Сведения о производстве по делу о несостоятельности (банкротстве)</reputationInsolvency>
+            <reputationCourtDecisions>Сведения о вступивших в силу решениях суда о признании несостоятельным (банкротом)</reputationCourtDecisions>
+            <reputationLiquidation>Сведения о проведении процедур ликвидации</reputationLiquidation>
+            <reputationFactsFailure>Наличие фактов неисполнения или ненадлежащего исполнения обязательств</reputationFactsFailure>
+            <reputationFactsEmptyCash>Сведения о фактах неисполнения денежных обязательств по причине отсутствия денежных средств на банковских счетах</reputationFactsEmptyCash>
+            <reputationCourtCases>Наличие судебных дел, по которым организация выступает ответчиком</reputationCourtCases>
+            <managementOtherGovernmentName>Наименование органа управления в соответствии с уставом</managementOtherGovernmentName>
+            <managementOtherGovernment>Дополнительный орган управления(совет директоров,наблюдательный совет и т.д.)</managementOtherGovernment>
+            <managementOtherExecutiveAgency>Иной исполнительный орган</managementOtherExecutiveAgency>
+            <managementOtherGovernmentFounders>Персональный состав (ФИО или наименование)</managementOtherGovernmentFounders>
+            <managementExecutiveAgency>Исполнительный орган</managementExecutiveAgency>
+            <managementSupremeManagementBody>Высший орган управления</managementSupremeManagementBody>
+        </blank>
+        <bankRequisites>
+            <bankRequisite> <!-- Сведения о актуальном банковском реквизите -->
+                <checkAccount>Расчетный счет</checkAccount>
+                <bankName>Название банка</bankName>
+                <bankBic>БИК банка</bankBic>
+                <corrAccount>Корреспонденский счет</corrAccount>
+                <bankSwift>Swift</bankSwift>
+                <bankRegNum>Банквоский регистрационный номер на сайте центрального банка РФ</bankRegNum>
+            </bankRequisite>
+        </bankRequisites>
+        <licenses>
+            <license> <!-- Сведения о лицензии -->
+                <kindOfActivity>Вид деятельности</kindOfActivity>
+                <number>Номер лицензии</number>
+                <date>Дата выдачи</date>
+                <issuer>Кем выдана</issuer>
+                <licensedActivities>Перечень видов лицензируемой деятельности</licensedActivities>
+            </license>
+        </licenses>
+        <management> <!-- Руководители и учредители -->
+            <founderLegals> <!-- Список всех юридических лиц -->
+                <founderLegal> <!-- Юридичесткое лицо, Участник (акционер) с долей в УК не менее 1% -->
+                    <fullName>Полное наименование</fullName>
+                    <shortName>Сокращенное наименование</shortName>
+                    <inn>ИНН</inn>
+                    <ogrn>ОГРН</ogrn>
+                    <kpp>КПП</kpp>
+                    <foreign>Является ли иностранным публичным юридическим лицом</foreign>
+                    <ceoPerson> <!-- ФИО единоличного исполнительного органа -->
+                        <name>Имя</name>
+                        <surname>Фамилия</surname>
+                        <patronymic>Отчество</patronymic>
+                    </ceoPerson>
+                    <ceoDate>Дата назначения на должность ЕИО</ceoDate>
+                    <addresses> <!-- Адрес регистрации -->
+                        <actualAddress> <!-- Сведения о фактическом адресе. Заполняется только в случае несовпадения адреса с фактическим -->
+                            <index>Индекс</index>
+                            <country>Страна</country>
+                            <region>Субъект Российской Федерации</region>
+                            <district>Район (улус и т.п.)</district>
+                            <city>Город (волость и т.п.)/Населенный пункт (село и т.п.)</city>
+                            <street>Улица (проспект, переулок и т.п.)</street>
+                            <house>Дом (владение и т.п.)</house>
+                            <flat>Корпус (строение и т.п.)</flat>
+                        </actualAddress>
+                        <addressesAreEquals>Совпадание адреса с фактическим</addressesAreEquals>
+                    </addresses>
+                    <phone>Телефон</phone>
+                    <percent>Доля юр. лица в уставном капитале</percent>
+                    <faceValue>Номинальная стоимость юр. лица в организации</faceValue>
+                    <okved>ОКВЭД</okved>
+                    <charterCapital>Уставной капитал</charterCapital>
+                    <registerDate>Дата регистрации</registerDate>
+                    <ceo>Является ли это Юридическое лицо единоличным исполнительным органом</ceo> 
+                    <positionDate>Дата назначения на должность, заполняется если это Юридическое лицо является единоличным исполнительным органом</positionDate>
+                </founderLegal>
+            </founderLegals>
+                <companyPerson> <!-- Список всех физических лиц компании -->
+                    <person> <!-- ФИО Физического лица -->
+                        <name>Имя</name>
+                        <surname>Фамилия</surname>
+                        <patronymic>Отчество</patronymic>
+                    </person>
+                    <passport> <!-- Паспорт физического лица -->
+                        <series>Серия</series>
+                        <number>Номер</number>
+                        <status>Статус паспорта</status>
+                        <issuedWho>Кем выдан</issuedWho>
+                        <issuedWhen>Дата выдачи</issuedWhen>
+                        <subCode>Код подразделения</subCode>
+                        <birthday>Дата рождения</birthday>
+                        <address>Адрес места жительства</address>
+                        <birthPlace>Место рождения</birthPlace>
+                    </passport>
+                    <phone>Основной рабочий телефон</phone>
+                    <ceo>Является ли это Физическое лицо единоличным исполнительным органом</ceo>
+                    <position>Должность</position>
+                    <percent>Доля в УК (%)</percent>
+                    <faceValue>Номинальная стоимость</faceValue>
+                    <datePosition>Дата назначения на должность</datePosition>
+                    <foreignPerson>Является иностранным публичным должностным лицом, должностным лицом публичных международных организаций, а также лицом, замещающим (занимающим) государственные должности РФ, должности членов Совета директоров ЦБ РФ, должности федеральной государственной службы, назначение на которые и освобождение от которых осуществляются Президентом РФ или Правительством РФ, должности в ЦБ РФ, государственных корпорациях и иных организациях, созданных РФ на основании федеральных законов, включенные в перечни должностей, определяемые Президентом РФ</foreignPerson>
+                    <foreignPassport>Иностранный паспорт, заполняется если он есть</foreignPassport>
+                    <beneficiar>Бенефициар</beneficiar>
+                    <founder>Акционер с долей не менее 1%</founder>
+                    <proxy>Представитель по доверенности</proxy>
+                </companyPerson>
+        </management>
+    </client>
+    <order> <!-- Заявка -->
+        <id>Номер заявки</id>
+        <amount>Сумма банковской гарантии</amount>
+        <bgType>Тип банковской гарантии</bgType>
+        <comment>Комментарий к заявке</comment>
+        <dateFrom>Срок Банковской Гарантии c</dateFrom>
+        <dateTimeCreate>Дата создания заявки</dateTimeCreate>
+        <dateTo>Срок Банковской Гарантии до</dateTo>
+        <falling>В ходе аукциона было падение более, чем на 25% от НМЦ</falling>
+        <prepay>аличие аванса по гос. контракту</prepay>
+        <deadline>Крайний срок выдачи БГ</deadline>
+    </order>
+    <purchase> <!-- Закупка -->
+        <notificationId>Серия</notificationId>
+        <purchaseNumber>Идентификатор тендера</purchaseNumber>
+        <purchaseObjectInfo>Предмет тендера</purchaseObjectInfo>
+        <publishDate>Дата публикации</publishDate>
+        <customer>Заказчик</customer>
+        <customerInn>ИНН заказчика</customerInn>
+        <customerOgrn>ОГРН заказчик</customerOgrn>
+        <customerKpp>КПП заказчика</customerKpp>
+        <customerPostAddress>Юридический адрес заказчика</customerPostAddress>
+        <customerActualAddress>Фактический адрес заказчика</customerActualAddress>
+        <customerRegNum>Регистрационный номер заказчика</customerRegNum>
+        <customerRegDate>Дата регистрации заказчика</customerRegDate>
+        <customerRegOrg>Наименование регистрирующего органа заказчика</customerRegOrg>
+        <currencyCode>Код валюты</currencyCode>
+        <currencyName>Название валюты</currencyName>
+        <maxPrice>Макс. цена контракта</maxPrice>
+        <amount>Сумма</amount>
+        <collectingEndDatetime>Дата окончания подачи заявок</collectingEndDatetime>
+        <type>Тип закупки</type>
+    </purchase>
+</orderBgBankExport>
