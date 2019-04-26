@@ -4,18 +4,17 @@ import { Breadcrumb } from "antd";
 
 const BreadcrumbContainer = props => {
   const { pathname } = props.location
-  console.log('pathname', pathname)
 
-  const renderPageName = pathname => {
+  const renderPageName = () => {
     switch (pathname) {
       case "/open-bill":
-        return "Открыть счет"
-      case "/credit-conveyor":
-        return "Кредитный конвейер"
-      case "/electronic-bank-garantees":
-        return "Электронные банковские гарантии"
-      case "/early-warning-system":
-        return "Система раннего предупреждения"
+        return <Breadcrumb.Item>Открыть счет</Breadcrumb.Item>
+        case "/credit-conveyor":
+        return <Breadcrumb.Item>Кредитный конвейер</Breadcrumb.Item>
+        case "/electronic-bank-garantees":
+        return <Breadcrumb.Item>Электронные банковские гарантии</Breadcrumb.Item>
+        case "/early-warning-system":
+        return <Breadcrumb.Item>Система раннего предупреждения</Breadcrumb.Item>
       default:
         break;
     }
@@ -23,8 +22,8 @@ const BreadcrumbContainer = props => {
 
   return (
     <Breadcrumb style={{ margin: "16px 0" }}>
-      <Breadcrumb.Item><Link to="/">Главная</Link></Breadcrumb.Item>
-      <Breadcrumb.Item>{renderPageName(pathname)}</Breadcrumb.Item>
+      <Breadcrumb.Item><Link to="/" >Главная</Link></Breadcrumb.Item>
+      { renderPageName() }
     </Breadcrumb>
   )
 }
