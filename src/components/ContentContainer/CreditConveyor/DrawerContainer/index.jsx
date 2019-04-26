@@ -65,7 +65,7 @@ class DrawerContainer extends Component {
           renderItem={item => (
             <ListItem
               key={item.id}
-              actions={[<Link to="#" onClick={this.showDrawer}>View Profile</Link>]}
+              actions={[<Link to="#" onClick={this.showDrawer}>Факторы риска</Link>]}
             >
               <ListItemMeta
                 avatar={
