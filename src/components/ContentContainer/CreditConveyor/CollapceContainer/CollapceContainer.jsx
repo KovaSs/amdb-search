@@ -1,6 +1,6 @@
 import React from "react";
 import { CollapceItem } from "./CollapceItem";
-import "./table-container.scss";
+import "./collapce-container.scss";
 
 
 const CollapceContainer = props => {

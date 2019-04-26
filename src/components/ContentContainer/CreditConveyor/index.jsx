@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Spin, Col, Row } from "antd";
 import CollapceContainer from "./CollapceContainer";
 import SearchCompanyInput from "./SearchCompanyInput";
+import DrawerContainer from "./DrawerContainer";
 import "./сredit-сonveyor.scss"
 
 class CreditConveyor extends Component {
@@ -56,7 +57,11 @@ class CreditConveyor extends Component {
             </div>
           }
         </Col>
-        <Col span={6}></Col>
+        <Col span={6}>
+          <div style={{margin: "3rem 1rem"}}>
+            <DrawerContainer />
+          </div>
+        </Col>
       </Row>
     );
   }
