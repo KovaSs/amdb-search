@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Drawer, List, Avatar, Divider, Col, Row, Badge } from "antd";
 import { Link } from 'react-router-dom'
+import idGenerator from 'react-id-generator';
 
 
 const pStyle = {
@@ -54,7 +55,7 @@ class DrawerContainer extends Component {
     const { Meta : ListItemMeta  } = ListItem
 
     const renderMetaData = metaData.map(item => {
-      return <div>{item}</div>
+      return <div key = {idGenerator('meta-')}>{item}</div>
     })
 
     return (
@@ -65,7 +66,7 @@ class DrawerContainer extends Component {
           renderItem={item => (
             <ListItem
               key={item.id}
-              actions={[<Link to="#" onClick={this.showDrawer}>Факторы риска</Link>]}
+              actions={[<Link to="#" onClick={this.showDrawer} style={{ maxWidth : "200px"}}>Факторы риска</Link>]}
             >
               <ListItemMeta
                 avatar={

@@ -45,7 +45,7 @@ class CreditConveyor extends Component {
 
     return (
       <Row className="credit-conveyor">
-        <Col span={18}>
+        <Col span={17}>
           <SearchCompanyInput />
           { showTable ?
             <CollapceContainer /> : 
@@ -57,7 +57,7 @@ class CreditConveyor extends Component {
             </div>
           }
         </Col>
-        <Col span={6}>
+        <Col span={7}>
           {
             showTable ?
             <div style={{margin: "3rem 1rem"}}>

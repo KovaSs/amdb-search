@@ -22,7 +22,7 @@ const BreadcrumbContainer = props => {
 
   return (
     <Breadcrumb style={{ margin: "16px 0" }}>
-      <Breadcrumb.Item><Link to="/" >Главная</Link></Breadcrumb.Item>
+      { pathname !== "/" ? <Breadcrumb.Item><Link to="/" >Главная</Link></Breadcrumb.Item> : <Breadcrumb.Item className="breadcrumbs-transparent">Главная</Breadcrumb.Item>}
       { renderPageName() }
     </Breadcrumb>
   )
