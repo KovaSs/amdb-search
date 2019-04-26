@@ -1,5 +1,5 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { Breadcrumb } from "antd";
 
 const BreadcrumbContainer = props => {
@@ -23,7 +23,7 @@ const BreadcrumbContainer = props => {
 
   return (
     <Breadcrumb style={{ margin: "16px 0" }}>
-      <Breadcrumb.Item>Главная</Breadcrumb.Item>
+      <Breadcrumb.Item><Link to="/">Главная</Link></Breadcrumb.Item>
       <Breadcrumb.Item>{renderPageName(pathname)}</Breadcrumb.Item>
     </Breadcrumb>
   )
