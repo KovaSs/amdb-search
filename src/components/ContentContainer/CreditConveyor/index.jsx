@@ -60,7 +60,7 @@ class CreditConveyor extends Component {
         <Col span={7}>
           {
             showTable ?
-            <div style={{margin: "3rem 1rem"}}>
+            <div className="credit-conveyor__risk-factor">
               <DrawerContainer />
             </div> : null
           }

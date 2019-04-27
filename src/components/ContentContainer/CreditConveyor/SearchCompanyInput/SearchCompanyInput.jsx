@@ -53,20 +53,26 @@ class SearchCompanyInput extends Component {
     return (
       <Row>
         <Col span={24}>Поиск организации:</Col>
-        <Col span={22}>
-          <Form.Item >
+        <Col span={6}>
+          <Form.Item>
             {getFieldDecorator('data', {
               rules: [
                 { required: true, message: 'Строка поиска не должна быть пустой!' },
                 { pattern: '^[0-9]+$', message: 'Поисковой запрос должен состоять из цифр!'}
               ],
             })(
-              <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
+              <Input addonBefore={prefixSelector} style={{ width: '100%' }}/>
             )}
           </Form.Item>
         </Col>
         <Col span={2}>
-          <Button className="search-btn" type="primary" htmlType="submit" style={{width: "100%"}}>Поиск</Button>
+          <Button className="search-btn" type="primary" htmlType="submit">Поиск</Button>
+        </Col>
+        <Col span={8} style={{background : "rgba(125, 216, 171, 0.877)"}}>
+          <div>Col-8</div>
+        </Col>
+        <Col span={8} style={{background : "rgba(125, 216, 216, 0.555)"}}>
+          <div>Col-8</div>
         </Col>
       </Row>
     )
