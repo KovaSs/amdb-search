@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Row, Col, Form, Input, Button, Select } from "antd";
+import MainCompanyInfo from "./MainCompanyInfo";
 import "./search-company.scss"
 
 /** get mock data */
@@ -8,6 +9,9 @@ import { companyResponse } from "../../../../store/mock";
 
 
 class SearchCompanyInput extends Component {
+  state = {
+    showInfo : false,
+  }
 
   changeValue = () => {
     const { actionChangeInn, actionChangeOgrn } = this.props.store
@@ -22,25 +26,50 @@ class SearchCompanyInput extends Component {
       }
     }, 100);
   }
-  
+
+  componentWillReceiveProps(nextProps) {
+    const { companyResponse } = this.props.store
+    if(nextProps.companyResponse !== companyResponse) {
+      this.setState({
+        showInfo: true
+      })
+    }
+  }
+
+  componentDidMount() {
+    const { companyResponse } = this.props.store
+    if(companyResponse) {
+      this.setState({
+        showInfo: true
+      })
+    }
+  }
+
   handleSubmit = (e) => {  
     const { loadingCompanyInfo, loadCompanyInfo } = this.props.store
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         loadingCompanyInfo()
+        /** Симуляция получения данных от сервера */
         setTimeout(() => {
           loadCompanyInfo(companyResponse)
+          this.setState (
+            this.setState({
+              showInfo: true
+            })
+          )
         }, 2000);
         console.log('Полученные значения формы: ', values);
-        this.changeValue()
+        // this.changeValue()
       }
     });
   }
-
+  
   getFields = () => {
     const { getFieldDecorator } = this.props.form;
     const { Option } = Select;
+    const { showInfo } = this.state
     const prefixSelector = getFieldDecorator('prefix', {
       initialValue: 'inn',
     })(
@@ -52,7 +81,6 @@ class SearchCompanyInput extends Component {
 
     return (
       <Row>
-        <Col span={24}>Поиск организации:</Col>
         <Col span={6}>
           <Form.Item>
             {getFieldDecorator('data', {
@@ -68,12 +96,9 @@ class SearchCompanyInput extends Component {
         <Col span={2}>
           <Button className="search-btn" type="primary" htmlType="submit">Поиск</Button>
         </Col>
-        <Col span={8} style={{background : "rgba(125, 216, 171, 0.877)"}}>
-          <div>Col-8</div>
-        </Col>
-        <Col span={8} style={{background : "rgba(125, 216, 216, 0.555)"}}>
-          <div>Col-8</div>
-        </Col>
+        { 
+          showInfo ? <MainCompanyInfo />: null
+        }
       </Row>
     )
   }

@@ -8,7 +8,6 @@ const Field = (title, data) => ({ title, data })
 let clgData = {}
 
 const CollapceItem = props => {
-  console.log('props', props.store)
   const Panel = Collapse.Panel;
 
   /** Подготовка входящих данных */
@@ -70,7 +69,15 @@ const CollapceItem = props => {
 
   /** Рендеринг информационных полей организации */
   const renderFieldArr = fullOrganistionInfo.map(item => {
-    if(item.data && item.id !== "arbiter" && item.id !== "befenicials" && item.id !== "founders_fl" && item.id !== "founders_ul" && item.id !== "heads"  && item.id !== "management_companies") {
+    if(item.data && 
+      item.id !== "arbiter" && 
+      item.id !== "befenicials" && 
+      item.id !== "founders_fl" && 
+      item.id !== "founders_ul" && 
+      item.id !== "heads"  && 
+      item.id !== "management_companies" && 
+      item.id !== "name"  && 
+      item.id !== "full_name") {
       const red = (item.id === "fns" || item.id === "sanctions") ? " red" : ''
       return (
         <Row key={item.id} className="tabs-info__organisation-info">

@@ -39,11 +39,48 @@
     border-radius: 5px;
   }
 
-  .tabs-info{
+  .ant-collapse-content-box {
+    padding: 0;
+  }
+
+  .tabs-info, .main-info{
     margin: 2rem 4rem;
     &__organisation {
       &-info {
-        margin: 1rem 2rem;
+        margin: 0 0.5rem 0.5rem !important;
+        .lable {
+          text-align: left;
+          font-weight: bold;
+          padding-right: 2rem;
+          &:after {
+            content: ':';
+            font-weight: normal;
+            margin-left: 5px;
+          }
+        }
+        .descr {
+          &.red {
+            color: red;
+          }
+        }
+      }
+      .lable-table {
+        text-align: center;
+        margin-bottom: 1rem;
+        font-weight: bold;
+      }
+    }
+    &__lable-table {
+      margin: 2rem 0 2rem 1rem;
+      font-weight: bold;
+    }
+  }
+
+  .main-info{
+    margin: 2rem 4rem;
+    &__organisation {
+      &-info {
+        margin: 1rem;
         .lable {
           text-align: left;
           font-weight: bold;
