@@ -4,6 +4,18 @@
 
   &__risk-factor {
     margin: 1rem;
+    &-meta {
+      font-size: 0.85rem;
+      line-height: 15px;
+      margin-left: 4px;
+    }
+    .ant-list-item-meta-title {
+      margin-bottom: 0;
+    }
+  }
+
+  .ant-collapse-header {
+    line-height: 10px !important;
   }
 
   .ant-advanced-search-form,

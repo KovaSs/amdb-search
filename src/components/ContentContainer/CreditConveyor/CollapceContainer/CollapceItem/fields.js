@@ -14,7 +14,7 @@ export const fieldsArr = [
   {id: "capital", title: "Уставной капитал", data: ""},
   {id: "index_of_due_diligence", title: "Индекс должносной осмотрительности", data: ""},
   {id: "payment_index", title: "Индекс платежной дисциплины", data: ""},
-  {id: "failure_score", title: "Индекс Финансового риска", data: ""},
+  {id: "failure_score", title: "Индекс финансового риска", data: ""},
   {id: "isponlit_proizvodstva", title: "Исполнительные производства", data: ""},
   {id: "fns", title: "ФНС", data: ""},
   {id: "sanctions", title: "Санкции", data: ""},

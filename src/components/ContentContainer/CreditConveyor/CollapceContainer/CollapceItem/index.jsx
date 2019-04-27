@@ -1,5 +1,5 @@
 import React from 'react'
-import { Collapse, Row, Col } from 'antd';
+import { Collapse, Row, Col, Icon } from 'antd';
 import * as _ from 'lodash'
 import { fieldsArr } from "./fields";
 
@@ -9,6 +9,7 @@ let clgData = {}
 
 const CollapceItem = props => {
   const Panel = Collapse.Panel;
+  const { source: companySource } = props
 
   /** Подготовка входящих данных */
   const fullOrganistionInfo = fieldsArr.map( item => {
@@ -79,7 +80,8 @@ const CollapceItem = props => {
       item.id !== "name"  && 
       item.id !== "fns"  && 
       item.id !== "sanctions"  && 
-      item.id !== "sanctions"  && 
+      item.id !== "inn"  && 
+      item.id !== "ogrn"  && 
       item.id !== "isponlit_proizvodstva"  && 
       item.id !== "full_name") {
       const red = (item.id === "fns" || item.id === "sanctions") ? " red" : ''
@@ -94,37 +96,46 @@ const CollapceItem = props => {
     }
   })
 
-  const renderHeadsOrgans = fullOrganistionInfo.filter(item => item.id === "heads" || item.id === "befenicials" || item.id === "founders_ul" || item.id === "founders_fl")
-
-  console.log('renderHeadsOrgans', renderHeadsOrgans)
-
-  const text = `A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.`;
-
-  return (
-    <Collapse defaultActiveKey={['1']} onChange={callback}>
-      <Panel header="Общая информация" key="1" showArrow={false}>
-        <div>{renderFieldArr}</div>
-      </Panel>
-      <Panel header="Руководящие органы" key="2" forceRender>
-        <Collapse onChange={callback}>
-          <Panel header="Связанные лица" key="1" forceRender>
-            <Collapse onChange={callback}>
-              <Panel header="Руководство" key="1" forceRender>
-                <div>{text}</div>
+  const renderLeftSideInfo = () => {
+    return (
+      <>
+        <Panel header="Общая информация" key="1" showArrow={false}>
+            <div>{renderFieldArr}</div>
+          </Panel>
+          <Panel header="Руководящие органы" key="2" forceRender>
+            <Collapse onChange={callback} expandIcon={({isActive}) => <Icon type="plus-square" rotate={isActive ? 90 : 0}/>}>
+              <Panel header="Связанные лица" key="1" forceRender>
+                <Collapse onChange={callback} expandIcon={({isActive}) => <Icon type="plus-square" rotate={isActive ? 90 : 0}/>}>
+                  <Panel header="Руководство" key="1" forceRender>
+                    <div>{text}</div>
+                  </Panel>
+                  <Panel header="Собственники" key="2" forceRender>
+                    <div>{text}</div>
+                  </Panel>
+                  <Panel header="Бенефициары" key="3" forceRender>
+                    <div>{text}</div>
+                  </Panel>
+                </Collapse>
               </Panel>
-              <Panel header="Собственники" key="2" forceRender>
-                <div>{text}</div>
-              </Panel>
-              <Panel header="Бенефициары" key="3" forceRender>
+              <Panel header="Совладельцы" key="2" forceRender>
                 <div>{text}</div>
               </Panel>
             </Collapse>
           </Panel>
-          <Panel header="Совладельцы" key="2" forceRender>
-            <div>{text}</div>
-          </Panel>
-        </Collapse>
-      </Panel>
+      </>
+    )
+  }
+
+  // const renderHeadsOrgans = fullOrganistionInfo.filter(item => item.id === "heads" || item.id === "befenicials" || item.id === "founders_ul" || item.id === "founders_fl")
+  const text = `A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.`;
+
+  return (
+    <Collapse 
+      defaultActiveKey={['1']} 
+      onChange={callback}
+      expandIcon={({isActive}) => <Icon type="plus-square" rotate={isActive ? 90 : 0}/>}
+    >
+      { companySource ? renderLeftSideInfo() : null }
     </Collapse>
   )
 }

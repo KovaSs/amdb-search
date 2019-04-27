@@ -5,14 +5,16 @@ import "./collapce-container.scss";
 
 
 const CollapceContainer = props => {
-  const { companyResponse } = props.store
+  const { companyResponse : { heads, management_companies, founders_fl, founders_ul, befenicials, arbiter, fns, inn, ogrn, name, full_name, ...companySource}} = props.store
+  const managementSource = { heads, management_companies, founders_fl, founders_ul, befenicials }
+  // const riskSource = { arbiter, fns, sanctions, isponlit_proizvodstva }
   return (
     <Row className="table-info">
       <Col span={12}>
-        <CollapceItem source={companyResponse}/>
+        <CollapceItem source={companySource}/>
       </Col>
       <Col span={12}>
-        <CollapceItem source={companyResponse}/>
+        <CollapceItem source={managementSource}/>
       </Col>
     </Row>
   );
