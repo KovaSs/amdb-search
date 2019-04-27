@@ -77,6 +77,10 @@ const CollapceItem = props => {
       item.id !== "heads"  && 
       item.id !== "management_companies" && 
       item.id !== "name"  && 
+      item.id !== "fns"  && 
+      item.id !== "sanctions"  && 
+      item.id !== "sanctions"  && 
+      item.id !== "isponlit_proizvodstva"  && 
       item.id !== "full_name") {
       const red = (item.id === "fns" || item.id === "sanctions") ? " red" : ''
       return (
