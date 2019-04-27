@@ -43,11 +43,13 @@
   //   padding: 0;
   // }
 
-  .tabs-info, .main-info{
+  .tabs-info {
     margin: 2rem 4rem;
     &__organisation {
       &-info {
-        margin: 0 0.5rem 0.5rem !important;
+        border-bottom: 1px solid #e8e8e8;
+        // margin: 0 0.5rem 0.5rem;
+        // padding: 0.3rem;
         .lable {
           text-align: left;
           font-weight: bold;
@@ -76,12 +78,11 @@
     }
   }
 
-  // 0 2rem 1rem 2rem;
   .main-info{
     margin: 2rem 4rem;
     &__organisation {
       &-info {
-        margin: 1rem;
+        margin: 0 0.5rem 0.5rem;
         .lable {
           text-align: left;
           font-weight: bold;
