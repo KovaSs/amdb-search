@@ -3,7 +3,7 @@ import { Row, Col, Form, Input, Button, Select } from "antd";
 import MainCompanyInfo from "./MainCompanyInfo";
 import "./search-company.scss"
 
-/** get mock data */
+/** Получение данных из mock data */
 import { companyResponse } from "../../../../store/mock";
 
 
@@ -60,7 +60,8 @@ class SearchCompanyInput extends Component {
             })
           )
         }, 2000);
-        console.log('Полученные значения формы: ', values);
+        // console.log('Полученные значения формы: ', values);
+        /** Сохранение данных в state */
         // this.changeValue()
       }
     });
