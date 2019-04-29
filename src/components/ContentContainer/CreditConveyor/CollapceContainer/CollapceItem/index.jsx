@@ -4,7 +4,8 @@ import { trasform } from "../../../../../services/transformData";
 
 const CollapceItem = props => {
   const Panel = Collapse.Panel;
-  const { companySource, managementSource, riskSource } = props
+  const { companySource, riskSource } = props
+  // const { managementSource } = props
 
   /** Преобразование входящих данных из props */
   const fullOrganistionInfo = trasform._companySource(companySource)
@@ -83,7 +84,7 @@ const CollapceItem = props => {
         <Panel header="Арбитраж" key="1" showArrow={false}>
             <div>{renderFieldArr}</div>
           </Panel>
-          <Panel header="Руководящие органы" key="2" forceRender>
+          <Panel header="Стоп-лист аналитика" key="2" forceRender>
             <Collapse onChange={callback} expandIcon={({isActive}) => <Icon type="plus-square" rotate={isActive ? 90 : 0}/>}>
               <Panel header="Связанные лица" key="1" forceRender>
                 <Collapse onChange={callback} expandIcon={({isActive}) => <Icon type="plus-square" rotate={isActive ? 90 : 0}/>}>
