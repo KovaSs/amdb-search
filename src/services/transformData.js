@@ -5,7 +5,8 @@ class TransformData {
   _transformAllData = inputData => {
     const Field = (title, data) => ({ title, data })
     let clgData = {}
-    const fullOrganistionInfo = fieldsArr.map( item => {      
+    const cloneFieldsArr = _.cloneDeep(fieldsArr);
+    const fullOrganistionInfo = cloneFieldsArr.map( item => {      
       const _arbiterTransform = item => {
         return item = [{
           key: '1',
@@ -57,7 +58,8 @@ class TransformData {
   _companySource = inputData => {
     const Field = (title, data) => ({ title, data })
     let clgData = {}
-    const fullOrganistionInfo = fieldsArr.map( item => {
+    const cloneFieldsArr = _.cloneDeep(fieldsArr);
+    const fullOrganistionInfo = cloneFieldsArr.map( item => {
       for (const el in inputData) {
         if(item.id === el ) {
           clgData[el] = new Field(item.title, inputData[el])
@@ -73,7 +75,8 @@ class TransformData {
   _managementSource = inputData => {
     const Field = (title, data) => ({ title, data })
     let clgData = {}
-    const fullOrganistionInfo = fieldsArr.map( item => {
+    const cloneFieldsArr = _.cloneDeep(fieldsArr);
+    const fullOrganistionInfo = cloneFieldsArr.map( item => {
       for (const el in inputData) {
         if(item.id === el ) {
           clgData[el] = new Field(item.title, inputData[el])
@@ -84,6 +87,23 @@ class TransformData {
     })
     console.table(clgData)
     return fullOrganistionInfo
+  }
+
+  _riskSource = inputData => {
+    const Risk = (title, data) => ({ title, data })
+    let clgRiskData = {}
+    const cloneFieldsArr = _.cloneDeep(fieldsArr);
+    const riskOrganistionInfo = cloneFieldsArr.map( item => {
+      for (const el in inputData) {
+        if(item.id === el ) {
+          clgRiskData[el] = new Risk(item.title, inputData[el])
+          return _.assign(item, { "data" : inputData[el]})
+        }
+      }
+      return item
+    })
+    console.table(clgRiskData)
+    return riskOrganistionInfo
   }
 
 

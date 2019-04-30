@@ -12,9 +12,9 @@ app.all("/cgi-bin/serg/0/6/9/reports/186/report_nalogi_tCIT_Compliance_Cyprus", 
 
 app.listen(4000, err => {
   if (err) {
-    console.log(`error`)
+    console.log(`Error server listen`)
   }
-  console.log(`server listen`)
+  console.log(`Server listen`)
 })
 
 function listenServer(_request, response, url) {
