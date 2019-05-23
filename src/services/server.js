@@ -12,9 +12,9 @@ app.all("/cgi-bin/serg/0/6/9/reports/186/report_nalogi_tCIT_Compliance_Cyprus", 
 
 app.listen(4000, err => {
   if (err) {
-    console.log(`error`)
+    console.log(`Error server listen`)
   }
-  console.log(`server listen`)
+  console.log(`Server listen`)
 })
 
 function listenServer(_request, response, url) {
@@ -24,9 +24,26 @@ function listenServer(_request, response, url) {
   });
   
   if (Object.keys(_request.body).length == 0) {
-    response.end("good");
+    console.log('===>','GET Request:', _request._parsedUrl.search)
+    console.time("Response answer time")
+    request({
+      method: "GET",
+      uri: `${url}${_request._parsedUrl.search}`,
+      auth: {
+        user: "gpbu7806",
+        password: "Den085317"
+      },
+      form: _request.body
+    }, (...arr) => {
+      console.log('<===','GET Response:', arr[2])
+      console.timeEnd("Response answer time");
+      response.set({
+        'Content-Type': 'application/json'
+      });
+      response.json(arr[2]);
+    })
   } else {
-    console.log('===>','Request', _request.body)
+    console.log('===>','POST Request', _request.body)
     request({
       method: "POST",
       uri: url,
@@ -34,13 +51,9 @@ function listenServer(_request, response, url) {
         user: "gpbu7806",
         password: "Den085317"
       },
-      // auth: {
-      //   user: "gpbu4405",
-      //   password: "2k6ZVrGU4s!!"
-      // },
       form: _request.body
     }, (...arr) => {
-      console.log('<===','Response', arr[2])
+      console.log('<===','POST Response', arr[2])
       response.set({
         'Content-Type': 'application/json'
       });

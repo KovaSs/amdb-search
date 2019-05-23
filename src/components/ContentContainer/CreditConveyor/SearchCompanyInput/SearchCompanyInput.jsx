@@ -1,13 +1,18 @@
 import React, { Component } from 'react'
 import { Row, Col, Form, Input, Button, Select } from "antd";
+import MainCompanyInfo from "./MainCompanyInfo";
 import "./search-company.scss"
 
-/** get mock data */
+/** Получение данных из mock data */
 import { companyResponse } from "../../../../store/mock";
 
 
 
 class SearchCompanyInput extends Component {
+  state = {
+    showInfo : false,
+    clearField : false
+  }
 
   changeValue = () => {
     const { actionChangeInn, actionChangeOgrn } = this.props.store
@@ -22,25 +27,56 @@ class SearchCompanyInput extends Component {
       }
     }, 100);
   }
-  
+
+  componentWillReceiveProps(nextProps) {
+    const { companyResponse } = this.props.store
+    if(nextProps.companyResponse !== companyResponse) {
+      this.setState({
+        showInfo: true
+      })
+    }
+  }
+
+  componentDidMount() {
+    const { companyResponse } = this.props.store
+    if(companyResponse) {
+      this.setState({
+        showInfo: true
+      })
+    }
+  }
+
   handleSubmit = (e) => {  
     const { loadingCompanyInfo, loadCompanyInfo } = this.props.store
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         loadingCompanyInfo()
+        /** Симуляция получения данных от сервера */
         setTimeout(() => {
           loadCompanyInfo(companyResponse)
+          this.setState ({
+            showInfo: true
+          })
         }, 2000);
-        console.log('Полученные значения формы: ', values);
-        this.changeValue()
+        // console.log('Полученные значения формы: ', values);
+        /** Сохранение данных в state */
+        // this.changeValue()
       }
     });
   }
 
+  clearSearchField = () => {
+    this.setState({
+      showInfo: false,
+      clearField: true
+    })
+  }
+  
   getFields = () => {
     const { getFieldDecorator } = this.props.form;
     const { Option } = Select;
+    const { showInfo } = this.state
     const prefixSelector = getFieldDecorator('prefix', {
       initialValue: 'inn',
     })(
@@ -52,22 +88,27 @@ class SearchCompanyInput extends Component {
 
     return (
       <Row>
-        <Col span={24}>Поиск организации:</Col>
-        <Col span={22}>
-          <Form.Item >
+        <Col span={6}>
+          <Form.Item>
             {getFieldDecorator('data', {
               rules: [
                 { required: true, message: 'Строка поиска не должна быть пустой!' },
                 { pattern: '^[0-9]+$', message: 'Поисковой запрос должен состоять из цифр!'}
               ],
             })(
-              <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
+              <Input addonBefore={prefixSelector} style={{ width: '100%' }} disabled={showInfo}/>
             )}
           </Form.Item>
         </Col>
         <Col span={2}>
-          <Button className="search-btn" type="primary" htmlType="submit" style={{width: "100%"}}>Поиск</Button>
+          { showInfo ?
+            <Button onClick={this.clearSearchField} className="search-btn" type="primary"> Очистить </Button>:
+            <Button className="search-btn" type="primary" htmlType="submit"> Поиск </Button>
+          }
         </Col>
+        { 
+          showInfo ? <MainCompanyInfo />: null
+        }
       </Row>
     )
   }

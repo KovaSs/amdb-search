@@ -50,12 +50,12 @@ class DrawerContainer extends Component {
 
     const { visible } = this.state
     const data = [{ name: '"ООО "БИКОМПАКТ 2.0"' }]
-    const metaData = ["ИНН: 7725735213"]
+    const metaData = ["ИНН: 7725735213", "ОГРН: 1117746763672"]
     const { Item : ListItem  } = List
     const { Meta : ListItemMeta  } = ListItem
 
     const renderMetaData = metaData.map(item => {
-      return <div key = {idGenerator('meta-')}>{item}</div>
+      return <div className="credit-conveyor__risk-factor-meta" key = {idGenerator('meta-')}>{item}</div>
     })
 
     return (

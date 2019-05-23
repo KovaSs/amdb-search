@@ -5,7 +5,7 @@ class OpenBill extends Component {
   render() {
     return(
       <div>
-        Открыть счет!
+        <iframe src="https://10.96.205.191/cgi-bin/serg/0/6/9/reports/276/konttur_focus_viewer_new4.pl" title="open-bill" width="100%" height="900px"></iframe>
       </div>
     )
   }

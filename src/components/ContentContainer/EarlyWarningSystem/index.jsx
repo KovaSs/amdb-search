@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import "./early-warning-system.scss"
 
-class OpenAnAccount extends Component {
+class EarlyWarningSystem extends Component {
   render() {
     return(
       <div>
-        Система раннего предупреждения!
+        <iframe src="https://10.96.205.191/cgi-bin/serg/0/6/9/reports/274/aprove_indicators_interface.pl" title="early-warning-system" width="100%" height="900px"></iframe>
       </div>
     )
   }
 }
 
-export default OpenAnAccount
+export default EarlyWarningSystem

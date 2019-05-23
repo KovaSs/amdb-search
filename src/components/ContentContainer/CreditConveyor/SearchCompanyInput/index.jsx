@@ -5,11 +5,18 @@ import SearchCompanyInput from "./SearchCompanyInput";
 
 const Container = props => <SearchCompanyInput store={props}/>
 
-const putActionsToProps =  {
-    actionChangeInn,
-    actionChangeOgrn,
-    loadingCompanyInfo,
-    loadCompanyInfo
+const putStateToProps = state => {
+  const {creditConveyor : { companyResponse }} = state
+  return {
+    companyResponse
+  }
 }
 
-export default connect(null, putActionsToProps)(Container)
+const putActionsToProps =  {
+  actionChangeInn,
+  actionChangeOgrn,
+  loadingCompanyInfo,
+  loadCompanyInfo
+}
+
+export default connect(putStateToProps, putActionsToProps)(Container)
