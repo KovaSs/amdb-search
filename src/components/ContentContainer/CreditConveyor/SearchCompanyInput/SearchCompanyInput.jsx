@@ -11,6 +11,7 @@ import { companyResponse } from "../../../../store/mock";
 class SearchCompanyInput extends Component {
   state = {
     showInfo : false,
+    clearField : false
   }
 
   changeValue = () => {
@@ -54,17 +55,22 @@ class SearchCompanyInput extends Component {
         /** Симуляция получения данных от сервера */
         setTimeout(() => {
           loadCompanyInfo(companyResponse)
-          this.setState (
-            this.setState({
-              showInfo: true
-            })
-          )
+          this.setState ({
+            showInfo: true
+          })
         }, 2000);
         // console.log('Полученные значения формы: ', values);
         /** Сохранение данных в state */
         // this.changeValue()
       }
     });
+  }
+
+  clearSearchField = () => {
+    this.setState({
+      showInfo: false,
+      clearField: true
+    })
   }
   
   getFields = () => {
@@ -90,12 +96,15 @@ class SearchCompanyInput extends Component {
                 { pattern: '^[0-9]+$', message: 'Поисковой запрос должен состоять из цифр!'}
               ],
             })(
-              <Input addonBefore={prefixSelector} style={{ width: '100%' }}/>
+              <Input addonBefore={prefixSelector} style={{ width: '100%' }} disabled={showInfo}/>
             )}
           </Form.Item>
         </Col>
         <Col span={2}>
-          <Button className="search-btn" type="primary" htmlType="submit">Поиск</Button>
+          { showInfo ?
+            <Button onClick={this.clearSearchField} className="search-btn" type="primary"> Очистить </Button>:
+            <Button className="search-btn" type="primary" htmlType="submit"> Поиск </Button>
+          }
         </Col>
         { 
           showInfo ? <MainCompanyInfo />: null

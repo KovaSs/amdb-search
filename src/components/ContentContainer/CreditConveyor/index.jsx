@@ -10,7 +10,8 @@ class CreditConveyor extends Component {
   state = {
     /** propdaction => showTable : false */
     showTable : false,
-    loading : false
+    loading : false,
+    newConveyor: true
   }  
 
   componentWillReceiveProps(nextProps) {
@@ -41,9 +42,9 @@ class CreditConveyor extends Component {
   }
 
   render() {
-    const { showTable, loading } = this.state
+    const { showTable, loading, newConveyor } = this.state
 
-    return (
+    const newCreditConveyor = (
       <Row className="credit-conveyor">
         <Col span={17}>
           <SearchCompanyInput />
@@ -66,6 +67,15 @@ class CreditConveyor extends Component {
           }
         </Col>
       </Row>
+    )
+
+    return (
+      <>
+        { newConveyor ?
+          newCreditConveyor :
+          <iframe src="https://10.96.205.191/cgi-bin/serg/0/6/9/reports/276/konttur_focus_viewer_new2.pl" title="credit-conveyor" width="100%" height="900px"></iframe>
+        }
+      </>
     );
   }
 }
