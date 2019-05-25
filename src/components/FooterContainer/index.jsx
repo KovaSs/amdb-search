@@ -7,7 +7,8 @@ export class FooterContainer extends Component {
     const date = new Date();
     return (
       <Footer>
-        <b>ГАЗПРОМБАНК</b> ©{ date.getFullYear() }
+        <img className="cot-logo-img" src={process.env.PUBLIC_URL + 'img/cot-logo.png'} alt={"logo"} />
+        <b>ЦЕНТР ОТКРЫТЫХ СИСТЕМ</b> ©{ date.getFullYear() }
       </Footer>
     )
   }
