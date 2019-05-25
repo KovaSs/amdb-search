@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Spin, Col, Row, Switch } from "antd";
 import CollapceContainer from "./CollapceContainer";
 import SearchCompanyInput from "./SearchCompanyInput";
-import DrawerContainer from "./DrawerContainer";
+// import DrawerContainer from "./DrawerContainer";
 import "./сredit-сonveyor.scss"
 
 class CreditConveyor extends Component {
@@ -63,14 +63,6 @@ class CreditConveyor extends Component {
                 <div>Для поиска информации об организации введите ИНН или ОГРН в поисковую строку</div>
               }
             </div>
-          }
-        </Col>
-        <Col span={7}>
-          {
-            showTable ?
-            <div className="credit-conveyor__risk-factor">
-              <DrawerContainer />
-            </div> : null
           }
         </Col>
       </Row>

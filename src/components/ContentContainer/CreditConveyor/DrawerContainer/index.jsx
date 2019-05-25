@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { Drawer, List, Avatar, Divider, Col, Row, Badge } from "antd";
+import { Drawer, Divider, Col, Row } from "antd";
 import { Link } from 'react-router-dom'
-import idGenerator from 'react-id-generator';
-
 
 const pStyle = {
   fontSize: 16,
@@ -35,12 +33,29 @@ const DescriptionItem = ({ title, content }) => (
 );
 
 class DrawerContainer extends Component {
-  state = { visible: false };
-  showDrawer = () => {
-    this.setState({
-      visible: true
-    });
+  state = { 
+    visible: false
   };
+
+  componentWillReceiveProps(nextProps) {
+    const { visible } = this.props
+    if(nextProps.visible === true) {
+      this.setState({
+        visible: visible
+      })
+    } else {
+      this.setState({
+        visible: true
+      })
+    }
+  }
+
+  // showDrawer = () => {
+  //   this.setState({
+  //     visible: true
+  //   });
+  // };
+
   onClose = () => {
     this.setState({
       visible: false
@@ -49,35 +64,8 @@ class DrawerContainer extends Component {
   render() {
 
     const { visible } = this.state
-    const data = [{ name: '"ООО "БИКОМПАКТ 2.0"' }]
-    const metaData = ["ИНН: 7725735213", "ОГРН: 1117746763672"]
-    const { Item : ListItem  } = List
-    const { Meta : ListItemMeta  } = ListItem
-
-    const renderMetaData = metaData.map(item => {
-      return <div className="credit-conveyor__risk-factor-meta" key = {idGenerator('meta-')}>{item}</div>
-    })
-
     return (
       <div>
-        <List
-          dataSource={data}
-          bordered
-          renderItem={ item => (
-            <ListItem
-              key={item.id}
-              actions={[<Link to="#" onClick={this.showDrawer} style={{ maxWidth : "200px"}}>Факторы риска</Link>]}
-            >
-              <ListItemMeta
-                avatar={
-                  <Badge count={2}><Avatar src={process.env.PUBLIC_URL + 'img/logo.png'} /></Badge>
-                }
-                title={<Link to="#">{item.name}</Link>}
-                description={renderMetaData}
-              />
-            </ListItem>
-          )}
-        />
         <Drawer
           width={640}
           placement="right"
