@@ -27,22 +27,22 @@ export class SiderContainer extends Component {
       switch (location.pathname) {
         case "/open-bill":
           this.setState({
-            activePage: "1"
+            activePage: "0"
           });
           break;
         case "/credit-conveyor":
           this.setState({
-            activePage: "2"
+            activePage: "1"
           });
           break;
         case "/electronic-bank-garantees":
           this.setState({
-            activePage: "3"
+            activePage: "2"
           });
           break;
         case "/early-warning-system":
           this.setState({
-            activePage: "4"
+            activePage: "3"
           });
           break;
         default:
