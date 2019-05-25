@@ -60,7 +60,7 @@ export class SiderContainer extends Component {
 
   renderMenuItem = (data, collapsed, calback) => {
     const { Item: MenuItem } = Menu;
-    return data.map( (item, key=0) => {
+    return data.map( (item, key) => {
       return (
         <MenuItem key={key} onClick={calback}>
           {!collapsed ? (

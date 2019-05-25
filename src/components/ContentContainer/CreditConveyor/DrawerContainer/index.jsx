@@ -63,7 +63,7 @@ class DrawerContainer extends Component {
         <List
           dataSource={data}
           bordered
-          renderItem={item => (
+          renderItem={ item => (
             <ListItem
               key={item.id}
               actions={[<Link to="#" onClick={this.showDrawer} style={{ maxWidth : "200px"}}>Факторы риска</Link>]}
