@@ -50,20 +50,13 @@ class DrawerContainer extends Component {
     }
   }
 
-  // showDrawer = () => {
-  //   this.setState({
-  //     visible: true
-  //   });
-  // };
-
   onClose = () => {
     this.setState({
       visible: false
     });
   };
   render() {
-
-    const { visible } = this.state
+    const { visible } = this.state;
     return (
       <div>
         <Drawer

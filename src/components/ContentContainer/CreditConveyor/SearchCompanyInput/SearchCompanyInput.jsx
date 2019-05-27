@@ -88,7 +88,7 @@ class SearchCompanyInput extends Component {
 
     return (
       <Row>
-        <Col span={6}>
+        <Col span={4}>
           <Form.Item>
             {getFieldDecorator('data', {
               rules: [

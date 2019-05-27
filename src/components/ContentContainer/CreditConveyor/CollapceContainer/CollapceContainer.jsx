@@ -11,7 +11,10 @@ const CollapceContainer = props => {
   const riskSource = { arbiter, fns, sanctions, isponlit_proizvodstva }
   return (
     <Row className="table-info">
-      <Col span={8}>
+      <Col span={24}>
+        <CollapceItem description={companySource} />
+      </Col>
+      {/*<Col span={24}>
         <CollapceItem companySource={companySource} managementSource={managementSource}/>
       </Col>
       <Col span={8}>
@@ -19,7 +22,7 @@ const CollapceContainer = props => {
       </Col>
       <Col span={8}>
         <CollapceItem riskSource={riskSource}/>
-      </Col>
+      </Col> */}
     </Row>
   );
 };

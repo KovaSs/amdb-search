@@ -18,13 +18,12 @@ class MainCompanyInfo extends Component {
 
   render() {
     const { name, full_name, inn, ogrn} = this.props.companyResponse;
-    const { showRisk } =this.state;
     return (
       <>
-        <Col span={16} >
+        <Col span={18} >
           <Row className="main-info__organisation-info">
             <Col span={1}>
-              <Badge count={2}><Avatar src={process.env.PUBLIC_URL + 'img/logo.png'} /></Badge>
+              <Avatar src={process.env.PUBLIC_URL + 'img/logo.png'} />
             </Col>
             <Col span={11}>
               <small className="lable">Полное наименование</small>
@@ -41,12 +40,12 @@ class MainCompanyInfo extends Component {
               <div style={{display : "inline-block", textAlign: "left"}} className='descr'>{ ogrn }</div>
             </Col>
             <Col span={3} style={{textAlign : "center"}}>
-              <Button onClick={this.showDrawer} title="Факторы риска"><Icon type="warning" theme="twoTone" twoToneColor="#fd0e0efd" /></Button>
-              <Button title="История"><Icon type="folder-open" theme="twoTone" twoToneColor="#0e75fdfd" /></Button>
+              <Badge count={2} style={{ marginRight: "1rem" }}><Button onClick={this.showDrawer} title="Факторы риска" style={{ marginRight: "1rem" }}><Icon type="warning" style={{ color: "#fd0e0efd" }} /></Button></Badge>
+              <Badge count={0}><Button title="История"><Icon type="file-search" style={{ color: "#0e75fdfd" }} /></Button></Badge>
             </Col>
           </Row>
         </Col>
-        <DrawerContainer visible={showRisk}/>
+        <DrawerContainer visible={this.showDrawer} sourse={this.props.companyResponse}/>
       </>
     )
   }

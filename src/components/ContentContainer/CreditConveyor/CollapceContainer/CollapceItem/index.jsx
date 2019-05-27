@@ -1,19 +1,15 @@
 import React from 'react'
-import { Collapse, Row, Col, Icon, Table } from 'antd';
+import { Collapse, Row, Col, Icon, Table, Descriptions } from 'antd';
 import { trasform } from "../../../../../services/transformData";
 
 const CollapceItem = props => {
   const Panel = Collapse.Panel;
-  const { companySource, riskSource } = props
-  // const { managementSource } = props
+  const { companySource, riskSource, description } = props
 
   /** Преобразование входящих данных из props */
-  const fullOrganistionInfo = trasform._companySource(companySource)
+  const fullOrganistionInfo = trasform._companySource(description)
   // const managementInfo = trasform._managementSource(managementSource)
   const riskInfo = trasform._riskSource(riskSource)
-
-  // console.log('fullOrganistionInfo', fullOrganistionInfo)
-  // console.log('managementInfo', managementInfo)
 
   /** Стандартный функционал отслеживания активный панелей */
   const callback = key => {
@@ -124,8 +120,18 @@ const CollapceItem = props => {
     )
   }
 
+  /** Рендеринг информационных полей организации */
+  const renderDescriptionInfo = fullOrganistionInfo.map(item => {
+    const { Item : DescriptionsItem } = Descriptions;
+    return (
+      <DescriptionsItem id={item.id} key={item.id} label={item.title}>{item.data || "нет"}</DescriptionsItem>
+    )
+  })
+
   // const renderHeadsOrgans = fullOrganistionInfo.filter(item => item.id === "heads" || item.id === "befenicials" || item.id === "founders_ul" || item.id === "founders_fl")
   const text = `A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.`;
+
+  console.log('description', fullOrganistionInfo)
 
   return (
     <>
@@ -146,6 +152,19 @@ const CollapceItem = props => {
         >
           { renderRiskFactorInfo() }
         </Collapse> : null
+      }
+      { description ?
+        <Collapse 
+          defaultActiveKey={['1', '2']} 
+          onChange={callback}
+          expandIcon={({isActive}) => <Icon type="plus-square" rotate={isActive ? 90 : 0}/> }
+        >
+          <Panel header="Общая информация" key="1" showArrow={false}>
+            <Descriptions bordered border size="small">
+              { renderDescriptionInfo }
+            </Descriptions> 
+          </Panel>
+        </Collapse>: null
       }
     </>
   )
