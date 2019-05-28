@@ -58,7 +58,7 @@ class SearchCompanyInput extends Component {
           this.setState ({
             showInfo: true
           })
-        }, 2000);
+        }, 1000);
         // console.log('Полученные значения формы: ', values);
         /** Сохранение данных в state */
         // this.changeValue()

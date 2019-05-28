@@ -61,7 +61,7 @@ const CollapceItem = props => {
             expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"} />}
             style={{marginTop: "5px"}}
           >
-            <Panel header="Арбитраж" key="1" showArrow={false}>
+            <Panel header="Стоп-листы" key="1" showArrow={false}>
               { renderStopListFields }
             </Panel>
           </Collapse> 
@@ -73,8 +73,8 @@ const CollapceItem = props => {
             expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"} />}
             style={{marginTop: "5px"}}
           >
-            <Panel header="Стоп-листы" key="2" forceRender showArrow={false}>
-            { renderAbiterTable() }
+            <Panel header="Арбитраж" key="2" forceRender showArrow={false}>
+              { renderAbiterTable() }
             </Panel>
           </Collapse> 
         </Col>

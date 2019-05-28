@@ -34,10 +34,14 @@ class MainCompanyInfo extends Component {
               <div className='descr'>{ name }</div>
             </Col>
             <Col span={4}>
-              <small className="lable">ИНН</small>
-              <div style={{display : "inline-block"}} className='descr'>{ inn }</div>
-              <small className="lable">ОГРН</small>
-              <div style={{display : "inline-block", textAlign: "left"}} className='descr'>{ ogrn }</div>
+              <div>
+                <small className="lable">ИНН</small>
+                <div style={{display : "inline-block"}} className='descr'>{ inn }</div>
+              </div>
+              <div>
+                <small className="lable">ОГРН</small>
+                <div style={{display : "inline-block"}} className='descr'>{ ogrn }</div>
+              </div>
             </Col>
             <Col span={3} style={{textAlign : "center"}}>
               <Badge count={2} style={{ marginRight: "1rem" }}><Button onClick={this.showDrawer} title="Факторы риска" style={{ marginRight: "1rem" }}><Icon type="warning" style={{ color: "#fd0e0efd" }} /></Button></Badge>
