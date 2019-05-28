@@ -42,9 +42,9 @@ const CollapceItem = props => {
       const red = (item.id === "fns" || item.id === "sanctions" || item.id === "isponlit_proizvodstva") ? " red" : ''
       if( item.data !== "" && item.id !== "arbiter") {
         return (
-          <Row key={item.id}>
-            <Divider orientation="left">{ item.title }</Divider>
-            <Col span={24} className={'descr' + red}>{`${item.data}` }</Col>
+          <Row key={item.id} className="stop-list">
+            <div className="label">{ item.title }</div>
+              {`${item.data}` }
           </Row>
         )
       } else {

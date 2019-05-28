@@ -22,9 +22,26 @@
     font-size: 0.8rem;
   }
 
-  .descr {
-    &.red {
-      color: red;
+  .stop-list {
+    color: red;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .label {
+      color: rgba(0, 0, 0, 0.85);
+      display: inline-block;
+      margin-right: 5px;
+      &:after {
+        content: ':';
+        font-weight: normal;
+        margin-left: 5px;
+      }
+    }
+  
+    .ant-divider-horizontal {
+      margin: 2px 0;
     }
   }
 
