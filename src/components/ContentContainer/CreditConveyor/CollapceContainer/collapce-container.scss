@@ -27,5 +27,11 @@
       color: red;
     }
   }
+
+  &-panel{
+    .ant-collapse-header {
+      padding: 8px 40px !important;
+    }
+  }
 }
 
