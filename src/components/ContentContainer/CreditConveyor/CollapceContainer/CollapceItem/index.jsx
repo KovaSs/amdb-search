@@ -1,5 +1,5 @@
 import React from 'react'
-import { Collapse, Col, Row, Icon, Table, Descriptions, Divider } from 'antd';
+import { Collapse, Col, Row, Icon, Table, Descriptions } from 'antd';
 import { trasform } from "../../../../../services/transformData";
 
 const CollapceItem = props => {
@@ -39,7 +39,6 @@ const CollapceItem = props => {
     }
 
     const renderStopListFields = riskInfo.map(item => {
-      const red = (item.id === "fns" || item.id === "sanctions" || item.id === "isponlit_proizvodstva") ? " red" : ''
       if( item.data !== "" && item.id !== "arbiter") {
         return (
           <Row key={item.id} className="stop-list">
@@ -81,8 +80,6 @@ const CollapceItem = props => {
       </>
     )
   }
-  
-  const text = `A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.`;
 
   /** Рендеринг информационных полей об организации */
   const renderCompanySourceDescriptionFields = fullOrganistionInfo.filter(item => {
@@ -105,6 +102,36 @@ const CollapceItem = props => {
     return <DescriptionsItem id={ item.id } key={ item.id } label={ item.title }>{ item.data }</DescriptionsItem>
   })
 
+  /** Вывод данных об руководстве */
+  const renderManagment = searchData => {
+    const heads = managementInfo.find( item => item.id === `${searchData}`)
+    return heads.data.map( (item, key) => {
+      const { first_name, last_name, middle_name, full_name, name, inn } = item
+      const btnExtra = () => (
+        <Icon title="История" className='heads-search-btn' type="file-search" onClick={ e => e.stopPropagation() }/>
+      )
+      return (
+        <Collapse 
+          key={inn}
+          className="managment"
+          defaultActiveKey={['0', '1', '2']} 
+          onChange={callback}
+          bordered={false}
+          expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"} />}
+        >
+          <Panel 
+            key={String(key)}
+            header={searchData === "founders_ul" ? `${name}` : `${last_name} ${middle_name}  ${first_name}`} 
+            extra={btnExtra()}
+          >
+            <div>{searchData === "founders_ul" ? `Название: ${full_name || name}` : `ФИО: ${last_name} ${middle_name}  ${first_name}`}</div>
+            <div>{`ИНН: ${inn}`}</div>
+          </Panel>
+        </Collapse> 
+      )
+    })
+  }
+
   return (
     <>
       { companySource ?
@@ -125,12 +152,17 @@ const CollapceItem = props => {
           </Panel>
           { managementSource ?
               <Panel header="Связанные лица" key="2" forceRender className="table-info-panel">
-              <Collapse onChange={callback} expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"} />}>
+              <Collapse 
+                onChange={callback} 
+                expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"} />}
+                defaultActiveKey={['1', '2']}
+              >
                 <Panel header="Руководители" key="1" forceRender>
-                  <div>{text}</div>
+                  {renderManagment('heads')}
                 </Panel>
                 <Panel header="Состав собственников" key="2" forceRender>
-                  <div>{text}</div>
+                  {renderManagment('founders_fl')}
+                  {renderManagment('founders_ul')}
                 </Panel>
               </Collapse>
             </Panel> : null
