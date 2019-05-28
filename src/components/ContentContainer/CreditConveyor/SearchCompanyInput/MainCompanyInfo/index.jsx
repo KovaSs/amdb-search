@@ -17,7 +17,7 @@ class MainCompanyInfo extends Component {
   };
 
   render() {
-    const { name, full_name, inn, ogrn} = this.props.companyResponse;
+    const { name, full_name, inn, ogrn, fns, sanctions, isponlit_proizvodstva } = this.props.companyResponse;
     return (
       <>
         <Col span={18} >
@@ -44,7 +44,7 @@ class MainCompanyInfo extends Component {
               </div>
             </Col>
             <Col span={3} style={{textAlign : "center"}}>
-              <Badge count={2} style={{ marginRight: "1rem" }}><Button onClick={this.showDrawer} title="Факторы риска" style={{ marginRight: "1rem" }}><Icon type="warning" style={{ color: "#fd0e0efd" }} /></Button></Badge>
+              <Badge count={fns.length + sanctions.length + isponlit_proizvodstva.length} style={{ marginRight: "1rem" }}><Button onClick={this.showDrawer} title="Факторы риска" style={{ marginRight: "1rem" }}><Icon type="warning" style={{ color: "#fd0e0efd" }} /></Button></Badge>
               <Badge count={0}><Button title="История"><Icon type="file-search" style={{ color: "#0e75fdfd" }} /></Button></Badge>
             </Col>
           </Row>
