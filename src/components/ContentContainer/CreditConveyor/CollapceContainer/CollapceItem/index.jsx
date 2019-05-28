@@ -1,15 +1,18 @@
 import React from 'react'
-import { Collapse, Row, Col, Icon, Table, Descriptions } from 'antd';
+import { Collapse, Col, Row, Icon, Table, Descriptions, Divider } from 'antd';
 import { trasform } from "../../../../../services/transformData";
 
 const CollapceItem = props => {
-  const Panel = Collapse.Panel;
-  const { companySource, riskSource, description } = props
+  const { Panel } = Collapse;
+  const { companySource, riskSource } = props
+
 
   /** Преобразование входящих данных из props */
-  const fullOrganistionInfo = trasform._companySource(description)
+  const fullOrganistionInfo = trasform._companySource(companySource)
   // const managementInfo = trasform._managementSource(managementSource)
   const riskInfo = trasform._riskSource(riskSource)
+
+  // console.log('object', managementInfo)
 
   /** Стандартный функционал отслеживания активный панелей */
   const callback = key => {
@@ -73,7 +76,8 @@ const CollapceItem = props => {
     )
   }
 
-  const renderRiskFactorInfo = () => {
+  /** Рендерин данных по стоплистам */
+  const renderStopListsInfo = () => {
     const { arbiter } = riskSource
     /** Табилица арбитраж */
     const renderAbiterTable = () => {
@@ -94,18 +98,17 @@ const CollapceItem = props => {
     }
 
     const renderStopListFields = riskInfo.map(item => {
-      const red = (item.id === "fns" || item.id === "sanctions") ? " red" : ''
+      const red = (item.id === "fns" || item.id === "sanctions" || item.id === "isponlit_proizvodstva") ? " red" : ''
       if( item.data !== "" && item.id !== "arbiter") {
         return (
-          <Row key={item.id} className="tabs-info__organisation-info">
-            <Col span={8} className="lable">{ item.title }</Col>
-            <Col span={16} className={'descr' + red}>{`${item.data}` }</Col>
+          <Row key={item.id}>
+            <Divider orientation="left">{ item.title }</Divider>
+            <Col span={24} className={'descr' + red}>{`${item.data}` }</Col>
           </Row>
         )
       } else {
         return null
       }
-
     })
 
     return (
@@ -113,57 +116,63 @@ const CollapceItem = props => {
         <Panel header="Арбитраж" key="1" showArrow={false}>
           { renderAbiterTable() }
         </Panel>
-        <Panel header="Стоп-лист аналитика" key="2" forceRender showArrow={false}>
+        <Panel header="Стоп-листы" key="2" forceRender showArrow={false}>
           { renderStopListFields }
         </Panel>
       </>
     )
   }
 
-  /** Рендеринг информационных полей организации */
-  const renderDescriptionInfo = fullOrganistionInfo.map(item => {
+  /** Рендеринг информационных полей об организации */
+  const renderCompanySourceDescriptionFields = fullOrganistionInfo.filter(item => {
+    return item.data && 
+      item.id !== "arbiter" && 
+      item.id !== "befenicials" && 
+      item.id !== "founders_fl" && 
+      item.id !== "founders_ul" && 
+      item.id !== "heads"  && 
+      item.id !== "management_companies" && 
+      item.id !== "name"  && 
+      item.id !== "fns"  && 
+      item.id !== "sanctions"  && 
+      item.id !== "inn"  && 
+      item.id !== "ogrn"  && 
+      item.id !== "isponlit_proizvodstva"  && 
+      item.id !== "full_name"
+  }).map(item => {
     const { Item : DescriptionsItem } = Descriptions;
-    return (
-      <DescriptionsItem id={item.id} key={item.id} label={item.title}>{item.data || "нет"}</DescriptionsItem>
-    )
+    return <DescriptionsItem id={ item.id } key={ item.id } label={ item.title }>{ item.data }</DescriptionsItem>
   })
 
-  // const renderHeadsOrgans = fullOrganistionInfo.filter(item => item.id === "heads" || item.id === "befenicials" || item.id === "founders_ul" || item.id === "founders_fl")
   const text = `A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.`;
-
-  console.log('description', fullOrganistionInfo)
 
   return (
     <>
       { companySource ?
-        <Collapse 
-          defaultActiveKey={['1']} 
-          onChange={callback}
-          expandIcon={({isActive}) => <Icon type="plus-square" rotate={isActive ? 90 : 0}/>}
-        >
-          { renderLeftSideInfo() }
-        </Collapse> : null
-      }
-      { riskSource ?
-        <Collapse 
-          defaultActiveKey={['1', '2']} 
-          onChange={callback}
-          expandIcon={({isActive}) => <Icon type="plus-square" rotate={isActive ? 90 : 0}/>}
-        >
-          { renderRiskFactorInfo() }
-        </Collapse> : null
-      }
-      { description ?
         <Collapse 
           defaultActiveKey={['1', '2']} 
           onChange={callback}
           expandIcon={({isActive}) => <Icon type="plus-square" rotate={isActive ? 90 : 0}/> }
         >
           <Panel header="Общая информация" key="1" showArrow={false}>
-            <Descriptions bordered border size="small">
-              { renderDescriptionInfo }
-            </Descriptions> 
+            <Row>
+              <Col span={18}>
+                <Descriptions bordered border size="small" column>
+                  { renderCompanySourceDescriptionFields }
+                </Descriptions>
+              </Col>
+              <Col span={6}>
+                <Collapse 
+                  defaultActiveKey={['1', '2']} 
+                  onChange={callback}
+                  expandIcon={({isActive}) => <Icon type="plus-square" rotate={isActive ? 90 : 0}/>}
+                >
+                  { renderStopListsInfo() }
+                </Collapse> 
+              </Col>
+            </Row>
           </Panel>
+
         </Collapse>: null
       }
     </>

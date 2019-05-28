@@ -2,6 +2,30 @@
   margin:  0 2rem 1rem 2rem;
   .ant-collapse-header {
     // background-color: #24bbf718;
+    padding: 8px 16px !important;
     background-color: #a3d3ff13;
   }
+  .ant-descriptions.bordered.small .ant-descriptions-item-label, .ant-descriptions.bordered.small .ant-descriptions-item-content {
+    padding: 5px;
+  }
+
+  .ant-table-thead > tr > th, .ant-table-tbody > tr > td {
+    padding: 5px;
+  }
+
+  .ant-collapse-content > .ant-collapse-content-box {
+    padding: 12px;
+  }
+
+  .ant-divider-horizontal.ant-divider-with-text, .ant-divider-horizontal.ant-divider-with-text-left, .ant-divider-horizontal.ant-divider-with-text-right {
+    margin: 2px 0;
+    font-size: 0.8rem;
+  }
+
+  .descr {
+    &.red {
+      color: red;
+    }
+  }
 }
+

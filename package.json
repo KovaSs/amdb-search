@@ -1,9 +1,9 @@
 {
   "name": "as-check",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "private": false,
   "homepage": "http://gitlab-cos/gpbu7806/AS-Check",
-  "author": "Den Isaev <denis.isaev@gazprombank.ru>",
+  "author": "Denis Isaev <denis.isaev@gazprombank.ru>",
   "repository": {
     "type": "git",
     "url": "http://gitlab-cos/gpbu7806/AS-Check"
