@@ -11,7 +11,7 @@ class CreditConveyor extends Component {
     /** propdaction => showTable : false */
     showTable : false,
     loading : false,
-    newConveyor: true
+    newConveyor: false
   }  
 
   componentWillReceiveProps(nextProps) {
@@ -73,7 +73,7 @@ class CreditConveyor extends Component {
         <div className="conveyor-version"><Switch onChange={this.toggleVersion} /></div>
         { newConveyor ?
           newCreditConveyor :
-          <iframe src="https://10.96.205.191/cgi-bin/serg/0/6/9/reports/276/konttur_focus_viewer_new2.pl" title="credit-conveyor" width="100%" height="900px"></iframe>
+          <iframe src="https://10.96.205.191/cgi-bin/serg/0/6/9/reports/276/konttur_focus_viewer_new2.pl" title="credit-conveyor" width="100%" height="890px"></iframe>
         }
       </>
     );
