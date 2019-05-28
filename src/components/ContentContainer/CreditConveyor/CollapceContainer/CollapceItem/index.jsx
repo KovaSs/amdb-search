@@ -54,12 +54,30 @@ const CollapceItem = props => {
 
     return (
       <>
-        <Panel header="Арбитраж" key="1" showArrow={false}>
-          { renderAbiterTable() }
-        </Panel>
-        <Panel header="Стоп-листы" key="2" forceRender showArrow={false}>
-          { renderStopListFields }
-        </Panel>
+        <Col span={18}>
+          <Collapse 
+            defaultActiveKey={['1', '2']} 
+            onChange={callback}
+            expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"} />}
+            style={{marginTop: "5px"}}
+          >
+            <Panel header="Арбитраж" key="1" showArrow={false}>
+              { renderStopListFields }
+            </Panel>
+          </Collapse> 
+        </Col>
+        <Col span={6}>
+          <Collapse 
+            defaultActiveKey={['1', '2']} 
+            onChange={callback}
+            expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"} />}
+            style={{marginTop: "5px"}}
+          >
+            <Panel header="Стоп-листы" key="2" forceRender showArrow={false}>
+            { renderAbiterTable() }
+            </Panel>
+          </Collapse> 
+        </Col>
       </>
     )
   }
@@ -97,19 +115,11 @@ const CollapceItem = props => {
         >
           <Panel header="Общая информация" key="1" showArrow={false}>
             <Row>
-              <Col span={18}>
+              <Col span={24}>
                 <Descriptions bordered border size="small" column>
                   { renderCompanySourceDescriptionFields }
                 </Descriptions>
-              </Col>
-              <Col span={6}>
-                <Collapse 
-                  defaultActiveKey={['1', '2']} 
-                  onChange={callback}
-                  expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"} />}
-                >
-                  { renderStopListsInfo() }
-                </Collapse> 
+                { renderStopListsInfo() }
               </Col>
             </Row>
           </Panel>
