@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+// import { dropRight } from 'lodash';
 import { Collapse, Col, Row, Icon, Table, Descriptions } from 'antd';
 import { trasform } from "../../../../../services/transformData";
 
@@ -10,8 +11,6 @@ const CollapceItem = props => {
   const fullOrganistionInfo = trasform._companySource(companySource)
   const managementInfo = trasform._managementSource(managementSource)
   const riskInfo = trasform._riskSource(riskSource)
-
-  console.log('managementInfo', managementInfo)
 
   /** Стандартный функционал отслеживания активный панелей */
   const callback = key => {
@@ -104,6 +103,7 @@ const CollapceItem = props => {
 
   /** Вывод данных об руководстве */
   const renderManagment = searchData => {
+    const activePanel = [];
     const heads = managementInfo.find( item => item.id === `${searchData}`);
 
     const _fouldersFl = ( item, key ) => {
@@ -137,14 +137,22 @@ const CollapceItem = props => {
     const btnExtra = () => (
       <Icon title="История" className='heads-search-btn' type="file-search" onClick={ e => e.stopPropagation() }/>
     )
-
+    
     return heads.data.map( (item, key) => {
+      activePanel.push(String(key))
       const { inn } = item
+      if( searchData === 'founders_fl' && managementInfo.find( item => item.id === `heads`).data.find( el =>  el.inn === item.inn) ) {
+        activePanel.pop()
+      } else if(searchData === 'befenicials' 
+        && managementInfo.find( item => item.id === `founders_fl`).data.find( el =>  el.inn === item.inn)
+        && managementInfo.find( item => item.id === `heads`).data.find( el =>  el.inn === item.inn)) {
+        activePanel.pop()
+      }
       return (
         <Collapse 
           key={inn}
           className="managment"
-          defaultActiveKey={['0', '1', '2', '3', '4']} 
+          defaultActiveKey={activePanel} 
           onChange={callback}
           bordered={false}
           expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"} />}
@@ -182,7 +190,7 @@ const CollapceItem = props => {
             {renderManagment('founders_ul')}
           </Panel>
           <Panel header="Бенефициары" key="4" forceRender className="table-info-panel">
-          {renderManagment('befenicials')}
+            {renderManagment('befenicials')}
           </Panel>
         </Collapse>: null
       }
