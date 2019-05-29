@@ -114,7 +114,7 @@ const CollapceItem = props => {
         <Collapse 
           key={inn}
           className="managment"
-          defaultActiveKey={['0', '1', '2']} 
+          defaultActiveKey={['0', '1', '2', '3', '4']} 
           onChange={callback}
           bordered={false}
           expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"} />}
@@ -136,7 +136,7 @@ const CollapceItem = props => {
     <>
       { companySource ?
         <Collapse 
-          defaultActiveKey={['1', '2']} 
+          defaultActiveKey={['1', '2', '3', '4']} 
           onChange={callback}
           expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"}/> }
         >
@@ -150,23 +150,16 @@ const CollapceItem = props => {
               </Col>
             </Row>
           </Panel>
-          { managementSource ?
-              <Panel header="Связанные лица" key="2" forceRender className="table-info-panel">
-              <Collapse 
-                onChange={callback} 
-                expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"} />}
-                defaultActiveKey={['1', '2']}
-              >
-                <Panel header="Руководители" key="1" forceRender>
-                  {renderManagment('heads')}
-                </Panel>
-                <Panel header="Состав собственников" key="2" forceRender>
-                  {renderManagment('founders_fl')}
-                  {renderManagment('founders_ul')}
-                </Panel>
-              </Collapse>
-            </Panel> : null
-          }
+          <Panel header="Руководители" key="2" forceRender className="table-info-panel">
+            {renderManagment('heads')}
+          </Panel>
+          <Panel header="Состав собственников" key="3" forceRender className="table-info-panel">
+            {renderManagment('founders_fl')}
+            {renderManagment('founders_ul')}
+          </Panel>
+          <Panel header="Бенефициалы" key="4" forceRender className="table-info-panel">
+            <div>Информация о бенифициалах</div>
+          </Panel>
         </Collapse>: null
       }
     </>
