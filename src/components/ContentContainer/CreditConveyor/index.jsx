@@ -3,12 +3,10 @@ import { connect } from "react-redux";
 import { Spin, Col, Row, Switch } from "antd";
 import CollapceContainer from "./CollapceContainer";
 import SearchCompanyInput from "./SearchCompanyInput";
-// import DrawerContainer from "./DrawerContainer";
 import "./сredit-сonveyor.scss"
 
 class CreditConveyor extends Component {
   state = {
-    /** propdaction => showTable : false */
     showTable : false,
     loading : false,
     newConveyor: true

@@ -20,6 +20,7 @@
     "server": "nodemon ./src/services/server.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "publish": "npm publish ./dist",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -42,5 +43,8 @@
     "react-redux": "^6.0.1",
     "redux": "^4.0.1",
     "sass-loader": "^7.1.0"
+  },
+  "publishConfig": {
+    "registry": "http://10.147.4.221:8081/repository/npm/"
   }
 }

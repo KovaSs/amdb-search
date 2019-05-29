@@ -104,12 +104,42 @@ const CollapceItem = props => {
 
   /** Вывод данных об руководстве */
   const renderManagment = searchData => {
-    const heads = managementInfo.find( item => item.id === `${searchData}`)
-    return heads.data.map( (item, key) => {
-      const { first_name, last_name, middle_name, full_name, name, inn } = item
-      const btnExtra = () => (
-        <Icon title="История" className='heads-search-btn' type="file-search" onClick={ e => e.stopPropagation() }/>
+    const heads = managementInfo.find( item => item.id === `${searchData}`);
+
+    const _fouldersFl = ( item, key ) => {
+      const { first_name, last_name, middle_name, inn } = item
+      return (
+        <Panel 
+          key={String(key)}
+          header={ `${last_name} ${middle_name}  ${first_name}` } 
+          extra={btnExtra()}
+        >
+          <div>{`ФИО: ${last_name} ${middle_name}  ${first_name} `}</div>
+          <div>{`ИНН: ${inn}`}</div>
+        </Panel>
       )
+    } 
+
+    const _fouldersUl = ( item, key ) => {
+      const { full_name, name, inn } = item
+      return (
+        <Panel 
+          key={String(key)}
+          header={ `${name}` } 
+          extra={btnExtra()}
+        >
+          <div>{`Название: ${full_name || name}`}</div>
+          <div>{`ИНН: ${inn}`}</div>
+        </Panel>
+      )
+    } 
+
+    const btnExtra = () => (
+      <Icon title="История" className='heads-search-btn' type="file-search" onClick={ e => e.stopPropagation() }/>
+    )
+
+    return heads.data.map( (item, key) => {
+      const { inn } = item
       return (
         <Collapse 
           key={inn}
@@ -119,14 +149,8 @@ const CollapceItem = props => {
           bordered={false}
           expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"} />}
         >
-          <Panel 
-            key={String(key)}
-            header={searchData === "founders_ul" ? `${name}` : `${last_name} ${middle_name}  ${first_name}`} 
-            extra={btnExtra()}
-          >
-            <div>{searchData === "founders_ul" ? `Название: ${full_name || name}` : `ФИО: ${last_name} ${middle_name}  ${first_name}`}</div>
-            <div>{`ИНН: ${inn}`}</div>
-          </Panel>
+          { item.name ? _fouldersUl(item, key) : null }
+          { item.middle_name ? _fouldersFl(item, key) : null }
         </Collapse> 
       )
     })
@@ -157,8 +181,8 @@ const CollapceItem = props => {
             {renderManagment('founders_fl')}
             {renderManagment('founders_ul')}
           </Panel>
-          <Panel header="Бенефициалы" key="4" forceRender className="table-info-panel">
-            <div>Информация о бенифициалах</div>
+          <Panel header="Бенефициары" key="4" forceRender className="table-info-panel">
+          {renderManagment('befenicials')}
           </Panel>
         </Collapse>: null
       }
