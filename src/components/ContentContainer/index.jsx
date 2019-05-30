@@ -6,6 +6,7 @@ import OpenBill from "./OpenBill";
 import CreditConveyor from "./CreditConveyor";
 import EarlyWarningSystem from "./EarlyWarningSystem";
 import ElectronicBankGarantees from "./ElectronicBankGarantees";
+import ObjectRequestItem from "./ElectronicBankGarantees/ObjectRequestItem";
 import { Layout} from 'antd';
 
 export class ContentContainer extends Component {
@@ -19,6 +20,11 @@ export class ContentContainer extends Component {
           <Route path='/open-bill' exact component={OpenBill}/>
           <Route path='/credit-conveyor' exact component={CreditConveyor}/>
           <Route path='/electronic-bank-garantees' exact component={ElectronicBankGarantees}/>
+          <Route path='/electronic-bank-garantees/:id' render={({match}) => {
+            console.log('match', match)
+            const { id } = match.params
+            return <ObjectRequestItem objectInn={id} />
+          }}/>
           <Route path='/early-warning-system' exact component={EarlyWarningSystem}/>
         </div>
       </Content>

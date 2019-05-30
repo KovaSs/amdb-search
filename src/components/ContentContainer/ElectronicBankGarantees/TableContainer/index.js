@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Table, Input, Button, Icon } from 'antd';
+import { withRouter } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
 import moment from 'moment'
 
@@ -132,7 +133,7 @@ class TableContainer extends Component {
         title: '',
         key: 'action',
         render: (text, record) => (
-          <Button> Взять в работу </Button>
+          <Button onClick={ () => this.props.history.push(record.info.inn)}> Взять в работу </Button>
         )
       },
     ];
@@ -149,4 +150,4 @@ class TableContainer extends Component {
   }
 }
 
-export default TableContainer
+export default withRouter(TableContainer)
