@@ -45,7 +45,7 @@ class TableContainer extends Component {
       <div style={{ padding: 8 }}>
         <Input 
           ref={node => { this.searchInput = node; }}
-          placeholder={'Введите поисковое значение'}
+          placeholder={'Введите значение'}
           value={selectedKeys[0]}
           onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
