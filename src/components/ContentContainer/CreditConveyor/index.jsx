@@ -68,7 +68,7 @@ class CreditConveyor extends Component {
 
     return (
       <>
-        <div className="conveyor-version"><Switch onChange={this.toggleVersion} /></div>
+        <div className="conveyor-version"><Switch onChange={this.toggleVersion} checkedChildren="new" unCheckedChildren="old" /></div>
         { newConveyor ?
           newCreditConveyor :
           <iframe src="https://10.96.205.191/cgi-bin/serg/0/6/9/reports/276/konttur_focus_viewer_new4.pl" title="credit-conveyor" width="100%" height="890px"></iframe>
