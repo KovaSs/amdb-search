@@ -1,3 +1,11 @@
 .bank-garanties-container {
   padding: 1rem;
+
+  .ant-table-bordered .ant-table-title + .ant-table-content, .ant-table-bordered .ant-table-title + .ant-table-content table, .ant-table-bordered .ant-table-title + .ant-table-content .ant-table-thead > tr:first-child > th {
+    text-align: center;
+  }
+
+  .ant-table-thead{
+    background-color: #FAFAFA;
+  }
 }
