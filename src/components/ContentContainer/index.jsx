@@ -21,7 +21,6 @@ export class ContentContainer extends Component {
           <Route path='/credit-conveyor' exact component={CreditConveyor}/>
           <Route path='/electronic-bank-garantees' exact component={ElectronicBankGarantees}/>
           <Route path='/electronic-bank-garantees/:id' render={({match}) => {
-            console.log('match', match)
             const { id } = match.params
             return <ObjectRequestItem objectInn={id} />
           }}/>

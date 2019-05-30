@@ -132,9 +132,9 @@ class TableContainer extends Component {
       {
         title: '',
         key: 'action',
-        render: (text, record) => (
-          <Button onClick={ () => this.props.history.push(record.info.inn)}> Взять в работу </Button>
-        )
+        render: (text, record) => {
+          return <Button onClick={ () => this.props.history.push(`/electronic-bank-garantees/${record.info.inn}`)}> Взять в работу </Button>
+        }
       },
     ];
 
