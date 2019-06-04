@@ -8,10 +8,10 @@ export class SiderContainer extends Component {
     collapsed: true,
     activePage: null,
     menu : [
-      {short: "ОС", full: "Открыть счет", link: "/open-bill", icon: "pie-chart"},
-      {short: "KK", full: "Кредитный конвейер", link: "/credit-conveyor", icon: "info-circle"},
-      {short: "ЭБГ", full: "Электронные банковские гарантии", link: "/electronic-bank-garantees", icon: "line-chart"},
-      {short: "СРП", full: "Система раннего предупреждения", link: "/early-warning-system", icon: "desktop"},
+      {short: "Открытие счета", full: "Открытие счета", link: "/open-bill", icon: "pie-chart"},
+      {short: "Кредитный конвеер", full: "Кредитный конвейер", link: "/credit-conveyor", icon: "info-circle"},
+      {short: "Электронные банковские гарантии", full: "Электронные банковские гарантии", link: "/electronic-bank-garantees", icon: "line-chart"},
+      {short: "Система раннего предупреждения", full: "Система раннего предупреждения", link: "/early-warning-system", icon: "desktop"},
     ]
   };
 

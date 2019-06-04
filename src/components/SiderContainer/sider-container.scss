@@ -28,6 +28,11 @@
       }
     }
   }
+  
+  .ant-menu-item > a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   .ant-menu-item.ant-menu-item-active {
     &:hover {
