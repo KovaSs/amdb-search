@@ -29,9 +29,9 @@ const data = [
 
 class TableContainer extends Component {
   state = {
-    searchText: '',
+    searchText: [''],
     loading: false,
-    tableData: ''
+    dataTable: null
   };
 
   componentDidMount() {
@@ -68,10 +68,23 @@ class TableContainer extends Component {
     ),
 
     filterIcon: filtered => (
-      <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
+      <Icon type="search" title="Меню поиска" style={{ color: filtered ? '#1890ff' : undefined }} />
     ),
 
-    onFilter: (value, record) => record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilter: (value, record) => {
+      if(dataIndex !== 'info') {
+        console.log('record-!info', record)
+        console.log('value-!info', value)
+        return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
+      } else {
+        for (const key in record['info']) {
+          console.log('object', record['info'][key])
+          if (record[dataIndex][key].toString().toLowerCase().includes(value.toLowerCase())) {
+            return record[dataIndex][key].toString().toLowerCase().includes(value.toLowerCase())
+          }
+        }
+      }
+    },
 
     onFilterDropdownVisibleChange: visible => {
       if (visible) {
@@ -82,7 +95,7 @@ class TableContainer extends Component {
     render: text => (
       <Highlighter
         highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-        searchWords={[this.state.searchText]}
+        searchWords={this.state.searchText}
         autoEscape
         textToHighlight={text.toString()}
       />
@@ -90,13 +103,14 @@ class TableContainer extends Component {
   });
 
   handleSearch = (selectedKeys, confirm) => {
+    console.log('selectedKeys', selectedKeys)
     confirm();
-    this.setState({ searchText: selectedKeys[0] });
+    this.setState(({searchText}) => { searchText: searchText.push(selectedKeys[0]) })
   };
 
   handleReset = clearFilters => {
     clearFilters();
-    this.setState({ searchText: '' });
+    this.setState({ searchText: [''] });
   };
 
   render() {
@@ -118,6 +132,8 @@ class TableContainer extends Component {
       {
         title: 'Объект запроса',
         key: 'object',
+        dataIndex: 'info',
+        ...this.getColumnSearchProps('info'),
         render: (text, record) => (
           <div>
             <div> {`${ record.info.name }`} </div>
