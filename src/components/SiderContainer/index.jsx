@@ -82,8 +82,8 @@ export class SiderContainer extends Component {
   }
 
   render() {
-    const { activePage, collapsed, menu } = this.state;
-    const { Sider } = Layout;
+    const { activePage, collapsed, menu } = this.state
+    const { Sider } = Layout
     const hidden = collapsed ? " hidden" : ' '
     return (
       <Sider

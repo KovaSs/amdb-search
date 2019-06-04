@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Table, Input, Button, Icon } from 'antd';
+import { Table, Input, Button, Icon, ConfigProvider, Empty } from 'antd';
 import { withRouter } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
 import moment from 'moment'
@@ -139,14 +139,18 @@ class TableContainer extends Component {
     ];
 
     const { dataTable, loading } = this.state
-    return <Table
-      bordered
-      columns={columns}
-      dataSource={dataTable}
-      loading = {loading}
-      title={() => 'Электронные банковские гарантии'}
-      size="small"
-    />;
+    return (
+      <ConfigProvider renderEmpty = { () => <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={<span>Данные отсутствуют</span>} /> } >
+        <Table
+          bordered
+          columns={columns}
+          dataSource={dataTable}
+          loading = {loading}
+          title={() => 'Электронные банковские гарантии'}
+          size="small"
+        />
+      </ConfigProvider>
+    )
   }
 }
 
