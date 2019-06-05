@@ -73,8 +73,6 @@ class TableContainer extends Component {
 
     onFilter: (value, record) => {
       if(dataIndex !== 'info') {
-        console.log('record-!info', record)
-        console.log('value-!info', value)
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
       } else {
         for (const key in record['info']) {
@@ -129,18 +127,46 @@ class TableContainer extends Component {
       },
       {
         title: 'Объект запроса',
-        key: 'object',
+        key: 'info',
         dataIndex: 'info',
         ...this.getColumnSearchProps('info'),
         render: (text, record) => (
-          <div>
-            <div> {`${ record.info.name }`} </div>
-            <small><b>ИНН:</b> { record.info.inn }</small>{"  "}
+          <>
+            <div>
+              <Highlighter
+                highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }} 
+                searchWords={this.state.searchText} 
+                autoEscape 
+                textToHighlight={record.info.name.toString()}
+              /> 
+            </div>
+            <small><b>ИНН: </b>
+              <Highlighter
+                highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }} 
+                searchWords={this.state.searchText} 
+                autoEscape 
+                textToHighlight={record.info.inn.toString()}
+              />
+            </small>{"  "}
             { record.info.ogrn ?
-              <small><b>ОГРН:</b> { record.info.ogrn }</small> :
-              <small><b>Дата рождения:</b> {  `${moment(record.info.birthday).format('DD.MM.YYYY')}г.` }</small> 
+              <small><b>ОГРН: </b>
+                <Highlighter
+                  highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }} 
+                  searchWords={this.state.searchText} 
+                  autoEscape 
+                  textToHighlight={ record.info.ogrn.toString()}
+                />
+              </small> :
+              <small><b>Дата рождения: </b> 
+                <Highlighter
+                  highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }} 
+                  searchWords={this.state.searchText} 
+                  autoEscape 
+                  textToHighlight={ (`${moment(record.info.birthday).format('DD.MM.YYYY')}г.`).toString()}
+                />
+              </small> 
             }
-          </div>
+          </>
         ),
       },
       {
