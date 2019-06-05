@@ -161,7 +161,11 @@ class TableContainer extends Component {
           bordered
           columns={columns}
           dataSource={dataTable}
-          loading = {loading}
+          loading = {{
+            spinning: loading,
+            size:"large",
+            tip:"Идет запрос данных"
+          }}
           title={() => 'Электронные банковские гарантии'}
           size="small"
         />
