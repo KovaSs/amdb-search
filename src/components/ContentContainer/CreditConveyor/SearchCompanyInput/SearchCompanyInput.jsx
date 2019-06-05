@@ -55,7 +55,7 @@ class SearchCompanyInput extends Component {
             showInfo: true,
             clearField: false
           })
-        }, 1000);
+        }, 3000);
       }
     });
     console.log('handleSubmit', this.state)

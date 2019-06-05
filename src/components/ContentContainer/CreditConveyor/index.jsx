@@ -54,13 +54,12 @@ class CreditConveyor extends Component {
         <Col span={24}>
           <SearchCompanyInput />
           { showTable ?
-            <CollapceContainer /> : 
-            <div className="search-result-table">
-              { loading ?
-                <Spin size="large" /> :
+            <CollapceContainer loading={loading}/> : 
+            <Spin spinning={loading} size="large" delay={200} tip="Идет поиск данных" >
+              <div className="search-result-table">
                 <div>Для поиска информации об организации введите ИНН или ОГРН в поисковую строку</div>
-              }
-            </div>
+              </div>
+            </Spin>
           }
         </Col>
       </Row>
