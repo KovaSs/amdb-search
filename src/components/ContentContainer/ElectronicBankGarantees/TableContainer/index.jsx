@@ -38,7 +38,7 @@ class TableContainer extends Component {
     this.setState({loading : true})
     setTimeout(() => {
       this.setState({loading : false, dataTable : data})
-    }, 3000);
+    }, 1000);
   }
 
   getColumnSearchProps = dataIndex => ({
@@ -61,7 +61,7 @@ class TableContainer extends Component {
         >
           Поиск
         </Button>
-        <Button onClick={() => this.handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+        <Button onClick={() => this.handleReset(selectedKeys, clearFilters)} size="small" style={{ width: 90 }}>
           Сбросить
         </Button>
       </div>
@@ -104,15 +104,17 @@ class TableContainer extends Component {
     this.setState(({searchText}) => { searchText.push(selectedKeys[0]) })
   };
 
-  handleReset = clearFilters => {
-    clearFilters();
-    this.setState({ searchText: [''] });
+  handleReset = (selectedKeys, clearFilters) => {
+    const {searchText} = this.state
+    const newSearchText = searchText.filter(item => item !== selectedKeys[0])
+    clearFilters()
+    this.setState({ searchText:  newSearchText})
   };
 
   render() {
     const columns = [
       {
-        title: '№ п/п',
+        title: '№ запроса',
         dataIndex: 'number',
         key: 'number',
         width: '10%',
