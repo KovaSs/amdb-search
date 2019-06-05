@@ -29,7 +29,7 @@ const data = [
 
 class TableContainer extends Component {
   state = {
-    searchText: [''],
+    searchText: [],
     loading: false,
     dataTable: null
   };
@@ -78,7 +78,6 @@ class TableContainer extends Component {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
       } else {
         for (const key in record['info']) {
-          console.log('object', record['info'][key])
           if (record[dataIndex][key].toString().toLowerCase().includes(value.toLowerCase())) {
             return record[dataIndex][key].toString().toLowerCase().includes(value.toLowerCase())
           }
@@ -103,9 +102,8 @@ class TableContainer extends Component {
   });
 
   handleSearch = (selectedKeys, confirm) => {
-    console.log('selectedKeys', selectedKeys)
     confirm();
-    this.setState(({searchText}) => { searchText: searchText.push(selectedKeys[0]) })
+    this.setState(({searchText}) => { searchText.push(selectedKeys[0]) })
   };
 
   handleReset = clearFilters => {
