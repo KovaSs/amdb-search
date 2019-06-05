@@ -17,12 +17,18 @@ class SearchCompanyInput extends Component {
   componentWillReceiveProps(nextProps) {
     const { companyResponse } = this.props.store
     const { clearField } = this.state
-    if(!clearField && nextProps.companyResponse !== companyResponse) {
+    if(clearField && nextProps.companyResponse !== companyResponse) {
       this.setState({
         showInfo: true,
         clearField : false
       })
+    } else {
+      this.setState({
+        showInfo: false,
+        clearField : false
+      })
     }
+    console.log('componentWillReceiveProps', this.state)
   }
   
   componentDidMount() {
@@ -33,8 +39,9 @@ class SearchCompanyInput extends Component {
         showInfo: true
       })
     }
+    console.log('componentDidMount', this.state)
   }
-
+  
   handleSubmit = e => {  
     const { loadingCompanyInfo, loadCompanyInfo } = this.props.store
     e.preventDefault();
@@ -46,10 +53,12 @@ class SearchCompanyInput extends Component {
           loadCompanyInfo(companyResponse)
           this.setState ({
             showInfo: true,
+            clearField: false
           })
         }, 1000);
       }
     });
+    console.log('handleSubmit', this.state)
   }
 
   clearSearchField = () => {
@@ -61,6 +70,7 @@ class SearchCompanyInput extends Component {
       showInfo: false,
       clearField : true
     })
+    console.log('clearSearchField', this.state)
   }
   
   getFields = () => {
@@ -94,6 +104,7 @@ class SearchCompanyInput extends Component {
   }
 
   render() {
+    console.log('render', this.state)
     return (
       <Form className="ant-advanced-search-form" onSubmit={this.handleSubmit}>
         { this.getFields() }
