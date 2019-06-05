@@ -1,4 +1,4 @@
-import { ACTION_CHANGE_INN, ACTION_CHANGE_OGRN, LOADING_COMPANY_INFO, LOAD_COMPANY_INFO } from "./actions"
+import { ACTION_CHANGE_INN, ACTION_CHANGE_OGRN, LOADING_COMPANY_INFO, LOAD_COMPANY_INFO, CLEAR_COMPANY_INFO } from "./actions"
 
 const defaultState = {
   inn: "",
@@ -15,6 +15,8 @@ const creditConveyorReducer = (state = defaultState, action) => {
     case LOADING_COMPANY_INFO:
       return { ...state, searchLoading: action.loading };
     case LOAD_COMPANY_INFO:
+      return { ...state, companyResponse: action.payload, searchLoading: action.loading };
+    case CLEAR_COMPANY_INFO:
       return { ...state, companyResponse: action.payload, searchLoading: action.loading };
     default:
       return state

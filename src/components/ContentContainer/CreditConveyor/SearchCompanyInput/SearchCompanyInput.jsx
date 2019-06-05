@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Row, Col, Form, Input, Button, Select } from "antd";
+import { Row, Col, Form, Input, Button } from "antd";
 import MainCompanyInfo from "./MainCompanyInfo";
 import "./search-company.scss"
 
@@ -14,39 +14,28 @@ class SearchCompanyInput extends Component {
     clearField : false
   }
 
-  changeValue = () => {
-    const { actionChangeInn, actionChangeOgrn } = this.props.store
-    setTimeout(() => {
-      switch (this.props.form.setFieldsValue.__reactBoundContext.instances.prefix.props.value) {
-        case 'inn':
-          return actionChangeInn(this.props.form.setFieldsValue.__reactBoundContext.instances.data.state.value) && actionChangeOgrn('')
-        case 'ogrn':
-          return actionChangeOgrn(this.props.form.setFieldsValue.__reactBoundContext.instances.data.state.value) && actionChangeInn('')
-        default:
-          break;
-      }
-    }, 100);
-  }
-
   componentWillReceiveProps(nextProps) {
     const { companyResponse } = this.props.store
-    if(nextProps.companyResponse !== companyResponse) {
+    const { clearField } = this.state
+    if(!clearField && nextProps.companyResponse !== companyResponse) {
       this.setState({
-        showInfo: true
+        showInfo: true,
+        clearField : false
       })
     }
   }
-
+  
   componentDidMount() {
+    const { clearField } = this.state
     const { companyResponse } = this.props.store
-    if(companyResponse) {
+    if(!clearField && companyResponse) {
       this.setState({
         showInfo: true
       })
     }
   }
 
-  handleSubmit = (e) => {  
+  handleSubmit = e => {  
     const { loadingCompanyInfo, loadCompanyInfo } = this.props.store
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
@@ -56,36 +45,27 @@ class SearchCompanyInput extends Component {
         setTimeout(() => {
           loadCompanyInfo(companyResponse)
           this.setState ({
-            showInfo: true
+            showInfo: true,
           })
         }, 1000);
-        // console.log('Полученные значения формы: ', values);
-        /** Сохранение данных в state */
-        // this.changeValue()
       }
     });
   }
 
   clearSearchField = () => {
+    const { resetFields } = this.props.form
+    // const { clearCompanyInfo } = this.props.store
+    // clearCompanyInfo()
+    resetFields()
     this.setState({
       showInfo: false,
-      clearField: true
+      clearField : true
     })
   }
   
   getFields = () => {
-    const { getFieldDecorator } = this.props.form;
-    const { Option } = Select;
+    const { getFieldDecorator } = this.props.form
     const { showInfo } = this.state
-    const prefixSelector = getFieldDecorator('prefix', {
-      initialValue: 'inn',
-    })(
-      <Select style={{ width: 80 }} >
-        <Option value="inn">ИНН</Option>
-        <Option value="ogrn">ОГРН</Option>
-      </Select>
-    );
-
     return (
       <Row>
         <Col span={4}>
@@ -96,18 +76,18 @@ class SearchCompanyInput extends Component {
                 { pattern: '^[0-9]+$', message: 'Поисковой запрос должен состоять из цифр!'}
               ],
             })(
-              <Input addonBefore={prefixSelector} style={{ width: '100%' }} disabled={showInfo}/>
+              <Input disabled={showInfo}/>
             )}
           </Form.Item>
         </Col>
         <Col span={2}>
           { showInfo ?
-            <Button onClick={this.clearSearchField} className="search-btn" type="primary"> Очистить </Button>:
+            <Button onClick={this.clearSearchField} className="search-btn" type="default"> Очистить </Button> :
             <Button className="search-btn" type="primary" htmlType="submit"> Поиск </Button>
           }
         </Col>
           { 
-            showInfo ? <MainCompanyInfo />: null
+            showInfo ? <MainCompanyInfo /> : null
           }
       </Row>
     )

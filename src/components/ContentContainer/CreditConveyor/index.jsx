@@ -9,7 +9,7 @@ class CreditConveyor extends Component {
   state = {
     showTable : false,
     loading : false,
-    newConveyor: false
+    newConveyor: true
   }  
 
   componentWillReceiveProps(nextProps) {

@@ -1,4 +1,10 @@
-import { actionChangeInn, actionChangeOgrn, loadCompanyInfo, loadingCompanyInfo } from "./creditConveyor/actions"
+import { 
+  actionChangeInn,
+  actionChangeOgrn,
+  loadCompanyInfo,
+  clearCompanyInfo,
+  loadingCompanyInfo 
+} from "./creditConveyor/actions"
 import { actionChangeNumberPage } from "./stateApp/actions"
 
 
@@ -7,5 +13,6 @@ export {
   actionChangeOgrn,
   actionChangeNumberPage,
   loadCompanyInfo,
+  clearCompanyInfo,
   loadingCompanyInfo
 }
