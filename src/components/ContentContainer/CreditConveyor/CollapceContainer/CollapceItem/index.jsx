@@ -38,11 +38,15 @@ const CollapceItem = props => {
     }
 
     const renderStopListFields = riskInfo.map(item => {
+      console.log('isArray', item , Array.isArray(item.data))
       if( item.data !== "" && item.id !== "arbiter") {
         return (
           <Row key={item.id} className="stop-list">
             <div className="label">{ item.title }</div>
-              {`${item.data}` }
+              { Array.isArray(item.data) ?
+                item.data.map((item, key) => <span key={key}>{ item }<br/></span>) :
+                `${item.data}`
+              }
           </Row>
         )
       } else {

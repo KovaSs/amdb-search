@@ -28,7 +28,6 @@ class SearchCompanyInput extends Component {
         clearField : false
       })
     }
-    console.log('componentWillReceiveProps', this.state)
   }
   
   componentDidMount() {
@@ -39,7 +38,6 @@ class SearchCompanyInput extends Component {
         showInfo: true
       })
     }
-    console.log('componentDidMount', this.state)
   }
   
   handleSubmit = e => {  
@@ -55,22 +53,18 @@ class SearchCompanyInput extends Component {
             showInfo: true,
             clearField: false
           })
-        }, 3000);
+        }, 1500);
       }
     });
-    console.log('handleSubmit', this.state)
   }
 
   clearSearchField = () => {
     const { resetFields } = this.props.form
-    // const { clearCompanyInfo } = this.props.store
-    // clearCompanyInfo()
     resetFields()
     this.setState({
       showInfo: false,
       clearField : true
     })
-    console.log('clearSearchField', this.state)
   }
   
   getFields = () => {
@@ -104,7 +98,6 @@ class SearchCompanyInput extends Component {
   }
 
   render() {
-    console.log('render', this.state)
     return (
       <Form className="ant-advanced-search-form" onSubmit={this.handleSubmit}>
         { this.getFields() }
