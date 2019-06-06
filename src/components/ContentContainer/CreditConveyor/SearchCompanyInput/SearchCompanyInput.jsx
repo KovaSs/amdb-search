@@ -30,8 +30,8 @@ class SearchCompanyInput extends Component {
   
   componentDidMount() {
     const { clearField } = this.state
-    const { companyResponse } = this.props.store
-    if(!clearField && companyResponse) {
+    const { companyResponse, renderData } = this.props.store
+    if(!clearField && companyResponse && renderData) {
       this.setState({
         showInfo: true
       })
@@ -58,13 +58,14 @@ class SearchCompanyInput extends Component {
 
   clearSearchField = () => {
     const { resetFields } = this.props.form
-    const { toHideTableInfo } = this.props.store
-    resetFields()
-    toHideTableInfo()
+    const { toHideTableInfo, clearCompanyInfo } = this.props.store
     this.setState({
       showInfo: false,
       clearField : true
     })
+    toHideTableInfo()
+    clearCompanyInfo()
+    resetFields()
   }
   
   getFields = () => {

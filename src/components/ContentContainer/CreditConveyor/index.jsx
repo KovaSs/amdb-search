@@ -55,12 +55,13 @@ class CreditConveyor extends Component {
 
   render() {
     const { showTable, loading, newConveyor } = this.state
+    const { renderData } = this.props
 
     const newCreditConveyor = (
       <Row className="credit-conveyor">
         <Col span={24}>
           <SearchCompanyInput toHideTableInfo={this.toHideTableInfo} />
-          { showTable ?
+          { showTable && renderData ?
             <CollapceContainer  loading={loading}/> : 
             <Spin spinning={loading} size="large" tip="Идет поиск данных" >
               <div className="search-result-table">
@@ -85,10 +86,11 @@ class CreditConveyor extends Component {
 }
 
 const putStateToProps = state => {
-  const {creditConveyor : { companyResponse, searchLoading }} = state
+  const {creditConveyor : { companyResponse, searchLoading, renderData }} = state
   return {
     companyResponse,
-    searchLoading
+    searchLoading,
+    renderData
   }
 }
 

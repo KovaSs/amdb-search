@@ -32,10 +32,10 @@ export const loadCompanyInfo = newCompanyInfo => {
 }
 
 export const CLEAR_COMPANY_INFO = 'CLEAR_COMPANY_INFO'
-export const clearCompanyInfo = newCompanyInfo => {
+export const clearCompanyInfo = () => {
   return {
     type: CLEAR_COMPANY_INFO,
-    payload: newCompanyInfo,
+    payload: false,
     loading : false
   }
 }
