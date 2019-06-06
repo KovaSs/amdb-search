@@ -6,8 +6,6 @@ import "./search-company.scss"
 /** Получение данных из mock data */
 import { companyResponse } from "../../../../store/mock";
 
-
-
 class SearchCompanyInput extends Component {
   state = {
     showInfo : false,
@@ -60,7 +58,9 @@ class SearchCompanyInput extends Component {
 
   clearSearchField = () => {
     const { resetFields } = this.props.form
+    const { toHideTableInfo } = this.props.store
     resetFields()
+    toHideTableInfo()
     this.setState({
       showInfo: false,
       clearField : true
@@ -77,10 +77,10 @@ class SearchCompanyInput extends Component {
             {getFieldDecorator('data', {
               rules: [
                 { required: true, message: 'Строка поиска не должна быть пустой!' },
-                { pattern: '^[0-9]+$', message: 'Поисковой запрос должен состоять из цифр!'}
+                { pattern: '^[0-9]{10,15}$', message: 'Поисковой запрос должен состоять из 10-15 цифр!'}
               ],
             })(
-              <Input disabled={showInfo}/>
+              <Input placeholder="Введите ИНН или ОГРН" disabled={showInfo}/>
             )}
           </Form.Item>
         </Col>

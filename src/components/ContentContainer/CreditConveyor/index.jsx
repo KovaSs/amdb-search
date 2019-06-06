@@ -14,13 +14,15 @@ class CreditConveyor extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { companyResponse } = this.props
+    console.log('componentWillReceiveProps', companyResponse)
     if(nextProps.searchLoading === true) {
       this.setState({
         loading: true
       })
     } else {
       this.setState({
-        loading: false
+        loading: false,
+        showTable: true
       })
     }
     if(nextProps.companyResponse !== companyResponse) {
@@ -32,6 +34,7 @@ class CreditConveyor extends Component {
 
   componentDidMount() {
     const { companyResponse } = this.props
+    console.log('componentDidMount', companyResponse)
     if(companyResponse) {
       this.setState({
         showTable: true
@@ -46,15 +49,23 @@ class CreditConveyor extends Component {
     })
   }
 
+  toHideTableInfo = () => {
+    this.setState({
+      showTable: false
+    })
+  }
+
   render() {
     const { showTable, loading, newConveyor } = this.state
+    const { companyResponse } = this.props
+    console.log('render', companyResponse)
 
     const newCreditConveyor = (
       <Row className="credit-conveyor">
         <Col span={24}>
-          <SearchCompanyInput />
+          <SearchCompanyInput toHideTableInfo={this.toHideTableInfo} />
           { showTable ?
-            <CollapceContainer loading={loading}/> : 
+            <CollapceContainer  loading={loading}/> : 
             <Spin spinning={loading} size="large" tip="Идет поиск данных" >
               <div className="search-result-table">
                 <div>Для поиска информации об организации введите ИНН или ОГРН в поисковую строку</div>
