@@ -13,7 +13,7 @@ const CollapceContainer = props => {
   return (
     <Row className="table-info">
       <Col span={24}>
-        <Spin spinning={loading} size="large" delay={200} tip="Идет поиск данных" >
+        <Spin spinning={loading} size="large" tip="Идет поиск данных" >
           <CollapceItem companySource={companySource} riskSource={riskSource} managementSource={managementSource}/>
         </Spin>
       </Col>

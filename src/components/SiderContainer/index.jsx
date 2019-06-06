@@ -94,7 +94,7 @@ export class SiderContainer extends Component {
       >
         <Link to="/" onClick={this.changeActivePage}>
           <div className={"logo"  + hidden}>
-            <img className="logo-img" src={process.env.PUBLIC_URL + 'img/logo.png'} alt={"logo"} />
+            <img className="logo-img" src={process.env.PUBLIC_URL + 'img/logo.svg'} alt={"logo"} />
             <label className={"logo-label" + hidden }>Газпромбанк</label>
           </div>
         </Link>
