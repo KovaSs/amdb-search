@@ -6,10 +6,11 @@ import SearchCompanyInput from "./SearchCompanyInput";
 const Container = props => <SearchCompanyInput store={props}/>
 
 const putStateToProps = state => {
-  const {creditConveyor : { companyResponse, renderData }} = state
+  const {creditConveyor : { companyResponse, renderData, inn }} = state
   return {
     companyResponse,
-    renderData
+    renderData,
+    inn
   }
 }
 

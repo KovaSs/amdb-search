@@ -34,9 +34,7 @@ export const loadCompanyInfo = newCompanyInfo => {
 export const CLEAR_COMPANY_INFO = 'CLEAR_COMPANY_INFO'
 export const clearCompanyInfo = () => {
   return {
-    type: CLEAR_COMPANY_INFO,
-    payload: false,
-    loading : false
+    type: CLEAR_COMPANY_INFO
   }
 }
 
