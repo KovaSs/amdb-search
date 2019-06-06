@@ -51,7 +51,7 @@ class SearchCompanyInput extends Component {
             showInfo: true,
             clearField: false
           })
-        }, 1500);
+        }, 2500);
       }
     });
   }

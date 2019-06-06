@@ -14,7 +14,6 @@ class CreditConveyor extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { companyResponse } = this.props
-    console.log('componentWillReceiveProps', companyResponse)
     if(nextProps.searchLoading === true) {
       this.setState({
         loading: true
@@ -34,7 +33,6 @@ class CreditConveyor extends Component {
 
   componentDidMount() {
     const { companyResponse } = this.props
-    console.log('componentDidMount', companyResponse)
     if(companyResponse) {
       this.setState({
         showTable: true
@@ -57,8 +55,6 @@ class CreditConveyor extends Component {
 
   render() {
     const { showTable, loading, newConveyor } = this.state
-    const { companyResponse } = this.props
-    console.log('render', companyResponse)
 
     const newCreditConveyor = (
       <Row className="credit-conveyor">
