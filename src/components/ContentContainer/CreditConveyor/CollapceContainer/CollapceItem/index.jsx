@@ -114,10 +114,10 @@ const CollapceItem = props => {
       return (
         <Panel 
           key={String(key)}
-          header={ `${last_name} ${middle_name}  ${first_name}` } 
+          header={ `${last_name} ${first_name} ${middle_name}` } 
           extra={btnExtra()}
         >
-          <div>{`ФИО: ${last_name} ${middle_name}  ${first_name} `}</div>
+          <div>{`ФИО: ${last_name} ${first_name} ${middle_name}`}</div>
           <div>{`ИНН: ${inn}`}</div>
         </Panel>
       )
