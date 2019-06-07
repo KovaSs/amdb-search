@@ -1,40 +1,40 @@
-export const ACTION_CHANGE_INN = 'ACTION_CHANGE_INN'
+export const ACTION_CHANGE_CC_INN = 'ACTION_CHANGE_CC_INN'
 export const actionChangeInn = newInn => {
   return {
-    type: ACTION_CHANGE_INN,
+    type: ACTION_CHANGE_CC_INN,
     payload: newInn
   }
 }
 
-export const ACTION_CHANGE_OGRN = 'ACTION_CHANGE_OGRN'
+export const ACTION_CHANGE_CC_OGRN = 'ACTION_CHANGE_CC_OGRN'
 export const actionChangeOgrn = newOgrn => {
   return {
-    type: ACTION_CHANGE_OGRN,
+    type: ACTION_CHANGE_CC_OGRN,
     payload: newOgrn
   }
 }
 
-export const LOADING_COMPANY_INFO = 'LOADING_COMPANY_INFO'
+export const LOADING_COMPANY_CC_INFO = 'LOADING_COMPANY_CC_INFO'
 export const loadingCompanyInfo = () => {
   return {
-    type: LOADING_COMPANY_INFO,
+    type: LOADING_COMPANY_CC_INFO,
     loading: true
   }
 }
 
-export const LOAD_COMPANY_INFO = 'LOAD_COMPANY_INFO'
+export const LOAD_COMPANY_CC_INFO = 'LOAD_COMPANY_CC_INFO'
 export const loadCompanyInfo = newCompanyInfo => {
   return {
-    type: LOAD_COMPANY_INFO,
+    type: LOAD_COMPANY_CC_INFO,
     payload: newCompanyInfo,
     loading : false
   }
 }
 
-export const CLEAR_COMPANY_INFO = 'CLEAR_COMPANY_INFO'
+export const CLEAR_COMPANY_CC_INFO = 'CLEAR_COMPANY_CC_INFO'
 export const clearCompanyInfo = () => {
   return {
-    type: CLEAR_COMPANY_INFO
+    type: CLEAR_COMPANY_CC_INFO
   }
 }
 
