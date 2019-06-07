@@ -13,7 +13,7 @@ class SearchCompanyInput extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { companyResponse, inn } = this.props.store
+    const { companyResponse, inn } = this.props
     const { clearField } = this.state
     const {setFieldsValue} = this.props.form
     if(clearField && nextProps.companyResponse !== companyResponse) {
@@ -32,7 +32,7 @@ class SearchCompanyInput extends Component {
   
   componentDidMount() {
     const { clearField } = this.state
-    const { companyResponse, renderData, inn } = this.props.store
+    const { companyResponse, renderData, inn } = this.props
     const {setFieldsValue} = this.props.form
     if(!clearField && companyResponse && renderData) {
       setFieldsValue.__reactBoundContext.instances.data.state.value = inn
@@ -43,7 +43,7 @@ class SearchCompanyInput extends Component {
   }
   
   handleSubmit = e => {  
-    const { loadingCompanyInfo, loadCompanyInfo } = this.props.store
+    const { loadingCompanyInfo, loadCompanyInfo } = this.props
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
@@ -62,7 +62,7 @@ class SearchCompanyInput extends Component {
   }
 
   changeValue = () => {
-    const { actionChangeInn } = this.props.store
+    const { actionChangeInn } = this.props
     setTimeout(() => {
       actionChangeInn(this.props.form.setFieldsValue.__reactBoundContext.instances.data.state.value)
     }, 100);
@@ -70,7 +70,7 @@ class SearchCompanyInput extends Component {
 
   clearSearchField = () => {
     const { resetFields } = this.props.form
-    const { toHideTableInfo, clearCompanyInfo } = this.props.store
+    const { toHideTableInfo, clearCompanyInfo } = this.props
     this.setState({
       showInfo: false,
       clearField : true
@@ -83,7 +83,7 @@ class SearchCompanyInput extends Component {
   getFields = () => {
     const { getFieldDecorator } = this.props.form
     const { showInfo } = this.state
-    const { inn } = this.props.store
+    const { inn } = this.props
     return (
       <Row>
         <Col span={4}>

@@ -14,30 +14,26 @@ class CreditConveyor extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { companyResponse } = this.props
-    if(nextProps.searchLoading === true) {
+    nextProps.searchLoading === true ?
       this.setState({
         loading: true
-      })
-    } else {
+      }) :
       this.setState({
         loading: false,
         showTable: true
       })
-    }
-    if(nextProps.companyResponse !== companyResponse) {
-      this.setState({
-        showTable: true
+    nextProps.companyResponse !== companyResponse && 
+      this.setState({ 
+        showTable: true 
       })
-    }
   }
 
   componentDidMount() {
     const { companyResponse } = this.props
-    if(companyResponse) {
+    companyResponse &&
       this.setState({
         showTable: true
       })
-    }
   }
 
   toggleVersion = () => {
@@ -53,11 +49,11 @@ class CreditConveyor extends Component {
     })
   }
 
-  render() {
-    const { showTable, loading, newConveyor } = this.state
+  /** Рендеринг информации о компании */
+  get renderCreditConveyor() {
+    const { showTable, loading } = this.state
     const { renderData } = this.props
-
-    const newCreditConveyor = (
+    return (
       <Row className="credit-conveyor">
         <Col span={24}>
           <SearchCompanyInput toHideTableInfo={this.toHideTableInfo} />
@@ -72,12 +68,15 @@ class CreditConveyor extends Component {
         </Col>
       </Row>
     )
+  }
 
+  render() {
+    const { newConveyor } = this.state
     return (
       <>
         <div className="conveyor-version"><Switch onChange={this.toggleVersion} checkedChildren="new" unCheckedChildren="old" /></div>
         { newConveyor ?
-          newCreditConveyor :
+          this.renderCreditConveyor :
           <iframe src="https://10.96.205.191/cgi-bin/serg/0/6/9/reports/276/konttur_focus_viewer_new4.pl" title="credit-conveyor" width="100%" height="890px"></iframe>
         }
       </>

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { actionChangeOpenBillInn, loadCompanyOpenBillInfo, loadingCompanyOpenBillInfo, clearCompanyOpenBillInfo } from "../../../../store/actions";
 import SearchCompanyInput from "./SearchCompanyInput";
 
-const Container = props => <SearchCompanyInput store={props}/>
+const Container = props => <SearchCompanyInput {...props}/>
 
 const putStateToProps = state => {
   const {openBill : { companyResponse, renderData, inn }} = state
