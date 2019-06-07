@@ -105,9 +105,7 @@ class SearchCompanyInput extends Component {
             <Button className="search-btn" type="primary" htmlType="submit"> Поиск </Button>
           }
         </Col>
-          { 
-            showInfo ? <MainCompanyInfo /> : null
-          }
+          { showInfo && <MainCompanyInfo /> }
       </Row>
     )
   }

@@ -1,5 +1,4 @@
 import React from 'react';
-// import { dropRight } from 'lodash';
 import { Collapse, Col, Row, Icon, Table, Descriptions } from 'antd';
 import { trasform } from "../../../../../services/transformData";
 
@@ -160,8 +159,8 @@ const CollapceItem = props => {
           bordered={false}
           expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"} />}
         >
-          { item.name ? _fouldersUl(item, key) : null }
-          { item.middle_name ? _fouldersFl(item, key) : null }
+          { item.name && _fouldersUl(item, key) }
+          { item.middle_name && _fouldersFl(item, key) }
         </Collapse> 
       )
     })
@@ -169,7 +168,7 @@ const CollapceItem = props => {
 
   return (
     <>
-      { companySource ?
+      { companySource &&
         <Collapse 
           defaultActiveKey={['1', '2', '3', '4']} 
           onChange={callback}
@@ -195,7 +194,7 @@ const CollapceItem = props => {
           <Panel header="Бенефициары" key="4" forceRender className="table-info-panel">
             {renderManagment('befenicials')}
           </Panel>
-        </Collapse>: null
+        </Collapse>
       }
     </>
   )
