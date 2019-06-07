@@ -3,7 +3,7 @@ import { Row, Col, Form, Input, Button } from "antd";
 import MainCompanyInfo from "./MainCompanyInfo";
 import "./search-company.scss"
 
-/** Получение данных из mock data */
+/** Получение тестовых данных из mock data */
 import { companyResponse } from "../../../../store/mock";
 
 class SearchCompanyInput extends Component {
@@ -43,14 +43,14 @@ class SearchCompanyInput extends Component {
   }
   
   handleSubmit = e => {  
-    const { loadingCompanyInfo, loadCompanyInfo } = this.props.store
+    const { loadingCompanyOpenBillInfo, loadCompanyOpenBillInfo } = this.props.store
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        loadingCompanyInfo()
+        loadingCompanyOpenBillInfo()
         /** Симуляция получения данных от сервера */
         setTimeout(() => {
-          loadCompanyInfo(companyResponse)
+          loadCompanyOpenBillInfo(companyResponse)
           this.setState ({
             showInfo: true,
             clearField: false
@@ -62,21 +62,21 @@ class SearchCompanyInput extends Component {
   }
 
   changeValue = () => {
-    const { actionChangeInn } = this.props.store
+    const { actionChangeOpenBillInn } = this.props.store
     setTimeout(() => {
-      actionChangeInn(this.props.form.setFieldsValue.__reactBoundContext.instances.data.state.value)
+      actionChangeOpenBillInn(this.props.form.setFieldsValue.__reactBoundContext.instances.data.state.value)
     }, 100);
   }
 
   clearSearchField = () => {
     const { resetFields } = this.props.form
-    const { toHideTableInfo, clearCompanyInfo } = this.props.store
+    const { toHideTableInfo, clearCompanyOpenBillInfo } = this.props.store
     this.setState({
       showInfo: false,
       clearField : true
     })
     toHideTableInfo()
-    clearCompanyInfo()
+    clearCompanyOpenBillInfo()
     resetFields()
   }
   
@@ -121,7 +121,7 @@ class SearchCompanyInput extends Component {
   }
 }
 
-const WrappedRegistrationForm = Form.create({ name: 'searh-company' })(SearchCompanyInput);
+const WrappedRegistrationForm = Form.create({ name: 'searh-open-bill-company' })(SearchCompanyInput);
 
 
 export default WrappedRegistrationForm

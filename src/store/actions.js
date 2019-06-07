@@ -5,6 +5,15 @@ import {
   clearCompanyInfo,
   loadingCompanyInfo 
 } from "./creditConveyor/actions"
+
+import { 
+  actionChangeOpenBillInn,
+  actionChangeOpenBillOgrn,
+  loadCompanyOpenBillInfo,
+  clearCompanyOpenBillInfo,
+  loadingCompanyOpenBillInfo 
+} from "./openBill/actions"
+
 import { actionChangeNumberPage } from "./stateApp/actions"
 
 
@@ -14,5 +23,10 @@ export {
   actionChangeNumberPage,
   loadCompanyInfo,
   clearCompanyInfo,
-  loadingCompanyInfo
+  loadingCompanyInfo,
+  actionChangeOpenBillInn,
+  actionChangeOpenBillOgrn,
+  loadCompanyOpenBillInfo,
+  clearCompanyOpenBillInfo,
+  loadingCompanyOpenBillInfo 
 }

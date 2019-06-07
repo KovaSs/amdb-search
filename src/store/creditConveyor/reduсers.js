@@ -14,7 +14,6 @@ const creditConveyorReducer = (state = defaultState, action) => {
     case LOADING_COMPANY_INFO:
       return { ...state, searchLoading: action.loading };
     case LOAD_COMPANY_INFO:
-      console.log('state', state)
       return { ...state, companyResponse: action.payload, searchLoading: action.loading, renderData: true };
     case CLEAR_COMPANY_INFO:
       return { ...state, inn: "", renderData: false };

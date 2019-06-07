@@ -9,7 +9,7 @@ class OpenBill extends Component {
   state = {
     showTable : false,
     loading : false,
-    newConveyor: false
+    newBill: false
   }  
 
   componentWillReceiveProps(nextProps) {
@@ -41,9 +41,9 @@ class OpenBill extends Component {
   }
 
   toggleVersion = () => {
-    const { newConveyor } = this.state;
+    const { newBill } = this.state;
     this.setState({
-      newConveyor: !newConveyor
+      newBill: !newBill
     })
   }
 
@@ -54,9 +54,9 @@ class OpenBill extends Component {
   }
 
   render() {
-    const { showTable, loading, newConveyor } = this.state
+    const { showTable, loading, newBill } = this.state
 
-    const newCreditConveyor = (
+    const newOpenBill = (
       <Row className="credit-conveyor">
         <Col span={24}>
           <SearchCompanyInput toHideTableInfo={this.toHideTableInfo} />
@@ -75,8 +75,8 @@ class OpenBill extends Component {
     return (
       <>
         <div className="conveyor-version"><Switch onChange={this.toggleVersion} checkedChildren="new" unCheckedChildren="old" /></div>
-        { newConveyor ?
-          newCreditConveyor :
+        { newBill ?
+          newOpenBill :
           <iframe src="https://10.96.205.191/cgi-bin/serg/0/6/9/reports/276/konttur_focus_viewer_new2.pl" title="credit-conveyor" width="100%" height="890px"></iframe>
         }
       </>
@@ -85,8 +85,7 @@ class OpenBill extends Component {
 }
 
 const putStateToProps = state => {
-  /** Данные временно запращиваются из store creditConveyor */
-  const {creditConveyor : { companyResponse, searchLoading }} = state
+  const {openBill : { companyResponse, searchLoading }} = state
   return {
     companyResponse,
     searchLoading

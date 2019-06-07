@@ -56,7 +56,7 @@ class MainCompanyInfo extends Component {
 }
 
 const putStateToProps = state => {
-  const {creditConveyor : { companyResponse }} = state;
+  const {openBill : { companyResponse }} = state;
   return {
     companyResponse
   }
