@@ -6,15 +6,16 @@ const defaultState = {
 }
 
 const creditConveyorReducer = (state = defaultState, action) => {
-  switch (action.type) {
+  const {type, payload, loading } = action
+  switch (type) {
     case ACTION_CHANGE_CC_INN:
-      return { ...state, inn: action.payload };
+      return { ...state, inn: payload };
     case ACTION_CHANGE_CC_OGRN:
-      return { ...state, ogrn: action.payload };
+      return { ...state, ogrn: payload };
     case LOADING_COMPANY_CC_INFO:
-      return { ...state, searchLoading: action.loading };
+      return { ...state, searchLoading: loading };
     case LOAD_COMPANY_CC_INFO:
-      return { ...state, companyResponse: action.payload, searchLoading: action.loading, renderData: true };
+      return { ...state, companyResponse: payload, searchLoading: loading, renderData: true };
     case CLEAR_COMPANY_CC_INFO:
       return { ...state, inn: "", renderData: false };
     default:

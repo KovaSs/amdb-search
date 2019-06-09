@@ -1,10 +1,10 @@
-import React from 'react';
+import React from 'react'
 import { findDOMNode } from 'react-dom'
-import { Collapse, Col, Row, Icon, Table, Descriptions } from 'antd';
-import { trasform } from "../../../../../services/transformData";
+import { Collapse, Col, Row, Icon, Table, Descriptions } from 'antd'
+import { trasform } from "../../../../../services/transformData"
 
 const CollapceItem = props => {
-  const { Panel } = Collapse;
+  const { Panel } = Collapse
   const { companySource, riskSource,  managementSource} = props
 
   /** Преобразование входящих данных из props */
@@ -37,9 +37,9 @@ const CollapceItem = props => {
       )
     }
 
-    const renderStopListFields = riskInfo.map(item => {
-      if( item.data !== "" && item.id !== "arbiter") {
-        return (
+    const renderStopListFields = riskInfo.map(item => 
+      item.data !== "" && item.id !== "arbiter" ?
+        ( 
           <Row key={item.id} className="stop-list">
             <div className="label">{ item.title }</div>
               { Array.isArray(item.data) ?
@@ -47,11 +47,9 @@ const CollapceItem = props => {
                 `${item.data}`
               }
           </Row>
-        )
-      } else {
-        return null
-      }
-    })
+        )  
+      : null
+    )
 
     const getElementRef = ref => {
       findDOMNode(ref)

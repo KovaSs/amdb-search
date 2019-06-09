@@ -20,7 +20,6 @@ export const fieldsArr = [
   {id: "sanctions", title: "Санкции", data: ""},
   {id: "precessors", title: "Предшедственники", data: ""},
   {id: "successors", title: "Приемники", data: ""},
-
   {id: "arbiter", title: "Арбитраж", data: ""},
   {id: "befenicials", title: "Бенефициары", data: ""},
   {id: "founders_fl", title: "Физические лица", data: ""},
