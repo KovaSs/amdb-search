@@ -10,22 +10,6 @@ export const actionChangeInn = newInn => {
   }
 }
 
-export const ACTION_CHANGE_CC_OGRN = 'ACTION_CHANGE_CC_OGRN'
-export const actionChangeOgrn = newOgrn => {
-  return {
-    type: ACTION_CHANGE_CC_OGRN,
-    payload: newOgrn
-  }
-}
-
-export const LOADING_COMPANY_CC_INFO = 'LOADING_COMPANY_CC_INFO'
-export const loadingCompanyInfo = () => {
-  return {
-    type: LOADING_COMPANY_CC_INFO,
-    loading: true
-  }
-}
-
 export const LOAD_COMPANY_CC_INFO = 'LOAD_COMPANY_CC_INFO'
 export const loadCompanyInfo = () => {
   return dispatch => {
