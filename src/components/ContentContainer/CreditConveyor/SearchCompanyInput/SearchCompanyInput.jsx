@@ -3,9 +3,6 @@ import { Row, Col, Form, Input, Button } from "antd";
 import MainCompanyInfo from "./MainCompanyInfo";
 import "./search-company.scss"
 
-/** Получение данных из mock data */
-import { companyResponse } from "../../../../store/mock";
-
 class SearchCompanyInput extends Component {
   state = {
     showInfo : false,
@@ -50,7 +47,7 @@ class SearchCompanyInput extends Component {
         loadingCompanyInfo()
         /** Симуляция получения данных от сервера */
         setTimeout(() => {
-          loadCompanyInfo(companyResponse)
+          loadCompanyInfo()
           this.setState ({
             showInfo: true,
             clearField: false

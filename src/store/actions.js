@@ -14,6 +14,13 @@ import {
   loadingCompanyOpenBillInfo 
 } from "./openBill/actions"
 
+import { 
+  actionChangeEBGInn,
+  loadCompanyEBGInfo,
+  clearCompanyEBGInfo,
+  loadingCompanyEBGInfo 
+} from "./electronicBankGarantees/actions"
+
 import { actionChangeNumberPage } from "./stateApp/actions"
 
 
@@ -28,5 +35,9 @@ export {
   actionChangeOpenBillOgrn,
   loadCompanyOpenBillInfo,
   clearCompanyOpenBillInfo,
-  loadingCompanyOpenBillInfo 
+  loadingCompanyOpenBillInfo,
+  actionChangeEBGInn,
+  loadCompanyEBGInfo,
+  clearCompanyEBGInfo,
+  loadingCompanyEBGInfo 
 }

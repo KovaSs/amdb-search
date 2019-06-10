@@ -41,6 +41,10 @@ class TableContainer extends Component {
     }, 1000);
   }
 
+  takeInWork = inn => {
+    this.props.history.push(`/electronic-bank-garantees/${inn}`)
+  }
+
   getColumnSearchProps = dataIndex => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
       <div style={{ padding: 8 }}>
@@ -175,7 +179,7 @@ class TableContainer extends Component {
         title: '',
         key: 'action',
         render: (text, record) => {
-          return <Button onClick={ () => this.props.history.push(`/electronic-bank-garantees/${record.info.inn}`)}> Взять в работу </Button>
+          return <Button onClick={ () => this.takeInWork(record.info.inn) }> Взять в работу </Button>
         }
       },
     ];

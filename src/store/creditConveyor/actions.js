@@ -23,10 +23,10 @@ export const loadingCompanyInfo = () => {
 }
 
 export const LOAD_COMPANY_CC_INFO = 'LOAD_COMPANY_CC_INFO'
-export const loadCompanyInfo = newCompanyInfo => {
+export const loadCompanyInfo = () => {
   return {
     type: LOAD_COMPANY_CC_INFO,
-    payload: newCompanyInfo,
+    callAPI: '/api/',
     loading : false
   }
 }
