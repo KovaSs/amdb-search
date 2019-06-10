@@ -1,7 +1,8 @@
 {
   "name": "as-check",
-  "version": "0.2.1",
+  "version": "0.0.1",
   "private": false,
+  "proxy": "https://10.96.205.191/",
   "homepage": "http://gitlab-cos/gpbu7806/AS-Check",
   "author": "Denis Isaev <denis.isaev@gazprombank.ru>",
   "repository": {
@@ -19,7 +20,7 @@
     "react-scripts": "2.1.8"
   },
   "scripts": {
-    "start": "concurrently \"react-scripts start\" \"npm run server\"",
+    "start": "react-scripts start",
     "server": "nodemon ./src/services/server.js",
     "build": "react-scripts build",
     "test": "react-scripts test",

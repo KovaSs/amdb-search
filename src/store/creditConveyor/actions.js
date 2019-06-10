@@ -1,3 +1,7 @@
+export const START = '_START'
+export const SUCCESS = '_SUCCESS'
+export const FAIL = '_FAIL'
+
 export const ACTION_CHANGE_CC_INN = 'ACTION_CHANGE_CC_INN'
 export const actionChangeInn = newInn => {
   return {
@@ -26,7 +30,7 @@ export const LOAD_COMPANY_CC_INFO = 'LOAD_COMPANY_CC_INFO'
 export const loadCompanyInfo = () => {
   return {
     type: LOAD_COMPANY_CC_INFO,
-    callAPI: '/api/',
+    callAPI: '/cgi-bin/serg/0/6/9/reports/276/mock.pl',
     loading : false
   }
 }
