@@ -9,24 +9,6 @@ class SearchCompanyInput extends Component {
     clearField : false
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { companyResponse, inn } = this.props
-    const { clearField } = this.state
-    const {setFieldsValue} = this.props.form
-    if(clearField && nextProps.companyResponse !== companyResponse) {
-      setFieldsValue.__reactBoundContext.instances.data.state.value = inn
-      this.setState({
-        showInfo: true,
-        clearField : false
-      })
-    } else {
-      this.setState({
-        showInfo: false,
-        clearField : false
-      })
-    }
-  }
-  
   componentDidMount() {
     const { clearField } = this.state
     const { companyResponse, renderData, inn } = this.props
@@ -38,21 +20,26 @@ class SearchCompanyInput extends Component {
       })
     }
   }
+
+  componentDidUpdate(prevProps) {
+    const { companyResponse } = this.props
+    // const { clearField } = this.state
+    // const {setFieldsValue} = this.props.form
+
+    if(companyResponse !== prevProps.companyResponse) {
+      this.setState({
+        showInfo: true,
+        clearField : false
+      })
+    }
+  }
   
   handleSubmit = e => {  
-    const { loadingCompanyInfo, loadCompanyInfo } = this.props
+    const { loadCompanyInfo } = this.props
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        loadingCompanyInfo()
-        /** Симуляция получения данных от сервера */
-        setTimeout(() => {
-          loadCompanyInfo()
-          this.setState ({
-            showInfo: true,
-            clearField: false
-          })
-        }, 2500);
+        loadCompanyInfo()
         this.changeValue()
       }
     });

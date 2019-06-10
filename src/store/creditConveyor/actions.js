@@ -28,10 +28,21 @@ export const loadingCompanyInfo = () => {
 
 export const LOAD_COMPANY_CC_INFO = 'LOAD_COMPANY_CC_INFO'
 export const loadCompanyInfo = () => {
-  return {
-    type: LOAD_COMPANY_CC_INFO,
-    callAPI: '/cgi-bin/serg/0/6/9/reports/276/mock.pl',
-    loading : false
+  return dispatch => {
+    dispatch({
+      type: LOAD_COMPANY_CC_INFO + START,
+      loading: true
+    })
+
+    fetch('/cgi-bin/serg/0/6/9/reports/276/mock.pl')
+    .then(res => res.json())
+    .then(res => 
+      dispatch({
+        type: LOAD_COMPANY_CC_INFO + SUCCESS,
+        payload : res,
+        loading : false
+      })
+    )
   }
 }
 
