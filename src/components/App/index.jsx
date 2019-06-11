@@ -5,7 +5,6 @@ import SiderContainer from "../SiderContainer";
 import FooterContainer from "../FooterContainer";
 import ContentContainer from "../ContentContainer";
 import "./app.scss";
-// const { Header } = Layout;
 
 class App extends Component {
 
@@ -15,7 +14,6 @@ class App extends Component {
         <Layout style={{ minHeight: "100vh" }}>
           <SiderContainer />
           <Layout>
-            {/* <Header style={{ background: "#fff", padding: 0 }} /> */}
             <ContentContainer />
             <FooterContainer />
           </Layout>
