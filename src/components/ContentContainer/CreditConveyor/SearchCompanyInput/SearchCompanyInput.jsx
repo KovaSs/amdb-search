@@ -23,8 +23,6 @@ class SearchCompanyInput extends Component {
 
   componentDidUpdate(prevProps) {
     const { companyResponse } = this.props
-    // const { clearField } = this.state
-    // const {setFieldsValue} = this.props.form
 
     if(companyResponse !== prevProps.companyResponse) {
       this.setState({

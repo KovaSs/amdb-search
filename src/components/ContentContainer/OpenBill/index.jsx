@@ -14,30 +14,26 @@ class OpenBill extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { companyResponse } = this.props
-    if(nextProps.searchLoading === true) {
+    nextProps.searchLoading === true ?
       this.setState({
         loading: true
-      })
-    } else {
+      }) :
       this.setState({
         loading: false,
         showTable: true
       })
-    }
-    if(nextProps.companyResponse !== companyResponse) {
-      this.setState({
-        showTable: true
-      })
-    }
+    nextProps.companyResponse !== companyResponse && 
+    this.setState({ 
+      showTable: true 
+    })
   }
 
   componentDidMount() {
     const { companyResponse } = this.props
-    if(companyResponse) {
-      this.setState({
-        showTable: true
-      })
-    }
+    companyResponse &&
+    this.setState({
+      showTable: true
+    })
   }
 
   toggleVersion = () => {
@@ -55,12 +51,13 @@ class OpenBill extends Component {
 
   render() {
     const { showTable, loading, newBill } = this.state
+    const { renderData } = this.props
 
     const newOpenBill = (
       <Row className="credit-conveyor">
         <Col span={24}>
           <SearchCompanyInput toHideTableInfo={this.toHideTableInfo} />
-          { showTable ?
+          { showTable && renderData ?
             <CollapceContainer  loading={loading}/> : 
             <Spin spinning={loading} size="large" tip="Идет поиск данных" >
               <div className="search-result-table">
@@ -77,7 +74,7 @@ class OpenBill extends Component {
         <div className="conveyor-version"><Switch onChange={this.toggleVersion} checkedChildren="new" unCheckedChildren="old" /></div>
         { newBill ?
           newOpenBill :
-          <iframe src="https://10.96.205.191/cgi-bin/serg/0/6/9/reports/276/konttur_focus_viewer_new2.pl" title="credit-conveyor" width="100%" height="890px"></iframe>
+          <iframe src="https://10.96.205.191/cgi-bin/serg/0/6/9/reports/276/konttur_focus_viewer_new2.pl" title="open-bill" width="100%" height="890px"></iframe>
         }
       </>
     );
@@ -85,10 +82,11 @@ class OpenBill extends Component {
 }
 
 const putStateToProps = state => {
-  const {openBill : { companyResponse, searchLoading }} = state
+  const {openBill : { companyResponse, searchLoading, renderData }} = state
   return {
     companyResponse,
-    searchLoading
+    searchLoading,
+    renderData
   }
 }
 

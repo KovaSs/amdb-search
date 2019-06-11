@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from "react-redux";
-import { actionChangeOpenBillInn, loadCompanyOpenBillInfo, loadingCompanyOpenBillInfo, clearCompanyOpenBillInfo } from "../../../../store/actions";
+import { actionChangeOpenBillInn, loadCompanyOpenBillInfo, clearCompanyOpenBillInfo } from "../../../../store/actions";
 import SearchCompanyInput from "./SearchCompanyInput";
 
 const Container = props => <SearchCompanyInput {...props}/>
@@ -16,7 +16,6 @@ const putStateToProps = state => {
 
 const putActionsToProps =  {
   actionChangeOpenBillInn,
-  loadingCompanyOpenBillInfo,
   loadCompanyOpenBillInfo,
   clearCompanyOpenBillInfo
 }

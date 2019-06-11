@@ -23,17 +23,17 @@ class CreditConveyor extends Component {
         showTable: true
       })
     nextProps.companyResponse !== companyResponse && 
-      this.setState({ 
-        showTable: true 
-      })
+    this.setState({ 
+      showTable: true 
+    })
   }
 
   componentDidMount() {
     const { companyResponse } = this.props
     companyResponse &&
-      this.setState({
-        showTable: true
-      })
+    this.setState({
+      showTable: true
+    })
   }
 
   toggleVersion = () => {

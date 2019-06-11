@@ -3,33 +3,12 @@ import { Row, Col, Form, Input, Button } from "antd";
 import MainCompanyInfo from "./MainCompanyInfo";
 import "./search-company.scss"
 
-/** Получение тестовых данных из mock data */
-import { companyResponse } from "../../../../store/mock";
-
 class SearchCompanyInput extends Component {
   state = {
     showInfo : false,
     clearField : false
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { companyResponse, inn } = this.props
-    const { clearField } = this.state
-    const {setFieldsValue} = this.props.form
-    if(clearField && nextProps.companyResponse !== companyResponse) {
-      setFieldsValue.__reactBoundContext.instances.data.state.value = inn
-      this.setState({
-        showInfo: true,
-        clearField : false
-      })
-    } else {
-      this.setState({
-        showInfo: false,
-        clearField : false
-      })
-    }
-  }
-  
   componentDidMount() {
     const { clearField } = this.state
     const { companyResponse, renderData, inn } = this.props
@@ -41,21 +20,24 @@ class SearchCompanyInput extends Component {
       })
     }
   }
+
+  componentDidUpdate(prevProps) {
+    const { companyResponse } = this.props
+
+    if(companyResponse !== prevProps.companyResponse) {
+      this.setState({
+        showInfo: true,
+        clearField : false
+      })
+    }
+  }
   
   handleSubmit = e => {  
-    const { loadingCompanyOpenBillInfo, loadCompanyOpenBillInfo } = this.props
+    const { loadCompanyOpenBillInfo } = this.props
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        loadingCompanyOpenBillInfo()
-        /** Симуляция получения данных от сервера */
-        setTimeout(() => {
-          loadCompanyOpenBillInfo(companyResponse)
-          this.setState ({
-            showInfo: true,
-            clearField: false
-          })
-        }, 2500);
+        loadCompanyOpenBillInfo()
         this.changeValue()
       }
     });

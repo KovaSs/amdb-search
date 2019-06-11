@@ -5,11 +5,9 @@ import {
 } from "./creditConveyor/actions"
 
 import { 
-  actionChangeOpenBillInn,
-  actionChangeOpenBillOgrn,
-  loadCompanyOpenBillInfo,
-  clearCompanyOpenBillInfo,
-  loadingCompanyOpenBillInfo 
+  actionChangeInn as actionChangeOpenBillInn,
+  loadCompanyInfo as loadCompanyOpenBillInfo,
+  clearCompanyInfo as clearCompanyOpenBillInfo
 } from "./openBill/actions"
 
 import { 
@@ -28,10 +26,8 @@ export {
   loadCompanyInfo,
   clearCompanyInfo,
   actionChangeOpenBillInn,
-  actionChangeOpenBillOgrn,
   loadCompanyOpenBillInfo,
   clearCompanyOpenBillInfo,
-  loadingCompanyOpenBillInfo,
   actionChangeEBGInn,
   loadCompanyEBGInfo,
   clearCompanyEBGInfo,
