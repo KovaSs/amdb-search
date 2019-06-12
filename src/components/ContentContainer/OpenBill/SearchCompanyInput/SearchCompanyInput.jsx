@@ -33,11 +33,14 @@ class SearchCompanyInput extends Component {
   }
   
   handleSubmit = e => {  
-    // const { loadCompanyOpenBillInfo } = this.props
+    // const { loadCompanyOpenBillInfo } = this.props 
     e.preventDefault();
 
       const api = { 
-        type: 'get_company_info'
+        type: 'get_company_info',
+        data : {
+          code: '7726637843'
+        }
       }
 
       // const queryParams = params => {
@@ -46,18 +49,15 @@ class SearchCompanyInput extends Component {
       // }
 
       fetch(`/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify(api)}`, {
-        method: 'POST',
-        request: JSON.stringify(api),
+        method: 'GET',
         mode: 'cors',
         headers: {
-          'Accept': 'application/json, text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-          'Content-type': 'application/json'
+          // 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
         },
-        credentials: 'same-origin',
-        body : JSON.stringify(api)
+        // credentials: 'same-origin'
       })
       .then(res => res.json())
-      .then(res => console.log('res', res))
+      .then(res => console.log('res', JSON.parse(res.data)))
       .catch(err => console.log('err', err))
       
     this.props.form.validateFieldsAndScroll((err, values) => {
@@ -98,8 +98,8 @@ class SearchCompanyInput extends Component {
             {getFieldDecorator('data', {
               initialValue: inn,
               rules: [
-                { required: true, message: 'Строка поиска не должна быть пустой!' },
-                { pattern: '^[0-9]{10,15}$', message: 'Поисковой запрос должен состоять из 10-15 цифр!'}
+                // { required: true, message: 'Строка поиска не должна быть пустой!' },
+                // { pattern: '^[0-9]{10,15}$', message: 'Поисковой запрос должен состоять из 10-15 цифр!'}
               ],
             })(
               <Input placeholder="Введите ИНН или ОГРН" disabled={showInfo}/>
