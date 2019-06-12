@@ -33,7 +33,7 @@ class SearchCompanyInput extends Component {
   }
   
   handleSubmit = e => {  
-    // const { loadCompanyOpenBillInfo } = this.props 
+    const { loadCompanyOpenBillInfo } = this.props 
     e.preventDefault();
 
       const api = { 
@@ -58,10 +58,10 @@ class SearchCompanyInput extends Component {
       .catch(err => console.log('err', err))
       
     this.props.form.validateFieldsAndScroll((err, values) => {
-      // if (!err) {
-      //   loadCompanyOpenBillInfo()
-      //   this.changeValue()
-      // }
+      if (!err) {
+        loadCompanyOpenBillInfo()
+        this.changeValue()
+      }
     });
   }
 
