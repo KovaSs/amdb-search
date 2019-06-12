@@ -18,7 +18,15 @@ export const loadCompanyInfo = () => {
       loading: true
     })
 
-    fetch('/cgi-bin/serg/0/6/9/reports/276/mock.pl')
+    fetch('/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl', {
+      method: 'POST',
+      headers: {
+        "Content-Type" : "aplication/json"
+      },
+      body: JSON.stringify({
+        type: 'get_company_info'
+      })
+    })
     .then(res => res.json())
     .then(res => 
       dispatch({

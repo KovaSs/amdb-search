@@ -9,7 +9,7 @@ class OpenBill extends Component {
   state = {
     showTable : false,
     loading : false,
-    newBill: false
+    newBill: true
   }  
 
   componentWillReceiveProps(nextProps) {

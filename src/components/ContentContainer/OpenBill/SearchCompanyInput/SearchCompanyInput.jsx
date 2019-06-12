@@ -33,13 +33,34 @@ class SearchCompanyInput extends Component {
   }
   
   handleSubmit = e => {  
-    const { loadCompanyOpenBillInfo } = this.props
+    // const { loadCompanyOpenBillInfo } = this.props
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        loadCompanyOpenBillInfo()
-        this.changeValue()
+      const api = { 
+        type: 'get_company_info'
       }
+
+      const queryParams = params => {
+        const esc = encodeURIComponent
+        return Object.keys(params).map(key => `${esc(key)}=${esc(params[key])}`).join('&')
+      }
+
+      fetch(`/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?${queryParams(api)}`, {
+        method: 'POST',
+        headers: {
+          "Accept" : "aplication/json",
+          "Content-Type" : "aplication/json"
+        },
+      })
+      .then(res => res.json())
+      .then(res => 
+        console.log('res', res)
+      )
+      
+      // if (!err) {
+      //   loadCompanyOpenBillInfo()
+      //   this.changeValue()
+      // }
     });
   }
 
