@@ -35,28 +35,32 @@ class SearchCompanyInput extends Component {
   handleSubmit = e => {  
     // const { loadCompanyOpenBillInfo } = this.props
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
+
       const api = { 
         type: 'get_company_info'
       }
 
-      const queryParams = params => {
-        const esc = encodeURIComponent
-        return Object.keys(params).map(key => `${esc(key)}=${esc(params[key])}`).join('&')
-      }
+      // const queryParams = params => {
+      //   const esc = encodeURIComponent
+      //   return Object.keys(params).map(key => `${esc(key)}=${esc(params[key])}`).join('&')
+      // }
 
-      fetch(`/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?${queryParams(api)}`, {
+      fetch(`/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify(api)}`, {
         method: 'POST',
+        request: JSON.stringify(api),
+        mode: 'cors',
         headers: {
-          "Accept" : "aplication/json",
-          "Content-Type" : "aplication/json"
+          'Accept': 'application/json, text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+          'Content-type': 'application/json'
         },
+        credentials: 'same-origin',
+        body : JSON.stringify(api)
       })
       .then(res => res.json())
-      .then(res => 
-        console.log('res', res)
-      )
+      .then(res => console.log('res', res))
+      .catch(err => console.log('err', err))
       
+    this.props.form.validateFieldsAndScroll((err, values) => {
       // if (!err) {
       //   loadCompanyOpenBillInfo()
       //   this.changeValue()

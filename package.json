@@ -2,7 +2,7 @@
   "name": "as-check",
   "version": "0.0.1",
   "private": false,
-  "proxy": "https://10.96.205.191/",
+  "proxy": "https://10.96.205.191:443/",
   "homepage": "http://gitlab-cos/gpbu7806/AS-Check",
   "author": "Denis Isaev <denis.isaev@gazprombank.ru>",
   "repository": {
