@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Layout, Menu, Icon, Tooltip } from "antd";
-import { Link, withRouter } from "react-router-dom";
+import { NavLink, withRouter } from "react-router-dom";
 import "./sider-container.scss";
 
 export class SiderContainer extends Component {
@@ -54,7 +54,6 @@ export class SiderContainer extends Component {
   }
 
   onCollapse = collapsed => {
-    console.log(collapsed);
     this.setState({ collapsed });
   };
 
@@ -65,16 +64,16 @@ export class SiderContainer extends Component {
         <MenuItem key={key} onClick={calback}>
           {!collapsed ? (
             <Tooltip title={item.full} placement="right" style={{ marginLeft : "10px"}}>
-              <Link to={item.link}>
+              <NavLink to={item.link}>
                 <Icon type={item.icon} />
                 <span>{item.short}</span>
-              </Link>
+              </NavLink>
             </Tooltip>
           ) : (
-            <Link to={item.link}>
+            <NavLink to={item.link}>
               <Icon type={item.icon} />
               <span>{item.full}</span>
-            </Link>
+            </NavLink>
           )}
         </MenuItem>
       )
@@ -92,12 +91,12 @@ export class SiderContainer extends Component {
         onCollapse={this.onCollapse}
         className="sider-menu"
       >
-        <Link to="/" onClick={this.changeActivePage}>
+        <NavLink to="/" onClick={this.changeActivePage}>
           <div className={"logo"  + hidden}>
             <img className="logo-img" src={process.env.PUBLIC_URL + 'img/logo.svg'} alt={"logo"} />
             <label className={"logo-label" + hidden }>Газпромбанк</label>
           </div>
-        </Link>
+        </NavLink>
         <Menu selectedKeys={[`${activePage}`]} mode="inline" theme="dark">
           { this.renderMenuItem(menu, collapsed, this.changeActivePage) }
         </Menu>

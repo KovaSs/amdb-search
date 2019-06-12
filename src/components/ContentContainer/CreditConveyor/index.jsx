@@ -59,7 +59,7 @@ class CreditConveyor extends Component {
           <SearchCompanyInput toHideTableInfo={this.toHideTableInfo} />
           { showTable && renderData ?
             <CollapceContainer  loading={loading}/> : 
-            <Spin spinning={loading} size="large" tip="Идет поиск данных" >
+            <Spin spinning={loading} size="large" tip="Идет поиск данных">
               <div className="search-result-table">
                 <div>Для поиска информации об организации введите ИНН или ОГРН в поисковую строку</div>
               </div>
@@ -80,7 +80,7 @@ class CreditConveyor extends Component {
           <iframe src="https://10.96.205.191/cgi-bin/serg/0/6/9/reports/276/konttur_focus_viewer_new4.pl" title="credit-conveyor" width="100%" height="890px"></iframe>
         }
       </>
-    );
+    )
   }
 }
 

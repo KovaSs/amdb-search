@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import MainPage from "./MainPage";
 import OpenBill from "./OpenBill";
 import CreditConveyor from "./CreditConveyor";
@@ -14,12 +14,14 @@ export class ContentContainer extends Component {
     return (
       <Content style={{ minHeight: "80vh" }}>
         <div className="ant-layout-content__data">
-          <Route path='/' exact component={MainPage}/>
-          <Route path='/open-bill' exact component={OpenBill}/>
-          <Route path='/credit-conveyor' exact component={CreditConveyor}/>
-          <Route path='/electronic-bank-garantees' exact component={ElectronicBankGarantees}/>
-          <Route path='/electronic-bank-garantees/:id' render={this.getSearchObject}/>
-          <Route path='/early-warning-system' exact component={EarlyWarningSystem}/>
+          <Switch>
+            <Route path='/' exact component={MainPage}/>
+            <Route path='/open-bill' exact component={OpenBill}/>
+            <Route path='/credit-conveyor' exact component={CreditConveyor}/>
+            <Route path='/electronic-bank-garantees' exact component={ElectronicBankGarantees}/>
+            <Route path='/electronic-bank-garantees/:id' render={this.getSearchObject}/>
+            <Route path='/early-warning-system' exact component={EarlyWarningSystem}/>
+          </Switch>
         </div>
       </Content>
     );
