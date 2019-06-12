@@ -51,10 +51,7 @@ class SearchCompanyInput extends Component {
       fetch(`/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify(api)}`, {
         method: 'GET',
         mode: 'cors',
-        headers: {
-          // 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-        },
-        // credentials: 'same-origin'
+        credentials: 'include',
       })
       .then(res => res.json())
       .then(res => console.log('res', JSON.parse(res.data)))
