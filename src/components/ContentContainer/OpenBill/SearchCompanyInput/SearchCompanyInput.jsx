@@ -36,30 +36,32 @@ class SearchCompanyInput extends Component {
     const { loadCompanyOpenBillInfo } = this.props 
     e.preventDefault();
 
-      const api = { 
-        type: 'get_company_info',
-        data : {
-          code: '7726637843'
-        }
-      }
+    // const api = { 
+    //   type: 'get_company_info',
+    //   data : {
+    //     code: this.props.form.setFieldsValue.__reactBoundContext.instances.data.state.value
+    //   }
+    // }
 
-      // const queryParams = params => {
-      //   const esc = encodeURIComponent
-      //   return Object.keys(params).map(key => `${esc(key)}=${esc(params[key])}`).join('&')
-      // }
+    // const queryParams = params => {
+    //   const esc = encodeURIComponent
+    //   return Object.keys(params).map(key => `${esc(key)}=${esc(params[key])}`).join('&')
+    // }
 
-      fetch(`/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify(api)}`, {
-        method: 'GET',
-        mode: 'cors',
-        credentials: 'include',
-      })
-      .then(res => res.json())
-      .then(res => console.log('res', JSON.parse(res.data)))
-      .catch(err => console.log('err', err))
+    // fetch(`/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify(api)}`, {
+    //   mode: 'cors',
+    //   credentials: 'include',
+    // })
+    // .then(res => res.json())
+    // .then(res => {
+    //   const data = JSON.parse(res.data) 
+    //   console.log('res', data.Data.Report )
+    // })
+    // .catch(err => console.log('err', err))
       
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        loadCompanyOpenBillInfo()
+        loadCompanyOpenBillInfo(this.props.form.setFieldsValue.__reactBoundContext.instances.data.state.value)
         this.changeValue()
       }
     });
@@ -75,13 +77,13 @@ class SearchCompanyInput extends Component {
   clearSearchField = () => {
     const { resetFields } = this.props.form
     const { toHideTableInfo, clearCompanyOpenBillInfo } = this.props
+    toHideTableInfo()
+    clearCompanyOpenBillInfo()
+    resetFields()
     this.setState({
       showInfo: false,
       clearField : true
     })
-    toHideTableInfo()
-    clearCompanyOpenBillInfo()
-    resetFields()
   }
   
   getFields = () => {
@@ -95,8 +97,8 @@ class SearchCompanyInput extends Component {
             {getFieldDecorator('data', {
               initialValue: inn,
               rules: [
-                // { required: true, message: 'Строка поиска не должна быть пустой!' },
-                // { pattern: '^[0-9]{10,15}$', message: 'Поисковой запрос должен состоять из 10-15 цифр!'}
+                { required: true, message: 'Строка поиска не должна быть пустой!' },
+                { pattern: '^[0-9]{10,15}$', message: 'Поисковой запрос должен состоять из 10-15 цифр!'}
               ],
             })(
               <Input placeholder="Введите ИНН или ОГРН" disabled={showInfo}/>

@@ -71,6 +71,23 @@ class TransformData {
     console.table(clgData)
     return fullOrganistionInfo
   }
+  
+  _get_company_info_companySource = inputData => {
+    const Field = (title, data) => ({ title, data })
+    let clgData = {}
+    const cloneFieldsArr = _.cloneDeep(fieldsArr);
+    const fullOrganistionInfo = cloneFieldsArr.map( item => {
+      for (const el in inputData) {
+        if(item.id === el ) {
+          clgData[el] = new Field(item.title, inputData[el])
+          return _.assign(item, { "data" : inputData[el]})
+        }
+      }
+      return item
+    })
+    console.table(clgData)
+    return fullOrganistionInfo
+  }
 
   _managementSource = inputData => {
     const Field = (title, data) => ({ title, data })
