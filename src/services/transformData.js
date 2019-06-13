@@ -20,7 +20,7 @@ class TransformData {
           year3: item.otvet.year,
         }]
       };
-  
+
       const _headersTransform = item => {
         let i=0, newArr =[]
         item.map( elem => {
@@ -34,7 +34,7 @@ class TransformData {
         })
         return newArr
       };
-  
+
       for (const el in inputData) {
         if(item.id === el && item.id === "arbiter") {
           let newData = _arbiterTransform(inputData[el])
@@ -71,15 +71,17 @@ class TransformData {
     console.table(clgData)
     return fullOrganistionInfo
   }
-  
+
   _get_company_info_companySource = (prevData, newData) => {
     const clonePrevData = _.cloneDeep(prevData);
-
     fieldsArr.map(item => {
       for (const key in newData) {
-        if(item.search === key) {
-          console.log('key', key, '---', newData[item.search])
+        if(item.search === key && !item.func) {
+          console.log('key |', item.search, ' | ', newData[item.search])
           return _.assign(clonePrevData, { [item.id] : newData[item.search]})
+        } else if(item.search === key && item.func) {
+          console.log('key |', item.search, ' | ', item.func(newData[item.search]))
+          return _.assign(clonePrevData, { [item.id] : item.func(newData[item.search])})
         }
       }
       return item

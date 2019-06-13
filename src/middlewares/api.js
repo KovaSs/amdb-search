@@ -16,7 +16,7 @@ export default store => next => action => {
     const { openBill : { companyResponse } } = store.getState()
     const data = JSON.parse(res.data)
     // console.log('store', companyResponse)
-    // console.log('res', data.Data.Report)
+    console.log('res', data.Data.Report.IndexOfDueDiligence)
     const updatedData = trasform._get_company_info_companySource(companyResponse, data.Data.Report)
     next({ type: type + SUCCESS, payload: updatedData, ...rest})
   })

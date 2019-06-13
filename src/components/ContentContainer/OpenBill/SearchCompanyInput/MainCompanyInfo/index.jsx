@@ -17,7 +17,7 @@ class MainCompanyInfo extends Component {
   };
 
   render() {
-    const { name, full_name, inn, ogrn, fns, sanctions, isponlit_proizvodstva } = this.props.companyResponse;
+    const { companyResponse: { name, full_name, inn, ogrn, fns, sanctions, isponlit_proizvodstva } } = this.props;
     return (
       <>
         <Col span={18} >
