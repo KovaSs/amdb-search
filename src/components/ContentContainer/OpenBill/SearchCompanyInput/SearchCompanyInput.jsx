@@ -68,7 +68,7 @@ class SearchCompanyInput extends Component {
     const { inn, renderData } = this.props
     return (
       <Row>
-        <Col span={4}>
+        <Col span={3}>
           <Form.Item>
             {getFieldDecorator('data', {
               initialValue: inn,
