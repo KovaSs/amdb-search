@@ -5,6 +5,12 @@
     padding: 8px 16px !important;
     background-color: #a3d3ff13;
   }
+  .ant-descriptions-item-label {
+    -moz-user-select: none; /* Mozilla Firefox */
+    -ms-user-select: none; /* Internet Explorer (не поддерживается) */
+    -o-user-select: none; /* Opera Presto (не поддерживается) */
+    -webkit-user-select: none; /* Google Chrome, Opera Next, Safari */
+  }
   .ant-descriptions.bordered.small .ant-descriptions-item-label, .ant-descriptions.bordered.small .ant-descriptions-item-content {
     padding: 5px;
   }
@@ -33,6 +39,10 @@
       color: rgba(0, 0, 0, 0.85);
       display: inline-block;
       margin-right: 5px;
+      -moz-user-select: none; /* Mozilla Firefox */
+      -ms-user-select: none; /* Internet Explorer (не поддерживается) */
+      -o-user-select: none; /* Opera Presto (не поддерживается) */
+      -webkit-user-select: none; /* Google Chrome, Opera Next, Safari */
       &:after {
         content: ':';
         font-weight: normal;

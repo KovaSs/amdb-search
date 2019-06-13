@@ -10,13 +10,12 @@ export default store => next => action => {
     ...rest
   })
   /** Симуляция получения данных о кампании с сервера */
-  fetch(callAPI, { mode: 'cors', credentials: 'include' })
+  updateData && fetch(callAPI, { mode: 'cors', credentials: 'include' })
   .then(res => res.json())
   .then(res => {
     const { openBill : { companyResponse } } = store.getState()
     const data = JSON.parse(res.data)
-    // console.log('store', companyResponse)
-    console.log('res', data.Data.Report.IndexOfDueDiligence)
+    // console.log('res', data.Data.Report.LegalAddresses)
     const updatedData = trasform._get_company_info_companySource(companyResponse, data.Data.Report)
     next({ type: type + SUCCESS, payload: updatedData, ...rest})
   })

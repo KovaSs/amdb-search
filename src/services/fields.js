@@ -9,7 +9,8 @@ export const fieldsArr = [
 
   {search: "OGRN", id: "ogrn", title: "ОГРН", data: ""},
 
-  {search: "CompanyType", id: "company_type", title: "Тип компании", data: "", func: (item = 'Данные отсутствуют') =>  {
+  {search: "CompanyType", id: "company_type", title: "Тип компании", data: "", func: item =>  {
+    if(!item) return 'Данные отсутствуют'
     switch (item) {
       case "1":
         return 'Обычная компания'
@@ -26,7 +27,8 @@ export const fieldsArr = [
 
   {search: "DateFirstReg", id: "registration_date", title: "Дата регистрации", data: "", func: (item = 'Данные отсутствуют') => moment(item).format('DD.MM.YYYY')},
 
-  {search: "Status", id: "status", title: "Статус", data: "", func: (item = 'Данные отсутствуют') => {
+  {search: "Status", id: "status", title: "Статус", data: "", func: item => {
+    if(!item) return 'Данные отсутствуют'
     const status = []
     item.GroupName && status.push(item.GroupName)
     item.Type !== item.GroupName && status.push(item.Type)
@@ -34,9 +36,14 @@ export const fieldsArr = [
     return status.join(' / ')
   }},
 
-  {search: "Address", id: "address", title: "Юридический адресс", data: ""},
+  {search: "LegalAddresses", id: "address", title: "Юридический адресс", data: "", func: item => {
+    if(!item) return 'Данные отсутствуют'
+    const { Address : {Address} } = item
+    return Address
+  }},
 
-  {search: "PhoneList", id: "phone_list", title: "Список телефонов", data: "",func: (item = 'Данные отсутствуют') => {
+  {search: "PhoneList", id: "phone_list", title: "Список телефонов", data: "", func: item => {
+    if(!item) return 'Данные отсутствуют'
     const { Phone, Phone : {Code, Number} } = item
     if(Array.isArray(Phone)) {
       const newArrayPnoneList = Phone.map((item, key) => {
@@ -49,7 +56,8 @@ export const fieldsArr = [
     }
   }},
 
-  {search: "OKVED2List", id: "okved", title: "Основной ОКВЭД", data: "",func: (item = 'Данные отсутствуют') => {
+  {search: "OKVED2List", id: "okved", title: "Основной ОКВЭД", data: "",func: item => {
+    if(!item) return 'Данные отсутствуют'
     if(Array.isArray(item.OKVED)) {
       const okved = item.OKVED.filter(el =>  el.IsMain === 'true')
       const { Code, Name } = okved[0]
@@ -63,8 +71,9 @@ export const fieldsArr = [
 
   {search: "CharterCapital", id: "capital", title: "Уставной капитал", data: ""},
 
-  {search: "IndexOfDueDiligence", id: "index_of_due_diligence", title: "Индекс должносной осмотрительности", data: "", func: (item = 'Данные отсутствуют') => {
-      return `${item.Index} / ${item.IndexDesc}`
+  {search: "IndexOfDueDiligence", id: "index_of_due_diligence", title: "Индекс должносной осмотрительности", data: "", func: item => {
+    if(item.Index === 'N/A' || !item) return 'N/A - Данные отсутствуют'
+    return `${item.Index} / ${item.IndexDesc}`
   }},
 
   {search: "PaymentIndex", id: "payment_index", title: "Индекс платежной дисциплины", data: ""},

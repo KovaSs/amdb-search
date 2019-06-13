@@ -63,6 +63,10 @@
           text-align: left;
           font-weight: bold;
           padding-right: 2rem;
+          -moz-user-select: none; /* Mozilla Firefox */
+          -ms-user-select: none; /* Internet Explorer (не поддерживается) */
+          -o-user-select: none; /* Opera Presto (не поддерживается) */
+          -webkit-user-select: none; /* Google Chrome, Opera Next, Safari */
           &:after {
             content: ':';
             font-weight: normal;
@@ -79,11 +83,19 @@
         text-align: center;
         margin-bottom: 1rem;
         font-weight: bold;
+        -moz-user-select: none; /* Mozilla Firefox */
+        -ms-user-select: none; /* Internet Explorer (не поддерживается) */
+        -o-user-select: none; /* Opera Presto (не поддерживается) */
+        -webkit-user-select: none; /* Google Chrome, Opera Next, Safari */
       }
     }
     &__lable-table {
       margin: 2rem 0 2rem 1rem;
       font-weight: bold;
+      -moz-user-select: none; /* Mozilla Firefox */
+      -ms-user-select: none; /* Internet Explorer (не поддерживается) */
+      -o-user-select: none; /* Opera Presto (не поддерживается) */
+      -webkit-user-select: none; /* Google Chrome, Opera Next, Safari */
     }
   }
 
@@ -96,6 +108,10 @@
           text-align: left;
           font-weight: bold;
           padding-right: 2rem;
+          -moz-user-select: none; /* Mozilla Firefox */
+          -ms-user-select: none; /* Internet Explorer (не поддерживается) */
+          -o-user-select: none; /* Opera Presto (не поддерживается) */
+          -webkit-user-select: none; /* Google Chrome, Opera Next, Safari */
           &:after {
             content: ':';
             font-weight: normal;
@@ -113,11 +129,19 @@
         text-align: center;
         margin-bottom: 1rem;
         font-weight: bold;
-      }
+        -moz-user-select: none; /* Mozilla Firefox */
+        -ms-user-select: none; /* Internet Explorer (не поддерживается) */
+        -o-user-select: none; /* Opera Presto (не поддерживается) */
+        -webkit-user-select: none; /* Google Chrome, Opera Next, Safari */
+          }
     }
     &__lable-table {
       margin: 2rem 0 2rem 1rem;
       font-weight: bold;
+      -moz-user-select: none; /* Mozilla Firefox */
+      -ms-user-select: none; /* Internet Explorer (не поддерживается) */
+      -o-user-select: none; /* Opera Presto (не поддерживается) */
+      -webkit-user-select: none; /* Google Chrome, Opera Next, Safari */
     }
   }
 }
