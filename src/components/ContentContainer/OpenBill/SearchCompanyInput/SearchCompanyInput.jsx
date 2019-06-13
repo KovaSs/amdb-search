@@ -23,7 +23,6 @@ class SearchCompanyInput extends Component {
 
   componentDidUpdate(prevProps) {
     const { companyResponse } = this.props
-
     if(companyResponse !== prevProps.companyResponse) {
       this.setState({
         showInfo: true,
@@ -36,29 +35,6 @@ class SearchCompanyInput extends Component {
     const { loadCompanyOpenBillInfo } = this.props 
     e.preventDefault();
 
-    // const api = { 
-    //   type: 'get_company_info',
-    //   data : {
-    //     code: this.props.form.setFieldsValue.__reactBoundContext.instances.data.state.value
-    //   }
-    // }
-
-    // const queryParams = params => {
-    //   const esc = encodeURIComponent
-    //   return Object.keys(params).map(key => `${esc(key)}=${esc(params[key])}`).join('&')
-    // }
-
-    // fetch(`/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify(api)}`, {
-    //   mode: 'cors',
-    //   credentials: 'include',
-    // })
-    // .then(res => res.json())
-    // .then(res => {
-    //   const data = JSON.parse(res.data) 
-    //   console.log('res', data.Data.Report )
-    // })
-    // .catch(err => console.log('err', err))
-      
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         loadCompanyOpenBillInfo(this.props.form.setFieldsValue.__reactBoundContext.instances.data.state.value)
@@ -89,7 +65,7 @@ class SearchCompanyInput extends Component {
   getFields = () => {
     const { getFieldDecorator } = this.props.form
     const { showInfo } = this.state
-    const { inn } = this.props
+    const { inn, renderData } = this.props
     return (
       <Row>
         <Col span={4}>
@@ -111,7 +87,7 @@ class SearchCompanyInput extends Component {
             <Button className="search-btn" type="primary" htmlType="submit"> Поиск </Button>
           }
         </Col>
-          { showInfo && <MainCompanyInfo /> }
+          { renderData && <MainCompanyInfo /> }
       </Row>
     )
   }

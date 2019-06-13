@@ -19,6 +19,18 @@ export const loadCompanyInfo = inn => {
       loading: true
     })
 
+    
+    dispatch({
+      type: LOAD_COMPANY_OB_INFO + UPDATE,
+      callAPI : `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify({ 
+        type: 'get_company_info',
+        data : {
+          code: inn
+        }
+      })}`,
+      updateData: true
+    })
+
     fetch('/cgi-bin/serg/0/6/9/reports/276/mock.pl')
     .then(res => res.json())
     .then(res =>
@@ -29,23 +41,23 @@ export const loadCompanyInfo = inn => {
       })
     )
 
-    fetch(`/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify({ 
-      type: 'get_company_info',
-      data : {
-        code: inn
-      }
-    })}`, {
-      mode: 'cors',
-      credentials: 'include',
-    })
-    .then(res => res.json())
-    .then(res => {
-      const data = JSON.parse(res.data) 
-      return dispatch({
-        type: LOAD_COMPANY_OB_INFO + UPDATE,
-        payload : data.Data.Report
-      })
-    })
+    // fetch(`/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify({ 
+    //   type: 'get_company_info',
+    //   data : {
+    //     code: inn
+    //   }
+    // })}`, {
+    //   mode: 'cors',
+    //   credentials: 'include',
+    // })
+    // .then(res => res.json())
+    // .then(res => {
+    //   const data = JSON.parse(res.data) 
+    //   return dispatch({
+    //     type: LOAD_COMPANY_OB_INFO + UPDATE,
+    //     payload : data.Data.Report,
+    //   })
+    // })
   }
 }
 
