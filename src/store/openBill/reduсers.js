@@ -17,7 +17,7 @@ const creditConveyorReducer = (state = defaultState, action) => {
     case LOAD_COMPANY_OB_INFO + UPDATE + START:
       return { ...state }
     case LOAD_COMPANY_OB_INFO + UPDATE + SUCCESS:
-      return { ...state, updateResponse: payload, searchLoading: false, renderData: true}
+      return { ...state, companyResponse: payload, searchLoading: false, renderData: true}
     case CLEAR_COMPANY_OB_INFO:
       return { ...state, inn: "", renderData: false }
     default:
