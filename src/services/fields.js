@@ -76,7 +76,10 @@ export const fieldsArr = [
     return `${item.Index} / ${item.IndexDesc}`
   }},
 
-  {search: "PaymentIndex", id: "payment_index", title: "Индекс платежной дисциплины", data: ""},
+  {search: "PaymentIndex", id: "payment_index", title: "Индекс платежной дисциплины", data: "", func: item => {
+    if(!item) return 'Данные отсутствуют'
+    return `${item.PaymentIndexValue} / ${item.PaymentIndexDesc}`
+  }},
 
   {search: "FailueScope", id: "failure_score", title: "Индекс финансового риска", data: ""},
 
@@ -86,9 +89,33 @@ export const fieldsArr = [
 
   {search: "", id: "sanctions", title: "Санкции", data: ""},
 
-  {search: "", id: "precessors", title: "Предшедственники", data: ""},
+  {search: "Predecessor", id: "precessors", title: "Предшедственники", data: "", func: item => {
+    if(!item) return ''
+    if(Array.isArray(item)) {
+      const predecessor = []
+      item.map(el =>  {
+        return predecessor.push(`${el.Name} / ${el.INN} ${el.Status.Text ? `/ ${el.Status.Text}` : ''}`)
+      })
+      return predecessor
+    } else {
+      const { INN, Name, Status } = item
+      return `${Name} / ${INN} ${Status.Text ? `/ ${Status.Text}` : ''}`
+    }
+  }}, 
 
-  {search: "", id: "successors", title: "Приемники", data: ""},
+  {search: "Successor", id: "successors", title: "Приемники", data: "", func: item => {
+    if(!item) return ''
+    if(Array.isArray(item.Successor)) {
+      const successor = []
+      item.map(el =>  {
+        return successor.push(`${el.Name} / ${el.INN} ${el.Status.Text ? `/ ${el.Status.Text}` : ''}`)
+      })
+      return successor
+    } else {
+      const { INN, Name, Status } = item
+      return `${Name} / ${INN} ${Status.Text ? `/ ${Status.Text}` : ''}`
+    }
+  }},
 
   {search: "", id: "arbiter", title: "Арбитраж", data: ""},
 

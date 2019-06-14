@@ -34,7 +34,6 @@ class SearchCompanyInput extends Component {
   handleSubmit = e => {  
     const { loadCompanyOpenBillInfo } = this.props
     const { showInfo } = this.state
-    console.log('e', typeof(e))
     if(typeof e === 'function' || typeof e === 'object') {
       e.preventDefault();
     }

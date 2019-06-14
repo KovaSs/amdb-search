@@ -26,8 +26,12 @@ const openBillReducer = (state = defaultState, action) => {
     case LOAD_COMPANY_OB_INFO + UPDATE + FAIL:
       return { ...state, requestLoading: {...requestLoading, companyMainInfoUpdate: false}, errors: {...errors, companyMainInfoUpdate: true}}
 
+    case LOAD_COMPANY_OB_INFO + PC + UPDATE + START:
+      return { ...state, reqnum: id, requestLoading: {...requestLoading, companyPCUpdate: true}, errors: {...errors, companyPCUpdate: false}}
     case LOAD_COMPANY_OB_INFO + PC + UPDATE + SUCCESS:
-      return { ...state, ps: payload}
+      return { ...state, companyResponse: payload, requestLoading: {...requestLoading, companyPCUpdate: false}, errors: {...errors, companyPCUpdate: false}}
+    case LOAD_COMPANY_OB_INFO + PC + UPDATE + FAIL:
+      return { ...state, requestLoading: {...requestLoading, companyPCUpdate: false}, errors: {...errors, companyPCUpdate: true}}
 
     case CLEAR_COMPANY_OB_INFO:
       return { ...state, inn: "", reqnum: null, renderData: false }

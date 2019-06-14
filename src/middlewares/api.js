@@ -8,7 +8,7 @@ export default store => next => action => {
   updateData && next({ type: type + START, ...rest })
   updatePCInfo && next({ type: type + START, ...rest })
 
-  /** Симуляция получения данных о кампании с сервера */
+  /** Обновление актуальных данных о кампании */
   updateData && fetch(callAPI, { mode: 'cors', credentials: 'include' })
     .then(res => {
       if (res.ok) return res.json()
@@ -28,6 +28,42 @@ export default store => next => action => {
     })
     .catch(err => {
       console.log('err', err)
+      next({
+        type: type + FAIL,
+      })
+    })
+
+  /** Обновление актуальных данных о пердшественниках кампании */
+  updatePCInfo && fetch(callAPI, { mode: 'cors', credentials: 'include' })
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+    .then(res => {
+      const { openBill: { companyResponse } } = store.getState()
+      const data = JSON.parse(res.data)
+      console.log('res | PC', data)
+      if(data.ResultInfo.ResultType === "Data not found") {
+        const updatedData = trasform._get_company_info_companySource(companyResponse, { Successor : false})
+        next({
+          type: type + SUCCESS,
+          reqnum: res.reqnum,
+          payload: updatedData,
+          ...rest
+        })
+      } else {
+        // console.log('res | PC', data.Data.Report.Reorganizations)
+        const updatedData = trasform._get_company_info_companySource(companyResponse, data.Data.Report.Reorganizations)
+        next({
+          type: type + SUCCESS,
+          reqnum: res.reqnum,
+          payload: updatedData,
+          ...rest
+        })
+      }
+    })
+    .catch(err => {
+      console.log('err | PC', err)
       next({
         type: type + FAIL,
       })
