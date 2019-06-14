@@ -5,10 +5,11 @@ export default store => next => action => {
   const { callAPI, updateData, type, ...rest } = action
   if (!updateData && !callAPI) return next(action)
 
-  next({
+  updateData && next({
     type: type + START,
     ...rest
   })
+
   /** Симуляция получения данных о кампании с сервера */
   updateData && fetch(callAPI, { mode: 'cors', credentials: 'include' })
   .then(res => res.json())
@@ -17,6 +18,6 @@ export default store => next => action => {
     const data = JSON.parse(res.data)
     // console.log('res', data.Data.Report.LegalAddresses)
     const updatedData = trasform._get_company_info_companySource(companyResponse, data.Data.Report)
-    next({ type: type + SUCCESS, payload: updatedData, ...rest})
+    next({ type: type + SUCCESS, reqnum: res.reqnum, payload: updatedData, ...rest})
   })
 }

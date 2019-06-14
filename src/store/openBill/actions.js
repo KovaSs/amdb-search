@@ -2,6 +2,7 @@ export const START = '_START'
 export const SUCCESS = '_SUCCESS'
 export const FAIL = '_FAIL'
 export const UPDATE = '_UPDATE'
+export const PC = '_PC'
 
 export const ACTION_CHANGE_OB_INN = 'ACTION_CHANGE_OB_INN'
 export const actionChangeInn = newInn => {
@@ -29,6 +30,17 @@ export const loadCompanyInfo = inn => {
         }
       })}`,
       updateData: true
+    })
+
+    dispatch({
+      type: LOAD_COMPANY_OB_INFO + PC + UPDATE,
+      callAPI : `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify({ 
+        type: 'get_company_ps',
+        reqnum: '0',
+        data : {
+          code: inn
+        }
+      })}`
     })
 
     fetch('/cgi-bin/serg/0/6/9/reports/276/mock.pl', { mode: 'cors', credentials: 'include' })

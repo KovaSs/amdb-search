@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Row, Col, Form, Input, Button } from "antd";
+import { Row, Col, Form, Input } from "antd";
 import MainCompanyInfo from "./MainCompanyInfo";
 import "./search-company.scss"
 
@@ -14,7 +14,7 @@ class SearchCompanyInput extends Component {
     const { companyResponse, renderData, inn } = this.props
     const {setFieldsValue} = this.props.form
     if(!clearField && companyResponse && renderData) {
-      setFieldsValue.__reactBoundContext.instances.data.state.value = inn
+      setFieldsValue.__reactBoundContext.instances.data.props.value = inn
       this.setState({
         showInfo: true
       })
@@ -32,21 +32,39 @@ class SearchCompanyInput extends Component {
   }
   
   handleSubmit = e => {  
-    const { loadCompanyOpenBillInfo } = this.props 
-    e.preventDefault();
+    const { loadCompanyOpenBillInfo } = this.props
+    const { showInfo } = this.state
+    // e.preventDefault();
 
-    this.props.form.validateFieldsAndScroll((err, values) => {
+    // const api = { 
+    //     type: 'get_company_ps',
+    //     reqnum: '0',
+    //     data : {
+    //       code: this.props.form.setFieldsValue.__reactBoundContext.instances.data.props.value
+    //     }
+    //   }
+  
+    //   fetch(`/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify(api)}`, {
+    //     mode: 'cors',
+    //     credentials: 'include',
+    //   })
+    //   .then(res => res.json())
+    //   .then(res => console.log('res', res))
+    //   .catch(err => console.log('err', err))
+
+    !showInfo && this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        loadCompanyOpenBillInfo(this.props.form.setFieldsValue.__reactBoundContext.instances.data.state.value)
+        loadCompanyOpenBillInfo(this.props.form.setFieldsValue.__reactBoundContext.instances.data.props.value)
         this.changeValue()
       }
-    });
+    })
+    showInfo && this.clearSearchField()
   }
 
   changeValue = () => {
     const { actionChangeOpenBillInn } = this.props
     setTimeout(() => {
-      actionChangeOpenBillInn(this.props.form.setFieldsValue.__reactBoundContext.instances.data.state.value)
+      actionChangeOpenBillInn(this.props.form.setFieldsValue.__reactBoundContext.instances.data.props.value)
     }, 100);
   }
 
@@ -64,12 +82,13 @@ class SearchCompanyInput extends Component {
   
   getFields = () => {
     const { getFieldDecorator } = this.props.form
+    const { Search } = Input
     const { showInfo } = this.state
     const { inn, renderData } = this.props
     return (
       <Row>
-        <Col span={3}>
-          <Form.Item>
+        <Col span={4}>
+          <Form.Item style={{marginRight: '1rem'}}>
             {getFieldDecorator('data', {
               initialValue: inn,
               rules: [
@@ -77,16 +96,21 @@ class SearchCompanyInput extends Component {
                 { pattern: '^[0-9]{10,15}$', message: 'Поисковой запрос должен состоять из 10-15 цифр!'}
               ],
             })(
-              <Input placeholder="Введите ИНН или ОГРН" disabled={showInfo}/>
+              <Search 
+                placeholder="Введите ИНН или ОГРН"
+                enterButton={showInfo ? 'Очистить' : 'Поиск'}
+                onSearch={this.handleSubmit}
+                // disabled={showInfo}
+              />
             )}
           </Form.Item>
         </Col>
-        <Col span={2}>
+        {/* <Col span={2}>
           { showInfo ?
             <Button onClick={this.clearSearchField} className="search-btn" type="default"> Очистить </Button> :
             <Button className="search-btn" type="primary" htmlType="submit"> Поиск </Button>
           }
-        </Col>
+        </Col> */}
           { renderData && <MainCompanyInfo /> }
       </Row>
     )

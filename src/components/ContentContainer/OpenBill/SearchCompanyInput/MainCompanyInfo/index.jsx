@@ -20,7 +20,7 @@ class MainCompanyInfo extends Component {
     const { companyResponse: { name, full_name, inn, ogrn, fns, sanctions, isponlit_proizvodstva } } = this.props;
     return (
       <>
-        <Col span={19} >
+        <Col span={20}>
           <Row className="main-info__organisation-info">
             <Col span={1}>
               <Avatar src={process.env.PUBLIC_URL + 'img/logo.png'} />
