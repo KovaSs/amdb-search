@@ -14,7 +14,7 @@ class OpenBill extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { companyResponse } = this.props
-    nextProps.searchLoading === true ?
+    nextProps.searchLoading.companyMainInfoUpdate === true ?
       this.setState({
         loading: true
       }) :
