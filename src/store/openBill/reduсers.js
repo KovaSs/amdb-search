@@ -2,34 +2,39 @@ import { ACTION_CHANGE_OB_INN, LOAD_COMPANY_OB_INFO, CLEAR_COMPANY_OB_INFO, STAR
 
 const defaultState = {
   inn: "",
-  searchLoading: false
+  requestLoading: false
 }
 
-const creditConveyorReducer = (state = defaultState, action) => {
-  const { searchLoading } = state
+const openBillReducer = (state = defaultState, action) => {
+  const { requestLoading, errors } = state
   const {type, payload, loading, id} = action
   switch (type) {
     case ACTION_CHANGE_OB_INN:
       return { ...state, inn: payload }
+
     case LOAD_COMPANY_OB_INFO + START:
-      return { ...state, searchLoading: { ...searchLoading, companyMainInfo: true } }
+      return { ...state, requestLoading: { ...requestLoading, companyMainInfo: true }, errors: {...errors, companyMainInfo: false} }
     case LOAD_COMPANY_OB_INFO + SUCCESS:
-      return { ...state, companyResponse: payload, searchLoading: { ...searchLoading, companyMainInfo: false } }
+      return { ...state, companyResponse: payload, requestLoading: { ...requestLoading, companyMainInfo: false }, errors: {...errors, companyMainInfo: false} }
     case LOAD_COMPANY_OB_INFO + FAIL:
-      return { ...state, searchLoading: loading, errorUpdate: true}
+      return { ...state, requestLoading: loading, errors: {...errors, companyMainInfo: true}}
+
     case LOAD_COMPANY_OB_INFO + UPDATE + START:
-      return { ...state, reqnum: id, searchLoading: {...searchLoading, companyMainInfoUpdate: true}}
+      return { ...state, reqnum: id, requestLoading: {...requestLoading, companyMainInfoUpdate: true}, errors: {...errors, companyMainInfoUpdate: false}}
     case LOAD_COMPANY_OB_INFO + UPDATE + SUCCESS:
-      return { ...state, companyResponse: payload, searchLoading: {...searchLoading, companyMainInfoUpdate: false}, renderData: true}
+      return { ...state, companyResponse: payload, requestLoading: {...requestLoading, companyMainInfoUpdate: false}, renderData: true, errors: {...errors, companyMainInfoUpdate: false}}
     case LOAD_COMPANY_OB_INFO + UPDATE + FAIL:
-      return { ...state, searchLoading: false, errorUpdate: true}
+      return { ...state, requestLoading: {...requestLoading, companyMainInfoUpdate: false}, errors: {...errors, companyMainInfoUpdate: true}}
+
     case LOAD_COMPANY_OB_INFO + PC + UPDATE + SUCCESS:
       return { ...state, ps: payload}
+
     case CLEAR_COMPANY_OB_INFO:
       return { ...state, inn: "", reqnum: null, renderData: false }
+
     default:
       return state
   }
 }
 
-export default creditConveyorReducer
+export default openBillReducer

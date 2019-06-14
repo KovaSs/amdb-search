@@ -28,7 +28,7 @@ export default store => next => action => {
     .catch(err => {
       console.log('err', err)
       next({
-        type: type + FAIL
+        type: type + FAIL,
       })
     })
 }

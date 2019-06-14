@@ -14,7 +14,7 @@ class OpenBill extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { companyResponse } = this.props
-    nextProps.searchLoading.companyMainInfoUpdate === true ?
+    nextProps.requestLoading.companyMainInfoUpdate === true ?
       this.setState({
         loading: true
       }) :
@@ -82,10 +82,10 @@ class OpenBill extends Component {
 }
 
 const putStateToProps = state => {
-  const {openBill : { companyResponse, searchLoading, renderData }} = state
+  const {openBill : { companyResponse, requestLoading, renderData }} = state
   return {
     companyResponse,
-    searchLoading,
+    requestLoading,
     renderData
   }
 }
