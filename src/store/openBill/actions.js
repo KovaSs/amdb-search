@@ -1,4 +1,4 @@
-// import {companyResponse} from '../mock'
+import {companyResponse} from '../mock'
 
 export const START = '_START'
 export const SUCCESS = '_SUCCESS'
@@ -45,29 +45,10 @@ export const loadCompanyInfo = inn => {
       })}`
     })
 
-    fetch('/cgi-bin/serg/0/6/9/reports/276/mock.pl', { mode: 'cors', credentials: 'include' })
-    .then(res => {
-      console.log('res', res)
-      if(res.ok) {
-        return res.json()
-      } else {
-        throw new TypeError("Oops, we haven't got JSON!")
-      }
-    })
-    .then(res => {
-      return dispatch({
-        type: LOAD_COMPANY_OB_INFO + SUCCESS,
-        payload : companyResponse,
-        loading : false
-      })
-    }
-    )
-    .catch(err => {
-      console.log('err', err)
-      return dispatch({
-        type: LOAD_COMPANY_OB_INFO + FAIL,
-        loading : false
-      })
+    dispatch({
+      type: LOAD_COMPANY_OB_INFO + SUCCESS,
+      payload : companyResponse,
+      loading : false
     })
   }
 }

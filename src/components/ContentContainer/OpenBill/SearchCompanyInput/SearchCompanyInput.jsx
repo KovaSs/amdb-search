@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Row, Col, Form, Input } from "antd";
+import { findDOMNode } from 'react-dom'
 import MainCompanyInfo from "./MainCompanyInfo";
 import "./search-company.scss"
 
@@ -79,12 +80,21 @@ class SearchCompanyInput extends Component {
       clearField : true
     })
   }
+
+  getElementRef = ref => {
+    const { showInfo } = this.state
+    const input = findDOMNode(ref)
+    // console.log('ref', ref, findDOMNode(ref))
+    console.log('ref-child', input.firstChild.firstChild)
+    if(showInfo) return input.firstChild.firstChild.setAttribute('disabled', false)
+  }
   
   getFields = () => {
     const { getFieldDecorator } = this.props.form
     const { Search } = Input
     const { showInfo } = this.state
     const { inn, renderData } = this.props
+    
     return (
       <Row>
         <Col span={4}>
@@ -100,7 +110,8 @@ class SearchCompanyInput extends Component {
                 placeholder="Введите ИНН или ОГРН"
                 enterButton={showInfo ? 'Очистить' : 'Поиск'}
                 onSearch={this.handleSubmit}
-                // disabled={showInfo}
+                readOnly={showInfo}
+                ref={this.getElementRef}
               />
             )}
           </Form.Item>

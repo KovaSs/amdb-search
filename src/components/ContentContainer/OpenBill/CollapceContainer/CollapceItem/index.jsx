@@ -101,7 +101,17 @@ const CollapceItem = props => {
       item.id !== "full_name"
   }).map(item => {
     const { Item : DescriptionsItem } = Descriptions;
-    return <DescriptionsItem id={ item.id } key={ item.id } label={ item.title }>{ item.data }</DescriptionsItem>
+    if (Array.isArray(item.data)) {
+      // console.log('objectArr', item)
+      const itemArray =  item.data.map((el, key) => <span key={key}>{el}  <br /> </span>)
+      return (
+        <DescriptionsItem id={ item.id } key={ item.id } label={ item.title }>
+          { itemArray }
+        </DescriptionsItem>
+      )
+    } else {
+      return <DescriptionsItem id={ item.id } key={ item.id } label={ item.title }>{ item.data }</DescriptionsItem>
+    }
   })
 
   /** Вывод данных об руководстве */
