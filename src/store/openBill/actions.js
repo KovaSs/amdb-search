@@ -20,7 +20,6 @@ export const loadCompanyInfo = inn => {
       loading: true
     })
 
-
     dispatch({
       type: LOAD_COMPANY_OB_INFO + UPDATE,
       callAPI: `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify({ type: 'get_company_info', data : { code: inn } })}`,
@@ -29,7 +28,8 @@ export const loadCompanyInfo = inn => {
 
     dispatch({
       type: LOAD_COMPANY_OB_INFO + PC + UPDATE,
-      callAPI: `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify({ type: 'get_company_ps', reqnum: '0', data : { code: inn } })}`
+      callAPI: `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify({ type: 'get_company_ps', reqnum: 1, data : { code: inn } })}`,
+      updatePCInfo: true
     })
 
     fetch('/cgi-bin/serg/0/6/9/reports/276/mock.pl', {
@@ -37,9 +37,8 @@ export const loadCompanyInfo = inn => {
         credentials: 'include'
       })
       .then(res => {
-        console.log('res', res)
         if (res.ok)  return res.json() 
-        throw new TypeError("Oops, we haven't got JSON!")
+        throw new TypeError("Основные данные о кампании не загружены!")
       })
       .then(res => {
         return dispatch({

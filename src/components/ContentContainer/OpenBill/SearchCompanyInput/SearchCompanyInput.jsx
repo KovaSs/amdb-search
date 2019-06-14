@@ -34,11 +34,14 @@ class SearchCompanyInput extends Component {
   handleSubmit = e => {  
     const { loadCompanyOpenBillInfo } = this.props
     const { showInfo } = this.state
-    // e.preventDefault();
+    console.log('e', typeof(e))
+    if(typeof e === 'function' || typeof e === 'object') {
+      e.preventDefault();
+    }
 
     // const api = { 
     //     type: 'get_company_ps',
-    //     reqnum: '0',
+    //     reqnum: 1,
     //     data : {
     //       code: this.props.form.setFieldsValue.__reactBoundContext.instances.data.props.value
     //     }
@@ -49,7 +52,10 @@ class SearchCompanyInput extends Component {
     //     credentials: 'include',
     //   })
     //   .then(res => res.json())
-    //   .then(res => console.log('res', res))
+    //   .then(res => {
+    //     console.log('res | PC', res)
+    //     console.log('res | PC', JSON.parse(res.data))
+    //   })
     //   .catch(err => console.log('err', err))
 
     !showInfo && this.props.form.validateFieldsAndScroll((err, values) => {
@@ -100,6 +106,8 @@ class SearchCompanyInput extends Component {
                 placeholder="Введите ИНН или ОГРН"
                 enterButton={showInfo ? 'Очистить' : 'Поиск'}
                 onSearch={this.handleSubmit}
+                onPressEnter={this.handleSubmit}
+                readOnly={showInfo}
                 // disabled={showInfo}
               />
             )}

@@ -2,16 +2,17 @@ import { START, SUCCESS, FAIL } from '../store/openBill/actions'
 import { trasform } from "../services/transformData"
 
 export default store => next => action => {
-  const { callAPI, updateData, type, ...rest } = action
+  const { callAPI, updateData, type, updatePCInfo,  ...rest } = action
   if (!updateData && !callAPI) return next(action)
 
   updateData && next({ type: type + START, ...rest })
+  updatePCInfo && next({ type: type + START, ...rest })
 
   /** Симуляция получения данных о кампании с сервера */
   updateData && fetch(callAPI, { mode: 'cors', credentials: 'include' })
     .then(res => {
       if (res.ok) return res.json()
-      throw new TypeError("Oops, we haven't got JSON!")
+      throw new TypeError("Данные о кампании не обновлены!")
     })
     .then(res => {
       const { openBill: { companyResponse } } = store.getState()
