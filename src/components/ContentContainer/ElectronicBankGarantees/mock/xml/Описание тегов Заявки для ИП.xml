@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<orderBgBankExport xmlns="http://vbankcenter.ru/namespaces/orderbg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vbankcenter.ru/namespaces/orderbg https://vbankcenter.ru/resources/web/xsd/orderbg.xsd">
+    <client>
+        <clientType>Тип клиента</clientType>
+        <selfEmployed>
+            <person>
+                <name>Имя</name>
+                <surname>Фамилия</surname>
+                <patronymic>Отчество</patronymic>
+            </person>
+            <ogrnip>ОГРНИП</ogrnip>
+            <inn>ИНН</inn>
+			<snils>СНИЛС</snils>
+            <site>Сайт организации</site>
+            <phone>Мобильный телефон</phone>
+            <passport>
+                <series>Серия</series>
+                <number>Номер</number>
+                <issuedWho>Кем выдан</issuedWho>
+                <issuedWhen>Когда выдан</issuedWhen>
+                <subCode>Код подразделения</subCode>
+                <birthday>Дата рождения</birthday>
+                <address>
+                    <index>Индекс</index>
+                    <country>Страна</country>
+                    <region>Регион</region>
+                    <district>Район</district>
+                    <city>Город</city>
+                    <street>Улица</street>
+                    <house>Дом (корпус, строение)</house>
+                    <flat>Квартира</flat>
+                </address>
+                <birthPlace>Место рождения</birthPlace>
+            </passport>
+            <okvedCode>Основной вид деятельности (ОКВЭД)</okvedCode>
+            <okvedDesc>Расшифровка ОКВЭД</okvedDesc>
+            <regOrgName>Наименование регистрирующего органа</regOrgName>
+            <regDayDate>Дата регистрации</regDayDate>
+            <regDayOgrnip>Дата внесения в ЕГРНИП</regDayOgrnip>
+            <regPlace>Местонахождение регистрирующего органа</regPlace>
+            <nalogName>Наименование налогового органа</nalogName>
+            <nalogRegDate>Дата постановки на учет в налоговый орган</nalogRegDate>
+            <addresses>
+                <legalAddress>
+                    <index>Индекс</index>
+                    <country>Страна</country>
+                    <region>Регион</region>
+                    <district>Район</district>
+                    <city>Город</city>
+                    <street>Улица</street>
+                    <house>Дом (корпус, строение)</house>
+                    <flat>Квартира/Офис/Помещение</flat>
+                </legalAddress>
+                <actualAddress>
+                    <index>Индекс</index>
+                    <country>Страна</country>
+                    <region>Регион</region>
+                    <district>Район</district>
+                    <city>Город</city>
+                    <street>Улица</street>
+                    <house>Дом (корпус, строение)</house>
+                    <flat>Квартира/Офис/Помещение</flat>
+                </actualAddress>
+                <addressesAreEquals>Адрес совпадает с фактическим</addressesAreEquals>
+            </addresses>
+        </selfEmployed>
+        <selfEmployedBlank>
+            <blankOverview>
+                <staffCount>Численность работников согласно КНД 1110018</staffCount>
+                <site>Сайт организации</site>
+                <publicPerson>Является иностранным публичным должностным лицом, должностным лицом публичных международных организаций</publicPerson>
+                <relativePublicPerson>Является родственником по отношению к иностранным публичным должностным лицам, должностным лицам публичных международных организаций</relativePublicPerson>
+            </blankOverview>
+            <blankRelations>
+                <operationCount>Планируемое количество операций за месяц</operationCount>
+                <operationAmount>Планируемые суммы операций за месяц</operationAmount>
+                <operationCashCount>Планируемое количество операций по снятию денежных средств в наличной форме за месяц</operationCashCount>
+                <operationCashAmount>Планируемые суммы операций по снятию денежных средств в наличной форме за месяц</operationCashAmount>
+                <operationTransferCount>Планируемое количество операций, связанных с переводами денежных средств в рамках внешнеторговой деятельности</operationTransferCount>
+                <operationTransferAmount>Планируемые суммы операций, связанных с переводами денежных средств в рамках внешнеторговой деятельности</operationTransferAmount>
+                <contract44>Государственные и муниципальные контракты</contract44>
+                <contract185>Договоры в рамках 185-ФЗ</contract185>
+                <contract223>Договоры в рамках 223-ФЗ</contract223>
+                <purchaseContract>Договоры на закупку товаров (материалов)</purchaseContract>
+                <serviceContract>Договоры на оказание услуг</serviceContract>
+                <workContract>Договоры на выполнение работ</workContract>
+                <workAgreement>Договоры подряда</workAgreement>
+                <otherContract>Иные виды</otherContract>
+            </blankRelations>
+            <blankDebts>
+                <debtsHistory>Кредитная история</debtsHistory>
+                <actualDebts>
+                    <partnerName>Кредитор</partnerName>
+                    <contractAmount>Сумма по договору</contractAmount>
+                    <outstanding>Остаток задолженности</outstanding>
+                    <maturityDate>Дата погашения</maturityDate>
+                    <delay>Наличие просрочки</delay>
+                </actualDebts>
+                <guarantorActualDebts>
+                    <partnerName>Кредитор</partnerName>
+                    <contractAmount>Сумма по договору</contractAmount>
+                    <outstanding>Остаток задолженности</outstanding>
+                    <maturityDate>Дата погашения</maturityDate>
+                    <delay>Наличие просрочки</delay>
+                </guarantorActualDebts>
+                <staffDebt>
+                    <actual>Текущая задолженность перед персоналом организации</actual>
+                    <overdue>Просроченная задолженность перед персоналом организации</overdue>
+                    <total>Итого</total>
+                </staffDebt>
+                <taxDebt>
+                    <actual>Текущая задолженность по налогам и сборам</actual>
+                    <overdue>Просроченная задолженность по налогам и сборам</overdue>
+                    <total>Итого</total>
+                </taxDebt>
+                <fundDebt>
+                    <actual>Текущая задолженность перед государственными и внебюджетными фондами</actual>
+                    <overdue>Просроченная задолженность перед государственными и внебюджетными фондами</overdue>
+                    <total>Итого</total>
+                </fundDebt>
+            </blankDebts>
+            <blankFinance>
+                <debts>Имеется ли существенная по суммам и (или) срокам текущая картотека неоплаченных расчетных документов к банковским счетам Клиента</debts>
+                <losses>Имеются ли скрытые потери в размере, равномили превышающем 25 процентов чистых активов Клиента</losses>
+                <violationTerms>Имеются ли случаи неисполнения или два и более случаев исполнения Клиентом обязательств по иным договорам с финансирующей организацией с нарушением сроков</violationTerms>
+                <unprofitable>Имеется ли не предусмотренная планом развития Принципала (бизнес-планом), согласованным с Банком, убыточная деятельность Принципала</unprofitable>
+                <zeroValues>Имеются ли факты представления Клиентом в налоговые органы формы № 1 «Бухгалтерский баланс», с нулевыми значениями по разделам баланса «Оборотные активы» и «Краткосрочные обязательства»</zeroValues>
+                <finPosition>Оценка финансового положения</finPosition>
+                <sourcesFunds>Сведения об источниках происхождения денежных средств и (или) иного имущества</sourcesFunds>
+                <otherSourcesFunds>Иные сведени об источниках происхождения собственных средств</otherSourcesFunds>
+            </blankFinance>
+            <blankReputation>
+                <negativeFactors>Имеются факты, отрицательно влияющие на деловую репутацию</negativeFactors>
+                <contentNegativeFactors>Содержание фактов, отрицательно влияющих на деловую репутацию</contentNegativeFactors>
+                <bankruptcy>Наличие процедур банкротства за последние 5 лет</bankruptcy>
+                <insolvency>Сведения о производстве по делу о несостоятельности (банкротстве)</insolvency>
+                <courtDecisions>Сведения о вступивших в силу решениях суда о признании несостоятельным (банкротом)</courtDecisions>
+                <liquidation>Сведения о проведении процедур ликвдации</liquidation>
+                <factsFailure>Наличие фактов неисполнения или ненадлежащего исполнения обязательств</factsFailure>
+                <factsEmptyCash>Сведения о фактах неисполнения денежных обязательств по причине отсутствия денежных средств на банковских счетах</factsEmptyCash>
+                <courtCases>Наличие судебных дел, по которым организация выступает ответчиком</courtCases>
+            </blankReputation>
+        </selfEmployedBlank>
+        <bankRequisites>
+            <bankRequisite>
+                <checkAccount>Расчетный счет</checkAccount>
+                <bankName>Название Банка</bankName>
+                <bankBic>БИК Банка</bankBic>
+                <corrAccount>Корреспондентский счет</corrAccount>
+                <bankSwift>СВИФТ-код Банка</bankSwift>
+                <bankRegNum>Регистрационный номер Банка</bankRegNum>
+            </bankRequisite>
+        </bankRequisites>
+        <licenses> 
+            <license>
+                <kindOfActivity>Вид лицензии</kindOfActivity>
+                <number>Номер лицензии</number>
+                <date>Дата выдачи лицензии</date>
+                <issuer>Кем выдана</issuer>
+                <licensedActivities>Перечень видов лицензируемой деятельности</licensedActivities>
+            </license>
+        </licenses>
+    </client>
+    <order>
+        <id>Номер заявки</id>
+        <amount>Сумма БГ</amount>
+        <bgType>Тип БГ</bgType>
+        <bgSubtype>Вид БГ</bgSubtype>
+        <comment>Комментарий</comment>
+        <dateFrom>Начало срока действия</dateFrom>
+        <dateTimeCreate>Дата и время создания</dateTimeCreate>
+        <dateTo>Окончание срока действия</dateTo>
+        <falling>Снижение НМЦК</falling>
+        <prepay>Предоплата</prepay>
+		<deadline>Крайний срок получения</deadline>
+		<finalPrice>Финальная цена контракта</finalPrice>
+    </order>
+    <purchase>
+        <notificationId>Индентификатор документа ЕИС</notificationId>
+        <purchaseNumber>Номер закупки</purchaseNumber>
+        <purchaseObjectInfo>Предмет тендера</purchaseObjectInfo>
+        <publishDate>Дата публикации</publishDate>
+        <customer>Заказчик</customer>
+        <customerInn>ИНН Заказчика</customerInn>
+        <customerOgrn>ОГРН Заказчика</customerOgrn>
+        <customerKpp>КПП Заказчика</customerKpp>
+        <customerPostAddress>Почтовый адрес Заказчика</customerPostAddress>
+        <customerActualAddress>Место нахождения Заказчика</customerActualAddress>
+        <customerRegNum>Уникальный учетный номер организации</customerRegNum>
+        <customerRegDate>Дата регистрации Заказчика</customerRegDate>
+        <customerRegOrg>Межрайонная инспекция Федеральной налоговой службы № 1 по Магаданской области</customerRegOrg>
+        <currencyCode>Код валюты</currencyCode>
+        <currencyName>Наименование валюты</currencyName>
+        <maxPrice>Начальная (максимальная) цена контракта</maxPrice>
+        <amount>Размер обеспечения исполнения контракта</amount>
+        <collectingEndDatetime>Дата и время окончания подачи заявок</collectingEndDatetime>
+        <type>Тип гарантии</type>
+    </purchase>
+</orderBgBankExport>

@@ -1,0 +1,23 @@
+.ant-layout {
+  &-content {
+    padding: 1rem 1rem 0 1rem;
+
+    &__data {
+      background: #fff;
+      min-height: 54rem;
+    }
+  }
+
+  &-footer {
+    text-align: center;
+  }
+
+  .breadcrumbs-transparent {
+    color: #f0f2f5;
+    -moz-user-select: none;/* Firefox */
+    -ms-user-select: none;/* Internet Explorer */
+    -khtml-user-select: none;/* KHTML browsers (e.g. Konqueror) */
+    -webkit-user-select: none;/* Chrome, Safari, and Opera */
+    -webkit-touch-callout: none;/* Disable Android and iOS callouts*/
+  }
+}

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<orderBgBankExport xmlns="http://vbankcenter.ru/namespaces/orderbg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vbankcenter.ru/namespaces/orderbg https://vbankcenter.ru/resources/web/xsd/orderbg.xsd">
+    <client>
+        <clientType>SELF_EMPLOYED</clientType>
+        <selfEmployed>
+            <person>
+                <name>МАКСИМ</name>
+                <surname>ШАМКОВ</surname>
+                <patronymic>АНАТОЛЬЕВИЧ</patronymic>
+            </person>
+            <ogrnip>310554334200024</ogrnip>
+            <inn>552801899036</inn>
+            <phone>9036252187</phone>
+            <passport>
+                <series>5213</series>
+                <number>314895</number>
+                <issuedWho>ОТДЕЛОМ УФМС РОССИИ ПО ОМСКОЙ ОБЛАСТИ В ОМСКОМ РАЙОНЕ</issuedWho>
+                <issuedWhen>2014-05-08</issuedWhen>
+                <subCode>550-027</subCode>
+                <birthday>1969-04-22</birthday>
+                <address>
+                    <index>644527</index>
+                    <country>Российская Федерация</country>
+                    <region>ОМСКАЯ ОБЛАСТЬ</region>
+                    <district>РАЙОН ОМСКИЙ</district>
+                    <city>ПОСЕЛОК РОСТОВКА</city>
+                    <street>-</street>
+                    <house>7</house>
+                    <flat>59</flat>
+                </address>
+                <birthPlace>ГОР. НИЖНИЙ НОВГОРОД</birthPlace>
+            </passport>
+            <okvedCode>71.1</okvedCode>
+            <okvedDesc>Деятельность в области архитектуры, инженерных изысканий и предоставление технических консультаций в этих областях</okvedDesc>
+            <regOrgName>Межрайонная инспекция Федеральной налоговой службы № 12 по Омской области</regOrgName>
+            <regDayDate>2010-12-08</regDayDate>
+            <regDayOgrnip>2010-12-08</regDayOgrnip>
+            <regPlace>,644010,,, Омск г,, Маршала Жукова ул, д 72, корп 1,</regPlace>
+            <nalogName>Межрайонная инспекция Федеральной налоговой службы № 4 по Омской области</nalogName>
+            <nalogRegDate>2012-12-10</nalogRegDate>
+            <addresses>
+                <legalAddress>
+                    <index>644527</index>
+                    <country>Российская Федерация</country>
+                    <region>ОМСКАЯ ОБЛАСТЬ</region>
+                    <district>РАЙОН ОМСКИЙ</district>
+                    <city>ПОСЕЛОК РОСТОВКА</city>
+                    <street>-</street>
+                    <house>7</house>
+                    <flat>59</flat>
+                </legalAddress>
+                <actualAddress>
+                    <index>644527</index>
+                    <country>Российская Федерация</country>
+                    <region>ОМСКАЯ ОБЛАСТЬ</region>
+                    <district>РАЙОН ОМСКИЙ</district>
+                    <city>ПОСЕЛОК РОСТОВКА</city>
+                    <street>-</street>
+                    <house>7</house>
+                    <flat>59</flat>
+                </actualAddress>
+                <addressesAreEquals>true</addressesAreEquals>
+            </addresses>
+        </selfEmployed>
+        <selfEmployedBlank>
+            <blankOverview>
+                <staffCount>3</staffCount>
+                <publicPerson>false</publicPerson>
+                <relativePublicPerson>false</relativePublicPerson>
+            </blankOverview>
+            <blankRelations>
+                <operationCount>20</operationCount>
+                <operationAmount>1000000.00</operationAmount>
+                <operationCashCount>10</operationCashCount>
+                <operationCashAmount>10.00</operationCashAmount>
+                <operationTransferCount>10</operationTransferCount>
+                <operationTransferAmount>10.00</operationTransferAmount>
+                <contract44>true</contract44>
+                <contract185>true</contract185>
+                <contract223>true</contract223>
+                <purchaseContract>false</purchaseContract>
+                <serviceContract>false</serviceContract>
+                <workContract>false</workContract>
+                <workAgreement>false</workAgreement>
+                <otherContract>false</otherContract>
+            </blankRelations>
+            <blankDebts>
+                <debtsHistory>Задолженность погашалась без просрочек</debtsHistory>
+            </blankDebts>
+            <blankFinance>
+                <debts>false</debts>
+                <losses>false</losses>
+                <violationTerms>false</violationTerms>
+                <unprofitable>false</unprofitable>
+                <zeroValues>false</zeroValues>
+                <finPosition>Стабильное финансовое положение, постоянный положительный финансовый результат в течение последнего налогового периода</finPosition>
+                <sourcesFunds>Собственные средства</sourcesFunds>
+            </blankFinance>
+            <blankReputation>
+                <negativeFactors>false</negativeFactors>
+                <bankruptcy>false</bankruptcy>
+                <insolvency>false</insolvency>
+                <courtDecisions>false</courtDecisions>
+                <liquidation>false</liquidation>
+                <factsFailure>false</factsFailure>
+                <factsEmptyCash>false</factsEmptyCash>
+                <courtCases>false</courtCases>
+            </blankReputation>
+        </selfEmployedBlank>
+        <bankRequisites>
+            <bankRequisite>
+                <checkAccount>40802810423210000063</checkAccount>
+                <bankName>ФИЛИАЛ "НОВОСИБИРСКИЙ" АО "АЛЬФА-БАНК"</bankName>
+                <bankBic>045004774</bankBic>
+                <corrAccount>30101810600000000774</corrAccount>
+                <bankRegNum>1326/15</bankRegNum>
+            </bankRequisite>
+        </bankRequisites>
+        <licenses/>
+    </client>
+    <order>
+        <id>128498</id>
+        <amount>4650000.00</amount>
+        <bgType>FZ44</bgType>
+        <bgSubtype>EXEC_CONTRACT</bgSubtype>
+        <comment></comment>
+        <dateFrom>2019-04-01</dateFrom>
+        <dateTimeCreate>2019-02-28T15:48:29.232</dateTimeCreate>
+        <dateTo>2020-01-31</dateTo>
+        <falling>false</falling>
+        <prepay>false</prepay>
+        <deadline>2019-04-01</deadline>
+    </order>
+    <purchase>
+        <purchaseNumber>0148300000619000045</purchaseNumber>
+        <purchaseObjectInfo>Разработка архитектурно-планировочной концепции и проектно-сметной документации с корректировкой существующей проектной документации на благоустройство общественных территорий по</purchaseObjectInfo>
+        <publishDate>2019-02-25</publishDate>
+        <customer>АДМИНИСТРАЦИЯ НОГИНСКОГО МУНИЦИПАЛЬНОГО РАЙОНА МОСКОВСКОЙ ОБЛАСТИ</customer>
+        <customerInn>5031006040</customerInn>
+        <customerOgrn>1025003917289</customerOgrn>
+        <customerKpp>503101001</customerKpp>
+        <customerPostAddress>Российская Федерация, 142400, Московская обл, Ногинский р-н, Ногинск г, УЛИЦА СОВЕТСКАЯ, 42</customerPostAddress>
+        <customerActualAddress>Российская Федерация, 142400, Московская обл, Ногинск г, УЛИЦА СОВЕТСКАЯ, 42</customerActualAddress>
+        <customerRegNum>01483000006</customerRegNum>
+        <customerRegDate>2002-12-10</customerRegDate>
+        <customerRegOrg>Межрайонная инспекция Федеральной налоговой службы №23 по Московской области</customerRegOrg>
+        <currencyCode>RUB</currencyCode>
+        <currencyName>Российский рубль</currencyName>
+        <maxPrice>15500000.00</maxPrice>
+        <amount>4650000.00</amount>
+        <collectingEndDatetime>1111-11-11T11:41:00</collectingEndDatetime>
+        <type>FZ44</type>
+    </purchase>
+</orderBgBankExport>
+

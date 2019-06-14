@@ -1,0 +1,154 @@
+{
+  "@schemaLocation": "http://vbankcenter.ru/namespaces/orderbg https://vbankcenter.ru/resources/web/xsd/orderbg.xsd",
+  "client": {
+    "clientType": "SELF_EMPLOYED",
+    "selfEmployed": {
+      "person": {
+        "name": "МАКСИМ",
+        "surname": "ШАМКОВ",
+        "patronymic": "АНАТОЛЬЕВИЧ"
+      },
+      "ogrnip": "310554334200024",
+      "inn": "552801899036",
+      "phone": "9036252187",
+      "passport": {
+        "series": "5213",
+        "number": "314895",
+        "issuedWho": "ОТДЕЛОМ УФМС РОССИИ ПО ОМСКОЙ ОБЛАСТИ В ОМСКОМ РАЙОНЕ",
+        "issuedWhen": "2014-05-08",
+        "subCode": "550-027",
+        "birthday": "1969-04-22",
+        "address": {
+          "index": "644527",
+          "country": "Российская Федерация",
+          "region": "ОМСКАЯ ОБЛАСТЬ",
+          "district": "РАЙОН ОМСКИЙ",
+          "city": "ПОСЕЛОК РОСТОВКА",
+          "street": "-",
+          "house": "7",
+          "flat": "59"
+        },
+        "birthPlace": "ГОР. НИЖНИЙ НОВГОРОД"
+      },
+      "okvedCode": "71.1",
+      "okvedDesc": "Деятельность в области архитектуры, инженерных изысканий и предоставление технических консультаций в этих областях",
+      "regOrgName": "Межрайонная инспекция Федеральной налоговой службы № 12 по Омской области",
+      "regDayDate": "2010-12-08",
+      "regDayOgrnip": "2010-12-08",
+      "regPlace": ",644010,,, Омск г,, Маршала Жукова ул, д 72, корп 1,",
+      "nalogName": "Межрайонная инспекция Федеральной налоговой службы № 4 по Омской области",
+      "nalogRegDate": "2012-12-10",
+      "addresses": {
+        "legalAddress": {
+          "index": "644527",
+          "country": "Российская Федерация",
+          "region": "ОМСКАЯ ОБЛАСТЬ",
+          "district": "РАЙОН ОМСКИЙ",
+          "city": "ПОСЕЛОК РОСТОВКА",
+          "street": "-",
+          "house": "7",
+          "flat": "59"
+        },
+        "actualAddress": {
+          "index": "644527",
+          "country": "Российская Федерация",
+          "region": "ОМСКАЯ ОБЛАСТЬ",
+          "district": "РАЙОН ОМСКИЙ",
+          "city": "ПОСЕЛОК РОСТОВКА",
+          "street": "-",
+          "house": "7",
+          "flat": "59"
+        },
+        "addressesAreEquals": "true"
+      }
+    },
+    "selfEmployedBlank": {
+      "blankOverview": {
+        "staffCount": "3",
+        "publicPerson": "false",
+        "relativePublicPerson": "false"
+      },
+      "blankRelations": {
+        "operationCount": "20",
+        "operationAmount": "1000000.00",
+        "operationCashCount": "10",
+        "operationCashAmount": "10.00",
+        "operationTransferCount": "10",
+        "operationTransferAmount": "10.00",
+        "contract44": "true",
+        "contract185": "true",
+        "contract223": "true",
+        "purchaseContract": "false",
+        "serviceContract": "false",
+        "workContract": "false",
+        "workAgreement": "false",
+        "otherContract": "false"
+      },
+      "blankDebts": {
+        "debtsHistory": "Задолженность погашалась без просрочек"
+      },
+      "blankFinance": {
+        "debts": "false",
+        "losses": "false",
+        "violationTerms": "false",
+        "unprofitable": "false",
+        "zeroValues": "false",
+        "finPosition": "Стабильное финансовое положение, постоянный положительный финансовый результат в течение последнего налогового периода",
+        "sourcesFunds": "Собственные средства"
+      },
+      "blankReputation": {
+        "negativeFactors": "false",
+        "bankruptcy": "false",
+        "insolvency": "false",
+        "courtDecisions": "false",
+        "liquidation": "false",
+        "factsFailure": "false",
+        "factsEmptyCash": "false",
+        "courtCases": "false"
+      }
+    },
+    "bankRequisites": {
+      "bankRequisite": {
+        "checkAccount": "40802810423210000063",
+        "bankName": "ФИЛИАЛ \"НОВОСИБИРСКИЙ\" АО \"АЛЬФА-БАНК\"",
+        "bankBic": "045004774",
+        "corrAccount": "30101810600000000774",
+        "bankRegNum": "1326/15"
+      }
+    },
+    "licenses": null
+  },
+  "order": {
+    "id": "128498",
+    "amount": "4650000.00",
+    "bgType": "FZ44",
+    "bgSubtype": "EXEC_CONTRACT",
+    "comment": null,
+    "dateFrom": "2019-04-01",
+    "dateTimeCreate": "2019-02-28T15:48:29.232",
+    "dateTo": "2020-01-31",
+    "falling": "false",
+    "prepay": "false",
+    "deadline": "2019-04-01"
+  },
+  "purchase": {
+    "purchaseNumber": "0148300000619000045",
+    "purchaseObjectInfo": "Разработка архитектурно-планировочной концепции и проектно-сметной документации с корректировкой существующей проектной документации на благоустройство общественных территорий по",
+    "publishDate": "2019-02-25",
+    "customer": "АДМИНИСТРАЦИЯ НОГИНСКОГО МУНИЦИПАЛЬНОГО РАЙОНА МОСКОВСКОЙ ОБЛАСТИ",
+    "customerInn": "5031006040",
+    "customerOgrn": "1025003917289",
+    "customerKpp": "503101001",
+    "customerPostAddress": "Российская Федерация, 142400, Московская обл, Ногинский р-н, Ногинск г, УЛИЦА СОВЕТСКАЯ, 42",
+    "customerActualAddress": "Российская Федерация, 142400, Московская обл, Ногинск г, УЛИЦА СОВЕТСКАЯ, 42",
+    "customerRegNum": "01483000006",
+    "customerRegDate": "2002-12-10",
+    "customerRegOrg": "Межрайонная инспекция Федеральной налоговой службы №23 по Московской области",
+    "currencyCode": "RUB",
+    "currencyName": "Российский рубль",
+    "maxPrice": "15500000.00",
+    "amount": "4650000.00",
+    "collectingEndDatetime": "1111-11-11T11:41:00",
+    "type": "FZ44"
+  }
+}
