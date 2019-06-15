@@ -44,7 +44,7 @@ export default store => next => action => {
       const data = JSON.parse(res.data)
       console.log('res | PC', data)
       if(data.ResultInfo.ResultType === "Data not found") {
-        const updatedData = trasform._get_company_info_companySource(companyResponse, { Successor : false})
+        const updatedData = trasform._get_company_info_companySource(companyResponse, { Successor : false, Predecessor: false})
         next({
           type: type + SUCCESS,
           reqnum: res.reqnum,
@@ -52,8 +52,7 @@ export default store => next => action => {
           ...rest
         })
       } else {
-        // console.log('res | PC', data.Data.Report.Reorganizations)
-        const updatedData = trasform._get_company_info_companySource(companyResponse, data.Data.Report.Reorganizations)
+        let updatedData = trasform._get_company_info_companySource(companyResponse, data.Data.Report.Reorganizations)
         next({
           type: type + SUCCESS,
           reqnum: res.reqnum,
