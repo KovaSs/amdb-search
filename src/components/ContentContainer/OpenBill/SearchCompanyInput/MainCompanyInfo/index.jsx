@@ -16,8 +16,15 @@ class MainCompanyInfo extends Component {
     });
   };
 
+  onClose = () => {
+    this.setState({
+      showRisk: false
+    });
+  };
+
   render() {
-    const { companyResponse: { name, full_name, inn, ogrn, fns, sanctions, isponlit_proizvodstva } } = this.props;
+    const { companyResponse, companyResponse: { name, full_name, inn, ogrn, fns, sanctions, isponlit_proizvodstva } } = this.props;
+    const { showRisk } = this.state;
     return (
       <>
         <Col span={20}>
@@ -44,12 +51,20 @@ class MainCompanyInfo extends Component {
               </div>
             </Col>
             <Col span={3} style={{textAlign : "center"}}>
-              <Badge count={fns.length + sanctions.length + isponlit_proizvodstva.length} style={{ marginRight: "1rem" }}><Button onClick={this.showDrawer} title="Факторы риска" style={{ marginRight: "1rem" }}><Icon type="warning" style={{ color: "#fd0e0efd" }} /></Button></Badge>
-              <Badge count={0}><Button title="История"><Icon type="file-search" style={{ color: "#0e75fdfd" }} /></Button></Badge>
+              <Badge count={fns.length + sanctions.length + isponlit_proizvodstva.length} style={{ marginRight: "1rem" }}>
+                <Button onClick={this.showDrawer} title="Факторы риска" style={{ marginRight: "1rem" }}>
+                  <Icon type="warning" style={{ color: "#fd0e0efd" }} />
+                </Button>
+              </Badge>
+              <Badge count={0}>
+                <Button title="История">
+                  <Icon type="file-search" style={{ color: "#0e75fdfd" }} />
+                </Button>
+              </Badge>
             </Col>
           </Row>
         </Col>
-        <DrawerContainer visible={this.showDrawer} sourse={this.props.companyResponse}/>
+        <DrawerContainer visible={showRisk} onClose={this.onClose} companyResponse={companyResponse}/>
       </>
     )
   }
