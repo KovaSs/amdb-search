@@ -17,7 +17,7 @@ export default store => next => action => {
     .then(res => {
       const { openBill: { companyResponse } } = store.getState()
       const data = JSON.parse(res.data)
-      // console.log('res', data.Data.Report.LegalAddresses)
+      console.log('res | first update |', data.Data.Report)
       const updatedData = trasform._get_company_info_companySource(companyResponse, data.Data.Report)
       next({
         type: type + SUCCESS,

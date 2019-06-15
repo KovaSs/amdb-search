@@ -102,7 +102,12 @@ const CollapceItem = props => {
   }).map(item => {
     const { Item : DescriptionsItem } = Descriptions;
     if (Array.isArray(item.data) && item.id === "phone_list") {
-      return <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={2}>{ item.data }</DescriptionsItem>
+      const itemArray = item.data.map((el, key) => <a href={`tel:${el}`} key={item.id + '_' + key}>{el} </a>)
+      return (
+        <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={item.data[0].length > 50 ? 2 : 1}>
+          { itemArray }
+        </DescriptionsItem>
+      )
     } else if(Array.isArray(item.data)) {
       const itemArray = item.data.map((el, key) => <span key={key}>{el} <br /> </span>)
       return (

@@ -11,10 +11,8 @@ class SearchCompanyInput extends Component {
 
   componentDidMount() {
     const { clearField } = this.state
-    const { companyResponse, renderData, inn } = this.props
-    const {setFieldsValue} = this.props.form
-    if(!clearField && companyResponse && renderData) {
-      setFieldsValue.__reactBoundContext.instances.data.props.value = inn
+    const { renderData } = this.props
+    if(!clearField && renderData) {
       this.setState({
         showInfo: true
       })
@@ -107,6 +105,7 @@ class SearchCompanyInput extends Component {
                 onSearch={this.handleSubmit}
                 onPressEnter={this.handleSubmit}
                 readOnly={showInfo}
+                defaultValue={inn}
                 // disabled={showInfo}
               />
             )}
