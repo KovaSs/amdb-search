@@ -114,12 +114,6 @@ class SearchCompanyInput extends Component {
             )}
           </Form.Item>
         </Col>
-        {/* <Col span={2}>
-          { showInfo ?
-            <Button onClick={this.clearSearchField} className="search-btn" type="default"> Очистить </Button> :
-            <Button className="search-btn" type="primary" htmlType="submit"> Поиск </Button>
-          }
-        </Col> */}
           { renderData && <MainCompanyInfo /> }
       </Row>
     )

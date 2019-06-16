@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Spin, Col, Row, Switch } from "antd";
+import { Spin, Col, Row, Switch, notification, Button } from "antd";
 import CollapceContainer from "./CollapceContainer";
 import SearchCompanyInput from "./SearchCompanyInput";
 import "./open-bill.scss"
@@ -13,7 +13,8 @@ class OpenBill extends Component {
   }  
 
   componentWillReceiveProps(nextProps) {
-    const { companyResponse } = this.props
+    const { companyResponse, errors : {companyMainInfo, companyMainInfoUpdate, companyPCUpdate} } = this.props
+
     nextProps.requestLoading.companyMainInfoUpdate === true ?
       this.setState({
         loading: true
@@ -26,6 +27,10 @@ class OpenBill extends Component {
     this.setState({ 
       showTable: true 
     })
+
+    companyMainInfo && this.openNotification(String(companyMainInfo))
+    companyMainInfoUpdate && this.openNotification(String(companyMainInfoUpdate))
+    companyPCUpdate && this.openNotification(String(companyPCUpdate))
   }
 
   componentDidMount() {
@@ -48,6 +53,25 @@ class OpenBill extends Component {
       showTable: false
     })
   }
+
+  openNotification = err => {
+    const close = () => console.log( `Notification ${err} was closed. Either the close button was clicked or duration time elapsed.`)
+
+    const key = `open${Date.now()}`;
+    const btn = (
+      <Button type="primary" size="small" onClick={() => notification.close(key)}>
+        Confirm
+      </Button>
+    );
+    notification.open({
+      message: 'Notification Title',
+      description:
+      'A function will be be called after the notification is closed (automatically after the "duration" time of manually).',
+      btn,
+      key,
+      onClose: close,
+    });
+  };
 
   render() {
     const { showTable, loading, newBill } = this.state
@@ -82,11 +106,12 @@ class OpenBill extends Component {
 }
 
 const putStateToProps = state => {
-  const {openBill : { companyResponse, requestLoading, renderData }} = state
+  const {openBill : { companyResponse, requestLoading, renderData, errors }} = state
   return {
     companyResponse,
     requestLoading,
-    renderData
+    renderData,
+    errors
   }
 }
 
