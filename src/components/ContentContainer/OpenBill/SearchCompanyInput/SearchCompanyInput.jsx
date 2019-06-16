@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Row, Col, Form, Input } from "antd";
-import MainCompanyInfo from "./MainCompanyInfo";
+import { Row, Col, Form, Input, Button} from "antd"
+import MainCompanyInfo from "./MainCompanyInfo"
 import "./search-company.scss"
 
 class SearchCompanyInput extends Component {
@@ -82,7 +82,7 @@ class SearchCompanyInput extends Component {
       clearField : true
     })
   }
-  
+
   getFields = () => {
     const { getFieldDecorator } = this.props.form
     const { Search } = Input
@@ -101,12 +101,15 @@ class SearchCompanyInput extends Component {
             })(
               <Search 
                 placeholder="Введите ИНН или ОГРН"
-                enterButton={showInfo ? 'Очистить' : 'Поиск'}
+                enterButton={
+                  showInfo ? 
+                  <Button className="search-btn" type="default" disabled={!showInfo}> Очистить </Button> : 
+                  <Button className="search-btn" type="primary"> Поиск </Button>
+                }
                 onSearch={this.handleSubmit}
                 onPressEnter={this.handleSubmit}
-                readOnly={showInfo}
-                defaultValue={inn}
-                // disabled={showInfo}
+                option={{ initialValue : inn }}
+                disabled={showInfo}
               />
             )}
           </Form.Item>
