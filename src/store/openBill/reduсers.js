@@ -2,7 +2,12 @@ import { ACTION_CHANGE_OB_INN, LOAD_COMPANY_OB_INFO, CLEAR_COMPANY_OB_INFO, STAR
 
 const defaultState = {
   inn: "",
-  requestLoading: false
+  requestLoading: false,
+  errors: {
+    companyMainInfo: false, 
+    companyMainInfoUpdate: false, 
+    companyPCUpdate: false
+  }
 }
 
 const openBillReducer = (state = defaultState, action) => {
