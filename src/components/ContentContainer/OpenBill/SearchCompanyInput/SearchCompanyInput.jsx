@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Row, Col, Form, Input, Button} from "antd"
+import { Row, Col, Form, Input, notification, Button } from "antd"
 import MainCompanyInfo from "./MainCompanyInfo"
 import "./search-company.scss"
 
@@ -20,13 +20,17 @@ class SearchCompanyInput extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { companyResponse } = this.props
+    const { companyResponse, errors: {companyMainInfo, companyMainInfoUpdate, companyPCUpdate} } = this.props
     if(companyResponse !== prevProps.companyResponse) {
       this.setState({
         showInfo: true,
         clearField : false
       })
     }
+
+    if(companyMainInfo !== prevProps.errors.companyMainInfo ) this.openNotification('companyMainInfo')
+    if(companyMainInfoUpdate !== prevProps.errors.companyMainInfoUpdate ) this.openNotification('companyMainInfoUpdate')
+    if(companyPCUpdate !== prevProps.errors.companyPCUpdate ) this.openNotification('companyPCUpdate')
   }
   
   handleSubmit = e => {  
@@ -114,16 +118,31 @@ class SearchCompanyInput extends Component {
             )}
           </Form.Item>
         </Col>
-        {/* <Col span={2}>
-          { showInfo ?
-            <Button onClick={this.clearSearchField} className="search-btn" type="default"> Очистить </Button> :
-            <Button className="search-btn" type="primary" htmlType="submit"> Поиск </Button>
-          }
-        </Col> */}
           { renderData && <MainCompanyInfo /> }
       </Row>
     )
   }
+
+  openNotification = err => {
+    const close = () => console.log( `Notification ${err} was closed. Either the close button was clicked or duration time elapsed.`)
+
+    const key = `open${Date.now()}`;
+    const confirmBtn = (
+      <Button type="primary" size="small" onClick={() => notification.close(key)}>
+        Повторить запрос
+      </Button>
+    );
+    notification['error']({
+      message: `Ошибка получения данных`,
+      description:
+      'A function will be be called after the notification is closed (automatically after the "duration" time of manually).',
+      confirmBtn,
+      duration: 0,
+      btn: confirmBtn,
+      key,
+      onClose: close,
+    });
+  };
 
   render() {
     return (
