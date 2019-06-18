@@ -77,10 +77,10 @@ class TransformData {
     fieldsArr.map(item => {
       for (const key in newData) {
         if(item.search === key && !item.func) {
-          console.log('key |', item.search, ' | ', newData[item.search])
+          // console.log('key |', item.search, ' | ', newData[item.search])
           return _.assign(clonePrevData, { [item.id] : newData[item.search]})
         } else if(item.search === key && item.func) {
-          console.log('key |', item.search, ' | ', item.func(newData[item.search]))
+          // console.log('key |', item.search, ' | ', item.func(newData[item.search]))
           return _.assign(clonePrevData, { [item.id] : item.func(newData[item.search])})
         }
       }

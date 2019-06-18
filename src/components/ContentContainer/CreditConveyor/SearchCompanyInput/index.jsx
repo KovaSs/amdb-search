@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from "react-redux";
-import { actionChangeInn, loadCompanyInfo, clearCompanyInfo } from "../../../../store/actions";
+import { actionChangeInn, loadCompanyInfo, clearCompanyInfo } from "../../../../store/ducks/creditConveyor";
 import SearchCompanyInput from "./SearchCompanyInput";
 
 const Container = props => <SearchCompanyInput {...props}/>

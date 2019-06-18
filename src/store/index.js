@@ -1,8 +1,8 @@
 import { createStore, applyMiddleware, compose } from 'redux'
-import rootReducer from './reduсers'
-import thunk from '../services/redux-thunk'
+import rootReducer from './rootReduсer'
+import thunk from 'redux-thunk'
 import api from '../middlewares/api'
-// import logger from '../middlewares/logger'
+import logger from 'redux-logger'
 
 const composeEnhancers =
   typeof window === 'object' &&
@@ -12,7 +12,7 @@ const composeEnhancers =
     }) : compose;
 
 const enhancer = composeEnhancers(
-  applyMiddleware(thunk, api),
+  applyMiddleware(thunk, api, logger),
   // other store enhancers if any
 );
 

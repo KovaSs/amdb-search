@@ -1,4 +1,4 @@
-import { START, SUCCESS, FAIL } from '../store/openBill/actions'
+import { START, SUCCESS, FAIL } from '../store/ducks/openBill'
 import { trasform } from "../services/transformData"
 
 export default store => next => action => {

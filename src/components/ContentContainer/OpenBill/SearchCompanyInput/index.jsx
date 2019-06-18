@@ -1,6 +1,10 @@
 import React from 'react'
 import { connect } from "react-redux";
-import { actionChangeOpenBillInn, loadCompanyOpenBillInfo, clearCompanyOpenBillInfo } from "../../../../store/actions";
+import { 
+  actionChangeInn as actionChangeOpenBillInn, 
+  loadCompanyInfo as loadCompanyOpenBillInfo, 
+  clearCompanyInfo as clearCompanyOpenBillInfo 
+} from "../../../../store/ducks/openBill";
 import SearchCompanyInput from "./SearchCompanyInput";
 
 const Container = props => <SearchCompanyInput {...props}/>
