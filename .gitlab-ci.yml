@@ -10,7 +10,7 @@ cache:
 Build:
     stage: build
     only:
-        - develop
+        - master
     before_script:
         - npm config set registry http://10.147.4.221:8081/repository/npm/
         - npm install
@@ -23,6 +23,6 @@ Build:
 Test:
     stage: test
     only:
-        - develop
+        - master
     script:
         - npm run test
