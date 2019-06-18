@@ -10,6 +10,7 @@ cache:
 Build:
     stage: build
     before_script:
+        - npm config set registry http://10.147.4.221:8081/repository/npm/
         - npm install
     script:
         - CI="" npm run build
