@@ -1,5 +1,6 @@
 import React from 'react';
 // import { dropRight } from 'lodash';
+import PropTypes from "prop-types";
 import { Collapse, Col, Row, Icon, Table, Descriptions } from 'antd';
 import { trasform } from "../../../../../services/transformData";
 
@@ -218,3 +219,20 @@ const CollapceItem = props => {
 }
 
 export { CollapceItem }
+
+CollapceItem.propTypes = {
+  companyResponse: PropTypes.object,
+  managementSource: PropTypes.shape({
+    heads: PropTypes.array,
+    management_companies: PropTypes.array,
+    founders_fl: PropTypes.array,
+    founders_ul: PropTypes.array,
+    befenicials: PropTypes.array
+  }),
+  riskSource: PropTypes.shape({
+    isponlit_proizvodstva: PropTypes.array,
+    sanctions: PropTypes.array,
+    fns: PropTypes.array,
+    arbiter: PropTypes.object
+  }),
+}

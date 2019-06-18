@@ -1,5 +1,6 @@
 import React from "react";
 import { Row, Col, Spin } from 'antd';
+import PropTypes from "prop-types";
 import { CollapceItem } from "./CollapceItem";
 import "./collapce-container.scss";
 
@@ -22,3 +23,8 @@ const CollapceContainer = props => {
 };
 
 export { CollapceContainer };
+
+CollapceContainer.propTypes = {
+  companyResponse: PropTypes.object,
+  loading: PropTypes.bool,
+}

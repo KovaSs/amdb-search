@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Spin, Col, Row, Switch } from "antd";
+import PropTypes from "prop-types";
 import CollapceContainer from "./CollapceContainer";
 import SearchCompanyInput from "./SearchCompanyInput";
 import "./open-bill.scss"
@@ -93,3 +94,10 @@ const putStateToProps = state => {
 }
 
 export default connect(putStateToProps)(OpenBill);
+
+OpenBill.propTypes = {
+  companyResponse: PropTypes.object,
+  requestLoading: PropTypes.object,
+  renderData: PropTypes.bool,
+  errors: PropTypes.object
+}

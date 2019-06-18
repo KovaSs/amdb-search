@@ -21,7 +21,11 @@ export const FAIL = '_FAIL'
 
 const defaultState = {
   inn: "",
-  requestLoading: false,
+  requestLoading: {
+    companyMainInfo: false, 
+    companyMainInfoUpdate: false, 
+    companyPCUpdate: false
+  },
   errors: {
     companyMainInfo: false, 
     companyMainInfoUpdate: false, 
@@ -64,8 +68,6 @@ const openBillReducer = (state = defaultState, action) => {
       return state
   }
 }
-
-
 
 export const actionChangeInn = newInn => {
   return {
