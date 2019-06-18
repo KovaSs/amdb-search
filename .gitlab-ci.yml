@@ -1,0 +1,23 @@
+stages:
+    - build
+    - test
+
+cache:
+    untracked: true
+    paths:
+        - node_modules/
+
+Build:
+    stage: build
+    before_script:
+        - npm install
+    script:
+        - CI="" npm run build
+    artifacts:
+        paths:
+            - build/
+
+Test:
+    stage: test
+    script:
+        - npm run test
