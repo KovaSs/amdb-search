@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router } from "react-router-dom";
 import { ConnectedRouter } from 'connected-react-router'
 import { Layout } from "antd";
 import SiderContainer from "../SiderContainer";
