@@ -1,10 +1,10 @@
 import React from 'react';
-import { Collapse, Col, Row, Icon, Table, Descriptions } from 'antd';
+import { Collapse, Col, Row, Icon, Table, Descriptions, Spin } from 'antd';
 import { trasform } from "../../../../../services/transformData";
 
 const CollapceItem = props => {
   const { Panel } = Collapse;
-  const { companySource, riskSource,  managementSource } = props
+  const { companySource, riskSource,  managementSource, requestLoading : {companyPCUpdate} } = props
 
   /** Преобразование входящих данных из props */
   const fullOrganistionInfo = trasform._companySource(companySource)
@@ -193,9 +193,11 @@ const CollapceItem = props => {
           <Panel header="Общая информация" key="1" showArrow={false}>
             <Row>
               <Col span={24}>
-                <Descriptions bordered border size="small" span={2} column={{xxl:3, xl:3, lg: 3, md:3, sm:2, xs:1}}>
-                  { renderCompanySourceDescriptionFields }
-                </Descriptions>
+                <Spin spinning={companyPCUpdate} size="large" tip="Идет поиск данных">
+                  <Descriptions bordered border size="small" span={2} column={{xxl:3, xl:3, lg: 3, md:3, sm:2, xs:1}}>
+                    { renderCompanySourceDescriptionFields }
+                  </Descriptions>
+                </Spin>
                 { renderStopListsInfo() }
               </Col>
             </Row>

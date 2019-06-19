@@ -6,11 +6,11 @@ import "./collapce-container.scss";
 
 
 const CollapceContainer = props => {
-  const { loading } = props
+  const { requestLoading : {companyMainInfo} } = props
   return (
     <Row className="table-info">
       <Col span={24}>
-        <Spin spinning={loading} size="large" tip="Идет поиск данных" >
+        <Spin spinning={companyMainInfo} size="large" tip="Идет поиск данных" >
           <CollapceItem {...props} />
         </Spin>
       </Col>
@@ -21,7 +21,11 @@ const CollapceContainer = props => {
 export { CollapceContainer };
 
 CollapceContainer.propTypes = {
-  loading: PropTypes.bool,
+  requestLoading: PropTypes.shape({
+    companyMainInfo: PropTypes.bool, 
+    companyMainInfoUpdate: PropTypes.bool, 
+    companyPCUpdate: PropTypes.bool
+  }),
   companySource: PropTypes.object,
   managementSource: PropTypes.shape({
     heads: PropTypes.array,

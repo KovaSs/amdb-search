@@ -67,7 +67,7 @@ class OpenBill extends Component {
         <Col span={24}>
           <SearchCompanyInput toHideTableInfo={this.toHideTableInfo} />
           { showTable && renderData ?
-            <CollapceContainer  loading={loading}/> : 
+            <CollapceContainer /> : 
             <Spin spinning={loading} size="large" tip="Идет поиск данных" >
               <div className="search-result-table">
                 <div>Для поиска информации об организации введите ИНН или ОГРН в поисковую строку</div>
