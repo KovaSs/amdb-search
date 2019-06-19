@@ -67,7 +67,11 @@ export const fieldsArr = [
 
   {search: "WorkersRange", id: "workers_range", title: "Численность персонала", data: ""},
 
-  {search: "StaffNumbersFTS", id: "workers_range_fns", title: "Численность персонала по данным ФНС", data: ""},
+  {search: "StaffNumberFTS", id: "workers_range_fns", title: "Численность персонала по данным ФНС", data: "", func: item => {
+    if(!item) return 'Данные отсутствуют'
+    const { Number: {ActualDate, content}} = item
+    return `${content} / ${moment(ActualDate).format('DD.MM.YYYY')}`
+  }},
 
   {search: "CharterCapital", id: "capital", title: "Уставной капитал", data: ""},
 
@@ -81,7 +85,10 @@ export const fieldsArr = [
     return `${item.PaymentIndexValue} / ${item.PaymentIndexDesc}`
   }},
 
-  {search: "FailueScope", id: "failure_score", title: "Индекс финансового риска", data: ""},
+  {search: "FailueScope", id: "failure_score", title: "Индекс финансового риска", data: "", func: item => {
+    if(!item) return 'Данные отсутствуют'
+    return `${item.FailureScoreValue} / ${item.FailureScoreDesc}`
+  }},
 
   {search: "", id: "isponlit_proizvodstva", title: "Исполнительные производства", data: ""},
 

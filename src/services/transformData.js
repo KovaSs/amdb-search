@@ -3,7 +3,7 @@ import { fieldsArr } from "./fields";
 
 class TransformData {
   _transformAllData = inputData => {
-    const Field = (title, data) => ({ title, data })
+    const Field = (search, title, data) => ({ search, title, data })
     let clgData = {}
     const cloneFieldsArr = _.cloneDeep(fieldsArr);
     const fullOrganistionInfo = cloneFieldsArr.map( item => {      
@@ -38,14 +38,14 @@ class TransformData {
       for (const el in inputData) {
         if(item.id === el && item.id === "arbiter") {
           let newData = _arbiterTransform(inputData[el])
-          clgData[el] = new Field(item.title, newData)
+          clgData[el] = new Field(item.search, item.title, newData)
           return _.assign(item, { "data" : newData})
         } else if(item.id === el && item.id === "heads") {
           let newData = _headersTransform(inputData[el])
-          clgData[el] = new Field(item.title, newData)
+          clgData[el] = new Field(item.search, item.title, newData)
           return _.assign(item, { "data" : newData})
         } else if(item.id === el ) {
-          clgData[el] = new Field(item.title, inputData[el])
+          clgData[el] = new Field(item.search, item.title, inputData[el])
           return _.assign(item, { "data" : inputData[el]})
         }
       }
@@ -56,13 +56,13 @@ class TransformData {
   }
 
   _companySource = inputData => {
-    const Field = (title, data) => ({ title, data })
+    const Field = (search, title, data) => ({ search, title, data })
     let clgData = {}
     const cloneFieldsArr = _.cloneDeep(fieldsArr);
     const fullOrganistionInfo = cloneFieldsArr.map( item => {
       for (const el in inputData) {
         if(item.id === el ) {
-          clgData[el] = new Field(item.title, inputData[el])
+          clgData[el] = new Field(item.search, item.title, inputData[el])
           return _.assign(item, { "data" : inputData[el]})
         }
       }
@@ -76,13 +76,8 @@ class TransformData {
     const clonePrevData = _.cloneDeep(prevData);
     fieldsArr.map(item => {
       for (const key in newData) {
-        if(item.search === key && !item.func) {
-          // console.log('key |', item.search, ' | ', newData[item.search])
-          return _.assign(clonePrevData, { [item.id] : newData[item.search]})
-        } else if(item.search === key && item.func) {
-          // console.log('key |', item.search, ' | ', item.func(newData[item.search]))
-          return _.assign(clonePrevData, { [item.id] : item.func(newData[item.search])})
-        }
+        if(item.search === key && !item.func) return _.assign(clonePrevData, { [item.id] : newData[item.search]})
+        else if(item.search === key && item.func)return _.assign(clonePrevData, { [item.id] : item.func(newData[item.search])})
       }
       return item
     })
@@ -90,13 +85,13 @@ class TransformData {
   }
 
   _managementSource = inputData => {
-    const Field = (title, data) => ({ title, data })
+    const Field = (search, title, data) => ({ search, title, data })
     let clgData = {}
     const cloneFieldsArr = _.cloneDeep(fieldsArr);
     const fullOrganistionInfo = cloneFieldsArr.map( item => {
       for (const el in inputData) {
         if(item.id === el ) {
-          clgData[el] = new Field(item.title, inputData[el])
+          clgData[el] = new Field(item.search, item.title, inputData[el])
           return _.assign(item, { "data" : inputData[el]})
         }
       }
@@ -108,13 +103,13 @@ class TransformData {
   }
 
   _riskSource = inputData => {
-    const Risk = (title, data) => ({ title, data })
+    const Risk = (search, title, data) => ({ search, title, data })
     let clgRiskData = {}
     const cloneFieldsArr = _.cloneDeep(fieldsArr);
     const riskOrganistionInfo = cloneFieldsArr.map( item => {
       for (const el in inputData) {
         if(item.id === el ) {
-          clgRiskData[el] = new Risk(item.title, inputData[el])
+          clgRiskData[el] = new Risk(item.search, item.title, inputData[el])
           return _.assign(item, { "data" : inputData[el]})
         }
       }

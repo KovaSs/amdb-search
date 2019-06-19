@@ -1,4 +1,5 @@
 // import { Record } from 'immutable'
+import { companyRes } from '../mock'
 
 // const ReducerRecord = Record({
 // user: null,
@@ -106,7 +107,7 @@ export const loadCompanyInfo = inn => {
       .then(res => {
         return dispatch({
           type: LOAD_COMPANY_INFO + SUCCESS,
-          payload: res,
+          payload: companyRes,
           loading: false
         })
       })
