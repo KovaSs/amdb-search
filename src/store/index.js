@@ -14,7 +14,12 @@ const composeEnhancers =
     }) : compose;
 
 const enhancer = composeEnhancers(
-  applyMiddleware(thunk, routerMiddleware(history), api, logger),
+  applyMiddleware(
+    thunk, 
+    routerMiddleware(history), 
+    api, 
+    logger
+  ),
   // other store enhancers if any
 );
 
