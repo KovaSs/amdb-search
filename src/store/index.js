@@ -24,5 +24,6 @@ const enhancer = composeEnhancers(
 );
 
 const store = createStore(rootReducer, enhancer)
+window.store = store
 
 export default store
