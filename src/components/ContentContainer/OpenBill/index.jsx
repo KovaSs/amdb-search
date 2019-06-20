@@ -4,7 +4,12 @@ import { Spin, Col, Row, Switch } from "antd";
 import PropTypes from "prop-types";
 import CollapceContainer from "./CollapceContainer";
 import SearchCompanyInput from "./SearchCompanyInput";
-import { decodedCompanyResponse } from "../../../selectors";
+import { 
+  decodedCompanyResponse, 
+  decodedRequestLoading,
+  decodedRenderData,
+  decodedErrors
+} from "../../../selectors";
 import "./open-bill.scss"
 
 class OpenBill extends Component {
@@ -92,12 +97,11 @@ class OpenBill extends Component {
 }
 
 const putStateToProps = state => {
-  const {openBill : { requestLoading, renderData, errors }} = state
   return {
-    companyResponse : decodedCompanyResponse(state),
-    requestLoading,
-    renderData,
-    errors
+    companyResponse : decodedCompanyResponse(state, 'openBill'),
+    requestLoading: decodedRequestLoading(state, 'openBill') ,
+    renderData: decodedRenderData(state, 'openBill'),
+    errors: decodedErrors(state, 'openBill')
   }
 }
 

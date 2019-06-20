@@ -1,12 +1,10 @@
 import { createSelector } from 'reselect'
 
-const moduleName = 'openBill'
-
-export const companyResSelector = state => state[moduleName].companyResponse
-export const requestLoadingSelector = state => state[moduleName].requestLoading
-export const renderDataSelector = state => state[moduleName].renderData
-export const innSelector = state => state[moduleName].inn
-export const errorsSelector = state => state[moduleName].errors
+export const companyResSelector = (state, moduleName) => state[moduleName].companyResponse
+export const requestLoadingSelector = (state, moduleName) => state[moduleName].requestLoading
+export const renderDataSelector = (state, moduleName) => state[moduleName].renderData
+export const innSelector = (state, moduleName) => state[moduleName].inn
+export const errorsSelector = (state, moduleName) => state[moduleName].errors
 
 export const decodedCompanyResponse = createSelector(
   companyResSelector,
@@ -17,23 +15,17 @@ export const decodedCompanyResponse = createSelector(
 
 export const decodedInn = createSelector(
   innSelector,
-  (inn) => {
-    return inn
-  }
+  (inn) => inn
 )
 
 export const decodedErrors = createSelector(
   errorsSelector,
-  (errors) => {
-    return errors
-  }
+  (errors) => errors
 )
 
 export const decodedRenderData = createSelector(
   renderDataSelector,
-  (renderData) => {
-    return renderData
-  }
+  (renderData) => renderData
 )
 
 export const decodedMainCompanySource = createSelector(
@@ -64,8 +56,5 @@ export const decodedManagementSource = createSelector(
 
 export const decodedRequestLoading = createSelector(
   requestLoadingSelector,
-  (requestLoading) => {
-    console.log('requestLoading', requestLoading)
-    return requestLoading
-  }
+  (requestLoading) => requestLoading
 )

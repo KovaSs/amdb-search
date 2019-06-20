@@ -12,10 +12,10 @@ const Container = props => <CollapceContainer {...props}/>
 
 const putStateToProps = state => {
   return {
-    requestLoading: decodedRequestLoading(state),
-    companySource: decodedMainCompanySource(state),
-    riskSource: decodedRiskSource(state),
-    managementSource: decodedManagementSource(state)
+    requestLoading: decodedRequestLoading(state, 'openBill'),
+    companySource: decodedMainCompanySource(state, 'openBill'),
+    riskSource: decodedRiskSource(state, 'openBill'),
+    managementSource: decodedManagementSource(state, 'openBill')
   }
 }
 

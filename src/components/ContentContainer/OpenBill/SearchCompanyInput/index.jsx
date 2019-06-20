@@ -17,10 +17,10 @@ const Container = props => <SearchCompanyInput {...props}/>
 
 const putStateToProps = state => {
   return {
-    companyResponse: decodedCompanyResponse(state),
-    renderData: decodedRenderData(state),
-    inn: decodedInn(state), 
-    errors: decodedErrors(state)
+    companyResponse: decodedCompanyResponse(state, 'openBill'),
+    renderData: decodedRenderData(state, 'openBill'),
+    inn: decodedInn(state, 'openBill'), 
+    errors: decodedErrors(state, 'openBill')
   }
 }
 

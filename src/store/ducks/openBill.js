@@ -32,7 +32,7 @@ const ReducerRecord = Record({
 })
 
 const openBillReducer = (state = new ReducerRecord(), action) => {
-  const { requestLoading, errors } = state.toJS()
+  const { requestLoading, errors } = state
   const {type, payload, id} = action
   switch (type) {
     case ACTION_CHANGE_INN:
@@ -40,7 +40,7 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
 
     case LOAD_COMPANY_INFO:
       return state
-      .set('companyResponse', payload)
+        .set('companyResponse', payload)
 
     case LOAD_COMPANY_INFO + UPDATE + START:
       return state
@@ -97,8 +97,7 @@ export const loadCompanyInfo = inn => {
   return dispatch => {
     dispatch({
       type: LOAD_COMPANY_INFO,
-      payload: companyRes,
-      loading: false
+      payload: companyRes
     })
 
     dispatch({
