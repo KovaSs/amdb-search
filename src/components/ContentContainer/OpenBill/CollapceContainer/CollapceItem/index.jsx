@@ -193,7 +193,7 @@ const CollapceItem = props => {
           <Panel header="Общая информация" key="1" showArrow={false}>
             <Row>
               <Col span={24}>
-                <Spin spinning={companyPCUpdate} size="large" tip="Идет поиск данных">
+                <Spin spinning={companyPCUpdate}>
                   <Descriptions bordered border size="small" span={2} column={{xxl:3, xl:3, lg: 3, md:3, sm:2, xs:1}}>
                     { renderCompanySourceDescriptionFields }
                   </Descriptions>

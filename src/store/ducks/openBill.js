@@ -1,11 +1,5 @@
-// import { Record } from 'immutable'
+import { Record } from 'immutable'
 import { companyRes } from '../mock'
-
-// const ReducerRecord = Record({
-// user: null,
-// error: null,
-// loading: false
-// })
 
 export const moduleName = 'openBill'
 export const prefix = `AS-Check/${moduleName}`
@@ -20,8 +14,11 @@ export const SUCCESS = '_SUCCESS'
 export const UPDATE = '_UPDATE'
 export const FAIL = '_FAIL'
 
-const defaultState = {
+const ReducerRecord = Record({
   inn: "",
+  reqnum: 1,
+  renderData: false,
+  companyResponse: null,
   requestLoading: {
     companyMainInfo: false, 
     companyMainInfoUpdate: false, 
@@ -32,38 +29,93 @@ const defaultState = {
     companyMainInfoUpdate: false, 
     companyPCUpdate: false
   }
-}
+})
 
-const openBillReducer = (state = defaultState, action) => {
-  const { requestLoading, errors } = state
+// const defaultState = {
+//   inn: "",
+//   requestLoading: {
+//     companyMainInfo: false, 
+//     companyMainInfoUpdate: false, 
+//     companyPCUpdate: false
+//   },
+//   errors: {
+//     companyMainInfo: false, 
+//     companyMainInfoUpdate: false, 
+//     companyPCUpdate: false
+//   }
+// }
+
+const openBillReducer = (state = new ReducerRecord(), action) => {
+  const { requestLoading, errors } = state.toJS()
   const {type, payload, loading, id} = action
   switch (type) {
     case ACTION_CHANGE_INN:
-      return { ...state, inn: payload }
+      return state.set('inn', payload)
+      // return { ...state, inn: payload }
 
     case LOAD_COMPANY_INFO + START:
-      return { ...state, requestLoading: {...requestLoading, companyMainInfo: loading }, errors: {...errors, companyMainInfo: false} }
+      return state
+        .set('requestLoading', {...requestLoading, companyMainInfo: loading})
+        .set('errors', {...errors, companyMainInfo: false})
+      // return { ...state, requestLoading: {...requestLoading, companyMainInfo: loading }, errors: {...errors, companyMainInfo: false} }
     case LOAD_COMPANY_INFO + SUCCESS:
-      return { ...state, companyResponse: payload, requestLoading: { ...requestLoading, companyMainInfo: false }, errors: {...errors, companyMainInfo: false} }
+      return state
+      .set('requestLoading', payload)
+      .set('companyResponse', {...requestLoading, companyMainInfo: false})
+      .set('errors', {...errors, companyMainInfo: false})
+      // return { ...state, companyResponse: payload, requestLoading: { ...requestLoading, companyMainInfo: false }, errors: {...errors, companyMainInfo: false} }
     case LOAD_COMPANY_INFO + FAIL:
-      return { ...state, requestLoading: loading, errors: {...errors, companyMainInfo: true}}
+      return state
+        .set('requestLoading', {...requestLoading, companyMainInfo: loading})
+        .set('errors', {...errors, companyMainInfo: true})
+      // return { ...state, requestLoading: loading, errors: {...errors, companyMainInfo: true}}
 
     case LOAD_COMPANY_INFO + UPDATE + START:
-      return { ...state, reqnum: id, requestLoading: {...requestLoading, companyMainInfoUpdate: true}, errors: {...errors, companyMainInfoUpdate: false}}
+      return state
+        .set('reqnum', id)
+        .set('requestLoading', {...requestLoading, companyMainInfoUpdate: true})
+        .set('errors', {...errors, companyMainInfoUpdate: false})      
+      // return { ...state, reqnum: id, requestLoading: {...requestLoading, companyMainInfoUpdate: true}, errors: {...errors, companyMainInfoUpdate: false}}
     case LOAD_COMPANY_INFO + UPDATE + SUCCESS:
-      return { ...state, companyResponse: payload, requestLoading: {...requestLoading, companyMainInfoUpdate: false}, renderData: true, errors: {...errors, companyMainInfoUpdate: false}}
+      return state
+        .set('companyResponse', payload)
+        .set('requestLoading', {...requestLoading, companyMainInfoUpdate: false})
+        .set('renderData', true)
+        .set('errors', {...errors, companyMainInfoUpdate: false}) 
+      // return { ...state, companyResponse: payload, requestLoading: {...requestLoading, companyMainInfoUpdate: false}, renderData: true, errors: {...errors, companyMainInfoUpdate: false}}
     case LOAD_COMPANY_INFO + UPDATE + FAIL:
-      return { ...state, requestLoading: {...requestLoading, companyMainInfoUpdate: false}, errors: {...errors, companyMainInfoUpdate: true}}
+      return state
+        .set('requestLoading', {...requestLoading, companyMainInfoUpdate: false})
+        .set('renderData', false)
+        .set('errors', {...errors, companyMainInfoUpdate: true})
+      // return { ...state, requestLoading: {...requestLoading, companyMainInfoUpdate: false}, errors: {...errors, companyMainInfoUpdate: true}}
 
     case LOAD_COMPANY_INFO + PC + UPDATE + START:
-      return { ...state, reqnum: id, requestLoading: {...requestLoading, companyPCUpdate: true}, errors: {...errors, companyPCUpdate: false}}
+      return state
+        .set('reqnum', id)
+        .set('requestLoading', {...requestLoading, companyPCUpdate: true})
+        .set('errors', {...errors, companyPCUpdate: false})    
+      // return { ...state, reqnum: id, requestLoading: {...requestLoading, companyPCUpdate: true}, errors: {...errors, companyPCUpdate: false}}
     case LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS:
-      return { ...state, companyResponse: payload, requestLoading: {...requestLoading, companyPCUpdate: false}, errors: {...errors, companyPCUpdate: false}}
+      return state
+        .set('companyResponse', payload)
+        .set('requestLoading', {...requestLoading, companyPCUpdate: false})
+        .set('renderData', true)
+        .set('errors', {...errors, companyPCUpdate: false}) 
+      // return { ...state, companyResponse: payload, requestLoading: {...requestLoading, companyPCUpdate: false}, errors: {...errors, companyPCUpdate: false}}
     case LOAD_COMPANY_INFO + PC + UPDATE + FAIL:
-      return { ...state, requestLoading: {...requestLoading, companyPCUpdate: false}, errors: {...errors, companyPCUpdate: true}}
+      return state
+        .set('requestLoading', {...requestLoading, companyPCUpdate: false})
+        .set('renderData', false)
+        .set('errors', {...errors, companyPCUpdate: true})
+      // return { ...state, requestLoading: {...requestLoading, companyPCUpdate: false}, errors: {...errors, companyPCUpdate: true}}
 
     case CLEAR_COMPANY_INFO:
-      return { ...state, inn: "", reqnum: null, renderData: false }
+      return state
+        .set('inn', "")
+        .set('reqnum', null)
+        .set('renderData', false)
+      // return { ...state, inn: "", reqnum: null, renderData: false }
 
     default:
       return state
