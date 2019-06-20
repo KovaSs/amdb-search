@@ -5,17 +5,22 @@ import {
   loadCompanyInfo as loadCompanyOpenBillInfo, 
   clearCompanyInfo as clearCompanyOpenBillInfo 
 } from "../../../../store/ducks/openBill";
+import { 
+  decodedCompanyResponse,
+  decodedRenderData,
+  decodedInn,
+  decodedErrors
+} from "../../../../selectors";
 import SearchCompanyInput from "./SearchCompanyInput";
 
 const Container = props => <SearchCompanyInput {...props}/>
 
 const putStateToProps = state => {
-  const {openBill : { companyResponse, renderData, inn, errors }} = state
   return {
-    companyResponse,
-    renderData,
-    inn, 
-    errors
+    companyResponse: decodedCompanyResponse(state),
+    renderData: decodedRenderData(state),
+    inn: decodedInn(state), 
+    errors: decodedErrors(state)
   }
 }
 
