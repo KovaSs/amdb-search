@@ -20,8 +20,8 @@ class SearchCompanyInput extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { companyResponse } = this.props
-    if(companyResponse !== prevProps.companyResponse) {
+    const { companyResponse, renderData } = this.props
+    if(companyResponse !== prevProps.companyResponse && renderData) {
       this.setState({
         showInfo: true,
         clearField : false

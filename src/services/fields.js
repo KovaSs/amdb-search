@@ -47,12 +47,12 @@ export const fieldsArr = [
     const { Phone, Phone : {Code, Number} } = item
     if(Array.isArray(Phone)) {
       const newArrayPnoneList = Phone.map((item, key) => {
-        const newItem = `(${item.Code})${item.Number}   ` 
+        const newItem = `(${item.Code})${item.Number}` 
         return newItem 
       })
       return newArrayPnoneList
     } else {
-      return `(${Code}) ${Number}`
+      return `(${Code})${Number}`
     }
   }},
 
@@ -75,7 +75,8 @@ export const fieldsArr = [
 
   {search: "CharterCapital", id: "capital", title: "Уставной капитал", func: item => {
     if(!item) return 'Данные отсутствуют'
-    return item.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ')
+    // eslint-disable-next-line
+    return item.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1' + '\u200A')
   }},
 
   {search: "IndexOfDueDiligence", id: "index_of_due_diligence", title: "Индекс должносной осмотрительности", data: "", func: item => {

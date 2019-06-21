@@ -76,11 +76,7 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
         .set('errors', {...errors, companyPCUpdate: true})
 
     case CLEAR_COMPANY_INFO:
-      return state
-        .set('inn', "")
-        .set('reqnum', null)
-        .set('renderData', false)
-        .set('errors', { companyMainInfo: false, companyMainInfoUpdate: false, companyPCUpdate: false })
+      return new ReducerRecord()
 
     default:
       return state
