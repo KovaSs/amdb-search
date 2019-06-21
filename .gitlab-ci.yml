@@ -1,27 +1,35 @@
 stages:
-    - test
-    - build
+  - test
+  - build
+  - deploy
 
 cache:
-    untracked: true
-    paths:
-        - node_modules/
+  untracked: true
+  paths:
+    - node_modules/
 
 Build:
-    stage: build
-    only:
-        - develop
-    before_script:
-        - npm install
-    script:
-        - CI="" npm run build
-    artifacts:
-        paths:
-            - build/
+  stage: build
+  only:
+    - develop
+  before_script:
+    - npm install
+  script:
+    - CI="" npm run build
+  artifacts:
+    paths:
+      - build/
 
 Test:
-    stage: test
-    only:
-        - develop
-    script:
-        - npm run test
+  stage: test
+  only:
+    - develop
+  script:
+    - npm run test
+
+Deploy:
+  stage: deploy
+  only:
+    - master
+  script:
+    - rsync -av -e 'ssh -i /.ssh/id_rsa' my-app.com:~/ ./build/*
