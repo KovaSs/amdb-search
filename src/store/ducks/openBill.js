@@ -33,14 +33,14 @@ const ReducerRecord = Record({
 
 const openBillReducer = (state = new ReducerRecord(), action) => {
   const { requestLoading, errors } = state
-  const {type, payload, id} = action
+  const { type, payload, id } = action
   switch (type) {
     case ACTION_CHANGE_INN:
-      return state.set('inn', payload)
+      return state.set('inn', payload.inn)
 
     case LOAD_COMPANY_INFO:
       return state
-        .set('companyResponse', payload)
+        .set('companyResponse', payload.company)
 
     case LOAD_COMPANY_INFO + UPDATE + START:
       return state
@@ -49,7 +49,7 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
         .set('errors', {...errors, companyMainInfoUpdate: false})      
     case LOAD_COMPANY_INFO + UPDATE + SUCCESS:
       return state
-        .set('companyResponse', payload)
+        .set('companyResponse', payload.updatedData)
         .set('requestLoading', {...requestLoading, companyMainInfoUpdate: false})
         .set('renderData', true)
         .set('errors', {...errors, companyMainInfoUpdate: false}) 
@@ -66,7 +66,7 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
         .set('errors', {...errors, companyPCUpdate: false})    
     case LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS:
       return state
-        .set('companyResponse', payload)
+        .set('companyResponse', payload.updatedData)
         .set('requestLoading', {...requestLoading, companyPCUpdate: false})
         .set('errors', {...errors, companyPCUpdate: false}) 
     case LOAD_COMPANY_INFO + PC + UPDATE + FAIL:
@@ -80,16 +80,17 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
         .set('inn', "")
         .set('reqnum', null)
         .set('renderData', false)
+        .set('errors', { companyMainInfo: false, companyMainInfoUpdate: false, companyPCUpdate: false })
 
     default:
       return state
   }
 }
 
-export const actionChangeInn = newInn => {
+export const actionChangeInn = inn => {
   return {
     type: ACTION_CHANGE_INN,
-    payload: newInn
+    payload: {inn}
   }
 }
 
@@ -97,7 +98,7 @@ export const loadCompanyInfo = inn => {
   return dispatch => {
     dispatch({
       type: LOAD_COMPANY_INFO,
-      payload: companyRes
+      payload: {company: companyRes}
     })
 
     dispatch({

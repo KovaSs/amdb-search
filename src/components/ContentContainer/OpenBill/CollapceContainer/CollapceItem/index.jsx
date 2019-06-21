@@ -37,7 +37,7 @@ const CollapceItem = props => {
     }
 
     const renderStopListFields = riskInfo.map(item => {
-      if( item.data !== "" && item.id !== "arbiter") {
+      if( item.data !== undefined && item.data !== "" && item.id !== "arbiter") {
         return (
           <Row key={item.id} className="stop-list">
             <div className="label">{ item.title }</div>

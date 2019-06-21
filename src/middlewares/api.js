@@ -17,12 +17,12 @@ export default store => next => action => {
     .then(res => {
       const { openBill: { companyResponse } } = store.getState()
       const data = JSON.parse(res.data)
-      console.log('res | first update |', data.Data.Report)
+      console.log('RES | first update |', data.Data.Report)
       const updatedData = trasform._get_company_info_companySource(companyResponse, data.Data.Report)
       next({
         type: type + SUCCESS,
         reqnum: res.reqnum,
-        payload: updatedData,
+        payload: {updatedData},
         ...rest
       })
     })
@@ -42,13 +42,13 @@ export default store => next => action => {
     .then(res => {
       const { openBill: { companyResponse } } = store.getState()
       const data = JSON.parse(res.data)
-      console.log('res | PC', data)
+      console.log('RES | PC', data)
       if(data.ResultInfo.ResultType === "Data not found") {
         const updatedData = trasform._get_company_info_companySource(companyResponse, { Successor : false, Predecessor: false})
         next({
           type: type + SUCCESS,
           reqnum: res.reqnum,
-          payload: updatedData,
+          payload: {updatedData},
           ...rest
         })
       } else {
@@ -56,13 +56,13 @@ export default store => next => action => {
         next({
           type: type + SUCCESS,
           reqnum: res.reqnum,
-          payload: updatedData,
+          payload: {updatedData},
           ...rest
         })
       }
     })
     .catch(err => {
-      console.log('err | PC', err)
+      console.log('ERR | PC', err)
       next({
         type: type + FAIL,
       })

@@ -20,7 +20,7 @@ class SearchCompanyInput extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { companyResponse, errors: {companyMainInfo, companyMainInfoUpdate, companyPCUpdate} } = this.props
+    const { companyResponse } = this.props
     if(companyResponse !== prevProps.companyResponse) {
       this.setState({
         showInfo: true,
@@ -28,9 +28,9 @@ class SearchCompanyInput extends Component {
       })
     }
 
-    if(companyMainInfo !== prevProps.errors.companyMainInfo ) this.openNotification('companyMainInfo')
-    if(companyMainInfoUpdate !== prevProps.errors.companyMainInfoUpdate ) this.openNotification('companyMainInfoUpdate')
-    if(companyPCUpdate !== prevProps.errors.companyPCUpdate ) this.openNotification('companyPCUpdate')
+    prevProps.errors.companyMainInfo && this.openNotification('companyMainInfo')
+    prevProps.errors.companyMainInfoUpdate && this.openNotification('companyMainInfoUpdate')
+    prevProps.errors.companyPCUpdate && this.openNotification('companyPCUpdate')
   }
   
   handleSubmit = e => {  
@@ -126,7 +126,7 @@ class SearchCompanyInput extends Component {
   openNotification = err => {
     const close = () => console.log( `Notification ${err} was closed. Either the close button was clicked or duration time elapsed.`)
 
-    const key = `open${Date.now()}`;
+    const key = err;
     const confirmBtn = (
       <Button type="primary" size="small" onClick={() => notification.close(key)}>
         Повторить запрос
@@ -134,11 +134,10 @@ class SearchCompanyInput extends Component {
     );
     notification['error']({
       message: `Ошибка получения данных`,
-      description:
-      'A function will be be called after the notification is closed (automatically after the "duration" time of manually).',
+      description: `Произошла ошибка при выполнении запроса ${err}`,
       confirmBtn,
-      duration: 0,
-      btn: confirmBtn,
+      duration: 4,
+      // btn: confirmBtn,
       key,
       onClose: close,
     });

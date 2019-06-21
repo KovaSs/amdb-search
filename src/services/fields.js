@@ -73,7 +73,10 @@ export const fieldsArr = [
     return `${content} / ${moment(ActualDate).format('DD.MM.YYYY')}`
   }},
 
-  {search: "CharterCapital", id: "capital", title: "Уставной капитал", data: ""},
+  {search: "CharterCapital", id: "capital", title: "Уставной капитал", func: item => {
+    if(!item) return 'Данные отсутствуют'
+    return item.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ')
+  }},
 
   {search: "IndexOfDueDiligence", id: "index_of_due_diligence", title: "Индекс должносной осмотрительности", data: "", func: item => {
     if(item.Index === 'N/A' || !item) return 'N/A - Данные отсутствуют'
