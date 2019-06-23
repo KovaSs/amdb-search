@@ -2,14 +2,9 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Spin, Col, Row, Switch } from "antd";
 import PropTypes from "prop-types";
+import { decodedCompanyResponse, decodedRequestLoading, decodedRenderData, decodedErrors } from "../../../store/ducks/openBill";
 import CollapceContainer from "./CollapceContainer";
 import SearchCompanyInput from "./SearchCompanyInput";
-import { 
-  decodedCompanyResponse, 
-  decodedRequestLoading,
-  decodedRenderData,
-  decodedErrors
-} from "../../../selectors";
 import "./open-bill.scss"
 
 class OpenBill extends Component {

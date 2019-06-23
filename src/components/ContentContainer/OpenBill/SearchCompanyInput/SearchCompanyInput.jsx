@@ -34,7 +34,7 @@ class SearchCompanyInput extends Component {
   }
   
   handleSubmit = e => {  
-    const { loadCompanyOpenBillInfo } = this.props
+    const { loadCompanyInfo } = this.props
     const { showInfo } = this.state
     if(typeof e === 'function' || typeof e === 'object') {
       e.preventDefault();
@@ -61,7 +61,7 @@ class SearchCompanyInput extends Component {
 
     !showInfo && this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        loadCompanyOpenBillInfo(this.props.form.setFieldsValue.__reactBoundContext.instances.data.props.value)
+        loadCompanyInfo(this.props.form.setFieldsValue.__reactBoundContext.instances.data.props.value)
         this.changeValue()
       }
     })
@@ -69,17 +69,17 @@ class SearchCompanyInput extends Component {
   }
 
   changeValue = () => {
-    const { actionChangeOpenBillInn } = this.props
+    const { actionChangeInn } = this.props
     setTimeout(() => {
-      actionChangeOpenBillInn(this.props.form.setFieldsValue.__reactBoundContext.instances.data.props.value)
+      actionChangeInn(this.props.form.setFieldsValue.__reactBoundContext.instances.data.props.value)
     }, 100);
   }
 
   clearSearchField = () => {
     const { resetFields } = this.props.form
-    const { toHideTableInfo, clearCompanyOpenBillInfo } = this.props
+    const { toHideTableInfo, clearCompanyInfo } = this.props
     toHideTableInfo()
-    clearCompanyOpenBillInfo()
+    clearCompanyInfo()
     resetFields()
     this.setState({
       showInfo: false,

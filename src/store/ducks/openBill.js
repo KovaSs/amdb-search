@@ -1,6 +1,8 @@
-import { Record } from 'immutable'
+import { Record, Map } from 'immutable'
+import { createSelector } from 'reselect'
 import { companyRes } from '../mock'
 
+/** Constants */
 export const moduleName = 'openBill'
 export const prefix = `AS-Check/${moduleName}`
 
@@ -14,25 +16,25 @@ export const SUCCESS = '_SUCCESS'
 export const UPDATE = '_UPDATE'
 export const FAIL = '_FAIL'
 
+/** Reducer */
 const ReducerRecord = Record({
   inn: "",
   reqnum: 1,
   renderData: false,
   companyResponse: null,
-  requestLoading: {
+  requestLoading: new Map({
     companyMainInfo: false, 
     companyMainInfoUpdate: false, 
     companyPCUpdate: false
-  },
-  errors: {
+  }),
+  errors: new Map({
     companyMainInfo: false, 
     companyMainInfoUpdate: false, 
     companyPCUpdate: false
-  }
+  })
 })
 
 const openBillReducer = (state = new ReducerRecord(), action) => {
-  const { requestLoading, errors } = state
   const { type, payload, id } = action
   switch (type) {
     case ACTION_CHANGE_INN:
@@ -44,36 +46,36 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
 
     case LOAD_COMPANY_INFO + UPDATE + START:
       return state
-        .set('reqnum', id)
-        .set('requestLoading', {...requestLoading, companyMainInfoUpdate: true})
-        .set('errors', {...errors, companyMainInfoUpdate: false})      
+      .set('reqnum', id)
+      .setIn(['requestLoading', 'companyMainInfoUpdate'], true)
+      .setIn(['errors', 'companyMainInfoUpdate'], false)      
     case LOAD_COMPANY_INFO + UPDATE + SUCCESS:
       return state
         .set('companyResponse', payload.updatedData)
-        .set('requestLoading', {...requestLoading, companyMainInfoUpdate: false})
+        .setIn(['requestLoading', 'companyMainInfoUpdate'], false)
+        .setIn(['errors', 'companyMainInfoUpdate'], false) 
         .set('renderData', true)
-        .set('errors', {...errors, companyMainInfoUpdate: false}) 
     case LOAD_COMPANY_INFO + UPDATE + FAIL:
       return state
-        .set('requestLoading', {...requestLoading, companyMainInfoUpdate: false})
+        .setIn(['requestLoading', 'companyMainInfoUpdate'], false)
+        .setIn(['errors', 'companyMainInfoUpdate'], true)
         .set('renderData', false)
-        .set('errors', {...errors, companyMainInfoUpdate: true})
 
     case LOAD_COMPANY_INFO + PC + UPDATE + START:
       return state
         .set('reqnum', id)
-        .set('requestLoading', {...requestLoading, companyPCUpdate: true})
-        .set('errors', {...errors, companyPCUpdate: false})    
+        .setIn(['requestLoading', 'companyPCUpdate'], true)
+        .setIn(['errors', 'companyPCUpdate'], false)    
     case LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS:
       return state
         .set('companyResponse', payload.updatedData)
-        .set('requestLoading', {...requestLoading, companyPCUpdate: false})
-        .set('errors', {...errors, companyPCUpdate: false}) 
+        .setIn(['requestLoading', 'companyPCUpdate'], false)
+        .setIn(['errors', 'companyPCUpdate'], false) 
     case LOAD_COMPANY_INFO + PC + UPDATE + FAIL:
       return state
-        .set('requestLoading', {...requestLoading, companyPCUpdate: false})
+        .setIn(['requestLoading', 'companyPCUpdate'], false)
+        .setIn(['errors', 'companyPCUpdate'], true)
         .set('renderData', false)
-        .set('errors', {...errors, companyPCUpdate: true})
 
     case CLEAR_COMPANY_INFO:
       return new ReducerRecord()
@@ -83,6 +85,7 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
   }
 }
 
+/** Actions */
 export const actionChangeInn = inn => {
   return {
     type: ACTION_CHANGE_INN,
@@ -116,5 +119,55 @@ export const clearCompanyInfo = () => {
     type: CLEAR_COMPANY_INFO
   }
 }
+
+/** Selectors */
+export const companyResSelector = state => state[moduleName].get('companyResponse')
+export const requestLoadingSelector = state => state[moduleName].get('requestLoading').toJS()
+export const renderDataSelector = state => state[moduleName].get('renderData')
+export const innSelector = state => state[moduleName].get('inn')
+export const errorsSelector = state => state[moduleName].get('errors').toJS()
+
+export const decodedCompanyResponse = createSelector(
+  companyResSelector, (companyResponse) =>  companyResponse
+)
+
+export const decodedInn = createSelector(
+  innSelector, (inn) => inn
+)
+
+export const decodedErrors = createSelector(
+  errorsSelector, (errors) => errors
+)
+
+export const decodedRenderData = createSelector(
+  renderDataSelector, (renderData) => renderData
+)
+
+export const decodedMainCompanySource = createSelector(
+  companyResSelector, (companyResponse) => {
+    const { heads, management_companies, founders_fl, founders_ul, befenicials, arbiter, fns, inn, ogrn, name, full_name, sanctions, isponlit_proizvodstva, ...companySource} = companyResponse
+    return companySource
+  }
+)
+
+export const decodedRiskSource = createSelector(
+  companyResSelector, (companyResponse) => {
+    const { arbiter, fns, sanctions, isponlit_proizvodstva } = companyResponse
+    const riskSource = { arbiter, fns, sanctions, isponlit_proizvodstva }
+    return riskSource
+  }
+)
+
+export const decodedManagementSource = createSelector(
+  companyResSelector, (companyResponse) => {
+    const { heads, management_companies, founders_fl, founders_ul, befenicials } = companyResponse
+    const managementSource = { heads, management_companies, founders_fl, founders_ul, befenicials }
+    return managementSource
+  }
+)
+
+export const decodedRequestLoading = createSelector(
+  requestLoadingSelector, (requestLoading) => requestLoading
+)
 
 export default openBillReducer
