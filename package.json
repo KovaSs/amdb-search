@@ -9,23 +9,31 @@
     "url": "http://gitlab-cos/gpbu7806/AS-Check"
   },
   "dependencies": {
-    "antd": "^3.19.0",
+    "antd": "^3.19.7",
+    "connected-react-router": "6.4.0",
+    "history": "^4.9.0",
+    "immutable": "4.0.0-rc.12",
     "lodash": "^4.14.2",
     "moment": "^2.8.4",
-    "react": "^16.8.4",
+    "prop-types": "^15.7.2",
+    "react": "16.8.4",
+    "react-app-polyfill": "^1.0.1",
     "react-dom": "^16.8.4",
     "react-highlight-words": "^0.8.1",
-    "react-redux": "^6.0.1",
+    "react-redux": "6.0.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.8",
-    "redux": "^4.0.1"
+    "redux": "^4.0.1",
+    "redux-logger": "^3.0.6",
+    "redux-saga": "^1.0.3",
+    "reselect": "^4.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "server": "nodemon ./src/services/server.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "publish": "npm publish ./dist",
+    "publish": "npm publish ./build",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -34,7 +42,6 @@
   "browserslist": [
     ">0.2%",
     "not dead",
-    "not ie <= 11",
     "not op_mini all"
   ],
   "devDependencies": {

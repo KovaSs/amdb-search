@@ -47,12 +47,12 @@ export const fieldsArr = [
     const { Phone, Phone : {Code, Number} } = item
     if(Array.isArray(Phone)) {
       const newArrayPnoneList = Phone.map((item, key) => {
-        const newItem = `(${item.Code})${item.Number}   ` 
+        const newItem = `(${item.Code})${item.Number}` 
         return newItem 
       })
       return newArrayPnoneList
     } else {
-      return `(${Code}) ${Number}`
+      return `(${Code})${Number}`
     }
   }},
 
@@ -67,18 +67,32 @@ export const fieldsArr = [
 
   {search: "WorkersRange", id: "workers_range", title: "Численность персонала", data: ""},
 
-  {search: "StaffNumbersFTS", id: "workers_range_fns", title: "Численность персонала по данным ФНС", data: ""},
+  {search: "StaffNumberFTS", id: "workers_range_fns", title: "Численность персонала по данным ФНС", data: "", func: item => {
+    if(!item) return 'Данные отсутствуют'
+    const { Number: {ActualDate, content}} = item
+    return `${content} / ${moment(ActualDate).format('DD.MM.YYYY')}`
+  }},
 
-  {search: "CharterCapital", id: "capital", title: "Уставной капитал", data: ""},
+  {search: "CharterCapital", id: "capital", title: "Уставной капитал", func: item => {
+    if(!item) return 'Данные отсутствуют'
+    // eslint-disable-next-line
+    return item.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1' + '\u200A')
+  }},
 
   {search: "IndexOfDueDiligence", id: "index_of_due_diligence", title: "Индекс должносной осмотрительности", data: "", func: item => {
     if(item.Index === 'N/A' || !item) return 'N/A - Данные отсутствуют'
     return `${item.Index} / ${item.IndexDesc}`
   }},
 
-  {search: "PaymentIndex", id: "payment_index", title: "Индекс платежной дисциплины", data: ""},
+  {search: "PaymentIndex", id: "payment_index", title: "Индекс платежной дисциплины", data: "", func: item => {
+    if(!item) return 'Данные отсутствуют'
+    return `${item.PaymentIndexValue} / ${item.PaymentIndexDesc}`
+  }},
 
-  {search: "FailueScope", id: "failure_score", title: "Индекс финансового риска", data: ""},
+  {search: "FailueScope", id: "failure_score", title: "Индекс финансового риска", data: "", func: item => {
+    if(!item) return 'Данные отсутствуют'
+    return `${item.FailureScoreValue} / ${item.FailureScoreDesc}`
+  }},
 
   {search: "", id: "isponlit_proizvodstva", title: "Исполнительные производства", data: ""},
 
@@ -86,9 +100,33 @@ export const fieldsArr = [
 
   {search: "", id: "sanctions", title: "Санкции", data: ""},
 
-  {search: "", id: "precessors", title: "Предшедственники", data: ""},
+  {search: "Predecessor", id: "precessors", title: "Предшедственники", data: "", func: item => {
+    if(!item) return ''
+    if(Array.isArray(item)) {
+      const predecessor = []
+      item.map(el =>  {
+        return predecessor.push(`${el.Name} / ${el.INN} ${el.Status.Text ? `/ ${el.Status.Text}` : ''}`)
+      })
+      return predecessor
+    } else {
+      const { INN, Name, Status } = item
+      return `${Name} / ${INN} ${Status.Text ? `/ ${Status.Text}` : ''}`
+    }
+  }}, 
 
-  {search: "", id: "successors", title: "Приемники", data: ""},
+  {search: "Successor", id: "successors", title: "Приемники", data: "", func: item => {
+    if(!item) return ''
+    if(Array.isArray(item.Successor)) {
+      const successor = []
+      item.map(el =>  {
+        return successor.push(`${el.Name} / ${el.INN} ${el.Status.Text ? `/ ${el.Status.Text}` : ''}`)
+      })
+      return successor
+    } else {
+      const { INN, Name, Status } = item
+      return `${Name} / ${INN} ${Status.Text ? `/ ${Status.Text}` : ''}`
+    }
+  }},
 
   {search: "", id: "arbiter", title: "Арбитраж", data: ""},
 

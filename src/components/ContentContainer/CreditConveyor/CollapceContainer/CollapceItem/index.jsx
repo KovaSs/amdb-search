@@ -1,5 +1,4 @@
 import React from 'react'
-import { findDOMNode } from 'react-dom'
 import { Collapse, Col, Row, Icon, Table, Descriptions } from 'antd'
 import { trasform } from "../../../../../services/transformData"
 
@@ -38,7 +37,7 @@ const CollapceItem = props => {
     }
 
     const renderStopListFields = riskInfo.map(item => 
-      item.data !== "" && item.id !== "arbiter" ?
+      item.data !== undefined && item.data !== "" && item.id !== "arbiter" ?
         ( 
           <Row key={item.id} className="stop-list">
             <div className="label">{ item.title }</div>
@@ -51,11 +50,6 @@ const CollapceItem = props => {
       : null
     )
 
-    const getElementRef = ref => {
-      findDOMNode(ref)
-      // console.log('ref', ref, findDOMNode(ref))
-    }
-
     return (
       <>
         <Col span={18}>
@@ -64,7 +58,6 @@ const CollapceItem = props => {
             onChange={callback}
             expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"} />}
             style={{marginTop: "5px"}}
-            ref={getElementRef}
           >
             <Panel header="Стоп-листы" key="1" showArrow={false}>
               { renderStopListFields }

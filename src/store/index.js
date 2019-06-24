@@ -1,8 +1,10 @@
 import { createStore, applyMiddleware, compose } from 'redux'
-import rootReducer from './reduсers'
-import thunk from '../services/redux-thunk'
-// import api from '../middlewares/api'
-// import logger from '../middlewares/logger'
+import { routerMiddleware } from 'connected-react-router'
+import logger from 'redux-logger'
+import createSagaMiddleware from 'redux-saga'
+import rootSaga from './saga'
+import rootReducer from './rootReduсer'
+import history from '../history'
 
 const composeEnhancers =
   typeof window === 'object' &&
@@ -11,11 +13,20 @@ const composeEnhancers =
       // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
     }) : compose;
 
+const sagaMiddleware = createSagaMiddleware()
+
 const enhancer = composeEnhancers(
-  applyMiddleware(thunk),
+  applyMiddleware(
+    sagaMiddleware,
+    routerMiddleware(history),
+    logger
+  ),
   // other store enhancers if any
 );
 
 const store = createStore(rootReducer, enhancer)
+window.store = store
+
+sagaMiddleware.run(rootSaga)
 
 export default store

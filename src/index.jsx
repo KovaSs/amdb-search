@@ -1,10 +1,13 @@
+import 'react-app-polyfill/ie11';
+import 'react-app-polyfill/stable';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import store from './store';
 import { Provider } from 'react-redux';
+import App from './components/App';
+import * as serviceWorker from './serviceWorker';
 import './index.scss';
 import "antd/dist/antd.css";
-import App from './components/App';
 
 const AppWrapper = () => {
   return(
@@ -15,4 +18,6 @@ const AppWrapper = () => {
 }
 
 ReactDOM.render(<AppWrapper />, document.getElementById('root'));
+
+serviceWorker.unregister();
 

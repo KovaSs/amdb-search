@@ -1,11 +1,10 @@
 import React from 'react';
-// import { dropRight } from 'lodash';
-import { Collapse, Col, Row, Icon, Table, Descriptions } from 'antd';
+import { Collapse, Col, Row, Icon, Table, Descriptions, Spin } from 'antd';
 import { trasform } from "../../../../../services/transformData";
 
 const CollapceItem = props => {
   const { Panel } = Collapse;
-  const { companySource, riskSource,  managementSource} = props
+  const { companySource, riskSource,  managementSource, requestLoading : {companyPCUpdate} } = props
 
   /** Преобразование входящих данных из props */
   const fullOrganistionInfo = trasform._companySource(companySource)
@@ -38,7 +37,7 @@ const CollapceItem = props => {
     }
 
     const renderStopListFields = riskInfo.map(item => {
-      if( item.data !== "" && item.id !== "arbiter") {
+      if( item.data !== undefined && item.data !== "" && item.id !== "arbiter") {
         return (
           <Row key={item.id} className="stop-list">
             <div className="label">{ item.title }</div>
@@ -101,11 +100,19 @@ const CollapceItem = props => {
       item.id !== "full_name"
   }).map(item => {
     const { Item : DescriptionsItem } = Descriptions;
-    if (Array.isArray(item.data)) {
-      // console.log('objectArr', item)
-      const itemArray =  item.data.map((el, key) => <span key={key}>{el}  <br /> </span>)
+    if (Array.isArray(item.data) && item.id === "phone_list") {
+      const itemArray = item.data.map((el, key) => <a href={`tel:${el}`} key={item.id + '_' + key}>{el} </a>)
       return (
-        <DescriptionsItem id={ item.id } key={ item.id } label={ item.title }>
+        <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={item.data.length > 4 ? 2 : 1}>
+          { itemArray }
+        </DescriptionsItem>
+      )
+    } else if(!Array.isArray(item.data) && item.id === "phone_list") {
+      return <DescriptionsItem id={ item.id } key={ item.id } label={ item.title }><a href={`tel:${item.data}`} key={item.id}>{item.data} </a></DescriptionsItem>
+    } else if(Array.isArray(item.data)) {
+      const itemArray = item.data.map((el, key) => <span key={key}>{el} <br /> </span>)
+      return (
+        <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={2}>
           { itemArray }
         </DescriptionsItem>
       )
@@ -188,9 +195,11 @@ const CollapceItem = props => {
           <Panel header="Общая информация" key="1" showArrow={false}>
             <Row>
               <Col span={24}>
-                <Descriptions bordered border size="small" span={2} column={{xxl:3, xl:3, lg: 3, md:3, sm:2, xs:1}}>
-                  { renderCompanySourceDescriptionFields }
-                </Descriptions>
+                <Spin spinning={companyPCUpdate}>
+                  <Descriptions bordered border size="small" span={2} column={{xxl:3, xl:3, lg: 3, md:3, sm:2, xs:1}}>
+                    { renderCompanySourceDescriptionFields }
+                  </Descriptions>
+                </Spin>
                 { renderStopListsInfo() }
               </Col>
             </Row>

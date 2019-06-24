@@ -1,11 +1,20 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Spin, Col, Row, Switch } from "antd";
+import PropTypes from "prop-types";
+import { decodedCompanyResponse, decodedRequestLoading, decodedRenderData, decodedErrors } from "../../../store/ducks/openBill";
 import CollapceContainer from "./CollapceContainer";
 import SearchCompanyInput from "./SearchCompanyInput";
 import "./open-bill.scss"
 
 class OpenBill extends Component {
+  static propTypes = {
+    companyResponse: PropTypes.object,
+    requestLoading: PropTypes.object,
+    renderData: PropTypes.bool,
+    errors: PropTypes.object
+  }
+
   state = {
     showTable : false,
     loading : false,
@@ -14,7 +23,8 @@ class OpenBill extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { companyResponse } = this.props
-    nextProps.searchLoading === true ?
+
+    nextProps.requestLoading.companyMainInfoUpdate === true ?
       this.setState({
         loading: true
       }) :
@@ -58,7 +68,7 @@ class OpenBill extends Component {
         <Col span={24}>
           <SearchCompanyInput toHideTableInfo={this.toHideTableInfo} />
           { showTable && renderData ?
-            <CollapceContainer  loading={loading}/> : 
+            <CollapceContainer /> : 
             <Spin spinning={loading} size="large" tip="Идет поиск данных" >
               <div className="search-result-table">
                 <div>Для поиска информации об организации введите ИНН или ОГРН в поисковую строку</div>
@@ -82,12 +92,14 @@ class OpenBill extends Component {
 }
 
 const putStateToProps = state => {
-  const {openBill : { companyResponse, searchLoading, renderData }} = state
   return {
-    companyResponse,
-    searchLoading,
-    renderData
+    companyResponse : decodedCompanyResponse(state, 'openBill'),
+    requestLoading: decodedRequestLoading(state, 'openBill') ,
+    renderData: decodedRenderData(state, 'openBill'),
+    errors: decodedErrors(state, 'openBill')
   }
 }
 
 export default connect(putStateToProps)(OpenBill);
+
+
