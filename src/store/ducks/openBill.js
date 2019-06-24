@@ -1,5 +1,7 @@
 import { Record, Map } from 'immutable'
 import { createSelector } from 'reselect'
+import { all, put, take, call } from 'redux-saga/effects'
+import { trasform } from "../../services/transformData"
 import { companyRes } from '../mock'
 
 /** Constants */
@@ -169,5 +171,49 @@ export const decodedManagementSource = createSelector(
 export const decodedRequestLoading = createSelector(
   requestLoadingSelector, (requestLoading) => requestLoading
 )
+
+/** Sagas */
+
+const loadCompanyInfoSaga = function * () {
+  const action = yield take(ACTION_CHANGE_INN)
+
+  try {
+    yield put({
+      type: LOAD_COMPANY_INFO + UPDATE + START
+    })
+
+    const updatedData = yield call(() => {
+      return fetch(
+        `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify({ type: 'get_company_info', data : { code: action.payload } })}`, 
+        { mode: 'cors', credentials: 'include' }
+      )
+      .then(res => {
+        if (res.ok) return res.json()
+        throw new TypeError("Данные о кампании не обновлены!")
+      })
+      .then(res => {
+        const data = JSON.parse(res.data)
+        // console.log('RES_BODY |', data.Data.Report)
+        return trasform._get_company_info_companySource(companyRes, data.Data.Report)
+      })
+    })
+
+    console.log('RES_BODY |', updatedData)
+
+    // yield put({
+    //   type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,
+    //   reqnum: res.reqnum,
+    //   payload: {updatedData},
+    // })
+  } catch (err){
+
+  }
+}
+
+export const saga = function * () {
+  yield all([
+    loadCompanyInfoSaga()
+  ])
+}
 
 export default openBillReducer
