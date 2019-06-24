@@ -36,7 +36,9 @@ class SearchCompanyInput extends Component {
   handleSubmit = e => {  
     const { loadCompanyInfo } = this.props
     const { showInfo } = this.state
+
     if(typeof e === 'function' || typeof e === 'object') {
+      console.log('!String')
       e.preventDefault();
     }
 
@@ -61,6 +63,7 @@ class SearchCompanyInput extends Component {
 
     !showInfo && this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
+        console.log('!err', true)
         loadCompanyInfo(this.props.form.setFieldsValue.__reactBoundContext.instances.data.props.value)
         this.changeValue()
       }

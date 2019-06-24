@@ -1,11 +1,3 @@
-// import { Record } from 'immutable'
-
-// const ReducerRecord = Record({
-// user: null,
-// error: null,
-// loading: false
-// })
-
 export const moduleName = 'creditConveyor'
 export const prefix = `AS-Check/${moduleName}`
 
@@ -34,10 +26,14 @@ const creditConveyorReducer = (state = defaultState, action) => {
     switch (type) {
       case ACTION_CHANGE_INN:
         return { ...state, inn: payload };
+
       case LOAD_COMPANY_INFO + START:
         return { ...state, searchLoading: loading };
       case LOAD_COMPANY_INFO + SUCCESS:
         return { ...state, companyResponse: payload, callAPI : action.callAPI, searchLoading: loading, renderData: true };
+      case LOAD_COMPANY_INFO + FAIL:
+        return { ...state, searchLoading: false, errors: { companyMainInfo: true } };
+
       case CLEAR_COMPANY_INFO:
         return { ...state, inn: "", renderData: false };
       default:
