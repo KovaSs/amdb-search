@@ -1,5 +1,7 @@
 import { Record, Map } from 'immutable'
 import { createSelector } from 'reselect'
+import { all, put, take, call, select } from 'redux-saga/effects'
+import { trasform } from "../../services/transformData"
 import { companyRes } from '../mock'
 
 /** Constants */
@@ -94,23 +96,10 @@ export const actionChangeInn = inn => {
 }
 
 export const loadCompanyInfo = inn => {
-  return dispatch => {
-    dispatch({
-      type: LOAD_COMPANY_INFO,
-      payload: {company: companyRes}
-    })
-
-    dispatch({
-      type: LOAD_COMPANY_INFO + UPDATE,
-      callAPI: `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify({ type: 'get_company_info', data : { code: inn } })}`,
-      updateData: true
-    })
-
-    dispatch({
-      type: LOAD_COMPANY_INFO + PC + UPDATE,
-      callAPI: `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify({ type: 'get_company_ps', reqnum: 1, data : { code: inn } })}`,
-      updatePCInfo: true
-    })
+  return {
+    type: LOAD_COMPANY_INFO,
+    payload: {company: companyRes},
+    res: {inn}
   }
 }
 
@@ -169,5 +158,97 @@ export const decodedManagementSource = createSelector(
 export const decodedRequestLoading = createSelector(
   requestLoadingSelector, (requestLoading) => requestLoading
 )
+
+/** Sagas */
+const loadCompanyInfoSaga = function * () {
+  while(true){
+    const action = yield take(LOAD_COMPANY_INFO)
+    try {
+      yield put({
+        type: LOAD_COMPANY_INFO + UPDATE + START
+      })
+  
+      const res = yield call(() => {
+        return fetch(
+          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify({ type: 'get_company_info', data : { code: action.res.inn } })}`, 
+          { mode: 'cors', credentials: 'include' }
+        )
+        .then(res => {
+          if (res.ok) return res.json()
+          throw new TypeError("Данные о кампании не обновлены!")
+        })
+      })
+  
+      const data = JSON.parse(res.data)
+      const store = state => state[moduleName].get('companyResponse')
+      const companyResponse = yield select(store)
+      const updatedData = yield trasform._get_company_info_companySource(companyResponse, data.Data.Report)
+  
+      yield put({
+        type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,
+        reqnum: res.reqnum,
+        payload: {updatedData},
+      })
+    } catch (err){
+      yield put({
+        type: LOAD_COMPANY_INFO + UPDATE + FAIL,
+      })
+    }
+  }
+}
+
+const loadCompanyPCSaga = function * () {
+  while(true){
+    const action = yield take(LOAD_COMPANY_INFO)
+    try {
+      yield put({
+        type: LOAD_COMPANY_INFO + PC + UPDATE + START
+      })
+  
+      const res = yield call(() => {
+        return fetch(
+          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify({ type: 'get_company_ps', reqnum: 1, data : { code: action.res.inn } })}`, 
+          { mode: 'cors', credentials: 'include' }
+        )
+        .then(res => {
+          if (res.ok) return res.json()
+          throw new TypeError("Данные о кампании не обновлены!")
+        })
+      })
+  
+      const data = JSON.parse(res.data)
+      const store = state => state[moduleName].get('companyResponse')
+
+      if(data.ResultInfo.ResultType === "Data not found") {
+        const companyResponse = yield select(store)
+        const updatedData = yield trasform._get_company_info_companySource(companyResponse, { Successor : false, Predecessor: false})
+        yield put({
+          type: LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS,
+          reqnum: res.reqnum,
+          payload: {updatedData},
+        })
+      } else {
+        const companyResponse = yield select(store)
+        const updatedData = yield trasform._get_company_info_companySource(companyResponse, data.Data.Report.Reorganizations)
+        yield put({
+          type: LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS,
+          reqnum: res.reqnum,
+          payload: {updatedData},
+        })
+      }
+    } catch (err){
+      yield put({
+        type: LOAD_COMPANY_INFO + PC + UPDATE + FAIL,
+      })
+    }
+  }
+}
+
+export const saga = function * () {
+  yield all([
+    loadCompanyInfoSaga(),
+    loadCompanyPCSaga()
+  ])
+}
 
 export default openBillReducer
