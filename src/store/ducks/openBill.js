@@ -105,7 +105,7 @@ export const loadCompanyInfo = inn => {
     dispatch({
       type: LOAD_COMPANY_INFO + UPDATE,
       callAPI: `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify({ type: 'get_company_info', data : { code: inn } })}`,
-      updateData: true
+      // updateData: true
     })
 
     dispatch({
@@ -182,31 +182,36 @@ const loadCompanyInfoSaga = function * () {
       type: LOAD_COMPANY_INFO + UPDATE + START
     })
 
-    const updatedData = yield call(() => {
+    const res = yield call(() => {
       return fetch(
         `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify({ type: 'get_company_info', data : { code: action.payload } })}`, 
         { mode: 'cors', credentials: 'include' }
       )
       .then(res => {
+        console.log('res', res)
         if (res.ok) return res.json()
         throw new TypeError("Данные о кампании не обновлены!")
       })
-      .then(res => {
-        const data = JSON.parse(res.data)
-        // console.log('RES_BODY |', data.Data.Report)
-        return trasform._get_company_info_companySource(companyRes, data.Data.Report)
-      })
+      // .then(res => {
+      //   const data = JSON.parse(res.data)
+      //   console.log('RES_BODY |', data.Data.Report)
+      //   return trasform._get_company_info_companySource(companyRes, data.Data.Report)
+      // })
     })
 
+    const data = JSON.parse(res.data)
+    const updatedData = yield trasform._get_company_info_companySource(companyRes, data.Data.Report)
     console.log('RES_BODY |', updatedData)
 
-    // yield put({
-    //   type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,
-    //   reqnum: res.reqnum,
-    //   payload: {updatedData},
-    // })
+    yield put({
+      type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,
+      // reqnum: res.reqnum,
+      payload: {updatedData},
+    })
   } catch (err){
-
+    yield put({
+      type: LOAD_COMPANY_INFO + UPDATE + FAIL,
+    })
   }
 }
 
