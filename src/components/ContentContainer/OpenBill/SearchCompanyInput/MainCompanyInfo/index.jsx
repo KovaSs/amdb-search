@@ -30,7 +30,7 @@ class MainCompanyInfo extends Component {
         <Col span={20}>
           <Row className="main-info__organisation-info">
             <Col span={1}>
-              <Avatar src={process.env.PUBLIC_URL + 'img/logo.png'} />
+              <Avatar src={process.env.PUBLIC_URL + '/img/logo.png'} />
             </Col>
             <Col span={11}>
               <small className="lable">Полное наименование</small>

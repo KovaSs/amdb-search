@@ -1,5 +1,5 @@
 import {createBrowserHistory as createHistory} from 'history'
 
 export default createHistory({
-  basename: 'AS_CHECK'
+  basename: 'cgi-bin/serg/0/AS_CHECK/'
 })
