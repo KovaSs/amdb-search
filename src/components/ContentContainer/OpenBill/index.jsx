@@ -93,10 +93,10 @@ class OpenBill extends Component {
 
 const putStateToProps = state => {
   return {
-    companyResponse : decodedCompanyResponse(state, 'openBill'),
-    requestLoading: decodedRequestLoading(state, 'openBill') ,
-    renderData: decodedRenderData(state, 'openBill'),
-    errors: decodedErrors(state, 'openBill')
+    companyResponse : decodedCompanyResponse(state),
+    requestLoading: decodedRequestLoading(state) ,
+    renderData: decodedRenderData(state),
+    errors: decodedErrors(state)
   }
 }
 

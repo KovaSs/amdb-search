@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Spin, Col, Row, Switch } from "antd";
+import { decodedCompanyResponse, decodedRequestLoading, decodedRenderData, decodedErrors } from "../../../store/ducks/creditConveyor";
 import CollapceContainer from "./CollapceContainer";
 import SearchCompanyInput from "./SearchCompanyInput";
 import "./сredit-сonveyor.scss"
@@ -85,11 +86,11 @@ class CreditConveyor extends Component {
 }
 
 const putStateToProps = state => {
-  const {creditConveyor : { companyResponse, searchLoading, renderData }} = state
   return {
-    companyResponse,
-    searchLoading,
-    renderData
+    companyResponse: decodedCompanyResponse(state),
+    searchLoading: decodedRequestLoading(state),
+    renderData: decodedRenderData(state),
+    errors: decodedErrors(state)
   }
 }
 
