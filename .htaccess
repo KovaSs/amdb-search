@@ -1,4 +1,6 @@
-Options -MultiViews
 RewriteEngine On
+RewriteBase /AS_CHECK
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^ index.html [QSA,L]
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-l
+RewriteRule ^ index.html [L]
