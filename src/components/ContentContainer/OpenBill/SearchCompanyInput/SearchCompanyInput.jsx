@@ -61,18 +61,16 @@ class SearchCompanyInput extends Component {
 
     !showInfo && this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        loadCompanyInfo(this.props.form.setFieldsValue.__reactBoundContext.instances.data.props.value)
-        this.changeValue()
+        loadCompanyInfo(values.data)
+        this.changeValue(values.data)
       }
     })
     showInfo && this.clearSearchField()
   }
 
-  changeValue = () => {
+  changeValue = inn => {
     const { actionChangeInn } = this.props
-    setTimeout(() => {
-      actionChangeInn(this.props.form.setFieldsValue.__reactBoundContext.instances.data.props.value)
-    }, 100);
+    actionChangeInn(inn)
   }
 
   clearSearchField = () => {
