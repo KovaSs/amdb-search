@@ -136,7 +136,7 @@ export const fieldsArr = [
 
   {search: "", id: "founders_ul", title: "Юридичекие лица", data: ""},
 
-  {search: "PersonsWithoutWarrant", id: "heads", title: "Руководcтво", data: "", func: item => {
+  {search: "PersonsWithoutWarrant", id: "heads", title: "Руководители", data: "", func: item => {
     if(!item) return ''
     if(Array.isArray(item.Person)) {
       const successor = []

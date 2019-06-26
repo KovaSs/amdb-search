@@ -98,7 +98,12 @@ class TransformData {
       return item
     })
     console.table(clgData)
-    const filteredManagementInfo = fullOrganistionInfo.filter(item => (item.id === "befenicials" || item.id === "founders_fl" || item.id === "founders_ul" || item.id === "heads"  || item.id === "management_companies"))
+    const filteredManagementInfo = fullOrganistionInfo.filter(item => (
+      item.id === "befenicials" || 
+      item.id === "founders_fl" || 
+      item.id === "founders_ul" || 
+      item.id === "heads"  || 
+      item.id === "management_companies"))
     return filteredManagementInfo
   }
 
