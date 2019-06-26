@@ -163,6 +163,12 @@ export const decodedRequestLoading = createSelector(
 const loadCompanyInfoSaga = function * () {
   while(true){
     const action = yield take(LOAD_COMPANY_INFO)
+    const api = { 
+      type: 'get_company_info',
+      data: {
+        code: action.inn
+      }
+    }
     try {
       yield put({
         type: LOAD_COMPANY_INFO + UPDATE + START
@@ -170,8 +176,13 @@ const loadCompanyInfoSaga = function * () {
   
       const res = yield call(() => {
         return fetch(
-          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify({ type: 'get_company_info', data : { code: action.inn } })}`, 
-          { mode: 'cors', credentials: 'include' }
+          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+          { 
+            method: 'POST',
+            mode: 'cors',
+            credentials: 'include',
+            body : JSON.stringify(api),
+          }
         )
         .then(res => {
           if (res.ok) return res.json()
@@ -201,6 +212,13 @@ const loadCompanyInfoSaga = function * () {
 const loadCompanyPCSaga = function * () {
   while(true){
     const action = yield take(LOAD_COMPANY_INFO)
+    const api = { 
+      type: 'get_company_ps',
+      reqnum: 1,
+      data: {
+        code: action.inn
+      }
+    }
     try {
       yield put({
         type: LOAD_COMPANY_INFO + PC + UPDATE + START
@@ -208,8 +226,13 @@ const loadCompanyPCSaga = function * () {
   
       const res = yield call(() => {
         return fetch(
-          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify({ type: 'get_company_ps', reqnum: 1, data : { code: action.inn } })}`, 
-          { mode: 'cors', credentials: 'include' }
+          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+          { 
+            method: 'POST',
+            mode: 'cors',
+            credentials: 'include',
+            body : JSON.stringify(api),
+          }
         )
         .then(res => {
           if (res.ok) return res.json()
