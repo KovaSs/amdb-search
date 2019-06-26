@@ -34,22 +34,10 @@ export const companyRes = {
     "inn": "670700894121",
     "middle_name": "Ивановна",
     "last_name": "Масютина",
-    "first_name": "Жанна"
-  }],
-  "heads": [
-    {
-    "inn": "670700894121",
     "first_name": "Жанна",
-    "last_name": "Масютина",
-    "middle_name": "Ивановна"
-    },
-    {
-    "inn": "770203487249",
-    "first_name": "Александр",
-    "last_name": "Бусалов",
-    "middle_name": "Григоревич"
-    }
-  ],
+    "position": "Генеральный директор"
+  }],
+  "heads": [],
   "management_companies":[{
     "name":"ООО Ушан",
     "inn":"7743895330",
@@ -76,7 +64,8 @@ export const companyRes = {
         "inn": "670700894121",
         "first_name": "Жанна",
         "last_name": "Масютина",
-        "middle_name": "Ивановна"
+        "middle_name": "Ивановна",
+        "position": "Генеральный директор"
       },
       {
         "name":"ООО Ушан",

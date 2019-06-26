@@ -4,7 +4,7 @@ import "./open-bill.scss"
 class OpenAnAccount extends Component {
   render() {
     return(
-      <div>
+      <div style={{textAlign: "center"}}>
         Главная страница!
       </div>
     )

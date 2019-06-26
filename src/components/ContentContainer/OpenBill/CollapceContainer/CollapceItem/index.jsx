@@ -127,7 +127,7 @@ const CollapceItem = props => {
     const heads = managementInfo.find( item => item.id === `${searchData}`);
 
     const _fouldersFl = ( item, key ) => {
-      const { first_name, last_name, middle_name, inn } = item
+      const { first_name, last_name, middle_name, inn, position} = item
       return (
         <Panel 
           key={String(key)}
@@ -136,6 +136,7 @@ const CollapceItem = props => {
         >
           <div>{`ФИО: ${last_name} ${first_name} ${middle_name}`}</div>
           <div>{`ИНН: ${inn}`}</div>
+          <div>{`Должность: ${position}`}</div>
         </Panel>
       )
     } 

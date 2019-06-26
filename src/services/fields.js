@@ -89,7 +89,7 @@ export const fieldsArr = [
     return `${item.PaymentIndexValue} / ${item.PaymentIndexDesc}`
   }},
 
-  {search: "FailueScope", id: "failure_score", title: "Индекс финансового риска", data: "", func: item => {
+  {search: "FailureScore", id: "failure_score", title: "Индекс финансового риска", data: "", func: item => {
     if(!item) return 'Данные отсутствуют'
     return `${item.FailureScoreValue} / ${item.FailureScoreDesc}`
   }},
@@ -136,7 +136,23 @@ export const fieldsArr = [
 
   {search: "", id: "founders_ul", title: "Юридичекие лица", data: ""},
 
-  {search: "", id: "heads", title: "Руководcтво", data: ""},
+  {search: "PersonsWithoutWarrant", id: "heads", title: "Руководcтво", data: "", func: item => {
+    if(!item) return ''
+    if(Array.isArray(item.Person)) {
+      const successor = []
+      item.map(el =>  {
+        return successor.push(`${el.Name} / ${el.INN} ${el.Status.Text ? `/ ${el.Status.Text}` : ''}`)
+      })
+      return successor
+    } else {
+      const { Person, ActualDate } = item
+      const first_name = Person.FIO.split(' ')[1]
+      const middle_name = Person.FIO.split(' ')[2]
+      const last_name = Person.FIO.split(' ')[0]
+      console.log('first_name | middle_name | last_name', first_name, middle_name, last_name)
+      return [{first_name, middle_name, last_name, ActualDate, inn: Person.INN || 'не найден', position:  Person.Position}]
+    }
+  }},
 
   {search: "", id: "management_companies", title: "Управляющие кампании", data: ""},
 ]
