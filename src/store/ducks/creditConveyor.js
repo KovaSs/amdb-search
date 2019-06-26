@@ -174,9 +174,10 @@ const loadCompanyInfoSaga = function * () {
       })
   
       const data = res.data
+      console.log('RES | first update | ', data)
       const store = state => state[moduleName].get('companyResponse')
       const companyResponse = yield select(store)
-      const updatedData = yield trasform._get_company_info_companySource(companyResponse, data.Data.Report)
+      const updatedData = yield trasform._get_company_info_companySource(companyResponse, data)
   
       yield put({
         type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,

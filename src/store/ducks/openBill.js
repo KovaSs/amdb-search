@@ -189,13 +189,12 @@ const loadCompanyInfoSaga = function * () {
           throw new TypeError("Данные о кампании не обновлены!")
         })
       })
-  
+
       const data = res.data
-      // const data = JSON.parse(res.data)
       console.log('RES | first update | ', data)
       const store = state => state[moduleName].get('companyResponse')
       const companyResponse = yield select(store)
-      const updatedData = yield trasform._get_company_info_companySource(companyResponse, data.Data.Report)
+      const updatedData = yield trasform._get_company_info_companySource(companyResponse, data)
   
       yield put({
         type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,
@@ -246,7 +245,7 @@ const loadCompanyPCSaga = function * () {
       console.log('RES | PC update | ', data)
       const store = state => state[moduleName].get('companyResponse')
 
-      if(data.ResultInfo.ResultType === "Data not found") {
+      if(data === null) {
         const companyResponse = yield select(store)
         const updatedData = yield trasform._get_company_info_companySource(companyResponse, { Successor : false, Predecessor: false})
         yield put({
@@ -256,7 +255,7 @@ const loadCompanyPCSaga = function * () {
         })
       } else {
         const companyResponse = yield select(store)
-        const updatedData = yield trasform._get_company_info_companySource(companyResponse, data.Data.Report.Reorganizations)
+        const updatedData = yield trasform._get_company_info_companySource(companyResponse, data.Reorganizations)
         yield put({
           type: LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS,
           reqnum: res.reqnum,

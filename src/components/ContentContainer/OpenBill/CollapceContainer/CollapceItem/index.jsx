@@ -205,16 +205,16 @@ const CollapceItem = props => {
               </Col>
             </Row>
           </Panel>
-          <Panel header="Руководители" key="2" forceRender className="table-info-panel">
+          <Panel header="Связанные лица" key="2" forceRender className="table-info-panel">
             {renderManagment('heads')}
           </Panel>
-          <Panel header="Состав собственников" key="3" forceRender className="table-info-panel">
+          {/* <Panel header="Состав собственников" key="3" forceRender className="table-info-panel">
             {renderManagment('founders_fl')}
             {renderManagment('founders_ul')}
           </Panel>
           <Panel header="Бенефициары" key="4" forceRender className="table-info-panel">
             {renderManagment('befenicials')}
-          </Panel>
+          </Panel> */}
         </Collapse>
       }
     </>
