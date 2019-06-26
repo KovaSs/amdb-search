@@ -190,7 +190,8 @@ const loadCompanyInfoSaga = function * () {
         })
       })
   
-      const data = JSON.parse(res.data)
+      const data = res.data
+      // const data = JSON.parse(res.data)
       console.log('RES | first update | ', data)
       const store = state => state[moduleName].get('companyResponse')
       const companyResponse = yield select(store)
@@ -240,7 +241,8 @@ const loadCompanyPCSaga = function * () {
         })
       })
   
-      const data = JSON.parse(res.data)
+      const data = res.data
+      // const data = JSON.parse(res.data)
       console.log('RES | PC update | ', data)
       const store = state => state[moduleName].get('companyResponse')
 
