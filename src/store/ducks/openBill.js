@@ -11,6 +11,7 @@ export const prefix = `AS-Check/${moduleName}`
 export const ACTION_CHANGE_INN = `${prefix}/ACTION_CHANGE_INN`
 export const LOAD_COMPANY_INFO = `${prefix}/LOAD_COMPANY_INFO`
 export const CLEAR_COMPANY_INFO = `${prefix}/CLEAR_COMPANY_INFO`
+export const GET_IDENTIFY_USER = `${prefix}/GET_IDENTIFY_USER`
 
 export const PC = '_PC'
 export const START = '_START'
@@ -21,7 +22,7 @@ export const FAIL = '_FAIL'
 /** Reducer */
 const ReducerRecord = Record({
   inn: "",
-  reqnum: 1,
+  reqnum: '',
   renderData: false,
   companyResponse: null,
   requestLoading: new Map({
@@ -57,6 +58,7 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
         .setIn(['requestLoading', 'companyMainInfoUpdate'], false)
         .setIn(['errors', 'companyMainInfoUpdate'], false) 
         .set('renderData', true)
+        .set('reqnum', id)
     case LOAD_COMPANY_INFO + UPDATE + FAIL:
       return state
         .setIn(['requestLoading', 'companyMainInfoUpdate'], false)
@@ -65,7 +67,6 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
 
     case LOAD_COMPANY_INFO + PC + UPDATE + START:
       return state
-        .set('reqnum', id)
         .setIn(['requestLoading', 'companyPCUpdate'], true)
         .setIn(['errors', 'companyPCUpdate'], false)    
     case LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS:
@@ -109,15 +110,27 @@ export const clearCompanyInfo = () => {
   }
 }
 
+export const identifyUser = data => {
+  return {
+    type: GET_IDENTIFY_USER,
+    payload: data
+  }
+}
+
 /** Selectors */
 export const companyResSelector = state => state[moduleName].get('companyResponse')
 export const requestLoadingSelector = state => state[moduleName].get('requestLoading').toJS()
 export const renderDataSelector = state => state[moduleName].get('renderData')
+export const reqnumSelector = state => state[moduleName].get('reqnum')
 export const innSelector = state => state[moduleName].get('inn')
 export const errorsSelector = state => state[moduleName].get('errors').toJS()
 
 export const decodedCompanyResponse = createSelector(
   companyResSelector, (companyResponse) =>  companyResponse
+)
+
+export const decodedReqnum = createSelector(
+  reqnumSelector, (reqnum) => reqnum
 )
 
 export const decodedInn = createSelector(
@@ -191,14 +204,14 @@ const loadCompanyInfoSaga = function * () {
       })
 
       const data = res.data
-      console.log('RES | first update | ', data)
+      console.log('RES | first update | ', res)
       const store = state => state[moduleName].get('companyResponse')
       const companyResponse = yield select(store)
       const updatedData = yield trasform._get_company_info_companySource(companyResponse, data)
   
       yield put({
         type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,
-        reqnum: res.reqnum,
+        id: res.reqnum,
         payload: {updatedData},
       })
     } catch (err){
@@ -209,21 +222,74 @@ const loadCompanyInfoSaga = function * () {
   }
 }
 
+const identifyUserSaga = function * () {
+  while(true){
+    const action = yield take(GET_IDENTIFY_USER)
+    const reqnum = state => state[moduleName].get('reqnum')
+    const storeReqnum = yield select(reqnum)
+
+    const api = { 
+      type: 'identify_user',
+      data: {
+        FirstName: action.payload.first_name,
+        MiddleName: action.payload.middle_name,
+        SurName: action.payload.last_name,
+        INN: action.payload.inn,
+        reqnum: storeReqnum
+      },
+    }
+    try {
+      yield put({
+        type: GET_IDENTIFY_USER + START
+      })
+
+      const res = yield call(() => {
+        return fetch(
+          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+          { 
+            method: 'POST',
+            mode: 'cors',
+            credentials: 'include',
+            body : JSON.stringify(api),
+          }
+        )
+        .then(res => {
+          if (res.ok) return res.json()
+          throw new TypeError("Данные о кампании не обновлены!")
+        })
+      })
+  
+      console.log('RES | GET USER INFO | ', res)
+      yield put({
+        type: GET_IDENTIFY_USER + SUCCESS,
+        payload: {res},
+      })
+    } catch (err){
+      yield put({
+        type: GET_IDENTIFY_USER + FAIL,
+      })
+    }
+  }
+}
+
 const loadCompanyPCSaga = function * () {
   while(true){
-    const action = yield take(LOAD_COMPANY_INFO)
+    const action = yield take(LOAD_COMPANY_INFO + UPDATE + SUCCESS)
+    const store = state => state[moduleName].get('companyResponse')
+    const storeInn = yield select(store)
+
     const api = { 
       type: 'get_company_ps',
-      reqnum: 1,
+      reqnum: action.id,
       data: {
-        code: action.inn
+        code: storeInn.inn
       }
     }
     try {
       yield put({
         type: LOAD_COMPANY_INFO + PC + UPDATE + START
       })
-  
+
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -244,13 +310,13 @@ const loadCompanyPCSaga = function * () {
       // const data = JSON.parse(res.data)
       console.log('RES | PC update | ', data)
       const store = state => state[moduleName].get('companyResponse')
-
+      
       if(data === null) {
         const companyResponse = yield select(store)
         const updatedData = yield trasform._get_company_info_companySource(companyResponse, { Successor : false, Predecessor: false})
         yield put({
           type: LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS,
-          reqnum: res.reqnum,
+          // reqnum: res.reqnum,
           payload: {updatedData},
         })
       } else {
@@ -258,7 +324,7 @@ const loadCompanyPCSaga = function * () {
         const updatedData = yield trasform._get_company_info_companySource(companyResponse, data.Reorganizations)
         yield put({
           type: LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS,
-          reqnum: res.reqnum,
+          // reqnum: res.reqnum,
           payload: {updatedData},
         })
       }
@@ -273,7 +339,8 @@ const loadCompanyPCSaga = function * () {
 export const saga = function * () {
   yield all([
     loadCompanyInfoSaga(),
-    loadCompanyPCSaga()
+    loadCompanyPCSaga(),
+    identifyUserSaga()
   ])
 }
 

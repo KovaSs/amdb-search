@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Spin, Col, Row, Switch } from "antd";
 import PropTypes from "prop-types";
-import { decodedCompanyResponse, decodedRequestLoading, decodedRenderData, decodedErrors } from "../../../store/ducks/openBill";
+import { decodedCompanyResponse, decodedRequestLoading, decodedRenderData, decodedErrors, decodedReqnum } from "../../../store/ducks/openBill";
 import CollapceContainer from "./CollapceContainer";
 import SearchCompanyInput from "./SearchCompanyInput";
 import "./open-bill.scss"
@@ -97,7 +97,8 @@ const putStateToProps = state => {
     companyResponse : decodedCompanyResponse(state),
     requestLoading: decodedRequestLoading(state) ,
     renderData: decodedRenderData(state),
-    errors: decodedErrors(state)
+    errors: decodedErrors(state),
+    reqnum: decodedReqnum(state)
   }
 }
 

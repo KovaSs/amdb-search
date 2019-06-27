@@ -147,7 +147,7 @@ const CollapceItem = props => {
         <Panel 
           key={String(key)}
           header={ <RenderLeaderNameHeader {...item} id={id}/> } 
-          extra={btnExtra()}
+          extra={<BtnExtra user={item}/>}
         >
           <div>{`ФИО: ${last_name} ${first_name} ${middle_name}`}</div>
           <div>{`ИНН: ${inn}`}</div>
@@ -162,17 +162,23 @@ const CollapceItem = props => {
         <Panel 
           key={String(key)}
           header={ `${name}` } 
-          extra={btnExtra()}
+          extra={<BtnExtra user={item}/>}
         >
           <div>{`Название: ${full_name || name}`}</div>
           <div>{`ИНН: ${inn}`}</div>
         </Panel>
       )
-    } 
+    }
 
-    const btnExtra = () => (
-      <Icon title="История" className='heads-search-btn' type="file-search" onClick={ e => e.stopPropagation() }/>
-    )
+    const BtnExtra = ({user}) => {
+      const identifyUserInfo = e => {
+        e.stopPropagation()
+        const { identifyUser } = props
+        identifyUser(user)
+      }
+      return <Icon title="История" className='heads-search-btn' type="file-search" onClick={ (e) => identifyUserInfo(e) }/>
+    }
+    
     
     return heads.data.map( (item, key) => {
       activePanel.push(String(key))

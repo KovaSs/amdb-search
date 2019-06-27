@@ -12,7 +12,7 @@ class SearchCompanyInput extends Component {
 
   componentDidMount() {
     const { clearField } = this.state
-    const { renderData } = this.props
+    const { renderData, reqnum } = this.props
     if(!clearField && renderData) {
       this.setState({
         showInfo: true
@@ -49,7 +49,8 @@ class SearchCompanyInput extends Component {
         MiddleName: "Ивановна",
         SurName: "Масютина",
         INN: "670700894121",
-      }
+      },
+      reqnum: reqnum
     }
   
     fetch(

@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from "react-redux";
-import { decodedRequestLoading, decodedMainCompanySource, decodedRiskSource, decodedManagementSource } from "../../../../store/ducks/openBill";
+import { decodedRequestLoading, decodedMainCompanySource, decodedRiskSource, decodedManagementSource, identifyUser } from "../../../../store/ducks/openBill";
 import { CollapceContainer } from "./CollapceContainer";
 
 const Container = props => <CollapceContainer {...props}/>
@@ -14,4 +14,8 @@ const putStateToProps = state => {
   }
 }
 
-export default connect(putStateToProps)(Container)
+const putActionsToProps =  {
+  identifyUser
+}
+
+export default connect(putStateToProps, putActionsToProps)(Container)
