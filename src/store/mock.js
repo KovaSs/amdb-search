@@ -13,6 +13,7 @@ export const companyRes = {
   "successors": "",
   "capital": "",
   "full_name": "",
+  "leaders_list": "",
   "inn": "",
   "name": '',
   "okved": "",

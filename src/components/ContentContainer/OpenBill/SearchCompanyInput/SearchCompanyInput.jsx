@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Row, Col, Form, Input, notification, Button } from "antd"
+// import { apiRequest } from "../../../../services/requestAPI"
 import MainCompanyInfo from "./MainCompanyInfo"
 import "./search-company.scss"
 
@@ -40,27 +41,36 @@ class SearchCompanyInput extends Component {
       e.preventDefault();
     }
 
-    // const api = { 
-    //     type: 'get_company_ps',
-    //     reqnum: 1,
-    //     data : {
-    //       code: this.props.form.setFieldsValue.__reactBoundContext.instances.data.props.value
-    //     }
-    //   }
+    /*
+    const api = { 
+      type: 'identify_user',
+      data: {
+        FirstName: "Жанна",
+        MiddleName: "Ивановна",
+        SurName: "Масютина",
+        INN: "670700894121",
+      }
+    }
   
-    //   fetch(`/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify(api)}`, {
-    //     mode: 'cors',
-    //     credentials: 'include',
-    //   })
-    //   .then(res => res.json())
-    //   .then(res => {
-    //     console.log('res | PC', res)
-    //     console.log('res | PC', JSON.parse(res.data))
-    //   })
-    //   .catch(err => console.log('err', err))
+    fetch(
+      `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify(api),
+      })
+      .then(res => res.json())
+      .then(res => {
+        console.log('res | PC', res)
+        console.log('res | PC', JSON.parse(res.data))
+      })
+      .catch(err => console.log('err', err))
+      */
 
     !showInfo && this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
+        // apiRequest.getPostIdentifyUser()
         loadCompanyInfo(values.data)
         this.changeValue(values.data)
       }

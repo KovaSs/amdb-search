@@ -139,20 +139,44 @@ export const fieldsArr = [
   {search: "PersonsWithoutWarrant", id: "heads", title: "Руководители", data: "", func: item => {
     if(!item) return ''
     if(Array.isArray(item.Person)) {
-      const successor = []
-      item.map(el =>  {
-        return successor.push(`${el.Name} / ${el.INN} ${el.Status.Text ? `/ ${el.Status.Text}` : ''}`)
+      const heads = []
+      item.Person.map(el =>  {
+        const { Person, ActualDate, Person: {Position} } = el
+        const first_name = Person.FIO.split(' ')[1]
+        const middle_name = Person.FIO.split(' ')[2]
+        const last_name = Person.FIO.split(' ')[0]
+        return heads.push({first_name, middle_name, last_name, ActualDate, inn: Person.INN || 'не найден', position: Position.charAt(0).toUpperCase()+Position.substr(1).toLowerCase()})
       })
-      return successor
+      return heads
     } else {
-      const { Person, ActualDate } = item
+      const { Person, ActualDate, Person: {Position} } = item
       const first_name = Person.FIO.split(' ')[1]
       const middle_name = Person.FIO.split(' ')[2]
       const last_name = Person.FIO.split(' ')[0]
-      console.log('first_name | middle_name | last_name', first_name, middle_name, last_name)
-      return [{first_name, middle_name, last_name, ActualDate, inn: Person.INN || 'не найден', position:  Person.Position}]
+      return [{first_name, middle_name, last_name, ActualDate, inn: Person.INN || 'не найден', position: Position.charAt(0).toUpperCase()+Position.substr(1).toLowerCase()}]
     }
   }},
 
   {search: "", id: "management_companies", title: "Управляющие кампании", data: ""},
+
+  {search: "LeaderList", id: "leaders_list", title: "Состав руководителей", data: "", func: item => {
+    if(!item) return ''
+    if(Array.isArray(item.Leader)) {
+      const heads = []
+      item.Leader.map(elem =>  {
+        const { ActualDate, FIO, INN, Position } = elem
+        const first_name = FIO.split(' ')[1]
+        const middle_name = FIO.split(' ')[2]
+        const last_name = FIO.split(' ')[0]
+        return heads.push({first_name, middle_name, last_name, ActualDate, inn: INN || 'не найден', position: Position.charAt(0).toUpperCase()+Position.substr(1).toLowerCase()})
+      })
+      return heads
+    } else {
+      const { ActualDate, FIO, INN, Position } = item.Leader
+      const first_name = FIO.split(' ')[1]
+      const middle_name = FIO.split(' ')[2]
+      const last_name = FIO.split(' ')[0]
+      return [{first_name, middle_name, last_name, ActualDate, inn: INN || 'не найден', position: Position.charAt(0).toUpperCase()+Position.substr(1).toLowerCase()}]
+    }
+  }}
 ]

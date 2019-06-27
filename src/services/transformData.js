@@ -103,6 +103,7 @@ class TransformData {
       item.id === "founders_fl" || 
       item.id === "founders_ul" || 
       item.id === "heads"  || 
+      item.id === "leaders_list"  || 
       item.id === "management_companies"))
     return filteredManagementInfo
   }

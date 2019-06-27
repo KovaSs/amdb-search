@@ -149,8 +149,8 @@ export const decodedRiskSource = createSelector(
 
 export const decodedManagementSource = createSelector(
   companyResSelector, (companyResponse) => {
-    const { heads, management_companies, founders_fl, founders_ul, befenicials } = companyResponse
-    const managementSource = { heads, management_companies, founders_fl, founders_ul, befenicials }
+    const { heads, management_companies, founders_fl, founders_ul, befenicials, leaders_list } = companyResponse
+    const managementSource = { heads, management_companies, founders_fl, founders_ul, befenicials, leaders_list }
     return managementSource
   }
 )

@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment'
 import { Collapse, Col, Row, Icon, Table, Descriptions, Spin } from 'antd';
 import { trasform } from "../../../../../services/transformData";
 
@@ -90,6 +91,7 @@ const CollapceItem = props => {
       item.id !== "founders_fl" && 
       item.id !== "founders_ul" && 
       item.id !== "heads"  && 
+      item.id !== "leaders_list"  && 
       item.id !== "management_companies" && 
       item.id !== "name"  && 
       item.id !== "fns"  && 
@@ -121,17 +123,30 @@ const CollapceItem = props => {
     }
   })
 
+  /** Рендеринг header title физического лица */
+  const RenderLeaderNameHeader = props => {
+    const { first_name, last_name, middle_name, position, ActualDate, id } = props
+    return (
+      <div className="leader-name-header">
+        <label className={`leader-name-header_fio${ id==='leaders_list' ? "_history" : ''}`}>{`${last_name} ${first_name} ${middle_name}`}</label>
+        <label className="leader-name-header_position">{`${position}`}</label>
+        <label className="leader-name-header_date">{`${moment(ActualDate).format('DD.MM.YYYY')}`}</label>
+        { id==='leaders_list' && <label className="leader-name-header_history">История</label> }
+      </div>
+    )
+  }
+
   /** Вывод данных об руководстве */
   const renderManagment = searchData => {
     const activePanel = [];
     const heads = managementInfo.find( item => item.id === `${searchData}`);
 
-    const _fouldersFl = ( item, key ) => {
+    const _fouldersFl = (item, key, id) => {
       const { first_name, last_name, middle_name, inn, position} = item
       return (
         <Panel 
           key={String(key)}
-          header={ `${last_name} ${first_name} ${middle_name}` } 
+          header={ <RenderLeaderNameHeader {...item} id={id}/> } 
           extra={btnExtra()}
         >
           <div>{`ФИО: ${last_name} ${first_name} ${middle_name}`}</div>
@@ -168,6 +183,8 @@ const CollapceItem = props => {
         && managementInfo.find( item => item.id === `founders_fl`).data.find( el =>  el.inn === item.inn)
         && managementInfo.find( item => item.id === `heads`).data.find( el =>  el.inn === item.inn)) {
         activePanel.pop()
+      } else if(searchData === 'leaders_list'){
+        activePanel.pop()
       }
       return (
         <Collapse 
@@ -179,7 +196,7 @@ const CollapceItem = props => {
           expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"} />}
         >
           { item.name && _fouldersUl(item, key) }
-          { item.middle_name && _fouldersFl(item, key) }
+          { item.middle_name && _fouldersFl(item, key, searchData) }
         </Collapse> 
       )
     })
@@ -207,6 +224,7 @@ const CollapceItem = props => {
           </Panel>
           <Panel header="Связанные лица" key="2" forceRender className="table-info-panel">
             {renderManagment('heads')}
+            {renderManagment('leaders_list')}
           </Panel>
           {/* <Panel header="Состав собственников" key="3" forceRender className="table-info-panel">
             {renderManagment('founders_fl')}

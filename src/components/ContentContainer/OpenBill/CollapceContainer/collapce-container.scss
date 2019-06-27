@@ -4,6 +4,27 @@
     // background-color: #24bbf718;
     padding: 8px 16px !important;
     background-color: #a3d3ff13;
+    .leader-name-header {
+      label {
+        cursor: pointer;
+        margin-right: 1rem;
+      }
+      &_fio {
+        &_history {
+          color: #7b7b7b;
+        }
+      }
+      &_position {
+        color: #7b7b7b;
+        font-size: 0.9rem;
+        font-style: italic;
+      }
+      &_date, &_history {
+        color: #7b7b7b;
+        font-size: 0.83rem;
+        font-style: italic;
+      }
+    }
   }
   .ant-descriptions-item-label {
     -moz-user-select: none; /* Mozilla Firefox */
