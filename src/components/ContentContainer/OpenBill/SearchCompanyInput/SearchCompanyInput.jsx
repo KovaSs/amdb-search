@@ -12,7 +12,7 @@ class SearchCompanyInput extends Component {
 
   componentDidMount() {
     const { clearField } = this.state
-    const { renderData, reqnum } = this.props
+    const { renderData } = this.props
     if(!clearField && renderData) {
       this.setState({
         showInfo: true

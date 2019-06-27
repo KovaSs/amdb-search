@@ -1,30 +1,32 @@
 import React, { Component } from 'react';
 import { Col, Row, Badge, Avatar, Icon, Button } from "antd";
 import { connect } from "react-redux";
-import DrawerContainer from "../../DrawerContainer";
+import toggleDrawer from "../../DrawerContainer";
+import RiskInfoDrawer from "../../DrawerContainer/RiskInfoDrawer";
+import CompanyHistoryInfoDrawer from "../../DrawerContainer/CompanyHistoryInfoDrawer";
 import "./main-organisation-info.scss";
 
 class MainCompanyInfo extends Component {
-  state = {
-    showRisk: false,
-    showHistory: false
-  }
+  // state = {
+  //   showRisk: false,
+  //   showHistory: false
+  // }
 
-  showDrawer = () => {
-    this.setState({
-      showRisk: true
-    });
-  };
+  // showDrawer = drawer => {
+  //   this.setState({
+  //     [drawer]: true
+  //   });
+  // };
 
-  onClose = () => {
-    this.setState({
-      showRisk: false
-    });
-  };
+  // onClose = drawer => {
+  //   this.setState({
+  //     [drawer]: false
+  //   });
+  // };
 
   render() {
     const { companyResponse, companyResponse: { name, full_name, inn, ogrn, fns, sanctions, isponlit_proizvodstva } } = this.props;
-    const { showRisk } = this.state;
+    // const { showRisk, showHistory } = this.state;
     return (
       <>
         <Col span={20}>
@@ -52,19 +54,22 @@ class MainCompanyInfo extends Component {
             </Col>
             <Col span={3} style={{textAlign : "center"}}>
               <Badge count={fns.length + sanctions.length + isponlit_proizvodstva.length} style={{ marginRight: "1rem" }}>
-                <Button onClick={this.showDrawer} title="Факторы риска" style={{ marginRight: "1rem" }}>
+                <Button onClick={() => this.showDrawer('showRisk')} title="Факторы риска" style={{ marginRight: "1rem" }}>
                   <Icon type="warning" style={{ color: "#fd0e0efd" }} />
                 </Button>
               </Badge>
               <Badge count={0}>
-                <Button title="История">
+                <Button onClick={() => this.showDrawer('showHistory')} title="История">
                   <Icon type="file-search" style={{ color: "#0e75fdfd" }} />
                 </Button>
               </Badge>
             </Col>
           </Row>
         </Col>
-        <DrawerContainer visible={showRisk} onClose={this.onClose} companyResponse={companyResponse}/>
+        {toggleDrawer(<RiskInfoDrawer visible={"showRisk"} companyResponse={companyResponse}/>)}
+        {toggleDrawer(<CompanyHistoryInfoDrawer visible={"showHistory"} companyResponse={companyResponse}/>)}
+        {/* <RiskInfoDrawer visible={showRisk} onClose={() => this.onClose('showRisk')} companyResponse={companyResponse}/>
+        <CompanyHistoryInfoDrawer visible={showHistory} onClose={() => this.onClose('showHistory')} companyResponse={companyResponse}/> */}
       </>
     )
   }
