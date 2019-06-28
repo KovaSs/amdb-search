@@ -36,6 +36,7 @@ class CreditConveyor extends Component {
     this.setState({
       showTable: true
     })
+    document.title = "AC - Проверка | Кредитный конвеер"
   }
 
   toggleVersion = () => {
@@ -64,7 +65,7 @@ class CreditConveyor extends Component {
             <Spin spinning={loading} size="large" tip="Идет поиск данных">
               <div className="search-result-table">
                 <div>Кредитный конвеер:</div>
-                <div>Для поиска информации об организации введите ИНН или ОГРН в поисковую строку</div>
+                <div>Для поиска информации об организации введите ИНН в поисковую строку</div>
               </div>
             </Spin>
           }

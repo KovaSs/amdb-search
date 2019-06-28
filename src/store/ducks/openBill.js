@@ -306,7 +306,6 @@ const loadCompanyPCSaga = function * () {
       })
   
       const data = res.data
-      // const data = JSON.parse(res.data)
       console.log('RES | PC update | ', data)
       const store = state => state[moduleName].get('companyResponse')
       

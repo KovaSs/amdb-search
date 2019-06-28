@@ -102,7 +102,7 @@ class SearchCompanyInput extends Component {
               ],
             })(
               <Search 
-                placeholder="Введите ИНН или ОГРН"
+                placeholder="Введите ИНН"
                 enterButton={
                   showInfo ? 
                   <Button className="search-btn" type="default" disabled={!showInfo}> Очистить </Button> : 

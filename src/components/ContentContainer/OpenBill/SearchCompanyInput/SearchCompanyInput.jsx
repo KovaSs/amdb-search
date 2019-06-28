@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react'
 import { Row, Col, Form, Input, notification, Button } from "antd"
-// import { apiRequest } from "../../../../services/requestAPI"
 import MainCompanyInfo from "./MainCompanyInfo"
 import "./search-company.scss"
 
@@ -38,37 +37,8 @@ class SearchCompanyInput extends PureComponent {
       e.preventDefault();
     }
 
-    /*
-    const api = { 
-      type: 'identify_user',
-      data: {
-        FirstName: "Жанна",
-        MiddleName: "Ивановна",
-        SurName: "Масютина",
-        INN: "670700894121",
-      },
-      reqnum: reqnum
-    }
-  
-    fetch(
-      `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
-      { 
-        method: 'POST',
-        mode: 'cors',
-        credentials: 'include',
-        body : JSON.stringify(api),
-      })
-      .then(res => res.json())
-      .then(res => {
-        console.log('res | PC', res)
-        console.log('res | PC', JSON.parse(res.data))
-      })
-      .catch(err => console.log('err', err))
-      */
-
     !showInfo && this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        // apiRequest.getPostIdentifyUser()
         loadCompanyInfo(values.data)
         this.changeValue(values.data)
       }
@@ -110,7 +80,7 @@ class SearchCompanyInput extends PureComponent {
               ],
             })(
               <Search 
-                placeholder="Введите ИНН или ОГРН"
+                placeholder="Введите ИНН"
                 enterButton={
                   showInfo ? 
                   <Button className="search-btn" type="default" disabled={!showInfo}> Очистить </Button> : 
@@ -130,7 +100,6 @@ class SearchCompanyInput extends PureComponent {
   }
 
   openNotification = err => {
-    console.log('err', err)
     const _errMessage = (err, message) => {
       const key = err;
       const confirmBtn = (

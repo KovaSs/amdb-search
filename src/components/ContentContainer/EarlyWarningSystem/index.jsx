@@ -2,6 +2,11 @@ import React, { Component } from 'react'
 import "./early-warning-system.scss"
 
 class EarlyWarningSystem extends Component {
+
+  componentDidMount() {
+    document.title = "AC - Проверка | Система раннего предупреждения"
+  }
+
   render() {
     return(
       <div>
