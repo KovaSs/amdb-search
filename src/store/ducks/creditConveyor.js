@@ -21,7 +21,7 @@ export const FAIL = '_FAIL'
 /** Reducer */
 const ReducerRecord = Record({
   inn: "",
-  reqnum: 1,
+  reqnum: null,
   renderData: false,
   companyResponse: null,
   requestLoading: new Map({
@@ -46,22 +46,23 @@ const creditConveyorReducer = (state = new ReducerRecord(), action) => {
       return state
         .set('companyResponse', payload.company)
 
-    case LOAD_COMPANY_INFO + UPDATE + START:
-      return state
-      .set('reqnum', id)
-      .setIn(['requestLoading', 'companyMainInfoUpdate'], true)
-      .setIn(['errors', 'companyMainInfoUpdate'], false)      
-    case LOAD_COMPANY_INFO + UPDATE + SUCCESS:
-      return state
-        .set('companyResponse', payload.updatedData)
-        .setIn(['requestLoading', 'companyMainInfoUpdate'], false)
-        .setIn(['errors', 'companyMainInfoUpdate'], false) 
-        .set('renderData', true)
-    case LOAD_COMPANY_INFO + UPDATE + FAIL:
-      return state
-        .setIn(['requestLoading', 'companyMainInfoUpdate'], false)
-        .setIn(['errors', 'companyMainInfoUpdate'], true)
-        .set('renderData', false)
+      case LOAD_COMPANY_INFO + UPDATE + START:
+        return state
+        .set('reqnum', id)
+        .setIn(['requestLoading', 'companyMainInfoUpdate'], true)
+        .setIn(['errors', 'companyMainInfoUpdate'], false)      
+      case LOAD_COMPANY_INFO + UPDATE + SUCCESS:
+        return state
+          .set('companyResponse', payload.updatedData)
+          .setIn(['requestLoading', 'companyMainInfoUpdate'], false)
+          .setIn(['errors', 'companyMainInfoUpdate'], false) 
+          .set('renderData', true)
+          .set('reqnum', id)
+      case LOAD_COMPANY_INFO + UPDATE + FAIL:
+        return state
+          .setIn(['requestLoading', 'companyMainInfoUpdate'], false)
+          .setIn(['errors', 'companyMainInfoUpdate'], true)
+          .set('renderData', false)
 
     case CLEAR_COMPANY_INFO:
       return new ReducerRecord()
@@ -172,16 +173,16 @@ const loadCompanyInfoSaga = function * () {
           throw new TypeError("Данные о кампании не обновлены!")
         })
       })
-  
+
       const data = res.data
-      console.log('RES | first update | ', data)
+      console.log('RES | first update | ', res)
       const store = state => state[moduleName].get('companyResponse')
       const companyResponse = yield select(store)
       const updatedData = yield trasform._get_company_info_companySource(companyResponse, data)
   
       yield put({
         type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,
-        reqnum: res.reqnum,
+        id: res.reqnum,
         payload: {updatedData},
       })
     } catch (err){
