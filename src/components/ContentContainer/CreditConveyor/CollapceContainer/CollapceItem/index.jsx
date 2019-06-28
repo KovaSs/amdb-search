@@ -95,6 +95,7 @@ const CollapceItem = props => {
       item.id !== "inn"  && 
       item.id !== "ogrn"  && 
       item.id !== "isponlit_proizvodstva"  && 
+      item.id !== "leaders_list"  && 
       item.id !== "full_name"
   }).map(item => {
     const { Item : DescriptionsItem } = Descriptions;

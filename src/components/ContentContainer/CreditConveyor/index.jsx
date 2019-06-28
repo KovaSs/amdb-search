@@ -15,7 +15,8 @@ class CreditConveyor extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { companyResponse } = this.props
-    nextProps.searchLoading === true ?
+
+    nextProps.requestLoading.companyMainInfoUpdate === true ?
       this.setState({
         loading: true
       }) :
@@ -59,7 +60,7 @@ class CreditConveyor extends Component {
         <Col span={24}>
           <SearchCompanyInput toHideTableInfo={this.toHideTableInfo} />
           { showTable && renderData ?
-            <CollapceContainer  loading={loading}/> : 
+            <CollapceContainer /> : 
             <Spin spinning={loading} size="large" tip="Идет поиск данных">
               <div className="search-result-table">
                 <div>Кредитный конвеер:</div>
@@ -89,7 +90,7 @@ class CreditConveyor extends Component {
 const putStateToProps = state => {
   return {
     companyResponse: decodedCompanyResponse(state),
-    searchLoading: decodedRequestLoading(state),
+    requestLoading: decodedRequestLoading(state),
     renderData: decodedRenderData(state),
     errors: decodedErrors(state)
   }

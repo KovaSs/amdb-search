@@ -5,16 +5,12 @@ import "./collapce-container.scss";
 
 
 const CollapceContainer = props => {
-  /** Сортировка полученных данных по категориям */
-  const { companyResponse : { heads, management_companies, founders_fl, founders_ul, befenicials, arbiter, fns, inn, ogrn, name, full_name, sanctions, isponlit_proizvodstva, ...companySource}} = props
-  const { loading } = props
-  const managementSource = { heads, management_companies, founders_fl, founders_ul, befenicials }
-  const riskSource = { arbiter, fns, sanctions, isponlit_proizvodstva }
+  const { requestLoading : {companyMainInfo} } = props
   return (
     <Row className="table-info">
       <Col span={24}>
-        <Spin spinning={loading} size="large" tip="Идет поиск данных" >
-          <CollapceItem companySource={companySource} riskSource={riskSource} managementSource={managementSource}/>
+        <Spin spinning={companyMainInfo} size="large" tip="Идет поиск данных" >
+          <CollapceItem {...props}/>
         </Spin>
       </Col>
     </Row>
