@@ -1,22 +1,27 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 
 export default OriginalComponent =>
-class DrawerContainer extends Component {
+class DrawerContainer extends PureComponent {
   state = {
-    showRisk: false,
-    showHistory: false
+    showDrawer: false
   }
 
-  showDrawer = drawer => () =>  this.setState({ [drawer]: true });
-  onClose = drawer => () =>  this.setState({ [drawer]: false });
+  showDrawer =  () =>  this.setState({ showDrawer: true })
+  onClose =  () =>  this.setState({ showDrawer: false })
+
+  componentDidUpdate(prevProps) {
+    const { toggleDrawer } = this.props
+    if(toggleDrawer !== prevProps.toggleDrawer )  return this.showDrawer()
+  }
 
   render() {
+    const {showDrawer} = this.state
     return  (
       <OriginalComponent 
-        visible={true}
-        {...this.props}
+        visible={showDrawer}
         onClose={this.onClose}
         showDrawer={this.showDrawer}
+        {...this.props}
       /> 
     )
   }

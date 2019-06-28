@@ -28,7 +28,6 @@ class SearchCompanyInput extends PureComponent {
         clearField : false
       })
     }
-
     this.openNotification(errors)
   }
   

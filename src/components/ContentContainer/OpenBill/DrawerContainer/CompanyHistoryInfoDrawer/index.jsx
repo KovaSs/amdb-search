@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment'
 import { Drawer, Collapse, Icon } from "antd";
+import toggleDrawer from '../index'
 import './drawer-history.scss'
 
 const CompanyHistoryInfoDrawer = props => {
@@ -104,4 +105,4 @@ const CompanyHistoryInfoDrawer = props => {
   );
 }
 
-export default CompanyHistoryInfoDrawer
+export default toggleDrawer(CompanyHistoryInfoDrawer)

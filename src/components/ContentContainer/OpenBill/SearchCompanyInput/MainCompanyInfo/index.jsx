@@ -1,32 +1,26 @@
 import React, { Component } from 'react';
 import { Col, Row, Badge, Avatar, Icon, Button } from "antd";
 import { connect } from "react-redux";
-// import toggleDrawer from "../../DrawerContainer";
 import RiskInfoDrawer from "../../DrawerContainer/RiskInfoDrawer";
 import CompanyHistoryInfoDrawer from "../../DrawerContainer/CompanyHistoryInfoDrawer";
+import { decodedCompanyResponse } from "../../../../../store/ducks/openBill";
 import "./main-organisation-info.scss";
 
 class MainCompanyInfo extends Component {
-  // state = {
-  //   showRisk: false,
-  //   showHistory: false
-  // }
+  state = {
+    showRisk: false,
+    showHistory: false
+  }
 
-  // showDrawer = drawer => {
-  //   this.setState({
-  //     [drawer]: true
-  //   });
-  // };
-
-  // onClose = drawer => {
-  //   this.setState({
-  //     [drawer]: false
-  //   });
-  // };
+  showDrawer = drawer => {
+    this.setState({
+      [drawer]: new Date()
+    });
+  };
 
   render() {
     const { companyResponse, companyResponse: { name, full_name, inn, ogrn, fns, sanctions, isponlit_proizvodstva, leaders_list } } = this.props;
-    // const { showRisk, showHistory } = this.state;
+    const { showRisk, showHistory } = this.state
     return (
       <>
         <Col span={20}>
@@ -74,17 +68,16 @@ class MainCompanyInfo extends Component {
             </Col>
           </Row>
         </Col>
-        <RiskInfoDrawer companyResponse={companyResponse}/> 
-        <CompanyHistoryInfoDrawer headHistory={leaders_list}/>
+        <RiskInfoDrawer toggleDrawer={showRisk} companyResponse={companyResponse}/> 
+        <CompanyHistoryInfoDrawer toggleDrawer={showHistory} headHistory={leaders_list}/>
       </>
     )
   }
 }
 
 const putStateToProps = state => {
-  const {openBill : { companyResponse }} = state;
   return {
-    companyResponse
+    companyResponse: decodedCompanyResponse(state),
   }
 }
 
