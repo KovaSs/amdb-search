@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Row, Col, Form, Input, notification, Button } from "antd"
 // import { apiRequest } from "../../../../services/requestAPI"
 import MainCompanyInfo from "./MainCompanyInfo"
 import "./search-company.scss"
 
-class SearchCompanyInput extends Component {
+class SearchCompanyInput extends PureComponent {
   state = {
     showInfo : false,
     clearField : false
@@ -21,7 +21,7 @@ class SearchCompanyInput extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { companyResponse, renderData } = this.props
+    const { companyResponse, renderData, errors } = this.props
     if(companyResponse !== prevProps.companyResponse && renderData) {
       this.setState({
         showInfo: true,
@@ -29,9 +29,7 @@ class SearchCompanyInput extends Component {
       })
     }
 
-    prevProps.errors.companyMainInfo && this.openNotification('companyMainInfo')
-    prevProps.errors.companyMainInfoUpdate && this.openNotification('companyMainInfoUpdate')
-    prevProps.errors.companyPCUpdate && this.openNotification('companyPCUpdate')
+    this.openNotification(errors)
   }
   
   handleSubmit = e => {  
@@ -133,23 +131,29 @@ class SearchCompanyInput extends Component {
   }
 
   openNotification = err => {
-    const close = () => console.log( `Notification ${err} was closed. Either the close button was clicked or duration time elapsed.`)
+    console.log('err', err)
+    const _errMessage = (err, message) => {
+      const key = err;
+      const confirmBtn = (
+        <Button type="primary" size="small" onClick={() => notification.close(key)}>
+          Повторить запрос
+        </Button>
+      );
+      const _close = () => console.log( `Notification ${err} was closed. Either the close button was clicked or duration time elapsed.`)
+      notification['error']({
+        message: `Ошибка получения данных`,
+        description: `Произошла ошибка при выполнении запроса ${message}`,
+        confirmBtn,
+        duration: 4,
+        // btn: confirmBtn,
+        key,
+        onClose: _close,
+      });
+    }
 
-    const key = err;
-    const confirmBtn = (
-      <Button type="primary" size="small" onClick={() => notification.close(key)}>
-        Повторить запрос
-      </Button>
-    );
-    notification['error']({
-      message: `Ошибка получения данных`,
-      description: `Произошла ошибка при выполнении запроса ${err}`,
-      confirmBtn,
-      duration: 4,
-      // btn: confirmBtn,
-      key,
-      onClose: close,
-    });
+    if(err.companyMainInfoUpdate) return _errMessage("companyMainInfoUpdate","основных данных о кампании")
+    err.companyPCUpdate && _errMessage("companyPCUpdate","данных о приемниках / предшедственниках")
+
   };
 
   render() {
