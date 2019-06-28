@@ -3,7 +3,7 @@ import moment from 'moment'
 import { Drawer, Collapse, Icon } from "antd";
 import './drawer-history.scss'
 
-const DrawerContainer = props => {
+const CompanyHistoryInfoDrawer = props => {
   const {onClose, visible, headHistory} = props
   const { Panel } = Collapse;
 
@@ -104,4 +104,4 @@ const DrawerContainer = props => {
   );
 }
 
-export default DrawerContainer
+export default CompanyHistoryInfoDrawer

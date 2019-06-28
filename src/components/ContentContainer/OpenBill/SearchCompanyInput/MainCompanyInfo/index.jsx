@@ -7,26 +7,26 @@ import CompanyHistoryInfoDrawer from "../../DrawerContainer/CompanyHistoryInfoDr
 import "./main-organisation-info.scss";
 
 class MainCompanyInfo extends Component {
-  state = {
-    showRisk: false,
-    showHistory: false
-  }
+  // state = {
+  //   showRisk: false,
+  //   showHistory: false
+  // }
 
-  showDrawer = drawer => {
-    this.setState({
-      [drawer]: true
-    });
-  };
+  // showDrawer = drawer => {
+  //   this.setState({
+  //     [drawer]: true
+  //   });
+  // };
 
-  onClose = drawer => {
-    this.setState({
-      [drawer]: false
-    });
-  };
+  // onClose = drawer => {
+  //   this.setState({
+  //     [drawer]: false
+  //   });
+  // };
 
   render() {
     const { companyResponse, companyResponse: { name, full_name, inn, ogrn, fns, sanctions, isponlit_proizvodstva, leaders_list } } = this.props;
-    const { showRisk, showHistory } = this.state;
+    // const { showRisk, showHistory } = this.state;
     return (
       <>
         <Col span={20}>
@@ -74,8 +74,8 @@ class MainCompanyInfo extends Component {
             </Col>
           </Row>
         </Col>
-        <RiskInfoDrawer visible={showRisk} onClose={() => this.onClose('showRisk')} companyResponse={companyResponse}/> 
-        <CompanyHistoryInfoDrawer visible={showHistory} onClose={() => this.onClose('showHistory')} headHistory={leaders_list}/>
+        <RiskInfoDrawer companyResponse={companyResponse}/> 
+        <CompanyHistoryInfoDrawer headHistory={leaders_list}/>
       </>
     )
   }
