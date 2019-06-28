@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 export default OriginalComponent =>
 class DrawerContainer extends Component {
   state = {
-    showRisk: false,
+    showRisk: true,
     showHistory: false
   }
 
@@ -13,6 +13,7 @@ class DrawerContainer extends Component {
   render() {
     return  (
       <OriginalComponent 
+        visible={true}
         {...this.props}
         onClose={this.onClose}
         showDrawer={this.showDrawer}

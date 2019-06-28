@@ -1,32 +1,32 @@
 import React, { Component } from 'react';
 import { Col, Row, Badge, Avatar, Icon, Button } from "antd";
 import { connect } from "react-redux";
-import toggleDrawer from "../../DrawerContainer";
+// import toggleDrawer from "../../DrawerContainer";
 import RiskInfoDrawer from "../../DrawerContainer/RiskInfoDrawer";
 import CompanyHistoryInfoDrawer from "../../DrawerContainer/CompanyHistoryInfoDrawer";
 import "./main-organisation-info.scss";
 
 class MainCompanyInfo extends Component {
-  // state = {
-  //   showRisk: false,
-  //   showHistory: false
-  // }
+  state = {
+    showRisk: false,
+    showHistory: false
+  }
 
-  // showDrawer = drawer => {
-  //   this.setState({
-  //     [drawer]: true
-  //   });
-  // };
+  showDrawer = drawer => {
+    this.setState({
+      [drawer]: true
+    });
+  };
 
-  // onClose = drawer => {
-  //   this.setState({
-  //     [drawer]: false
-  //   });
-  // };
+  onClose = drawer => {
+    this.setState({
+      [drawer]: false
+    });
+  };
 
   render() {
-    const { companyResponse, companyResponse: { name, full_name, inn, ogrn, fns, sanctions, isponlit_proizvodstva } } = this.props;
-    // const { showRisk, showHistory } = this.state;
+    const { companyResponse, companyResponse: { name, full_name, inn, ogrn, fns, sanctions, isponlit_proizvodstva, leaders_list } } = this.props;
+    const { showRisk, showHistory } = this.state;
     return (
       <>
         <Col span={20}>
@@ -58,7 +58,7 @@ class MainCompanyInfo extends Component {
                   <Icon type="warning" style={{ color: "#fd0e0efd" }} />
                 </Button>
               </Badge>
-              <Badge count={0}>
+              <Badge count={leaders_list.length}>
                 <Button onClick={() => this.showDrawer('showHistory')} title="История">
                   <Icon type="file-search" style={{ color: "#0e75fdfd" }} />
                 </Button>
@@ -66,10 +66,10 @@ class MainCompanyInfo extends Component {
             </Col>
           </Row>
         </Col>
-        {toggleDrawer(<RiskInfoDrawer visible={"showRisk"} companyResponse={companyResponse}/>)}
-        {toggleDrawer(<CompanyHistoryInfoDrawer visible={"showHistory"} companyResponse={companyResponse}/>)}
-        {/* <RiskInfoDrawer visible={showRisk} onClose={() => this.onClose('showRisk')} companyResponse={companyResponse}/>
-        <CompanyHistoryInfoDrawer visible={showHistory} onClose={() => this.onClose('showHistory')} companyResponse={companyResponse}/> */}
+        {/* {toggleDrawer(<RiskInfoDrawer visible={showRisk} companyResponse={companyResponse}/>)} */}
+        {/* {toggleDrawer(<CompanyHistoryInfoDrawer visible={showHistory} companyResponse={companyResponse}/>)} */}
+        <RiskInfoDrawer visible={showRisk} onClose={() => this.onClose('showRisk')} companyResponse={companyResponse}/> 
+        <CompanyHistoryInfoDrawer visible={showHistory} onClose={() => this.onClose('showHistory')} headHistory={leaders_list}/>
       </>
     )
   }
