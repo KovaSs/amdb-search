@@ -82,6 +82,7 @@
     }
   }
 
+  /* Кнопка поиска истории */
   .heads-search-btn{
     background-color: #fff;
     padding: 4px 8px;
@@ -98,6 +99,7 @@
     }
   }
 
+  /* Отлючение бордера внизу элементов collapce menu*/
   .managment {
     .ant-collapse-item {
       &:last-child {

@@ -230,7 +230,6 @@ const CollapceItem = props => {
           </Panel>
           <Panel header="Связанные лица" key="2" forceRender className="table-info-panel">
             {renderManagment('heads')}
-            {renderManagment('leaders_list')}
           </Panel>
           {/* <Panel header="Состав собственников" key="3" forceRender className="table-info-panel">
             {renderManagment('founders_fl')}

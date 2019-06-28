@@ -1,0 +1,80 @@
+.drawer-history {
+  /* Стили collapce меню*/
+  .title-description {
+    font-size: 1rem;
+    color: rgba(0,0,0,0.85);
+    line-height: 24px;
+    display: block;
+    margin-bottom: 16;
+  }
+  .ant-collapse-header {
+    padding: 5px 16px !important;
+    background-color: #a3d3ff13;
+    /* Стили описания руководителей*/
+    .leader-name-header {
+      label {
+        cursor: pointer;
+        margin-right: 1rem;
+      }
+      &_fio {
+        margin-left: 1.2rem;
+        &_history {
+          color: #7b7b7b;
+        }
+      }
+      &_position {
+        color: #7b7b7b;
+        font-size: 0.9rem;
+        font-style: italic;
+      }
+      &_date, &_history {
+        color: #7b7b7b;
+        font-size: 0.83rem;
+        font-style: italic;
+      }
+    }
+  }
+
+  /* Стили элементов collapce меню*/
+  .ant-descriptions.bordered.small .ant-descriptions-item-label, .ant-descriptions.bordered.small .ant-descriptions-item-content {
+    padding: 5px;
+  }
+  .ant-table-thead > tr > th, .ant-table-tbody > tr > td {
+    padding: 5px;
+  }
+  .ant-collapse-content > .ant-collapse-content-box {
+    padding: 12px;
+  }
+
+  /* Отключение выделения заголовков */
+  .ant-descriptions-item-label {
+    -moz-user-select: none; /* Mozilla Firefox */
+    -ms-user-select: none; /* Internet Explorer (не поддерживается) */
+    -o-user-select: none; /* Opera Presto (не поддерживается) */
+    -webkit-user-select: none; /* Google Chrome, Opera Next, Safari */
+  }
+
+  /* Кнопка поиска истории */
+  .heads-search-btn{
+    background-color: #fff;
+    padding: 4px 8px;
+    border: 1px solid #d9d9d9;
+    border-radius: 2px;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    color: rgba(14, 117, 253, 0.992);
+    cursor: pointer;
+    transition: 0.5 ease;
+    /* При наведении */
+    &:hover {
+      border: 1px solid rgba(14, 117, 253, 0.992);
+    }
+  }
+  /* Отлючение бордера внизу элементов collapce menu*/
+  .managment {
+    .ant-collapse-item:last-child {
+      border-bottom: none;
+    }
+  }
+}
