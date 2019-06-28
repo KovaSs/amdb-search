@@ -1,6 +1,7 @@
 import React from 'react';
 import { Drawer, Divider, Col, Row } from "antd";
 import { Link } from 'react-router-dom'
+import toggleDrawer from '../index'
 
 const pStyle = {
   fontSize: 16,
@@ -32,96 +33,94 @@ const DescriptionItem = ({ title, content }) => (
   </div>
 );
 
-const DrawerContainer = ({onClose, visible}) => {
+const RiskInfoDrawer = ({onClose, visible}) => {
   return (
-    <div>
-      <Drawer
-        width={640}
-        placement="right"
-        closable={false}
-        onClose={onClose}
-        visible={visible}
-      >
-        <p style={{ ...pStyle, marginBottom: 24 }}>User Profile</p>
-        <p style={pStyle}>Personal</p>
-        <Row>
-          <Col span={12}>
-            <DescriptionItem title="Full Name" content="Lily" />{" "}
-          </Col>
-          <Col span={12}>
-            <DescriptionItem
-              title="Account"
-              content="GpbDesign@example.com"
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col span={12}>
-            <DescriptionItem title="City" content="HangZhou" />
-          </Col>
-          <Col span={12}>
-            <DescriptionItem title="Country" content="China🇨🇳" />
-          </Col>
-        </Row>
-        <Row>
-          <Col span={12}>
-            <DescriptionItem title="Birthday" content="February 2,1900" />
-          </Col>
-          <Col span={12}>
-            <DescriptionItem title="Website" content="-" />
-          </Col>
-        </Row>
-        <Row>
-          <Col span={24}>
-            <DescriptionItem
-              title="Message"
-              content="Make things as simple as possible but no simpler."
-            />
-          </Col>
-        </Row>
-        <Divider />
-        <p style={pStyle}>Company</p>
-        <Row>
-          <Col span={12}>
-            <DescriptionItem title="Position" content="Programmer" />
-          </Col>
-          <Col span={12}>
-            <DescriptionItem title="Responsibilities" content="Coding" />
-          </Col>
-        </Row>
-        <Row>
-          <Col span={12}>
-            <DescriptionItem title="Department" content="AFX" />
-          </Col>
-          <Col span={12}>
-            <DescriptionItem title="Supervisor" content={<Link to="#">Link</Link>} />
-          </Col>
-        </Row>
-        <Row>
-          <Col span={24}>
-            <DescriptionItem
-              title="Skills"
-              content="C / C + +, data structures, software engineering, operating systems, computer networks, databases, compiler theory, computer architecture, Microcomputer Principle and Interface Technology, Computer English, Java, ASP, etc."
-            />
-          </Col>
-        </Row>
-        <Divider />
-        <p style={pStyle}>Contacts</p>
-        <Row>
-          <Col span={12}>
-            <DescriptionItem title="Email" content="GpbDesign@example.com" />
-          </Col>
-          <Col span={12}>
-            <DescriptionItem
-              title="Phone Number"
-              content="+86 181 0000 0000"
-            />
-          </Col>
-        </Row>
-      </Drawer>
-    </div>
+    <Drawer
+      width={640}
+      placement="right"
+      closable={false}
+      onClose={onClose}
+      visible={visible}
+    >
+      <p style={{ ...pStyle, marginBottom: 24 }}>User Profile</p>
+      <p style={pStyle}>Personal</p>
+      <Row>
+        <Col span={12}>
+          <DescriptionItem title="Full Name" content="Lily" />{" "}
+        </Col>
+        <Col span={12}>
+          <DescriptionItem
+            title="Account"
+            content="GpbDesign@example.com"
+          />
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+          <DescriptionItem title="City" content="HangZhou" />
+        </Col>
+        <Col span={12}>
+          <DescriptionItem title="Country" content="China🇨🇳" />
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+          <DescriptionItem title="Birthday" content="February 2,1900" />
+        </Col>
+        <Col span={12}>
+          <DescriptionItem title="Website" content="-" />
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
+          <DescriptionItem
+            title="Message"
+            content="Make things as simple as possible but no simpler."
+          />
+        </Col>
+      </Row>
+      <Divider />
+      <p style={pStyle}>Company</p>
+      <Row>
+        <Col span={12}>
+          <DescriptionItem title="Position" content="Programmer" />
+        </Col>
+        <Col span={12}>
+          <DescriptionItem title="Responsibilities" content="Coding" />
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+          <DescriptionItem title="Department" content="AFX" />
+        </Col>
+        <Col span={12}>
+          <DescriptionItem title="Supervisor" content={<Link to="#">Link</Link>} />
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
+          <DescriptionItem
+            title="Skills"
+            content="C / C + +, data structures, software engineering, operating systems, computer networks, databases, compiler theory, computer architecture, Microcomputer Principle and Interface Technology, Computer English, Java, ASP, etc."
+          />
+        </Col>
+      </Row>
+      <Divider />
+      <p style={pStyle}>Contacts</p>
+      <Row>
+        <Col span={12}>
+          <DescriptionItem title="Email" content="GpbDesign@example.com" />
+        </Col>
+        <Col span={12}>
+          <DescriptionItem
+            title="Phone Number"
+            content="+86 181 0000 0000"
+          />
+        </Col>
+      </Row>
+    </Drawer>
   );
 }
 
 
-export default DrawerContainer
+export default toggleDrawer(RiskInfoDrawer)
