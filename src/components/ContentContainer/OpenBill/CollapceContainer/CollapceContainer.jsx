@@ -49,12 +49,15 @@ const CollapceContainer = props => {
 export { CollapceContainer };
 
 CollapceContainer.propTypes = {
+  /** Данные о состоянии loaders */
   requestLoading: PropTypes.shape({
     companyMainInfo: PropTypes.bool, 
     companyMainInfoUpdate: PropTypes.bool, 
     companyPCUpdate: PropTypes.bool
   }),
+  /** Данные о кампании */
   companySource: PropTypes.object,
+  /** Данные о руководящем составе */
   managementSource: PropTypes.shape({
     heads: PropTypes.array,
     management_companies: PropTypes.array,
@@ -62,6 +65,7 @@ CollapceContainer.propTypes = {
     founders_ul: PropTypes.array,
     befenicials: PropTypes.array
   }),
+  /** Данные о риск факторах */
   riskSource: PropTypes.shape({
     isponlit_proizvodstva: PropTypes.array,
     sanctions: PropTypes.array,

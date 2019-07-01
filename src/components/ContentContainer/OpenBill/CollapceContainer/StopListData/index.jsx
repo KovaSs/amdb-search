@@ -23,6 +23,7 @@ const StopListData = ({riskInfo, arbiter}) => {
         dataSource={arbiterData}
         bordered
         pagination={false}
+        className="arbiter-risk-info"
       />
     )
   }
@@ -31,7 +32,9 @@ const StopListData = ({riskInfo, arbiter}) => {
     const { Item : DescriptionsItem } = Descriptions;
     if ( item.data !== undefined && item.data !== "" && item.id !== "arbiter" && !Array.isArray(item.data)) {
       return (
-        <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={2}>{ item.data }</DescriptionsItem>
+        <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={1}>
+          <span style={{color: "red"}}>{ item.data }</span>
+        </DescriptionsItem>
       )
     } else if(item.id === "arbiter") {
       return (
@@ -40,7 +43,7 @@ const StopListData = ({riskInfo, arbiter}) => {
         </DescriptionsItem>
       )
     } else if (Array.isArray(item.data)) {
-      const itemArray = item.data.map((el, key) => <span key={key}>{el} <br /> </span>)
+      const itemArray = item.data.map((el, key) => <span key={key} style={{color: "red"}}>{el} <br /> </span>)
       return (
         <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={2}>
           { itemArray }
@@ -60,7 +63,7 @@ const StopListData = ({riskInfo, arbiter}) => {
       style={{marginTop: "5px"}}
     >
       <Panel header="Стоп-листы" key="1" showArrow={false}>
-        <Descriptions border size="small" bordered column={{xxl:4, xl:4, lg: 4, md:4, sm:2, xs:1}}>
+        <Descriptions size="small" bordered border column={{md:3, sm:2, xs:1}}>
           {renderDescriptionFields}
         </Descriptions>
       </Panel>

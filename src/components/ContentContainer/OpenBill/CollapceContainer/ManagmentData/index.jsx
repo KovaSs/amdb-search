@@ -25,7 +25,7 @@ const ManagmentData = ({searchData, dataFields, identifyUser}) => {
   const callback = key => {
   }
 
-  const _fouldersFl = (item, key, id) => {
+  const renderFouldersFl = (item, key, id) => {
     const { first_name, last_name, middle_name, inn, position} = item
     return (
       <Panel 
@@ -40,7 +40,7 @@ const ManagmentData = ({searchData, dataFields, identifyUser}) => {
     )
   } 
 
-  const _fouldersUl = ( item, key ) => {
+  const renderFouldersUl = ( item, key ) => {
     const { full_name, name, inn } = item
     return (
       <Panel 
@@ -84,8 +84,8 @@ const ManagmentData = ({searchData, dataFields, identifyUser}) => {
         bordered={false}
         expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"} />}
       >
-        { item.name && _fouldersUl(item, key) }
-        { item.middle_name && _fouldersFl(item, key, searchData) }
+        { item.name && renderFouldersUl(item, key) }
+        { item.middle_name && renderFouldersFl(item, key, searchData) }
       </Collapse> 
     )
   })
