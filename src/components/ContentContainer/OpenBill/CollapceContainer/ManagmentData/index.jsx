@@ -1,19 +1,52 @@
 import React, { Component } from 'react'
-import { Collapse, Icon, Spin, Descriptions } from 'antd'
+import { Collapse, Icon, Spin, Descriptions, AutoComplete } from 'antd'
 import RenderLeaderNameHeader from './RenderLeaderHeader'
 
   /** Вывод данных об руководстве */
 class ManagmentData extends Component {
+  state = {
+    edited: false
+  }
 
   /** Стандартный функционал отслеживания активный панелей */
   callback = key => {
   }
 
+  toggleEdited = () => {
+    this.setState(({edited}) => ({edited:!edited}))
+  }
+
   render() {
     const activePanel = [];
     const { Panel } = Collapse;
+    const { edited } = this.state
     const {searchData, dataFields, identifyUser, loading =false} = this.props
     const heads = dataFields.find( item => item.id === `${searchData}`);
+
+    const renderInut = data => {
+      if(Array.isArray(data)) {
+        return (
+          <AutoComplete
+            style={{ width: 250 }}
+            size="small"
+            dataSource={data}
+            placeholder="Введите значение"
+            filterOption={(inputValue, option) =>  option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1 }
+            defaultActiveFirstOption
+          />
+        )
+      } else {
+        return (
+          <AutoComplete
+            style={{ width: 250 }}
+            size="small"
+            dataSource={[data]}
+            placeholder="Введите значение"
+            filterOption={(inputValue, option) =>  option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1 }
+          />
+        )
+      }
+    }
   
     const renderFoulderFlItem = (item, key, id) => {
       const { Item : DescriptionsItem } = Descriptions;
@@ -22,21 +55,21 @@ class ManagmentData extends Component {
         <Panel 
           key={String(key)}
           header={ <RenderLeaderNameHeader {...item} id={id}/> } 
-          extra={<BtnExtra user={item}/>}
+          extra={<BtnExtra user={item} />}
         >
           <Spin spinning={loading}>
             <Descriptions size="small" bordered border column={{md:4, sm:2, xs:1}}>
               <DescriptionsItem id={ id } label="ИНН" span={1}>
-                <span>{inn}</span>
+                { edited ? renderInut(inn) : <span>{inn}</span> }
               </DescriptionsItem>
               <DescriptionsItem id={ id } label="ФИО" span={1}>
-                <span>{`${last_name} ${first_name} ${middle_name}`}</span>
+                { edited ? renderInut(`${last_name} ${first_name} ${middle_name}`) : <span>{`${last_name} ${first_name} ${middle_name}`}</span> } 
               </DescriptionsItem>
               <DescriptionsItem id={ id } label="Дата рождения" span={1}>
-                <span>{"28.09.2011"}</span>
+                { edited ? renderInut("28.09.2011") : <span>{"28.09.2011"}</span> }
               </DescriptionsItem>
               <DescriptionsItem id={ id } label="Должность" span={1}>
-                <span>{position}</span>
+                { edited ? renderInut(position) : <span>{position}</span> } 
               </DescriptionsItem>
             </Descriptions>
           </Spin>
@@ -61,14 +94,19 @@ class ManagmentData extends Component {
     }
 
     const BtnExtra = ({user}) => {
+      const editUserInfo = e => {
+        e.stopPropagation()
+        console.log('edited', user)
+        this.toggleEdited()
+      }
       const identifyUserInfo = e => {
         e.stopPropagation()
         identifyUser(user)
       }
       return (
         <span className='heads-search'>
-          <Icon title="История" className='heads-search-btn' type="file-search" onClick={ (e) => identifyUserInfo(e) }/>
-          <Icon title="Идентифицировать" className='heads-search-btn' type="file-search" onClick={ (e) => identifyUserInfo(e) }/>
+          <Icon title="Редактировать" className='heads-search-btn' type="form" onClick={ (e) => editUserInfo(e) }/>
+          <Icon title="Поиск информации" className='heads-search-btn' type="file-search" onClick={ (e) => identifyUserInfo(e) }/>
         </span>
       )
     }

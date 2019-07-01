@@ -83,19 +83,25 @@
   }
 
   /* Кнопка поиска истории */
-  .heads-search-btn{
-    background-color: #fff;
-    padding: 4px 8px;
-    border: 1px solid #d9d9d9;
-    border-radius: 2px;
+  .heads-search {
     position: absolute;
+    display: inline-block;
+    width: 80px;
+    right: 0px;
     top: 2px;
-    color: rgba(14, 117, 253, 0.992);
-    cursor: pointer;
-    transition: 0.5 ease;
-
-    &:hover {
-      border: 1px solid rgba(14, 117, 253, 0.992);
+    &-btn{
+      margin-right: 0.5rem;
+      background-color: #fff;
+      padding: 4px 8px;
+      border: 1px solid #d9d9d9;
+      border-radius: 2px;
+      color: rgba(14, 117, 253, 0.992);
+      cursor: pointer;
+      transition: 0.5 ease;
+  
+      &:hover {
+        border: 1px solid rgba(14, 117, 253, 0.992);
+      }
     }
   }
 
