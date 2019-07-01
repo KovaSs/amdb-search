@@ -1,8 +1,8 @@
 import React from 'react'
-import { Table,  Descriptions, Collapse, Icon } from 'antd'
+import { Table,  Descriptions, Collapse, Icon, Spin } from 'antd'
 import { trasform } from "../../../../../services/transformData";
 
-const StopListData = ({riskInfo, arbiter}) => {
+const StopListData = ({riskInfo, arbiter, loading =false}) => {
   const { Panel } = Collapse;
 
   /** Стандартный функционал отслеживания активный панелей */
@@ -52,7 +52,6 @@ const StopListData = ({riskInfo, arbiter}) => {
     }else {
       return null
     }
-
   })
 
   return (
@@ -63,9 +62,11 @@ const StopListData = ({riskInfo, arbiter}) => {
       style={{marginTop: "5px"}}
     >
       <Panel header="Стоп-листы" key="1" showArrow={false}>
-        <Descriptions size="small" bordered border column={{md:3, sm:2, xs:1}}>
-          {renderDescriptionFields}
-        </Descriptions>
+        <Spin spinning={loading}>
+          <Descriptions size="small" bordered border column={{md:3, sm:2, xs:1}}>
+            {renderDescriptionFields}
+          </Descriptions>
+        </Spin>
       </Panel>
     </Collapse> 
   )

@@ -225,17 +225,20 @@ const identifyUserSaga = function * () {
   while(true){
     const action = yield take(GET_IDENTIFY_USER)
     const reqnum = state => state[moduleName].get('reqnum')
+    const ogrn = state => state[moduleName].get('companyResponse')
     const storeReqnum = yield select(reqnum)
+    const storeOgrn = yield select(ogrn)
 
     const api = { 
       type: 'identify_user',
+      reqnum: storeReqnum,
       data: {
         FirstName: action.payload.first_name,
         MiddleName: action.payload.middle_name,
         SurName: action.payload.last_name,
         INN: action.payload.inn,
-        reqnum: storeReqnum
-      },
+        OGRN: storeOgrn.ogrn
+      }
     }
     try {
       yield put({

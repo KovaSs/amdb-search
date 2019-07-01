@@ -33,10 +33,10 @@ const CollapceContainer = props => {
             >
               <Panel header="Общая информация" key="1" showArrow={false}>
                 <MainCompanyData loading={companyPCUpdate} fields={fullOrganistionInfo}/>
-                <StopListData riskInfo={riskInfo} arbiter={arbiter}/>
+                <StopListData  riskInfo={riskInfo} arbiter={arbiter}/>
               </Panel>
               <Panel header="Связанные лица" key="2" forceRender className="table-info-panel">
-                <ManagmentData searchData="heads" dataFields={managementInfo} identifyUser={identifyUser}/>
+                <ManagmentData  searchData="heads" dataFields={managementInfo} identifyUser={identifyUser}/>
               </Panel>
             </Collapse>
           }
