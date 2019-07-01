@@ -93,12 +93,14 @@ export const fieldsArr = [
     if(!item) return 'Данные отсутствуют'
     return `${item.FailureScoreValue} / ${item.FailureScoreDesc}`
   }},
-
+  
   {search: "", id: "isponlit_proizvodstva", title: "Исполнительные производства", data: ""},
+  
+  {search: "", id: "sanctions", title: "Санкции", data: ""},
 
   {search: "", id: "fns", title: "ФНС", data: ""},
 
-  {search: "", id: "sanctions", title: "Санкции", data: ""},
+  {search: "", id: "arbiter", title: "Арбитраж", data: ""},
 
   {search: "Predecessor", id: "precessors", title: "Предшедственники", data: "", func: item => {
     if(!item) return ''
@@ -127,8 +129,6 @@ export const fieldsArr = [
       return `${Name} / ${INN} ${Status.Text ? `/ ${Status.Text}` : ''}`
     }
   }},
-
-  {search: "", id: "arbiter", title: "Арбитраж", data: ""},
 
   {search: "", id: "befenicials", title: "Бенефициары", data: ""},
 
