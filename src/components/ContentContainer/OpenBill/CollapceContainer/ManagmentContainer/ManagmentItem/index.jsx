@@ -127,8 +127,6 @@ export class ManagmentItem extends PureComponent {
           )
         } 
       }
-
-      console.log('descrArr |', descrArr)
       return descrArr
     }
 
@@ -148,20 +146,32 @@ export class ManagmentItem extends PureComponent {
   }
 
   handleSelectOption = (value, option) => {
-    console.log('value', value)
-    console.log('option', option)
+    this.setState(({userSelected}) => ({
+      userSelected: {
+        ...userSelected,
+        [option.props.text]: value
+      }
+    }))
   }
 
   _renderInut = (data, keyId) => {
+    const { Option } = AutoComplete
+    const renderOption = item => {
+      return (
+        <Option key={item} text={keyId} title={item}>
+          {item}
+        </Option>
+      )
+    }
+
     if(Array.isArray(data) && data[0].number){
       const newData = data.map(item => `${item.seria} ${item.number}`)
-      console.log('PASSPORT |', newData)
       return (
         <AutoComplete
           key={keyId}
           style={{ width: 250 }}
           size="small"
-          dataSource={newData}
+          dataSource={newData.map(renderOption)}
           placeholder="Введите значение"
           onSelect={this.handleSelectOption}
           filterOption={(inputValue, option) =>  option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1 }
@@ -174,7 +184,7 @@ export class ManagmentItem extends PureComponent {
           key={keyId}
           style={{ width: 250 }}
           size="small"
-          dataSource={data}
+          dataSource={data.map(renderOption)}
           onSelect={this.handleSelectOption}
           placeholder="Введите значение"
           filterOption={(inputValue, option) =>  option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1 }
@@ -186,7 +196,6 @@ export class ManagmentItem extends PureComponent {
 
   render() {
     const { item, item: {inn}, activeKey, searchData} = this.props
-    console.log('this.props', this.props)
 
     return (
       <Collapse 
