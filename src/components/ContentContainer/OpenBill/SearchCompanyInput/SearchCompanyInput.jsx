@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Row, Col, Form, Input, notification, Button } from "antd"
 import MainCompanyInfo from "./MainCompanyInfo"
 import "./search-company.scss"
 
-class SearchCompanyInput extends Component {
+class SearchCompanyInput extends PureComponent {
   state = {
     showInfo : false,
     clearField : false
@@ -20,50 +20,25 @@ class SearchCompanyInput extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { companyResponse, renderData } = this.props
+    const { companyResponse, renderData, errors } = this.props
     if(companyResponse !== prevProps.companyResponse && renderData) {
       this.setState({
         showInfo: true,
         clearField : false
       })
     }
-
-    prevProps.errors.companyMainInfo && this.openNotification('companyMainInfo')
-    prevProps.errors.companyMainInfoUpdate && this.openNotification('companyMainInfoUpdate')
-    prevProps.errors.companyPCUpdate && this.openNotification('companyPCUpdate')
+    this.openNotification(errors)
   }
   
   handleSubmit = e => {  
     const { loadCompanyInfo } = this.props
     const { showInfo } = this.state
-
     if(typeof e === 'function' || typeof e === 'object') {
-      console.log('!String')
       e.preventDefault();
     }
 
-    // const api = { 
-    //     type: 'get_company_ps',
-    //     reqnum: 1,
-    //     data : {
-    //       code: this.props.form.setFieldsValue.__reactBoundContext.instances.data.props.value
-    //     }
-    //   }
-  
-    //   fetch(`/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify(api)}`, {
-    //     mode: 'cors',
-    //     credentials: 'include',
-    //   })
-    //   .then(res => res.json())
-    //   .then(res => {
-    //     console.log('res | PC', res)
-    //     console.log('res | PC', JSON.parse(res.data))
-    //   })
-    //   .catch(err => console.log('err', err))
-
     !showInfo && this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        console.log('values', values.data)
         loadCompanyInfo(values.data)
         this.changeValue(values.data)
       }
@@ -73,9 +48,7 @@ class SearchCompanyInput extends Component {
 
   changeValue = inn => {
     const { actionChangeInn } = this.props
-    setTimeout(() => {
-      actionChangeInn(inn)
-    }, 100);
+    actionChangeInn(inn)
   }
 
   clearSearchField = () => {
@@ -107,7 +80,7 @@ class SearchCompanyInput extends Component {
               ],
             })(
               <Search 
-                placeholder="Введите ИНН или ОГРН"
+                placeholder="Введите ИНН"
                 enterButton={
                   showInfo ? 
                   <Button className="search-btn" type="default" disabled={!showInfo}> Очистить </Button> : 
@@ -127,23 +100,28 @@ class SearchCompanyInput extends Component {
   }
 
   openNotification = err => {
-    const close = () => console.log( `Notification ${err} was closed. Either the close button was clicked or duration time elapsed.`)
+    const _errMessage = (err, message) => {
+      const key = err;
+      const confirmBtn = (
+        <Button type="primary" size="small" onClick={() => notification.close(key)}>
+          Повторить запрос
+        </Button>
+      );
+      const _close = () => console.log( `Notification ${err} was closed. Either the close button was clicked or duration time elapsed.`)
+      notification['error']({
+        message: `Ошибка получения данных`,
+        description: `Произошла ошибка при выполнении запроса ${message}`,
+        confirmBtn,
+        duration: 4,
+        // btn: confirmBtn,
+        key,
+        onClose: _close,
+      });
+    }
 
-    const key = err;
-    const confirmBtn = (
-      <Button type="primary" size="small" onClick={() => notification.close(key)}>
-        Повторить запрос
-      </Button>
-    );
-    notification['error']({
-      message: `Ошибка получения данных`,
-      description: `Произошла ошибка при выполнении запроса ${err}`,
-      confirmBtn,
-      duration: 4,
-      // btn: confirmBtn,
-      key,
-      onClose: close,
-    });
+    if(err.companyMainInfoUpdate) return _errMessage("companyMainInfoUpdate","основных данных о кампании")
+    err.companyPCUpdate && _errMessage("companyPCUpdate","данных о приемниках / предшедственниках")
+
   };
 
   render() {

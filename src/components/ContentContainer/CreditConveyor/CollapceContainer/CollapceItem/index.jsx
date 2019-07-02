@@ -95,10 +95,29 @@ const CollapceItem = props => {
       item.id !== "inn"  && 
       item.id !== "ogrn"  && 
       item.id !== "isponlit_proizvodstva"  && 
+      item.id !== "leaders_list"  && 
       item.id !== "full_name"
   }).map(item => {
     const { Item : DescriptionsItem } = Descriptions;
-    return <DescriptionsItem id={ item.id } key={ item.id } label={ item.title }>{ item.data }</DescriptionsItem>
+    if (Array.isArray(item.data) && item.id === "phone_list") {
+      const itemArray = item.data.map((el, key) => <a href={`tel:${el}`} key={item.id + '_' + key}>{el} </a>)
+      return (
+        <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={item.data.length > 4 ? 2 : 1}>
+          { itemArray }
+        </DescriptionsItem>
+      )
+    } else if(!Array.isArray(item.data) && item.id === "phone_list") {
+      return <DescriptionsItem id={ item.id } key={ item.id } label={ item.title }><a href={`tel:${item.data}`} key={item.id}>{item.data} </a></DescriptionsItem>
+    } else if(Array.isArray(item.data)) {
+      const itemArray = item.data.map((el, key) => <span key={key}>{el} <br /> </span>)
+      return (
+        <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={2}>
+          { itemArray }
+        </DescriptionsItem>
+      )
+    } else {
+      return <DescriptionsItem id={ item.id } key={ item.id } label={ item.title }>{ item.data }</DescriptionsItem>
+    }
   })
 
   /** Вывод данных об руководстве */

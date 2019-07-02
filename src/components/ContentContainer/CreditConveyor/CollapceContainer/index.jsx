@@ -1,13 +1,16 @@
 import React from 'react'
 import { connect } from "react-redux";
+import { decodedRequestLoading, decodedMainCompanySource, decodedRiskSource, decodedManagementSource } from "../../../../store/ducks/creditConveyor";
 import { CollapceContainer } from "./CollapceContainer";
 
 const Container = props => <CollapceContainer {...props}/>
 
 const putStateToProps = state => {
-  const {creditConveyor : {companyResponse}} = state
   return {
-    companyResponse
+    requestLoading: decodedRequestLoading(state),
+    companySource: decodedMainCompanySource(state),
+    riskSource: decodedRiskSource(state),
+    managementSource: decodedManagementSource(state)
   }
 }
 

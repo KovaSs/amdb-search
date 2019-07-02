@@ -1,17 +1,44 @@
 import React from "react";
-import { Row, Col, Spin } from 'antd';
+import { Row, Col, Spin, Collapse, Icon } from 'antd';
 import PropTypes from "prop-types";
-import { CollapceItem } from "./CollapceItem";
+import MainCompanyData from './MainCompanyData';
+import StopListData from './StopListData';
+import ManagmentContainer from './ManagmentContainer';
+import { trasform } from "../../../../services/transformData";
 import "./collapce-container.scss";
 
 
 const CollapceContainer = props => {
-  const { requestLoading : {companyMainInfo} } = props
+  const { Panel } = Collapse;
+  const {companySource, riskSource, riskSource: {arbiter}, requestLoading : {companyPCUpdate, companyMainInfo} } = props
+
+  /** Преобразование входящих данных из props */
+  const fullOrganistionInfo = trasform._companySource(companySource)
+  const riskInfo = trasform._riskSource(riskSource)
+
+  /** Стандартный функционал отслеживания активный панелей */
+  const callback = key => {
+  }
+
   return (
     <Row className="table-info">
       <Col span={24}>
         <Spin spinning={companyMainInfo} size="large" tip="Идет поиск данных" >
-          <CollapceItem {...props} />
+          { companySource &&
+            <Collapse 
+              defaultActiveKey={['1', '2', '3', '4']} 
+              onChange={callback}
+              expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"}/> }
+            >
+              <Panel header="Общая информация" key="1" showArrow={false}>
+                <MainCompanyData loading={companyPCUpdate} fields={fullOrganistionInfo}/>
+                <StopListData  riskInfo={riskInfo} arbiter={arbiter}/>
+              </Panel>
+              <Panel header="Связанные лица" key="2" forceRender className="table-info-panel">
+                <ManagmentContainer />
+              </Panel>
+            </Collapse>
+          }
         </Spin>
       </Col>
     </Row>
@@ -21,19 +48,15 @@ const CollapceContainer = props => {
 export { CollapceContainer };
 
 CollapceContainer.propTypes = {
+  /** Данные о состоянии loaders */
   requestLoading: PropTypes.shape({
     companyMainInfo: PropTypes.bool, 
     companyMainInfoUpdate: PropTypes.bool, 
     companyPCUpdate: PropTypes.bool
   }),
+  /** Данные о кампании */
   companySource: PropTypes.object,
-  managementSource: PropTypes.shape({
-    heads: PropTypes.array,
-    management_companies: PropTypes.array,
-    founders_fl: PropTypes.array,
-    founders_ul: PropTypes.array,
-    befenicials: PropTypes.array
-  }),
+  /** Данные о риск факторах */
   riskSource: PropTypes.shape({
     isponlit_proizvodstva: PropTypes.array,
     sanctions: PropTypes.array,

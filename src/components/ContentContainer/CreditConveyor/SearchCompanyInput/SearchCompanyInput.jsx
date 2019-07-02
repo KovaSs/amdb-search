@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Row, Col, Form, Input, Button } from "antd";
+import { Row, Col, Form, Input, Button, notification } from "antd";
 import MainCompanyInfo from "./MainCompanyInfo";
 import "./search-company.scss"
 
@@ -11,10 +11,8 @@ class SearchCompanyInput extends Component {
 
   componentDidMount() {
     const { clearField } = this.state
-    const { companyResponse, renderData, inn } = this.props
-    const {setFieldsValue} = this.props.form
-    if(!clearField && companyResponse && renderData) {
-      setFieldsValue.__reactBoundContext.instances.data.state.value = inn
+    const { renderData } = this.props
+    if(!clearField && renderData) {
       this.setState({
         showInfo: true
       })
@@ -22,54 +20,80 @@ class SearchCompanyInput extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { companyResponse } = this.props
-
-    if(companyResponse !== prevProps.companyResponse) {
+    const { companyResponse, renderData } = this.props
+    if(companyResponse !== prevProps.companyResponse && renderData) {
       this.setState({
         showInfo: true,
         clearField : false
       })
     }
+
+    prevProps.errors.companyMainInfo && this.openNotification('companyMainInfo')
+    prevProps.errors.companyMainInfoUpdate && this.openNotification('companyMainInfoUpdate')
+    prevProps.errors.companyPCUpdate && this.openNotification('companyPCUpdate')
   }
   
   handleSubmit = e => {  
     const { loadCompanyInfo } = this.props
-    e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
+    const { showInfo } = this.state
+    if(typeof e === 'function' || typeof e === 'object') {
+      e.preventDefault();
+    }
+
+    // const api = { 
+    //     type: 'get_company_ps',
+    //     reqnum: 1,
+    //     data : {
+    //       code: this.props.form.setFieldsValue.__reactBoundContext.instances.data.props.value
+    //     }
+    //   }
+  
+    //   fetch(`/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl?request=${JSON.stringify(api)}`, {
+    //     mode: 'cors',
+    //     credentials: 'include',
+    //   })
+    //   .then(res => res.json())
+    //   .then(res => {
+    //     console.log('res | PC', res)
+    //     console.log('res | PC', JSON.parse(res.data))
+    //   })
+    //   .catch(err => console.log('err', err))
+
+    !showInfo && this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        loadCompanyInfo()
-        this.changeValue()
+        loadCompanyInfo(values.data)
+        this.changeValue(values.data)
       }
-    });
+    })
+    showInfo && this.clearSearchField()
   }
 
-  changeValue = () => {
+  changeValue = inn => {
     const { actionChangeInn } = this.props
-    setTimeout(() => {
-      actionChangeInn(this.props.form.setFieldsValue.__reactBoundContext.instances.data.state.value)
-    }, 100);
+    actionChangeInn(inn)
   }
 
   clearSearchField = () => {
     const { resetFields } = this.props.form
     const { toHideTableInfo, clearCompanyInfo } = this.props
+    toHideTableInfo()
+    clearCompanyInfo()
+    resetFields()
     this.setState({
       showInfo: false,
       clearField : true
     })
-    toHideTableInfo()
-    clearCompanyInfo()
-    resetFields()
   }
-  
+
   getFields = () => {
     const { getFieldDecorator } = this.props.form
+    const { Search } = Input
     const { showInfo } = this.state
-    const { inn } = this.props
+    const { inn, renderData } = this.props
     return (
       <Row>
-        <Col span={3}>
-          <Form.Item>
+        <Col span={4}>
+          <Form.Item style={{marginRight: '1rem'}}>
             {getFieldDecorator('data', {
               initialValue: inn,
               rules: [
@@ -77,20 +101,45 @@ class SearchCompanyInput extends Component {
                 { pattern: '^[0-9]{10,15}$', message: 'Поисковой запрос должен состоять из 10-15 цифр!'}
               ],
             })(
-              <Input placeholder="Введите ИНН или ОГРН" disabled={showInfo}/>
+              <Search 
+                placeholder="Введите ИНН"
+                enterButton={
+                  showInfo ? 
+                  <Button className="search-btn" type="default" disabled={!showInfo}> Очистить </Button> : 
+                  <Button className="search-btn" type="primary"> Поиск </Button>
+                }
+                onSearch={this.handleSubmit}
+                onPressEnter={this.handleSubmit}
+                option={{ initialValue : inn }}
+                disabled={showInfo}
+              />
             )}
           </Form.Item>
         </Col>
-        <Col span={2}>
-          { showInfo ?
-            <Button onClick={this.clearSearchField} className="search-btn" type="default"> Очистить </Button> :
-            <Button className="search-btn" type="primary" htmlType="submit"> Поиск </Button>
-          }
-        </Col>
-          { showInfo && <MainCompanyInfo /> }
+          { renderData && <MainCompanyInfo /> }
       </Row>
     )
   }
+
+  openNotification = err => {
+    const close = () => console.log( `Notification ${err} was closed. Either the close button was clicked or duration time elapsed.`)
+
+    const key = err;
+    const confirmBtn = (
+      <Button type="primary" size="small" onClick={() => notification.close(key)}>
+        Повторить запрос
+      </Button>
+    );
+    notification['error']({
+      message: `Ошибка получения данных`,
+      description: `Произошла ошибка при выполнении запроса ${err}`,
+      confirmBtn,
+      duration: 4,
+      // btn: confirmBtn,
+      key,
+      onClose: close,
+    });
+  };
 
   render() {
     return (
@@ -101,7 +150,7 @@ class SearchCompanyInput extends Component {
   }
 }
 
-const WrappedRegistrationForm = Form.create({ name: 'searh-company' })(SearchCompanyInput);
+const WrappedRegistrationForm = Form.create({ name: 'searh-credit-conveyor-company' })(SearchCompanyInput);
 
 
 export default WrappedRegistrationForm

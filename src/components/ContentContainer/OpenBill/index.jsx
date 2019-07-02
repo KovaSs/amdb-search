@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Spin, Col, Row, Switch } from "antd";
 import PropTypes from "prop-types";
-import { decodedCompanyResponse, decodedRequestLoading, decodedRenderData, decodedErrors } from "../../../store/ducks/openBill";
+import { decodedCompanyResponse, decodedRequestLoading, decodedRenderData, decodedErrors, decodedReqnum } from "../../../store/ducks/openBill";
 import CollapceContainer from "./CollapceContainer";
 import SearchCompanyInput from "./SearchCompanyInput";
 import "./open-bill.scss"
@@ -44,6 +44,7 @@ class OpenBill extends Component {
     this.setState({
       showTable: true
     })
+    document.title = "AC - Проверка | Открытие счета"
   }
 
   toggleVersion = () => {
@@ -71,7 +72,8 @@ class OpenBill extends Component {
             <CollapceContainer /> : 
             <Spin spinning={loading} size="large" tip="Идет поиск данных" >
               <div className="search-result-table">
-                <div>Для поиска информации об организации введите ИНН или ОГРН в поисковую строку</div>
+                <div>Открытие счета:</div>
+                <div>Для поиска информации об организации введите ИНН в поисковую строку</div>
               </div>
             </Spin>
           }
@@ -84,7 +86,7 @@ class OpenBill extends Component {
         <div className="conveyor-version"><Switch onChange={this.toggleVersion} checkedChildren="new" unCheckedChildren="old" /></div>
         { newBill ?
           newOpenBill :
-          <iframe src="https://10.96.205.191/cgi-bin/serg/0/6/9/reports/276/konttur_focus_viewer_new2.pl" title="open-bill" width="100%" height="890px"></iframe>
+          <iframe src="https://10.96.205.191/cgi-bin/serg/0/6/9/reports/276/konttur_focus_viewer_new2.pl" title="open-bill" width="100%" height="100%"></iframe>
         }
       </>
     );
@@ -93,10 +95,11 @@ class OpenBill extends Component {
 
 const putStateToProps = state => {
   return {
-    companyResponse : decodedCompanyResponse(state, 'openBill'),
-    requestLoading: decodedRequestLoading(state, 'openBill') ,
-    renderData: decodedRenderData(state, 'openBill'),
-    errors: decodedErrors(state, 'openBill')
+    companyResponse : decodedCompanyResponse(state),
+    requestLoading: decodedRequestLoading(state) ,
+    renderData: decodedRenderData(state),
+    errors: decodedErrors(state),
+    reqnum: decodedReqnum(state)
   }
 }
 

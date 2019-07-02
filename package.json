@@ -1,8 +1,9 @@
 {
   "name": "as-check",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": false,
   "proxy": "https://10.96.205.191:443/",
+  "homepage": "https://10.96.205.191/AS_CHECK/",
   "author": "Denis Isaev <denis.isaev@gazprombank.ru>",
   "repository": {
     "type": "git",
@@ -26,7 +27,6 @@
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",
     "redux-saga": "^1.0.3",
-    "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0"
   },
   "scripts": {

@@ -2,9 +2,7 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import { routerMiddleware } from 'connected-react-router'
 import logger from 'redux-logger'
 import createSagaMiddleware from 'redux-saga'
-import api from '../middlewares'
-import thunk from 'redux-thunk'
-import rootSaga from './saga'
+import rootSaga from './rootSaga'
 import rootReducer from './rootReduсer'
 import history from '../history'
 
@@ -20,9 +18,7 @@ const sagaMiddleware = createSagaMiddleware()
 const enhancer = composeEnhancers(
   applyMiddleware(
     sagaMiddleware,
-    api,
     routerMiddleware(history),
-    thunk,
     logger
   ),
   // other store enhancers if any

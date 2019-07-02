@@ -84,6 +84,15 @@ class TransformData {
     return clonePrevData
   }
 
+  _identifyUserInfo = (prevData, newData, inn) => {
+    const clonePrevData = _.cloneDeep(prevData);
+    clonePrevData.heads.map( item =>  {
+      if(item.inn === inn) item.identifyInfo = newData
+      return item
+    })
+    return clonePrevData
+  }
+
   _managementSource = inputData => {
     const Field = (search, title, data) => ({ search, title, data })
     let clgData = {}
@@ -98,7 +107,13 @@ class TransformData {
       return item
     })
     console.table(clgData)
-    const filteredManagementInfo = fullOrganistionInfo.filter(item => (item.id === "befenicials" || item.id === "founders_fl" || item.id === "founders_ul" || item.id === "heads"  || item.id === "management_companies"))
+    const filteredManagementInfo = fullOrganistionInfo.filter(item => (
+      item.id === "befenicials" || 
+      item.id === "founders_fl" || 
+      item.id === "founders_ul" || 
+      item.id === "heads"  || 
+      item.id === "leaders_list"  || 
+      item.id === "management_companies"))
     return filteredManagementInfo
   }
 

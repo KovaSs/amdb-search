@@ -89,16 +89,18 @@ export const fieldsArr = [
     return `${item.PaymentIndexValue} / ${item.PaymentIndexDesc}`
   }},
 
-  {search: "FailueScope", id: "failure_score", title: "Индекс финансового риска", data: "", func: item => {
+  {search: "FailureScore", id: "failure_score", title: "Индекс финансового риска", data: "", func: item => {
     if(!item) return 'Данные отсутствуют'
     return `${item.FailureScoreValue} / ${item.FailureScoreDesc}`
   }},
-
+  
   {search: "", id: "isponlit_proizvodstva", title: "Исполнительные производства", data: ""},
+  
+  {search: "", id: "sanctions", title: "Санкции", data: ""},
 
   {search: "", id: "fns", title: "ФНС", data: ""},
 
-  {search: "", id: "sanctions", title: "Санкции", data: ""},
+  {search: "", id: "arbiter", title: "Арбитраж", data: ""},
 
   {search: "Predecessor", id: "precessors", title: "Предшедственники", data: "", func: item => {
     if(!item) return ''
@@ -128,15 +130,53 @@ export const fieldsArr = [
     }
   }},
 
-  {search: "", id: "arbiter", title: "Арбитраж", data: ""},
-
   {search: "", id: "befenicials", title: "Бенефициары", data: ""},
 
   {search: "", id: "founders_fl", title: "Физические лица", data: ""},
 
   {search: "", id: "founders_ul", title: "Юридичекие лица", data: ""},
 
-  {search: "", id: "heads", title: "Руководcтво", data: ""},
+  {search: "PersonsWithoutWarrant", id: "heads", title: "Руководители", data: "", func: item => {
+    if(!item) return ''
+    if(Array.isArray(item.Person)) {
+      const heads = []
+      item.Person.map(el =>  {
+        const { Person, ActualDate, Person: {Position} } = el
+        const first_name = Person.FIO.split(' ')[1]
+        const middle_name = Person.FIO.split(' ')[2]
+        const last_name = Person.FIO.split(' ')[0]
+        return heads.push({first_name, middle_name, last_name, ActualDate, inn: Person.INN || 'не найден', position: Position.charAt(0).toUpperCase()+Position.substr(1).toLowerCase()})
+      })
+      return heads
+    } else {
+      const { Person, ActualDate, Person: {Position} } = item
+      const first_name = Person.FIO.split(' ')[1]
+      const middle_name = Person.FIO.split(' ')[2]
+      const last_name = Person.FIO.split(' ')[0]
+      return [{first_name, middle_name, last_name, ActualDate, inn: Person.INN || 'не найден', position: Position.charAt(0).toUpperCase()+Position.substr(1).toLowerCase()}]
+    }
+  }},
 
   {search: "", id: "management_companies", title: "Управляющие кампании", data: ""},
+
+  {search: "LeaderList", id: "leaders_list", title: "Состав руководителей", data: "", func: item => {
+    if(!item) return ''
+    if(Array.isArray(item.Leader)) {
+      const heads = []
+      item.Leader.map(elem =>  {
+        const { ActualDate, FIO, INN, Position } = elem
+        const first_name = FIO.split(' ')[1]
+        const middle_name = FIO.split(' ')[2]
+        const last_name = FIO.split(' ')[0]
+        return heads.push({first_name, middle_name, last_name, ActualDate, inn: INN || 'не найден', position: Position.charAt(0).toUpperCase()+Position.substr(1).toLowerCase()})
+      })
+      return heads
+    } else {
+      const { ActualDate, FIO, INN, Position } = item.Leader
+      const first_name = FIO.split(' ')[1]
+      const middle_name = FIO.split(' ')[2]
+      const last_name = FIO.split(' ')[0]
+      return [{first_name, middle_name, last_name, ActualDate, inn: INN || 'не найден', position: Position.charAt(0).toUpperCase()+Position.substr(1).toLowerCase()}]
+    }
+  }}
 ]

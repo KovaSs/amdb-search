@@ -1,7 +1,14 @@
 import React from 'react'
 import { connect } from "react-redux";
-import { actionChangeInn, loadCompanyInfo, clearCompanyInfo } from "../../../../store/ducks/openBill";
-import { decodedCompanyResponse, decodedRenderData, decodedInn, decodedErrors } from "../../../../store/ducks/openBill";
+import { 
+  actionChangeInn, 
+  loadCompanyInfo, 
+  clearCompanyInfo,
+  decodedCompanyResponse, 
+  decodedRenderData, 
+  decodedInn, 
+  decodedErrors
+} from "../../../../store/ducks/openBill";
 import SearchCompanyInput from "./SearchCompanyInput";
 
 const Container = props => <SearchCompanyInput {...props}/>
@@ -15,7 +22,7 @@ const putStateToProps = state => {
   }
 }
 
-const putActionsToProps =  {
+const putActionsToProps = {
   actionChangeInn,
   loadCompanyInfo,
   clearCompanyInfo
