@@ -12,6 +12,13 @@ export class ManagmentItem extends PureComponent {
       passport: "",
       birthday: "",
       address: ""
+    },
+    userSelected: {
+      inn: "",
+      fio: "",
+      passport: "",
+      birthday: "",
+      address: ""
     }
   }
 
@@ -19,13 +26,28 @@ export class ManagmentItem extends PureComponent {
     const {item : {inn, last_name, first_name, middle_name, identifyInfo = {inn: "", fio: "", passport: "", birthday: "", address: ""}}} = this.props
     this.setState({
       user: {
-        inn: [inn, identifyInfo.inn],
-        fio: [`${last_name} ${first_name} ${middle_name}`, identifyInfo.fio],
+        inn: [...new Set([inn, ...identifyInfo.inn])],
+        fio: [...new Set([`${last_name} ${first_name} ${middle_name}`], ...identifyInfo.fio)],
         passport: identifyInfo.passport,
         birthday: identifyInfo.birthday,
         address: identifyInfo.address
       }
     })
+  }
+
+  componentDidUpdate(prevProps) {
+    const {item, item : {inn, last_name, first_name, middle_name, identifyInfo = {inn: "", fio: "", passport: "", birthday: "", address: ""} }} = this.props
+    if(item !== prevProps.item) {
+      this.setState({
+        user: {
+          inn: [...new Set([inn, ...identifyInfo.inn])],
+          fio: [...new Set([`${last_name} ${first_name} ${middle_name}`], ...identifyInfo.fio)],
+          passport: identifyInfo.passport,
+          birthday: identifyInfo.birthday,
+          address: identifyInfo.address
+        }
+      })
+    }
   }
 
   toggleEdited = () => {
@@ -35,7 +57,6 @@ export class ManagmentItem extends PureComponent {
   renderFoulderFlItem = (item, key, id) => {
     const { Item : DescriptionsItem} = Descriptions
     const { identifyUser, loading = false } = this.props
-    const { edited } = this.state
     const { Panel } = Collapse;
 
     const BtnExtra = ({user}) => {
@@ -47,7 +68,7 @@ export class ManagmentItem extends PureComponent {
       }
 
       const identifyUserInfo = e => {
-        e.preventDefault()
+        e.stopPropagation()
         identifyUser(user)
       }
 
@@ -69,39 +90,39 @@ export class ManagmentItem extends PureComponent {
       )
     }
 
-    const renderDescriptionItems = (item, id, edited) => {
-      const { user, user : {inn, fio, passport, birthday, address} } = this.state
+    const renderDescriptionItems = () => {
+      const { user, user : {inn, fio, passport, birthday, address}, edited } = this.state
       const descrArr = []
+      const id = "heads"
       for (const key in user) {
-        console.log(`${key} |`, item[key])
         if (user.hasOwnProperty(key) && key === "inn" ) {
           descrArr.push(
             <DescriptionsItem key={`${id}-${key}`} id={ `${id}-${key}` } label="ИНН" span={1}>
-              { edited ? this._renderInut(inn) : inn[0] }
+              { edited ? this._renderInut(inn, "inn") : inn[0] }
             </DescriptionsItem>
           )
         } else if(user.hasOwnProperty(key) && key === "fio") {
           descrArr.push(
             <DescriptionsItem key={`${id}-${key}`} id={ `${id}-${key}` } label="ФИО" span={1}>
-              { edited ? this._renderInut(fio) : fio[0] } 
+              { edited ? this._renderInut(fio, "fio") : fio[0] } 
             </DescriptionsItem>
           )
         } else if(user.hasOwnProperty(key) && key === "passport" && passport !== "") {
           descrArr.push(
             <DescriptionsItem key={`${id}-${key}`} id={ `${id}-${key}` } label="Паспорт" span={1}>
-              { edited ? this._renderInut(passport) : passport[0] } 
+              { edited ? this._renderInut(passport, "passport") : `${passport[0].seria} ${passport[0].number}` } 
             </DescriptionsItem>
           )
         } else if(user.hasOwnProperty(key) && key === "birthday" && birthday !== "") {
           descrArr.push(
             <DescriptionsItem key={`${id}-${key}`} id={ `${id}-${key}` } label="Дата рождения" span={1}>
-              { edited ? this._renderInut(birthday) : birthday[0] } 
+              { edited ? this._renderInut(birthday, "birthday") : birthday[0] } 
             </DescriptionsItem>
           )
         } else if(user.hasOwnProperty(key) && key === "address" && address !== "") {
           descrArr.push(
             <DescriptionsItem key={`${id}-${key}`} id={ `${id}-${key}` } label="Адресс" span={1}>
-              { edited ? this._renderInut(address) : address[0] } 
+              { edited ? this._renderInut(address, "adress") : address[0] } 
             </DescriptionsItem>
           )
         } 
@@ -119,37 +140,48 @@ export class ManagmentItem extends PureComponent {
       >
         <Spin spinning={loading}>
           <Descriptions size="small" bordered border column={{md:5, sm:2, xs:1}}>
-            { renderDescriptionItems(item, id, edited) }
+            { renderDescriptionItems() }
           </Descriptions>
         </Spin>
       </Panel>
     )
   }
 
-  _renderInut = data => {
-    if(Array.isArray(data)) {
+  handleSelectOption = (value, option) => {
+    console.log('value', value)
+    console.log('option', option)
+  }
+
+  _renderInut = (data, keyId) => {
+    if(Array.isArray(data) && data[0].number){
+      const newData = data.map(item => `${item.seria} ${item.number}`)
+      console.log('PASSPORT |', newData)
       return (
         <AutoComplete
+          key={keyId}
+          style={{ width: 250 }}
+          size="small"
+          dataSource={newData}
+          placeholder="Введите значение"
+          onSelect={this.handleSelectOption}
+          filterOption={(inputValue, option) =>  option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1 }
+          allowClear
+        />
+      )
+    } else if(Array.isArray(data) && !data[0].number) {
+      return (
+        <AutoComplete
+          key={keyId}
           style={{ width: 250 }}
           size="small"
           dataSource={data}
+          onSelect={this.handleSelectOption}
           placeholder="Введите значение"
           filterOption={(inputValue, option) =>  option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1 }
           allowClear
         />
       )
-    } else {
-      return (
-        <AutoComplete
-          style={{ width: "100%" }}
-          size="small"
-          dataSource={[data]}
-          placeholder="Введите значение"
-          filterOption={(inputValue, option) =>  option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1 }
-          allowClear
-        />
-      )
-    }
+    } 
   }
 
   render() {
@@ -160,7 +192,7 @@ export class ManagmentItem extends PureComponent {
       <Collapse 
         key={inn}
         className="managment"
-        activeKey={inn} 
+        defaultActiveKey={inn} 
         onChange={this.callback}
         bordered={false}
         expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"} />}

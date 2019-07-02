@@ -2,7 +2,7 @@ import { Record, Map } from 'immutable'
 import { createSelector } from 'reselect'
 import { all, put, take, call, select } from 'redux-saga/effects'
 import { trasform } from "../../services/transformData"
-import { companyRes } from '../mock'
+import { companyRes, identifyInfo } from '../mock'
 
 /** Constants */
 export const moduleName = 'openBill'
@@ -29,13 +29,13 @@ const ReducerRecord = Record({
     companyMainInfo: false, 
     companyMainInfoUpdate: false, 
     companyPCUpdate: false,
-    identifyUser: false
+    identifyUser: new Map({})
   }),
   errors: new Map({
     companyMainInfo: false, 
     companyMainInfoUpdate: false, 
     companyPCUpdate: false,
-    identifyUser: false
+    identifyUser: new Map({})
   })
 })
 
@@ -259,11 +259,15 @@ const identifyUserSaga = function * () {
         OGRN: storeOgrn.ogrn
       }
     }
+
+    console.log('api', api)
     try {
       yield put({
-        type: GET_IDENTIFY_USER + START
+        type: GET_IDENTIFY_USER + START,
+        loading: action.payload.inn
       })
 
+      /*
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -276,20 +280,23 @@ const identifyUserSaga = function * () {
         )
         .then(res => {
           if (res.ok) return res.json()
-          throw new TypeError("Данные о кампании не обновлены!")
+          throw new TypeError("Ошибка получения данных!")
         })
       })
+      */
   
-      console.log('RES | GET USER INFO | ', res)
-      const updatedUserInfo = yield trasform._identifyUserInfo(storeOgrn, res.data, action.payload.inn)
+      // console.log('RES | GET USER INFO | ', res)
+      const updatedUserInfo = yield trasform._identifyUserInfo(storeOgrn, identifyInfo, action.payload.inn)
 
       yield put({
         type: GET_IDENTIFY_USER + SUCCESS,
         payload: {updatedUserInfo},
+        loading: action.payload.inn
       })
     } catch (err){
       yield put({
         type: GET_IDENTIFY_USER + FAIL,
+        error: action.payload.inn
       })
     }
   }
