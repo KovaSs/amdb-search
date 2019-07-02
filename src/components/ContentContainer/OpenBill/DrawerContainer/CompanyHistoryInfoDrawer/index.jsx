@@ -66,7 +66,7 @@ const CompanyHistoryInfoDrawer = props => {
         // const { identifyUser } = props
         // identifyUser(user)
       }
-      return <Icon title="Добавить на проверку" className='heads-search-btn' type="diff" onClick={ (e) => identifyUserInfo(e) }/>
+      return <Icon title="Добавить на проверку" className='heads-search-btn' type="user-add" onClick={ (e) => identifyUserInfo(e) }/>
     }
     
     

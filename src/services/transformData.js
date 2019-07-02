@@ -84,6 +84,15 @@ class TransformData {
     return clonePrevData
   }
 
+  _identifyUserInfo = (prevData, newData, inn) => {
+    const clonePrevData = _.cloneDeep(prevData);
+    clonePrevData.heads.map( item =>  {
+      if(item.inn === inn) item.identifyInfo = newData
+      return item
+    })
+    return clonePrevData
+  }
+
   _managementSource = inputData => {
     const Field = (search, title, data) => ({ search, title, data })
     let clgData = {}

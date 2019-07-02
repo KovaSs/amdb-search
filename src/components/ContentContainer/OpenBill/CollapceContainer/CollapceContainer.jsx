@@ -3,18 +3,17 @@ import { Row, Col, Spin, Collapse, Icon } from 'antd';
 import PropTypes from "prop-types";
 import MainCompanyData from './MainCompanyData';
 import StopListData from './StopListData';
-import ManagmentData from './ManagmentData';
+import ManagmentContainer from './ManagmentContainer';
 import { trasform } from "../../../../services/transformData";
 import "./collapce-container.scss";
 
 
 const CollapceContainer = props => {
   const { Panel } = Collapse;
-  const {companySource, riskSource, riskSource: {arbiter}, managementSource, requestLoading : {companyPCUpdate, companyMainInfo},  identifyUser } = props
+  const {companySource, riskSource, riskSource: {arbiter}, requestLoading : {companyPCUpdate, companyMainInfo} } = props
 
   /** Преобразование входящих данных из props */
   const fullOrganistionInfo = trasform._companySource(companySource)
-  const managementInfo = trasform._managementSource(managementSource)
   const riskInfo = trasform._riskSource(riskSource)
 
   /** Стандартный функционал отслеживания активный панелей */
@@ -36,7 +35,7 @@ const CollapceContainer = props => {
                 <StopListData  riskInfo={riskInfo} arbiter={arbiter}/>
               </Panel>
               <Panel header="Связанные лица" key="2" forceRender className="table-info-panel">
-                <ManagmentData  searchData="heads" dataFields={managementInfo} identifyUser={identifyUser}/>
+                <ManagmentContainer />
               </Panel>
             </Collapse>
           }
@@ -57,14 +56,6 @@ CollapceContainer.propTypes = {
   }),
   /** Данные о кампании */
   companySource: PropTypes.object,
-  /** Данные о руководящем составе */
-  managementSource: PropTypes.shape({
-    heads: PropTypes.array,
-    management_companies: PropTypes.array,
-    founders_fl: PropTypes.array,
-    founders_ul: PropTypes.array,
-    befenicials: PropTypes.array
-  }),
   /** Данные о риск факторах */
   riskSource: PropTypes.shape({
     isponlit_proizvodstva: PropTypes.array,

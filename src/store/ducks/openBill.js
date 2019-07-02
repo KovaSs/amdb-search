@@ -28,12 +28,14 @@ const ReducerRecord = Record({
   requestLoading: new Map({
     companyMainInfo: false, 
     companyMainInfoUpdate: false, 
-    companyPCUpdate: false
+    companyPCUpdate: false,
+    identifyUser: false
   }),
   errors: new Map({
     companyMainInfo: false, 
     companyMainInfoUpdate: false, 
-    companyPCUpdate: false
+    companyPCUpdate: false,
+    identifyUser: false
   })
 })
 
@@ -68,7 +70,7 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
     case LOAD_COMPANY_INFO + PC + UPDATE + START:
       return state
         .setIn(['requestLoading', 'companyPCUpdate'], true)
-        .setIn(['errors', 'companyPCUpdate'], false)    
+        .setIn(['errors', 'companyPCUpdate'], false)
     case LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS:
       return state
         .set('companyResponse', payload.updatedData)
@@ -78,6 +80,20 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
       return state
         .setIn(['requestLoading', 'companyPCUpdate'], false)
         .setIn(['errors', 'companyPCUpdate'], true)
+
+    case GET_IDENTIFY_USER + START:
+      return state
+        .setIn(['requestLoading', 'identifyUser'], true)
+        .setIn(['errors', 'identifyUser'], false)
+    case GET_IDENTIFY_USER + SUCCESS:
+      return state
+        .set('companyResponse', payload.updatedUserInfo)
+        .setIn(['requestLoading', 'identifyUser'], false)
+        .setIn(['errors', 'identifyUser'], false) 
+    case GET_IDENTIFY_USER + FAIL:
+      return state
+        .setIn(['requestLoading', 'identifyUser'], false)
+        .setIn(['errors', 'identifyUser'], true)
 
     case CLEAR_COMPANY_INFO:
       return new ReducerRecord()
@@ -172,6 +188,8 @@ export const decodedRequestLoading = createSelector(
 )
 
 /** Sagas */
+
+/* Получение основных данных о кампании */
 const loadCompanyInfoSaga = function * () {
   while(true){
     const action = yield take(LOAD_COMPANY_INFO)
@@ -221,13 +239,14 @@ const loadCompanyInfoSaga = function * () {
   }
 }
 
+/* Идентификация пользователя */
 const identifyUserSaga = function * () {
   while(true){
     const action = yield take(GET_IDENTIFY_USER)
     const reqnum = state => state[moduleName].get('reqnum')
-    const ogrn = state => state[moduleName].get('companyResponse')
+    const companyState = state => state[moduleName].get('companyResponse')
     const storeReqnum = yield select(reqnum)
-    const storeOgrn = yield select(ogrn)
+    const storeOgrn = yield select(companyState)
 
     const api = { 
       type: 'identify_user',
@@ -262,9 +281,11 @@ const identifyUserSaga = function * () {
       })
   
       console.log('RES | GET USER INFO | ', res)
+      const updatedUserInfo = yield trasform._identifyUserInfo(storeOgrn, res.data, action.payload.inn)
+
       yield put({
         type: GET_IDENTIFY_USER + SUCCESS,
-        payload: {res},
+        payload: {updatedUserInfo},
       })
     } catch (err){
       yield put({
@@ -274,6 +295,7 @@ const identifyUserSaga = function * () {
   }
 }
 
+/* Получение данных о предшедственнниках и приемниках */
 const loadCompanyPCSaga = function * () {
   while(true){
     const action = yield take(LOAD_COMPANY_INFO + UPDATE + SUCCESS)

@@ -89,7 +89,7 @@
     width: 80px;
     right: 0px;
     top: 2px;
-    &-btn{
+    &-btn, &-btn-green{
       margin-right: 0.5rem;
       background-color: #fff;
       padding: 4px 8px;
@@ -102,6 +102,9 @@
       &:hover {
         border: 1px solid rgba(14, 117, 253, 0.992);
       }
+    }
+    &-btn-green {
+      color: #52c41a;
     }
   }
 

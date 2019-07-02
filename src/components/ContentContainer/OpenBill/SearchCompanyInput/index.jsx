@@ -22,7 +22,7 @@ const putStateToProps = state => {
   }
 }
 
-const putActionsToProps =  {
+const putActionsToProps = {
   actionChangeInn,
   loadCompanyInfo,
   clearCompanyInfo
