@@ -2,7 +2,7 @@ import { Record, Map } from 'immutable'
 import { createSelector } from 'reselect'
 import { all, put, take, call, select } from 'redux-saga/effects'
 import { trasform } from "../../services/transformData"
-import { companyRes, identifyInfo } from '../mock'
+import { companyRes, identifyInfo, companyResponse } from '../mock'
 
 /** Constants */
 export const moduleName = 'openBill'
@@ -114,7 +114,7 @@ export const actionChangeInn = inn => {
 export const loadCompanyInfo = inn => {
   return {
     type: LOAD_COMPANY_INFO,
-    payload: {company: companyRes},
+    payload: {company: companyResponse},
     inn
   }
 }
@@ -204,32 +204,32 @@ const loadCompanyInfoSaga = function * () {
         type: LOAD_COMPANY_INFO + UPDATE + START
       })
   
-      const res = yield call(() => {
-        return fetch(
-          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
-          { 
-            method: 'POST',
-            mode: 'cors',
-            credentials: 'include',
-            body : JSON.stringify(api),
-          }
-        )
-        .then(res => {
-          if (res.ok) return res.json()
-          throw new TypeError("Данные о кампании не обновлены!")
-        })
-      })
+      // const res = yield call(() => {
+      //   return fetch(
+      //     `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+      //     { 
+      //       method: 'POST',
+      //       mode: 'cors',
+      //       credentials: 'include',
+      //       body : JSON.stringify(api),
+      //     }
+      //   )
+      //   .then(res => {
+      //     if (res.ok) return res.json()
+      //     throw new TypeError("Данные о кампании не обновлены!")
+      //   })
+      // })
 
-      const data = res.data
-      console.log('RES | first update | ', res)
+      // const data = res.data
+      // console.log('RES | first update | ', res)
       const store = state => state[moduleName].get('companyResponse')
       const companyResponse = yield select(store)
-      const updatedData = yield trasform._get_company_info_companySource(companyResponse, data)
+      // const updatedData = yield trasform._get_company_info_companySource(companyResponse, companyResponse)
   
       yield put({
         type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,
-        id: res.reqnum,
-        payload: {updatedData},
+        // id: res.reqnum,
+        payload: {updatedData: companyResponse},
       })
     } catch (err){
       yield put({
@@ -369,7 +369,7 @@ const loadCompanyPCSaga = function * () {
 export const saga = function * () {
   yield all([
     loadCompanyInfoSaga(),
-    loadCompanyPCSaga(),
+    // loadCompanyPCSaga(),
     identifyUserSaga()
   ])
 }

@@ -10,7 +10,7 @@
     "url": "http://gitlab-cos/gpbu7806/AS-Check"
   },
   "dependencies": {
-    "antd": "^3.19.7",
+    "antd": "3.19.7",
     "connected-react-router": "6.4.0",
     "history": "^4.9.0",
     "immutable": "4.0.0-rc.12",
