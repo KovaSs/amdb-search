@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Collapse, Icon, Spin, Descriptions, AutoComplete } from "antd";
+import { Collapse, Icon, Spin, Descriptions, Input, Row, Col, Select } from "antd";
 import LeaderHeader from "../LeaderHeader";
 import PropTypes from "prop-types";
 
@@ -23,30 +23,11 @@ export class ManagmentItem extends PureComponent {
   };
 
   componentDidMount() {
-    const {
-      item: {
-        inn,
-        last_name,
-        first_name,
-        middle_name,
-        identifyInfo = {
-          inn: "",
-          fio: "",
-          passport: "",
-          birthday: "",
-          address: ""
-        }
-      }
-    } = this.props;
+    const { item: { inn, last_name, first_name, middle_name, identifyInfo = { inn: "", fio: "", passport: "", birthday: "", address: ""}}} = this.props;
     this.setState({
       user: {
         inn: [...new Set([inn, ...identifyInfo.inn])],
-        fio: [
-          ...new Set(
-            [`${last_name}${first_name}${middle_name}`],
-            ...identifyInfo.fio
-          )
-        ],
+        fio: [ ...new Set( [`${last_name} ${first_name} ${middle_name}`], ...identifyInfo.fio ) ],
         passport: identifyInfo.passport,
         birthday: identifyInfo.birthday,
         address: identifyInfo.address
@@ -75,12 +56,7 @@ export class ManagmentItem extends PureComponent {
       this.setState({
         user: {
           inn: [...new Set([inn, ...identifyInfo.inn])],
-          fio: [
-            ...new Set(
-              [`${last_name}${first_name}${middle_name}`],
-              ...identifyInfo.fio
-            )
-          ],
+          fio: [ ...new Set( [`${last_name} ${first_name} ${middle_name}`], ...identifyInfo.fio ) ],
           passport: identifyInfo.passport,
           birthday: identifyInfo.birthday,
           address: identifyInfo.address
@@ -130,11 +106,7 @@ export class ManagmentItem extends PureComponent {
     };
 
     const renderDescriptionItems = () => {
-      const {
-        user,
-        user: { inn, fio, passport, birthday, address },
-        edited
-      } = this.state;
+      const {  user, user: { inn, fio, passport, birthday, address }, userSelected, edited } = this.state;
       const descrArr = [];
       const id = "heads";
       for (const key in user) {
@@ -146,7 +118,10 @@ export class ManagmentItem extends PureComponent {
               label="ИНН"
               span={1}
             >
-              {edited ? this._renderInut(inn, "inn") : inn[0]}
+              {edited ? 
+                this._renderInut("inn") : 
+                userSelected.inn ? userSelected.inn : inn[0]
+              }
             </DescriptionsItem>
           );
         } else if (user.hasOwnProperty(key) && key === "fio") {
@@ -157,7 +132,10 @@ export class ManagmentItem extends PureComponent {
               label="ФИО"
               span={1}
             >
-              {edited ? this._renderInut(fio, "fio") : fio[0]}
+              {edited ? 
+                this._renderInut("fio") : 
+                userSelected.fio ? userSelected.fio : fio[0]
+              }
             </DescriptionsItem>
           );
         } else if (
@@ -172,9 +150,10 @@ export class ManagmentItem extends PureComponent {
               label="Паспорт"
               span={1}
             >
-              {edited
-                ? this._renderInut(passport, "passport")
-                : `${passport[0].seria}${passport[0].number}`}
+              {edited ? 
+                this._renderInut("passport") : 
+                userSelected.passport ? userSelected.passport : `${passport[0].seria} ${passport[0].number}`
+              }
             </DescriptionsItem>
           );
         } else if (
@@ -189,7 +168,10 @@ export class ManagmentItem extends PureComponent {
               label="Дата рождения"
               span={1}
             >
-              {edited ? this._renderInut(birthday, "birthday") : birthday[0]}
+              {edited ? 
+                this._renderInut("birthday") : 
+                userSelected.birthday ? userSelected.birthday : birthday[0]
+              }
             </DescriptionsItem>
           );
         } else if (
@@ -204,7 +186,10 @@ export class ManagmentItem extends PureComponent {
               label="Адресс"
               span={1}
             >
-              {edited ? this._renderInut(address, "address") : address[0]}
+              {edited ? 
+                this._renderInut("address") : 
+                userSelected.address ? userSelected.address : address[0]
+              }
             </DescriptionsItem>
           );
         }
@@ -218,21 +203,69 @@ export class ManagmentItem extends PureComponent {
         header={<LeaderHeader {...item} id={id} />}
         extra={<BtnExtra user={item} identifyUser={identifyUser} />}
       >
-        <Spin spinning={loading}>
-          <Descriptions
-            size="small"
-            bordered
-            border
-            column={{ md: 5, sm: 2, xs: 1 }}
-          >
-            {renderDescriptionItems()}
-          </Descriptions>
-        </Spin>
+        <Row>
+          <Col span={this.state.edited ? 18 : 24}>
+            <Spin spinning={loading}>
+              <Descriptions
+                size="small"
+                bordered
+                border
+                column={this.state.edited ? { md: 3, sm: 2, xs: 1 } : { md: 5, sm: 2, xs: 1 }}
+              >
+                {renderDescriptionItems()}
+              </Descriptions>
+            </Spin>
+          </Col>
+          <Col span={this.state.edited ? 6 : 0}>
+            <Row className="edited-identify-info">
+              {this._renderIdentifyinfoSelectors()}
+            </Row>
+          </Col>
+        </Row>
       </Panel>
     );
   };
 
+  _renderIdentifyinfoSelectors = () => {
+    const {user} = this.state
+    const { Option } = Select
+    const identifyInfoArr = []
+    for (const key in user) {
+      if (user.hasOwnProperty(key) && user[key][0] && key !== "passport") {
+        identifyInfoArr.push(
+          <Col key={String(key)} span={12}>
+            <Select 
+              style={{ width: "100%" }}
+              size="small"
+              onChange={this.handleSelectOption}
+              placeholder="Выберите значение"
+            >
+              {user[key].map((item, index) => <Option text={key} key={index} value={item} title={item}>{item}</Option>)}
+            </Select>
+          </Col>
+        )
+      } else if ( user[key][0] && key === "passport") {
+        identifyInfoArr.push(
+          <Col key={String(key)} span={12}>
+            <Select 
+              style={{ width: "100%" }}
+              size="small"
+              onChange={this.handleSelectOption}
+              placeholder="Выберите значение"
+            >
+              {user[key].map((item, index) => <Option text={key} key={index} value={`${item.seria} ${item.number}`} title={`${item.seria} ${item.number}`}>{`${item.seria} ${item.number}`}</Option>)}
+            </Select>
+          </Col>
+        )
+      }
+    }
+    return identifyInfoArr
+  }
+
   handleSelectOption = (value, option) => {
+    console.log('select-value', value)
+    console.log('select-option', option)
+
     this.setState(({ userSelected }) => ({
       userSelected: {
         ...userSelected,
@@ -241,61 +274,28 @@ export class ManagmentItem extends PureComponent {
     }));
   };
 
-  _renderInut = (data, keyId) => {
-    const { Option } = AutoComplete;
-    const renderOption = item => {
-      return (
-        <Option key={item} text={keyId} title={item}>
-          {item}
-        </Option>
-      );
-    };
 
-    if (Array.isArray(data) && data[0].number) {
-      const newData = data.map(item => `${item.seria}${item.number}`);
-      return (
-        <AutoComplete
-          key={keyId}
-          style={{ width: 250 }}
-          size="small"
-          dataSource={newData.map(renderOption)}
-          placeholder="Введите значение"
-          onSelect={this.handleSelectOption}
-          filterOption={(inputValue, option) =>
-            option.props.children
-              .toUpperCase()
-              .indexOf(inputValue.toUpperCase()) !== -1
+  // Рендеринг редактируемых инпутов
+  _renderInut = keyId => {
+    const {userSelected} = this.state
+    // Изменение значения инпута при редактировании
+    const changeOptionInput = e => {
+      const target = e.target.value
+      this.setState(({ userSelected }) => {
+        return {
+          userSelected: {
+            ...userSelected,
+            [keyId]: target
           }
-          allowClear
-        />
-      );
-    } else if (Array.isArray(data) && !data[0].number) {
-      return (
-        <AutoComplete
-          key={keyId}
-          style={{ width: 250 }}
-          size="small"
-          dataSource={data.map(renderOption)}
-          onSelect={this.handleSelectOption}
-          placeholder="Введите значение"
-          filterOption={(inputValue, option) =>
-            option.props.children
-              .toUpperCase()
-              .indexOf(inputValue.toUpperCase()) !== -1
-          }
-          allowClear
-        />
-      );
+        }
+      });
     }
+
+    return  <Input onChange={changeOptionInput} size="small" value={userSelected[keyId]} />
   };
 
   render() {
-    const {
-      item,
-      item: { inn },
-      activeKey,
-      searchData
-    } = this.props;
+    const { item, item: { inn }, activeKey, searchData } = this.props;
 
     return (
       <Collapse
@@ -308,9 +308,8 @@ export class ManagmentItem extends PureComponent {
           <Icon type={!isActive ? "plus-square" : "minus-square"} />
         )}
       >
+        {item.middle_name && this.renderFoulderFlItem(item, activeKey, searchData)}
         {item.name && this.renderFoulderUlItem(item, activeKey)}
-        {item.middle_name &&
-          this.renderFoulderFlItem(item, activeKey, searchData)}
       </Collapse>
     );
   }
@@ -320,5 +319,6 @@ export default ManagmentItem;
 
 ManagmentItem.propTypes = {
   /** Данные о состоянии loaders */
-  activeKey: PropTypes.string
+  activeKey: PropTypes.string.isRequired,
+  identifyUser: PropTypes.func.isRequired,
 };
