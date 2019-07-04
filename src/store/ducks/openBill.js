@@ -2,7 +2,7 @@ import { Record, Map } from 'immutable'
 import { createSelector } from 'reselect'
 import { all, put, take, call, select } from 'redux-saga/effects'
 import { trasform } from "../../services/transformData"
-import { companyRes, identifyInfoMock, bicompactResMock, bicompactPCResMock } from '../mock'
+import { companyRes, identifyInfoMock, bicompactResMock, bicompactPCResMock, ipResMock } from '../mock'
 
 /** Constants */
 export const moduleName = 'openBill'
@@ -226,8 +226,13 @@ const loadCompanyInfoSaga = function * () {
       console.log('RES | first update | ', res)
       */
 
+      /* Mock данные о ЮЛ */
       const data = bicompactResMock
       console.log('RES | first update | ', bicompactResMock)
+      
+      /** Mock данные о ФЛ */
+      // const data = ipResMock
+      // console.log('RES | first update | ', bicompactResMock)
 
       const store = state => state[moduleName].get('companyResponse')
       const companyResponse = yield select(store)
