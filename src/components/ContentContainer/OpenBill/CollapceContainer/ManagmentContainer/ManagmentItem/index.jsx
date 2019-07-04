@@ -69,8 +69,10 @@ export class ManagmentItem extends PureComponent {
   /* Рендеринг физического лица */
   renderFoulderFlItem = (item, key, id) => {
     const { Item: DescriptionsItem } = Descriptions;
-    const { identifyUser, loading = false } = this.props;
+    const { identifyUser, loading } = this.props;
     const { Panel } = Collapse;
+    console.log('ITEM-INN', item.inn)
+    console.log('LOADING', loading.identifyUser[item.inn])
 
     const BtnExtra = ({ user }) => {
       const { identifyUser } = this.props;
@@ -180,7 +182,7 @@ export class ManagmentItem extends PureComponent {
         header={<LeaderHeader {...item} id={id} />}
         extra={<BtnExtra user={item} identifyUser={identifyUser} />}
       >
-        <Spin spinning={loading}>
+        <Spin spinning={loading.identifyUser[item.inn] ? true : false}>
           <Descriptions
             size="small"
             bordered

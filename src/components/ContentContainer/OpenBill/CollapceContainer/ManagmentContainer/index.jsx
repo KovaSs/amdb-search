@@ -6,7 +6,7 @@ import { trasform } from "../../../../../services/transformData";
 import { decodedRequestLoading, decodedManagementSource, identifyUser } from "../../../../../store/ducks/openBill";
 
 /** Вывод данных об руководстве */
-const ManagmentData = ({managementSource, identifyUser}) => {
+const ManagmentData = ({managementSource, identifyUser, requestLoading}) => {
 
   const managementInfo = trasform._managementSource(managementSource)
   const heads = managementInfo.find( item => item.id === 'heads');
@@ -18,6 +18,7 @@ const ManagmentData = ({managementSource, identifyUser}) => {
       activeKey={item.inn} 
       searchData={'heads'} 
       identifyUser={identifyUser}
+      loading={requestLoading}
     />
   ))
 

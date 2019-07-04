@@ -1,6 +1,6 @@
 {
   "name": "as-check",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": false,
   "proxy": "https://10.96.205.191:443/",
   "homepage": "https://10.96.205.191/AS_CHECK/",

@@ -2,7 +2,8 @@ import { Record, Map } from 'immutable'
 import { createSelector } from 'reselect'
 import { all, put, take, call, select } from 'redux-saga/effects'
 import { trasform } from "../../services/transformData"
-import { companyRes, identifyInfoMock, bicompactResMock, bicompactPCResMock, ipResMock } from '../mock'
+import { companyRes } from '../mock'
+// import { companyRes, identifyInfoMock, bicompactResMock, bicompactPCResMock, ipResMock } from '../mock'
 
 /** Constants */
 export const moduleName = 'openBill'
@@ -83,12 +84,12 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
 
     case GET_IDENTIFY_USER + START:
       return state
-        .setIn(['requestLoading', 'identifyUser'], true)
+        .setIn(['requestLoading', 'identifyUser', action.loading], true)
         .setIn(['errors', 'identifyUser'], false)
     case GET_IDENTIFY_USER + SUCCESS:
       return state
         .set('companyResponse', payload.updatedUserInfo)
-        .setIn(['requestLoading', 'identifyUser'], false)
+        .setIn(['requestLoading', 'identifyUser', action.loading], false)
         .setIn(['errors', 'identifyUser'], false) 
     case GET_IDENTIFY_USER + FAIL:
       return state
@@ -134,10 +135,10 @@ export const identifyUser = data => {
 
 /** Selectors */
 export const companyResSelector = state => state[moduleName].get('companyResponse')
-export const requestLoadingSelector = state => state[moduleName].get('requestLoading').toJS()
 export const renderDataSelector = state => state[moduleName].get('renderData')
 export const reqnumSelector = state => state[moduleName].get('reqnum')
 export const innSelector = state => state[moduleName].get('inn')
+export const requestLoadingSelector = state => state[moduleName].get('requestLoading').toJS()
 export const errorsSelector = state => state[moduleName].get('errors').toJS()
 
 export const decodedCompanyResponse = createSelector(
@@ -193,19 +194,13 @@ export const decodedRequestLoading = createSelector(
 const loadCompanyInfoSaga = function * () {
   while(true){
     const action = yield take(LOAD_COMPANY_INFO)
-    const api = { 
-      type: 'get_company_info',
-      data: {
-        code: action.inn
-      }
-    }
-    console.log('api', api)
+
     try {
       yield put({
         type: LOAD_COMPANY_INFO + UPDATE + START
       })
   
-      /* Переключение на mock данные
+      /* Переключение на mock данные*/
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -213,7 +208,12 @@ const loadCompanyInfoSaga = function * () {
             method: 'POST',
             mode: 'cors',
             credentials: 'include',
-            body : JSON.stringify(api),
+            body : JSON.stringify({ 
+              type: 'get_company_info',
+              data: {
+                code: action.inn
+              }
+            }),
           }
         )
         .then(res => {
@@ -224,11 +224,10 @@ const loadCompanyInfoSaga = function * () {
 
       const data = res.data
       console.log('RES | first update | ', res)
-      */
 
       /* Mock данные о ЮЛ */
-      const data = bicompactResMock
-      console.log('RES | first update | ', bicompactResMock)
+      // const data = bicompactResMock
+      // console.log('RES | first update | ', bicompactResMock)
       
       /** Mock данные о ФЛ */
       // const data = ipResMock
@@ -240,8 +239,9 @@ const loadCompanyInfoSaga = function * () {
   
       yield put({
         type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,
-        // id: res.reqnum,
-        id: 1,
+        id: res.reqnum,
+        // Разкоментировать при работе с mock данными
+        // id: 1,
         payload: {updatedData},
       })
     } catch (err){
@@ -261,26 +261,13 @@ const identifyUserSaga = function * () {
     const storeReqnum = yield select(reqnum)
     const storeOgrn = yield select(companyState)
 
-    const api = { 
-      type: 'identify_user',
-      reqnum: storeReqnum,
-      data: {
-        FirstName: action.payload.first_name,
-        MiddleName: action.payload.middle_name,
-        SurName: action.payload.last_name,
-        INN: action.payload.inn,
-        OGRN: storeOgrn.ogrn
-      }
-    }
-
-    console.log('api', api)
     try {
       yield put({
         type: GET_IDENTIFY_USER + START,
         loading: action.payload.inn
       })
 
-      /* Переключение на mock данные
+      /* Переключение на mock данные*/
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -288,7 +275,17 @@ const identifyUserSaga = function * () {
             method: 'POST',
             mode: 'cors',
             credentials: 'include',
-            body : JSON.stringify(api),
+            body : JSON.stringify({ 
+              type: 'identify_user',
+              reqnum: storeReqnum,
+              data: {
+                FirstName: action.payload.first_name,
+                MiddleName: action.payload.middle_name,
+                SurName: action.payload.last_name,
+                INN: action.payload.inn,
+                OGRN: storeOgrn.ogrn
+              }
+            }),
           }
         )
         .then(res => {
@@ -296,10 +293,13 @@ const identifyUserSaga = function * () {
           throw new TypeError("Ошибка получения данных!")
         })
       })
-      */
+      
   
-      // console.log('RES | GET USER INFO | ', res)
-      const updatedUserInfo = yield trasform._identifyUserInfo(storeOgrn, identifyInfoMock, action.payload.inn)
+      console.log('RES | GET USER INFO | ', res)
+      const data = res.data
+      
+      // const data = identifyInfoMock
+      const updatedUserInfo = yield trasform._identifyUserInfo(storeOgrn, data, action.payload.inn)
 
       yield put({
         type: GET_IDENTIFY_USER + SUCCESS,
@@ -322,21 +322,12 @@ const loadCompanyPCSaga = function * () {
     const store = state => state[moduleName].get('companyResponse')
     const storeInn = yield select(store)
 
-    const api = { 
-      type: 'get_company_ps',
-      reqnum: action.id,
-      data: {
-        code: storeInn.inn
-      }
-    }
-
-    console.log('api', api)
     try {
       yield put({
         type: LOAD_COMPANY_INFO + PC + UPDATE + START
       })
 
-      /*
+      /* Запрос данных о приемниках */
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -344,7 +335,13 @@ const loadCompanyPCSaga = function * () {
             method: 'POST',
             mode: 'cors',
             credentials: 'include',
-            body : JSON.stringify(api),
+            body : JSON.stringify({ 
+              type: 'get_company_ps',
+              reqnum: action.id,
+              data: {
+                code: storeInn.inn
+              }
+            }),
           }
         )
         .then(res => {
@@ -352,11 +349,11 @@ const loadCompanyPCSaga = function * () {
           throw new TypeError("Данные о кампании не обновлены!")
         })
       })
-  
+      
+      /* Получение данных из mock */
+      // const data = bicompactPCResMock
+      
       const data = res.data
-      */
-
-      const data = bicompactPCResMock
       console.log('RES | PC update | ', data)
       const store = state => state[moduleName].get('companyResponse')
       
