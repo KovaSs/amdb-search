@@ -2,7 +2,7 @@ import { Record, Map } from 'immutable'
 import { createSelector } from 'reselect'
 import { all, put, take, call, select } from 'redux-saga/effects'
 import { trasform } from "../../services/transformData"
-import { companyRes, identifyInfo } from '../mock'
+import { companyRes, identifyInfoMock, bicompactResMock, bicompactPCResMock } from '../mock'
 
 /** Constants */
 export const moduleName = 'openBill'
@@ -199,11 +199,13 @@ const loadCompanyInfoSaga = function * () {
         code: action.inn
       }
     }
+    console.log('api', api)
     try {
       yield put({
         type: LOAD_COMPANY_INFO + UPDATE + START
       })
   
+      /* Переключение на mock данные
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -222,13 +224,19 @@ const loadCompanyInfoSaga = function * () {
 
       const data = res.data
       console.log('RES | first update | ', res)
+      */
+
+      const data = bicompactResMock
+      console.log('RES | first update | ', bicompactResMock)
+
       const store = state => state[moduleName].get('companyResponse')
       const companyResponse = yield select(store)
       const updatedData = yield trasform._get_company_info_companySource(companyResponse, data)
   
       yield put({
         type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,
-        id: res.reqnum,
+        // id: res.reqnum,
+        id: 1,
         payload: {updatedData},
       })
     } catch (err){
@@ -267,7 +275,7 @@ const identifyUserSaga = function * () {
         loading: action.payload.inn
       })
 
-      /*
+      /* Переключение на mock данные
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -286,7 +294,7 @@ const identifyUserSaga = function * () {
       */
   
       // console.log('RES | GET USER INFO | ', res)
-      const updatedUserInfo = yield trasform._identifyUserInfo(storeOgrn, identifyInfo, action.payload.inn)
+      const updatedUserInfo = yield trasform._identifyUserInfo(storeOgrn, identifyInfoMock, action.payload.inn)
 
       yield put({
         type: GET_IDENTIFY_USER + SUCCESS,
@@ -316,11 +324,14 @@ const loadCompanyPCSaga = function * () {
         code: storeInn.inn
       }
     }
+
+    console.log('api', api)
     try {
       yield put({
         type: LOAD_COMPANY_INFO + PC + UPDATE + START
       })
 
+      /*
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -338,6 +349,9 @@ const loadCompanyPCSaga = function * () {
       })
   
       const data = res.data
+      */
+
+      const data = bicompactPCResMock
       console.log('RES | PC update | ', data)
       const store = state => state[moduleName].get('companyResponse')
       
