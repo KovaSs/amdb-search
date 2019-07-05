@@ -3,10 +3,16 @@ import { connect } from "react-redux"
 import ManagmentItem from './ManagmentItem'
 import PropTypes from 'prop-types'
 import { trasform } from "../../../../../services/transformData";
-import { decodedRequestLoading, decodedManagementSource, identifyUser, decodedCompanyName } from "../../../../../store/ducks/openBill";
+import { 
+  decodedRequestLoading, 
+  decodedManagementSource, 
+  identifyUser, 
+  decodedCompanyName, 
+  actionChangeUserData 
+} from "../../../../../store/ducks/openBill";
 
 /** Вывод данных об руководстве */
-const ManagmentData = ({managementSource, identifyUser, requestLoading, companyName}) => {
+const ManagmentData = ({managementSource, identifyUser, requestLoading, companyName, actionChangeUserData}) => {
 
   const managementInfo = trasform._managementSource(managementSource)
   const heads = managementInfo.find( item => item.id === 'heads');
@@ -16,7 +22,8 @@ const ManagmentData = ({managementSource, identifyUser, requestLoading, companyN
       key={item.inn} 
       item={item} 
       activeKey={item.inn} 
-      searchData={'heads'} 
+      searchData={'heads'}
+      actionChangeUserData={actionChangeUserData}
       identifyUser={identifyUser}
       companyName={companyName}
       loading={requestLoading}
@@ -35,7 +42,8 @@ const putStateToProps = state => {
 }
 
 const putActionsToProps = {
-  identifyUser
+  identifyUser,
+  actionChangeUserData
 }
 
 export default connect(putStateToProps, putActionsToProps)(ManagmentData)

@@ -7,6 +7,16 @@ import {region} from "../../../../../../store/mock";
 export class ManagmentItem extends PureComponent {
   state = {
     edited: false,
+    parseAddress: {
+      CityExp: '', // Нас. пункт
+      StreetExp: '', // Улица
+      HouseExp: '', // Номер дома
+      BuildExp: '', // Корп
+      BuildingExp: '', // Стр
+      FlatExp: '', // Квар
+      RegionExp: '', // Код региона
+      RegionExpText: "" // Регион
+    },
     user: {
       inn: "",
       fio: "",
@@ -110,6 +120,7 @@ export class ManagmentItem extends PureComponent {
         user,
         user: { inn, fio, passport, birthday, address },
         userSelected,
+        parseAddress: {CityExp, StreetExp, HouseExp, BuildExp, BuildingExp, FlatExp, RegionExpText},
         edited
       } = this.state;
       const descrArr = [];
@@ -133,7 +144,7 @@ export class ManagmentItem extends PureComponent {
               { this._renderInut(passport, "passport") }
             </DescriptionsItem>
           )
-          !edited && passport !== "" && descrArr.push(
+          !edited && (passport !== "" || userSelected.passport) && descrArr.push(
             <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Паспорт" span={1} >
               { userSelected.passport  ? userSelected.passport : `${passport[0].seria} ${passport[0].number}` }
             </DescriptionsItem>
@@ -144,7 +155,7 @@ export class ManagmentItem extends PureComponent {
               { this._renderInut(birthday, "birthday") }
             </DescriptionsItem>
           )
-          !edited && birthday !== "" && descrArr.push(
+          !edited && (birthday !== "" || userSelected.birthday) && descrArr.push(
             <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Дата рождения" span={1} >
               { userSelected.birthday  ? userSelected.birthday : birthday[0] }
             </DescriptionsItem>
@@ -155,9 +166,13 @@ export class ManagmentItem extends PureComponent {
               { this._renderInut(address, "address") }
             </DescriptionsItem>
           );
-          !edited && address !== "" && descrArr.push(
+          !edited && (address !== "" || (CityExp || StreetExp || HouseExp || BuildExp || BuildingExp || FlatExp || RegionExpText)) && descrArr.push(
             <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Адрес" span={1} >
-              { userSelected.address  ? userSelected.address : address[0] }
+              { 
+                (CityExp || StreetExp || HouseExp || BuildExp || BuildingExp || FlatExp || RegionExpText) ?
+                `${RegionExpText.toUpperCase()} ${StreetExp.toUpperCase()} ${HouseExp.toUpperCase()} ${BuildExp.toUpperCase()} ${BuildingExp.toUpperCase()} ${FlatExp.toUpperCase()}` :
+                address[0]
+              }
             </DescriptionsItem>
           );
         }
@@ -209,15 +224,28 @@ export class ManagmentItem extends PureComponent {
 
   /* Парсинг адреса */
   parsingSelectAddress = address => {
-    var p = address.split(' ');
+    if(!address) return this.setState(({parseAddress}) => ({
+      parseAddress: {
+        CityExp: "", // Нас. пункт
+        StreetExp: "", // Улица
+        HouseExp: "", // Номер дома
+        BuildExp: "", // Корп
+        BuildingExp: "", // Стр
+        FlatExp: "", // Квар
+        RegionExp: "", // Регион
+      }
+    })) 
+
+    let p = address.split(' ');
   
-    var CityExp = ''; // Нас. пункт
-    var StreetExp = ''; // Улица
-    var HouseExp = ''; // Номер дома
-    var BuildExp = ''; // Корп
-    var BuildingExp = ''; // Стр
-    var FlatExp = ''; // Квар
-    var i = p.length - 1;
+    let RegionExp = ''; // Регион
+    let CityExp = ''; // Нас. пункт
+    let StreetExp = ''; // Улица
+    let HouseExp = ''; // Номер дома
+    let BuildExp = ''; // Корп
+    let BuildingExp = ''; // Стр
+    let FlatExp = ''; // Квар
+    let i = p.length - 1;
     if (parseInt(p[i - 3])) {
       FlatExp = p.pop();
       BuildingExp = p.pop();
@@ -235,27 +263,52 @@ export class ManagmentItem extends PureComponent {
     }
     StreetExp = p.pop();
     if (p.length) CityExp = p.pop();
-    console.log('CityExp', CityExp)
-    console.log('StreetExp', StreetExp)
-    console.log('HouseExp', HouseExp)
-    console.log('BuildExp', BuildExp)
-    console.log('BuildingExp', BuildingExp)
-    console.log('FlatExp', FlatExp)
+    if (p.length) {
+      RegionExp = region.filter(item => item.title.toUpperCase().indexOf(p[0].toUpperCase()) !== -1)[0]
+    }
+
+    console.log('Искодный адрес', address) // Регион
+    console.log('RegionExp', RegionExp ? RegionExp.value : RegionExp) // Регион
+    console.log('CityExp', CityExp) // Нас. пункт
+    console.log('StreetExp', StreetExp) // Улица
+    console.log('HouseExp', HouseExp) // Дом
+    console.log('BuildExp', BuildExp) // Корп
+    console.log('BuildingExp', BuildingExp) // Стр
+    console.log('FlatExp', FlatExp) // Квартира
     console.log('----------------------')
+    this.setState(({parseAddress}) => ({
+      parseAddress: {
+        CityExp, // Нас. пункт
+        StreetExp, // Улица
+        HouseExp, // Номер дома
+        BuildExp, // Корп
+        BuildingExp, // Стр
+        FlatExp, // Квар
+        RegionExp: RegionExp.value, // Регион
+        RegionExpText: RegionExp.title// Регион
+      }
+    })) 
   }
 
 
   /* Рендеринг редактируемых инпутов  */
   _renderInut = (data, keyId) => {
     const { Option } = AutoComplete;
-    const { user, userSelected } = this.state
+    const { user, userSelected, parseAddress } = this.state
 
     // Изменение state через onChange
     const handleChangeInn = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, inn: value } }))
     const handleChangeFio = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, fio: value } }))
     const handleChangeBirthday = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, birthday: value } }))
-    const handleChangeAddress = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, address: value } }))
     const handleChangePassport = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, passport: value } }))
+    // Изменение распарсенного адреса
+    const handleChangeAddressRegionExp = value =>  this.setState(({ parseAddress }) => ( { parseAddress: { ...parseAddress, RegionExpText: value } }))
+    const handleChangeAddressCityExp = e => { const value = e.target.value; return this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, CityExp: value} })) }
+    const handleChangeAddressStreetExp = e => { const value = e.target.value; return this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, StreetExp: value} })) }
+    const handleChangeAddressHouseExp = e => { const value = e.target.value; return this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, HouseExp: value} })) }
+    const handleChangeAddressBuildExp = e => { const value = e.target.value; return this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, BuildExp: value} })) }
+    const handleChangeAddressBuildingExp = e => { const value = e.target.value; return this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, BuildingExp: value} })) }
+    const handleChangeAddressFlatExp = e => { const value = e.target.value; return this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, FlatExp: value} })) }
     // Изменение state через onSelect
     const handleSelectOption = (value, option) =>  this.setState(({ userSelected }) => {
       if(option.props.text === "address") this.parsingSelectAddress(value)
@@ -263,10 +316,19 @@ export class ManagmentItem extends PureComponent {
       if(option.props.text === "fio") this.parsingSelectFio(value)
       return { userSelected: { ...userSelected, [option.props.text]: value } }
     })
-    const handleSelectRegionOption = (value, option) => {
-      console.log('value', value)
-      console.log('option', option)
+    const handleSelectAddressOption = value =>  {
+      this.parsingSelectAddress(value)
     }
+    // Изменение региона на onChange
+    const handleSelectRegionOption = value => this.setState(({parseAddress}) => {
+      return {
+        parseAddress: {
+          ...parseAddress, 
+          RegionExpText: value, 
+          RegionExp: region.filter(item => item.title.toUpperCase().indexOf(value.toUpperCase()) !== -1)[0].value
+        }
+      }
+    })
     // Рендеринг опций выпадающего меню
     const renderOption = item => {
       return (
@@ -278,7 +340,7 @@ export class ManagmentItem extends PureComponent {
     // Рендеринг опций выпадающего меню
     const renderRegionOption = item => {
       return (
-        <Option key={item.value} text={keyId} title={item.title} value={item.value}>
+        <Option key={item.value} text="RegionExpText" title={item.title} value={item.title}>
           {item.title}
         </Option>
       );
@@ -333,31 +395,31 @@ export class ManagmentItem extends PureComponent {
       return (
         <>
           <AutoComplete
-            key={region}
+            key="region"
             style={{ width: 250 }}
             size="small"
+            value={parseAddress.RegionExpText}
             dataSource={region.map(renderRegionOption)}
+            onChange={handleChangeAddressRegionExp}
             onSelect={handleSelectRegionOption}
             placeholder="Регион"
             filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
             allowClear
           />
-          <Input placeholder="Населенный пункт" style={{ width: 150 }} size="small"/>
-          <Input placeholder="Улица" style={{ width: 150 }} size="small"/>
-          <Input placeholder="№ дома" style={{ width: 80 }} size="small"/>
-          <Input placeholder="Корпус" style={{ width: 80 }} size="small"/>
-          <Input placeholder="Строение" style={{ width: 80 }} size="small"/>
-          <Input placeholder="Квартира" style={{ width: 80 }} size="small"/>
+          <Input value={parseAddress.CityExp} onChange={handleChangeAddressCityExp} placeholder="Населенный пункт" style={{ width: 150 }} size="small"/>
+          <Input value={parseAddress.StreetExp} onChange={handleChangeAddressStreetExp} placeholder="Улица" style={{ width: 150 }} size="small"/>
+          <Input value={parseAddress.HouseExp} onChange={handleChangeAddressHouseExp} placeholder="№ дома" style={{ width: 80 }} size="small"/>
+          <Input value={parseAddress.BuildExp} onChange={handleChangeAddressBuildExp} placeholder="Корпус" style={{ width: 80 }} size="small"/>
+          <Input value={parseAddress.BuildingExp} onChange={handleChangeAddressBuildingExp} placeholder="Строение" style={{ width: 80 }} size="small"/>
+          <Input value={parseAddress.FlatExp} onChange={handleChangeAddressFlatExp} placeholder="Квартира" style={{ width: 80 }} size="small"/>
           {"  "}
           {user.address && <AutoComplete
             key={keyId}
             style={{ width: 200 }}
             size="small"
-            value={userSelected[keyId]}
             dataSource={user.address ? data.map(renderOption) : false}
-            onSelect={handleSelectOption}
-            onChange={handleChangeAddress}
-            placeholder="Выберите адрес для автозаполнения"
+            onChange={handleSelectAddressOption}
+            placeholder="Автозаполнения адреса"
             filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
             allowClear
           />}
@@ -382,12 +444,7 @@ export class ManagmentItem extends PureComponent {
   };
 
   render() {
-    const {
-      item,
-      item: { inn },
-      activeKey,
-      searchData
-    } = this.props;
+    const { item, item: { inn }, activeKey, searchData } = this.props;
 
     return (
       <Collapse
@@ -401,8 +458,7 @@ export class ManagmentItem extends PureComponent {
         )}
       >
         {item.name && this.renderFoulderUlItem(item, activeKey)}
-        {item.middle_name &&
-          this.renderFoulderFlItem(item, activeKey, searchData)}
+        {item.middle_name && this.renderFoulderFlItem(item, activeKey, searchData)}
       </Collapse>
     );
   }

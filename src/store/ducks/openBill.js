@@ -113,6 +113,13 @@ export const actionChangeInn = inn => {
   }
 }
 
+export const actionChangeUserData = user => {
+  return {
+    type: ACTION_CHANGE_INN,
+    payload: {user}
+  }
+}
+
 export const loadCompanyInfo = inn => {
   return {
     type: LOAD_COMPANY_INFO,
