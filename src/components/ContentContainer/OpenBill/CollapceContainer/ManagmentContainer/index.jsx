@@ -3,10 +3,10 @@ import { connect } from "react-redux"
 import ManagmentItem from './ManagmentItem'
 import PropTypes from 'prop-types'
 import { trasform } from "../../../../../services/transformData";
-import { decodedRequestLoading, decodedManagementSource, identifyUser } from "../../../../../store/ducks/openBill";
+import { decodedRequestLoading, decodedManagementSource, identifyUser, decodedCompanyName } from "../../../../../store/ducks/openBill";
 
 /** Вывод данных об руководстве */
-const ManagmentData = ({managementSource, identifyUser, requestLoading}) => {
+const ManagmentData = ({managementSource, identifyUser, requestLoading, companyName}) => {
 
   const managementInfo = trasform._managementSource(managementSource)
   const heads = managementInfo.find( item => item.id === 'heads');
@@ -18,6 +18,7 @@ const ManagmentData = ({managementSource, identifyUser, requestLoading}) => {
       activeKey={item.inn} 
       searchData={'heads'} 
       identifyUser={identifyUser}
+      companyName={companyName}
       loading={requestLoading}
     />
   ))
@@ -28,7 +29,8 @@ const ManagmentData = ({managementSource, identifyUser, requestLoading}) => {
 const putStateToProps = state => {
   return {
     requestLoading: decodedRequestLoading(state),
-    managementSource: decodedManagementSource(state)
+    managementSource: decodedManagementSource(state),
+    companyName: decodedCompanyName(state)
   }
 }
 

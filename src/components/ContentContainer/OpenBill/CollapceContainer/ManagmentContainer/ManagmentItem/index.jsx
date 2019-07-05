@@ -1,7 +1,8 @@
 import React, { PureComponent } from "react";
-import { Collapse, Icon, Spin, Descriptions, AutoComplete } from "antd";
+import { Collapse, Icon, Spin, Descriptions, AutoComplete, Input} from "antd";
 import LeaderHeader from "../LeaderHeader";
 import PropTypes from "prop-types";
+import {region} from "../../../../../../store/mock";
 
 export class ManagmentItem extends PureComponent {
   state = {
@@ -69,10 +70,8 @@ export class ManagmentItem extends PureComponent {
   /* Рендеринг физического лица */
   renderFoulderFlItem = (item, key, id) => {
     const { Item: DescriptionsItem } = Descriptions;
-    const { identifyUser, loading } = this.props;
+    const { identifyUser, loading, companyName } = this.props;
     const { Panel } = Collapse;
-    console.log('ITEM-INN', item.inn)
-    console.log('LOADING', loading.identifyUser[item.inn])
 
     const BtnExtra = ({ user }) => {
       const { identifyUser } = this.props;
@@ -117,25 +116,15 @@ export class ManagmentItem extends PureComponent {
       const id = "heads";
       for (const key in user) {
         if (user.hasOwnProperty(key) && key === "inn") {
-          edited && descrArr.push(
+          inn.length > 1 && edited && descrArr.push(
             <DescriptionsItem  key={`${id}-${key}`} id={`${id}-${key}`} label="ИНН" span={1} >
               { this._renderInut(inn, "inn") }
             </DescriptionsItem>
           )
-          !edited && inn !== "" && descrArr.push(
-            <DescriptionsItem  key={`${id}-${key}`} id={`${id}-${key}`} label="ИНН" span={1} >
-              { userSelected.inn  ? userSelected.inn : inn[0] }
-            </DescriptionsItem>
-          )
         } else if (user.hasOwnProperty(key) && key === "fio") {
-          edited && descrArr.push(
+          fio.length > 1 && edited && descrArr.push(
             <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="ФИО" span={1} >
               { this._renderInut(fio, "fio") }
-            </DescriptionsItem>
-          )
-          !edited && fio !== "" && descrArr.push(
-            <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="ФИО" span={1} >
-              { userSelected.fio  ? userSelected.fio : fio[0] }
             </DescriptionsItem>
           )
         } else if ( user.hasOwnProperty(key) && key === "passport" ) {
@@ -179,7 +168,7 @@ export class ManagmentItem extends PureComponent {
     return (
       <Panel
         key={String(key)}
-        header={<LeaderHeader {...item} id={id} />}
+        header={<LeaderHeader {...item} companyName={companyName} id={id} />}
         extra={<BtnExtra user={item} identifyUser={identifyUser} />}
       >
         <Spin spinning={loading.identifyUser[item.inn] ? true : false}>
@@ -196,6 +185,65 @@ export class ManagmentItem extends PureComponent {
     );
   };
 
+  /* Парсинг Паспорта */
+  parsingSelectPassport = passport => {
+    const passArr = passport.split(" ")
+    const number = passArr.pop()
+    const seria = passArr.pop()
+    console.log('Серия', seria)
+    console.log('Номер', number)
+    console.log('----------------------')
+  }
+
+  /* Парсинг ФИО */
+  parsingSelectFio = fio => {
+    const fioArr = fio.split(" ")
+    const middle_name = fioArr.pop()
+    const first_name = fioArr.pop()
+    const last_name = String(fioArr)
+    console.log('Имя', first_name)
+    console.log('Отчество', middle_name)
+    console.log('Фамилия', last_name)
+    console.log('----------------------')
+  }
+
+  /* Парсинг адреса */
+  parsingSelectAddress = address => {
+    var p = address.split(' ');
+  
+    var CityExp = ''; // Нас. пункт
+    var StreetExp = ''; // Улица
+    var HouseExp = ''; // Номер дома
+    var BuildExp = ''; // Корп
+    var BuildingExp = ''; // Стр
+    var FlatExp = ''; // Квар
+    var i = p.length - 1;
+    if (parseInt(p[i - 3])) {
+      FlatExp = p.pop();
+      BuildingExp = p.pop();
+      BuildExp = p.pop();
+      HouseExp = p.pop();
+    } else if (parseInt(p[i - 2])) {
+      FlatExp = p.pop();
+      BuildExp = p.pop();
+      HouseExp = p.pop();
+    } else if (parseInt(p[i - 1])) {
+      FlatExp = p.pop();
+      HouseExp = p.pop();
+    } else {
+      HouseExp = p.pop();
+    }
+    StreetExp = p.pop();
+    if (p.length) CityExp = p.pop();
+    console.log('CityExp', CityExp)
+    console.log('StreetExp', StreetExp)
+    console.log('HouseExp', HouseExp)
+    console.log('BuildExp', BuildExp)
+    console.log('BuildingExp', BuildingExp)
+    console.log('FlatExp', FlatExp)
+    console.log('----------------------')
+  }
+
 
   /* Рендеринг редактируемых инпутов  */
   _renderInut = (data, keyId) => {
@@ -209,12 +257,29 @@ export class ManagmentItem extends PureComponent {
     const handleChangeAddress = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, address: value } }))
     const handleChangePassport = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, passport: value } }))
     // Изменение state через onSelect
-    const handleSelectOption = (value, option) =>  this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, [option.props.text]: value } }))
+    const handleSelectOption = (value, option) =>  this.setState(({ userSelected }) => {
+      if(option.props.text === "address") this.parsingSelectAddress(value)
+      if(option.props.text === "passport") this.parsingSelectPassport(value)
+      if(option.props.text === "fio") this.parsingSelectFio(value)
+      return { userSelected: { ...userSelected, [option.props.text]: value } }
+    })
+    const handleSelectRegionOption = (value, option) => {
+      console.log('value', value)
+      console.log('option', option)
+    }
     // Рендеринг опций выпадающего меню
     const renderOption = item => {
       return (
         <Option key={item} text={keyId} title={item}>
           {item}
+        </Option>
+      );
+    };
+    // Рендеринг опций выпадающего меню
+    const renderRegionOption = item => {
+      return (
+        <Option key={item.value} text={keyId} title={item.title} value={item.value}>
+          {item.title}
         </Option>
       );
     };
@@ -266,18 +331,37 @@ export class ManagmentItem extends PureComponent {
       );
     } else if ( keyId === "address") {
       return (
-        <AutoComplete
-          key={keyId}
-          style={{ width: 400 }}
-          size="small"
-          value={userSelected[keyId]}
-          dataSource={user.address ? data.map(renderOption) : false}
-          onSelect={handleSelectOption}
-          onChange={handleChangeAddress}
-          placeholder="Введите адрес"
-          filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
-          allowClear
-        />
+        <>
+          <AutoComplete
+            key={region}
+            style={{ width: 250 }}
+            size="small"
+            dataSource={region.map(renderRegionOption)}
+            onSelect={handleSelectRegionOption}
+            placeholder="Регион"
+            filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
+            allowClear
+          />
+          <Input placeholder="Населенный пункт" style={{ width: 150 }} size="small"/>
+          <Input placeholder="Улица" style={{ width: 150 }} size="small"/>
+          <Input placeholder="№ дома" style={{ width: 80 }} size="small"/>
+          <Input placeholder="Корпус" style={{ width: 80 }} size="small"/>
+          <Input placeholder="Строение" style={{ width: 80 }} size="small"/>
+          <Input placeholder="Квартира" style={{ width: 80 }} size="small"/>
+          {"  "}
+          {user.address && <AutoComplete
+            key={keyId}
+            style={{ width: 200 }}
+            size="small"
+            value={userSelected[keyId]}
+            dataSource={user.address ? data.map(renderOption) : false}
+            onSelect={handleSelectOption}
+            onChange={handleChangeAddress}
+            placeholder="Выберите адрес для автозаполнения"
+            filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
+            allowClear
+          />}
+        </>
       );
     } else if ( keyId === "passport") {
       return (

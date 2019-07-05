@@ -2,8 +2,8 @@ import { Record, Map } from 'immutable'
 import { createSelector } from 'reselect'
 import { all, put, take, call, select } from 'redux-saga/effects'
 import { trasform } from "../../services/transformData"
-import { companyRes } from '../mock'
-// import { companyRes, identifyInfoMock, bicompactResMock, bicompactPCResMock, ipResMock } from '../mock'
+// import { companyRes } from '../mock'
+import { companyRes, identifyInfoMock, bicompactResMock, bicompactPCResMock, ipResMock } from '../mock'
 
 /** Constants */
 export const moduleName = 'openBill'
@@ -13,6 +13,7 @@ export const ACTION_CHANGE_INN = `${prefix}/ACTION_CHANGE_INN`
 export const LOAD_COMPANY_INFO = `${prefix}/LOAD_COMPANY_INFO`
 export const CLEAR_COMPANY_INFO = `${prefix}/CLEAR_COMPANY_INFO`
 export const GET_IDENTIFY_USER = `${prefix}/GET_IDENTIFY_USER`
+export const GET_IDENTIFY_USER_INFO = `${prefix}/GET_IDENTIFY_USER_INFO`
 
 export const PC = '_PC'
 export const START = '_START'
@@ -138,28 +139,23 @@ export const companyResSelector = state => state[moduleName].get('companyRespons
 export const renderDataSelector = state => state[moduleName].get('renderData')
 export const reqnumSelector = state => state[moduleName].get('reqnum')
 export const innSelector = state => state[moduleName].get('inn')
+export const nameCompanySelector = state => state[moduleName].getIn(['companyResponse', 'name'])
 export const requestLoadingSelector = state => state[moduleName].get('requestLoading').toJS()
 export const errorsSelector = state => state[moduleName].get('errors').toJS()
 
-export const decodedCompanyResponse = createSelector(
-  companyResSelector, (companyResponse) =>  companyResponse
-)
+export const decodedCompanyResponse = createSelector( companyResSelector, (companyResponse) =>  companyResponse )
 
-export const decodedReqnum = createSelector(
-  reqnumSelector, (reqnum) => reqnum
-)
+export const decodedCompanyName = createSelector( nameCompanySelector, (companyName) =>  companyName )
 
-export const decodedInn = createSelector(
-  innSelector, (inn) => inn
-)
+export const decodedReqnum = createSelector( reqnumSelector, (reqnum) => reqnum )
 
-export const decodedErrors = createSelector(
-  errorsSelector, (errors) => errors
-)
+export const decodedInn = createSelector( innSelector, (inn) => inn )
 
-export const decodedRenderData = createSelector(
-  renderDataSelector, (renderData) => renderData
-)
+export const decodedErrors = createSelector( errorsSelector, (errors) => errors )
+
+export const decodedRenderData = createSelector( renderDataSelector, (renderData) => renderData )
+
+export const decodedRequestLoading = createSelector( requestLoadingSelector, (requestLoading) => requestLoading )
 
 export const decodedMainCompanySource = createSelector(
   companyResSelector, (companyResponse) => {
@@ -184,10 +180,6 @@ export const decodedManagementSource = createSelector(
   }
 )
 
-export const decodedRequestLoading = createSelector(
-  requestLoadingSelector, (requestLoading) => requestLoading
-)
-
 /** Sagas */
 
 /* Получение основных данных о кампании */
@@ -200,7 +192,7 @@ const loadCompanyInfoSaga = function * () {
         type: LOAD_COMPANY_INFO + UPDATE + START
       })
   
-      /* Переключение на mock данные*/
+      /* Переключение на mock данные 
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -223,11 +215,11 @@ const loadCompanyInfoSaga = function * () {
       })
 
       const data = res.data
-      console.log('RES | first update | ', res)
+      console.log('RES | first update | ', res)*/
 
       /* Mock данные о ЮЛ */
-      // const data = bicompactResMock
-      // console.log('RES | first update | ', bicompactResMock)
+      const data = bicompactResMock
+      console.log('RES | first update | ', bicompactResMock)
       
       /** Mock данные о ФЛ */
       // const data = ipResMock
@@ -239,9 +231,8 @@ const loadCompanyInfoSaga = function * () {
   
       yield put({
         type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,
-        id: res.reqnum,
-        // Разкоментировать при работе с mock данными
-        // id: 1,
+        // id: res.reqnum, // Закоментировать при работе с mock данными
+        id: 1, // Разкоментировать при работе с mock данными
         payload: {updatedData},
       })
     } catch (err){
@@ -267,7 +258,7 @@ const identifyUserSaga = function * () {
         loading: action.payload.inn
       })
 
-      /* Переключение на mock данные*/
+      /* Переключение на mock данные 
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -295,10 +286,13 @@ const identifyUserSaga = function * () {
       })
       
   
-      console.log('RES | GET USER INFO | ', res)
       const data = res.data
+      console.log('RES | GET USER INFO | ', res)*/
       
-      // const data = identifyInfoMock
+      /** Mock данные о Идентификационных данных */
+      const data = identifyInfoMock
+      console.log('RES | GET USER INFO | ', data)
+
       const updatedUserInfo = yield trasform._identifyUserInfo(storeOgrn, data, action.payload.inn)
 
       yield put({
@@ -309,6 +303,72 @@ const identifyUserSaga = function * () {
     } catch (err){
       yield put({
         type: GET_IDENTIFY_USER + FAIL,
+        error: action.payload.inn
+      })
+    }
+  }
+}
+
+/* Получение полной информации из источников об проверяемом пользователе */
+const identifyUserInfoSaga = function * () {
+  while(true){
+    const action = yield take(GET_IDENTIFY_USER_INFO)
+    const reqnum = state => state[moduleName].get('reqnum')
+    const companyState = state => state[moduleName].get('companyResponse')
+    const storeReqnum = yield select(reqnum)
+    const storeOgrn = yield select(companyState)
+
+    try {
+      yield put({
+        type: GET_IDENTIFY_USER_INFO + START,
+        loading: action.payload.inn
+      })
+
+      /* Переключение на mock данные 
+      const res = yield call(() => {
+        return fetch(
+          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+          { 
+            method: 'POST',
+            mode: 'cors',
+            credentials: 'include',
+            body : JSON.stringify({ 
+              type: 'identify_user',
+              reqnum: storeReqnum,
+              data: {
+                FirstName: action.payload.first_name,
+                MiddleName: action.payload.middle_name,
+                SurName: action.payload.last_name,
+                INN: action.payload.inn,
+                OGRN: storeOgrn.ogrn
+              }
+            }),
+          }
+        )
+        .then(res => {
+          if (res.ok) return res.json()
+          throw new TypeError("Ошибка получения данных!")
+        })
+      })
+      
+  
+      const data = res.data
+      console.log('RES | GET USER INFO | ', res)*/
+      
+      /** Mock данные о Идентификационных данных */
+      const data = identifyInfoMock
+      console.log('RES | GET USER INFO | ', data)
+
+      const updatedUserInfo = yield trasform._identifyUserInfo(storeOgrn, data, action.payload.inn)
+
+      yield put({
+        type: GET_IDENTIFY_USER_INFO + SUCCESS,
+        payload: {updatedUserInfo},
+        loading: action.payload.inn
+      })
+    } catch (err){
+      yield put({
+        type: GET_IDENTIFY_USER_INFO + FAIL,
         error: action.payload.inn
       })
     }
@@ -327,7 +387,7 @@ const loadCompanyPCSaga = function * () {
         type: LOAD_COMPANY_INFO + PC + UPDATE + START
       })
 
-      /* Запрос данных о приемниках */
+      /* Запрос данных о приемниках 
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -349,11 +409,11 @@ const loadCompanyPCSaga = function * () {
           throw new TypeError("Данные о кампании не обновлены!")
         })
       })
+      const data = res.data*/
       
       /* Получение данных из mock */
-      // const data = bicompactPCResMock
+      const data = bicompactPCResMock
       
-      const data = res.data
       console.log('RES | PC update | ', data)
       const store = state => state[moduleName].get('companyResponse')
       
@@ -386,7 +446,8 @@ export const saga = function * () {
   yield all([
     loadCompanyInfoSaga(),
     loadCompanyPCSaga(),
-    identifyUserSaga()
+    identifyUserSaga(),
+    identifyUserInfoSaga()
   ])
 }
 
