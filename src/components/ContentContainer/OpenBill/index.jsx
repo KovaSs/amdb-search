@@ -18,7 +18,8 @@ class OpenBill extends Component {
   state = {
     showTable : false,
     loading : false,
-    newBill: true
+    newBill: true,
+    error: false
   }  
 
   componentWillReceiveProps(nextProps) {
@@ -47,6 +48,13 @@ class OpenBill extends Component {
     document.title = "AC - Проверка | Открытие счета"
   }
 
+  componentDidCatch(err) {
+    console.log('err', err)
+    return this.setState({
+      error: true
+    })
+  }
+
   toggleVersion = () => {
     const { newBill } = this.state;
     this.setState({
@@ -61,8 +69,9 @@ class OpenBill extends Component {
   }
 
   render() {
-    const { showTable, loading, newBill } = this.state
+    const { showTable, loading, newBill, error } = this.state
     const { renderData } = this.props
+    if(error) return <div style={{textAlign: "center"}}>Ошибка в работе компонента "openBill", пожалуйста перезагрузите страницу</div>
 
     const newOpenBill = (
       <Row className="credit-conveyor">

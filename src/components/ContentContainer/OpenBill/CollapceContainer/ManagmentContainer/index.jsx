@@ -8,11 +8,11 @@ import {
   decodedManagementSource, 
   identifyUser, 
   decodedCompanyName, 
-  actionChangeUserData 
+  actionGetUserCroinformInfo
 } from "../../../../../store/ducks/openBill";
 
 /** Вывод данных об руководстве */
-const ManagmentData = ({managementSource, identifyUser, requestLoading, companyName, actionChangeUserData}) => {
+const ManagmentData = ({managementSource, identifyUser, requestLoading, companyName, actionGetUserCroinformInfo}) => {
 
   const managementInfo = trasform._managementSource(managementSource)
   const heads = managementInfo.find( item => item.id === 'heads');
@@ -23,7 +23,7 @@ const ManagmentData = ({managementSource, identifyUser, requestLoading, companyN
       item={item} 
       activeKey={item.inn} 
       searchData={'heads'}
-      actionChangeUserData={actionChangeUserData}
+      actionGetUserCroinformInfo={actionGetUserCroinformInfo}
       identifyUser={identifyUser}
       companyName={companyName}
       loading={requestLoading}
@@ -43,7 +43,7 @@ const putStateToProps = state => {
 
 const putActionsToProps = {
   identifyUser,
-  actionChangeUserData
+  actionGetUserCroinformInfo
 }
 
 export default connect(putStateToProps, putActionsToProps)(ManagmentData)

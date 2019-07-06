@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Collapse, Icon, Spin, Descriptions, AutoComplete, Input} from "antd";
+import { Collapse, Icon, Spin, Descriptions, AutoComplete, Input, Button} from "antd";
 import LeaderHeader from "../LeaderHeader";
 import PropTypes from "prop-types";
 import {region} from "../../../../../../store/mock";
@@ -7,6 +7,7 @@ import {region} from "../../../../../../store/mock";
 export class ManagmentItem extends PureComponent {
   state = {
     edited: false,
+    error: false,
     parseAddress: {
       CityExp: '', // Нас. пункт
       StreetExp: '', // Улица
@@ -73,9 +74,42 @@ export class ManagmentItem extends PureComponent {
     }
   }
 
+  componentDidCatch(err) {
+    console.log('err', err)
+    return this.setState({
+      error: true
+    })
+  }
+
   toggleEdited = () => {
     this.setState(({ edited }) => ({ edited: !edited }));
   };
+
+  getCroinformIdentifyRequest = e => {
+    e.stopPropagation();
+    const { userSelected, parseAddress } = this.state;
+    const { item, actionGetUserCroinformInfo } = this.props;
+    const user = {
+      INN: userSelected.inn ? userSelected.inn : item.inn ,
+      FirstName: userSelected.fio ? this.parsingSelectFio(userSelected.fio).FirstName : item.first_name, 
+      FirstNameArch: userSelected.fio ? this.parsingSelectFio(userSelected.fio).FirstName : item.first_name,
+      MiddleName: userSelected.fio ? this.parsingSelectFio(userSelected.fio).MiddleName : item.middle_name,
+      SurName: userSelected.fio ? this.parsingSelectFio(userSelected.fio).SurName : item.last_name,
+      DateOfBirth: userSelected.birthday, 
+      Seria: this.parsingSelectPassport(userSelected.passport).Seria,
+      Number: this.parsingSelectPassport(userSelected.passport).Number,
+
+      RegionExp: parseAddress.RegionExp, 
+      CityExp: parseAddress.CityExp, 
+      StreetExp: parseAddress.StreetExp, 
+      HouseExp: parseAddress.HouseExp, 
+      BuildExp: parseAddress.BuildExp, 
+      BuildingExp: parseAddress.BuildingExp, 
+      FlatExp: parseAddress.FlatExp, 
+    }
+    console.log('user', user)
+    actionGetUserCroinformInfo(user)
+  }
 
   /* Рендеринг физического лица */
   renderFoulderFlItem = (item, key, id) => {
@@ -85,6 +119,8 @@ export class ManagmentItem extends PureComponent {
 
     const BtnExtra = ({ user }) => {
       const { identifyUser } = this.props;
+      const { userSelected, parseAddress, edited } = this.state;
+      const croinformDisabled = !userSelected.inn && !userSelected.fio && !userSelected.passport && !parseAddress.RegionExp && !parseAddress.CityExp && !parseAddress.StreetExp &&!parseAddress.HouseExp
 
       const editUserInfo = e => {
         e.stopPropagation();
@@ -98,16 +134,27 @@ export class ManagmentItem extends PureComponent {
 
       return (
         <span className="heads-search">
-          <Icon
+          <Button
+            title="Проверить в Croinform"
+            size="small"
+            style={{color: (croinformDisabled || edited) ? "gray" : "rgba(14, 117, 253, 0.992)", marginRight: 5}}
+            disabled={croinformDisabled || edited}
+            icon="global"
+            onClick={e => this.getCroinformIdentifyRequest(e)}
+          />
+          <Button
             title="Редактировать"
-            className={`heads-search-btn${this.state.edited ? "-green" : ""}`}
-            type={this.state.edited ? "check" : "form"}
+            size="small"
+            style={{color: this.state.edited ? "#52c41a" : "rgba(14, 117, 253, 0.992)", marginRight: 5}}
+            // className={`heads-search-btn${this.state.edited ? "-green" : ""}`}
+            icon={this.state.edited ? "check" : "form"}
             onClick={e => editUserInfo(e)}
           />
-          <Icon
+          <Button
             title="Поиск информации"
-            className="heads-search-btn"
-            type="file-search"
+            size="small"
+            style={{color: "rgba(14, 117, 253, 0.992)"}}
+            icon="file-search"
             onClick={e => identifyUserInfo(e)}
           />
         </span>
@@ -203,23 +250,33 @@ export class ManagmentItem extends PureComponent {
   /* Парсинг Паспорта */
   parsingSelectPassport = passport => {
     const passArr = passport.split(" ")
-    const number = passArr.pop()
-    const seria = passArr.pop()
-    console.log('Серия', seria)
-    console.log('Номер', number)
+    const Number = passArr.pop()
+    const Seria = passArr.pop()
+    console.log('Серия', Seria)
+    console.log('Номер', Number)
     console.log('----------------------')
+    return {
+      Seria,
+      Number,
+    }
   }
 
   /* Парсинг ФИО */
   parsingSelectFio = fio => {
     const fioArr = fio.split(" ")
-    const middle_name = fioArr.pop()
-    const first_name = fioArr.pop()
-    const last_name = String(fioArr)
-    console.log('Имя', first_name)
-    console.log('Отчество', middle_name)
-    console.log('Фамилия', last_name)
+    const MiddleName = fioArr.pop()
+    const FirstName = fioArr.pop()
+    const SurName = String(fioArr)
+
+    console.log('Имя', FirstName)
+    console.log('Отчество', MiddleName)
+    console.log('Фамилия', SurName)
     console.log('----------------------')
+    return {
+      FirstName,
+      MiddleName,
+      SurName
+    }
   }
 
   /* Парсинг адреса */
@@ -441,10 +498,12 @@ export class ManagmentItem extends PureComponent {
         />
       );
     }
-  };
+  }
 
   render() {
     const { item, item: { inn }, activeKey, searchData } = this.props;
+    const {error} = this.state
+    if(error) return <div>В компоненте произошла ошибка</div>
 
     return (
       <Collapse

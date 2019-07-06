@@ -2,8 +2,10 @@ import { Record, Map } from 'immutable'
 import { createSelector } from 'reselect'
 import { all, put, take, call, select } from 'redux-saga/effects'
 import { trasform } from "../../services/transformData"
-// import { companyRes } from '../mock'
-import { companyRes, identifyInfoMock, bicompactResMock, bicompactPCResMock, ipResMock } from '../mock'
+import { companyRes, identifyInfoMock, bicompactResMock, bicompactPCResMock, ipResMock, ipCroinformMock } from '../mock'
+
+/* Mock данные */
+const dataMock = { companyRes, identifyInfoMock, bicompactResMock, bicompactPCResMock, ipResMock, ipCroinformMock }
 
 /** Constants */
 export const moduleName = 'openBill'
@@ -13,7 +15,7 @@ export const ACTION_CHANGE_INN = `${prefix}/ACTION_CHANGE_INN`
 export const LOAD_COMPANY_INFO = `${prefix}/LOAD_COMPANY_INFO`
 export const CLEAR_COMPANY_INFO = `${prefix}/CLEAR_COMPANY_INFO`
 export const GET_IDENTIFY_USER = `${prefix}/GET_IDENTIFY_USER`
-export const GET_IDENTIFY_USER_INFO = `${prefix}/GET_IDENTIFY_USER_INFO`
+export const GET_CROINFORM_USER_INFO = `${prefix}/GET_CROINFORM_USER_INFO`
 
 export const PC = '_PC'
 export const START = '_START'
@@ -27,17 +29,20 @@ const ReducerRecord = Record({
   reqnum: '',
   renderData: false,
   companyResponse: null,
+  croinformResponse: new Map({}),
   requestLoading: new Map({
     companyMainInfo: false, 
     companyMainInfoUpdate: false, 
     companyPCUpdate: false,
-    identifyUser: new Map({})
+    identifyUser: new Map({}),
+    croinformRequest: new Map({})
   }),
   errors: new Map({
     companyMainInfo: false, 
     companyMainInfoUpdate: false, 
     companyPCUpdate: false,
-    identifyUser: new Map({})
+    identifyUser: new Map({}),
+    croinformRequest: new Map({})
   })
 })
 
@@ -86,16 +91,30 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
     case GET_IDENTIFY_USER + START:
       return state
         .setIn(['requestLoading', 'identifyUser', action.loading], true)
-        .setIn(['errors', 'identifyUser'], false)
+        .setIn(['errors', 'identifyUser', action.loading], false)
     case GET_IDENTIFY_USER + SUCCESS:
       return state
         .set('companyResponse', payload.updatedUserInfo)
         .setIn(['requestLoading', 'identifyUser', action.loading], false)
-        .setIn(['errors', 'identifyUser'], false) 
+        .setIn(['errors', 'identifyUser', action.loading], false) 
     case GET_IDENTIFY_USER + FAIL:
       return state
-        .setIn(['requestLoading', 'identifyUser'], false)
-        .setIn(['errors', 'identifyUser'], true)
+        .setIn(['requestLoading', 'identifyUser', action.loading], false)
+        .setIn(['errors', 'identifyUser', action.loading], true)
+
+    case GET_CROINFORM_USER_INFO + START:
+      return state
+        .setIn(['requestLoading', 'croinformRequest', action.loading], true)
+        .setIn(['errors', 'croinformRequest', action.loading], false)
+    case GET_CROINFORM_USER_INFO + SUCCESS:
+      return state
+        .setIn(['croinformResponse', action.loading], payload.data)
+        .setIn(['requestLoading', 'croinformRequest', action.loading], false)
+        .setIn(['errors', 'croinformRequest', action.loading], false) 
+    case GET_CROINFORM_USER_INFO + FAIL:
+      return state
+        .setIn(['requestLoading', 'croinformRequest'], false)
+        .setIn(['errors', 'croinformRequest', action.loading], true)
 
     case CLEAR_COMPANY_INFO:
       return new ReducerRecord()
@@ -113,10 +132,10 @@ export const actionChangeInn = inn => {
   }
 }
 
-export const actionChangeUserData = user => {
+export const actionGetUserCroinformInfo = user => {
   return {
-    type: ACTION_CHANGE_INN,
-    payload: {user}
+    type: GET_CROINFORM_USER_INFO,
+    payload: {...user}
   }
 }
 
@@ -199,7 +218,7 @@ const loadCompanyInfoSaga = function * () {
         type: LOAD_COMPANY_INFO + UPDATE + START
       })
   
-      /* Переключение на mock данные 
+      /* Переключение на mock данные */
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -222,14 +241,14 @@ const loadCompanyInfoSaga = function * () {
       })
 
       const data = res.data
-      console.log('RES | first update | ', res)*/
+      console.log('RES | first update | ', res)
 
       /* Mock данные о ЮЛ */
-      const data = bicompactResMock
-      console.log('RES | first update | ', bicompactResMock)
+      // const data = dataMock.bicompactResMock
+      // console.log('RES | first update | ', bicompactResMock)
       
       /** Mock данные о ФЛ */
-      // const data = ipResMock
+      // const data = dataMock.ipResMock
       // console.log('RES | first update | ', bicompactResMock)
 
       const store = state => state[moduleName].get('companyResponse')
@@ -238,8 +257,8 @@ const loadCompanyInfoSaga = function * () {
   
       yield put({
         type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,
-        // id: res.reqnum, // Закоментировать при работе с mock данными
-        id: 1, // Разкоментировать при работе с mock данными
+        id: res.reqnum, // Закоментировать при работе с mock данными
+        // id: 2, // Разкоментировать при работе с mock данными
         payload: {updatedData},
       })
     } catch (err){
@@ -265,7 +284,7 @@ const identifyUserSaga = function * () {
         loading: action.payload.inn
       })
 
-      /* Переключение на mock данные 
+      /* Переключение на mock данные */
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -294,11 +313,11 @@ const identifyUserSaga = function * () {
       
   
       const data = res.data
-      console.log('RES | GET USER INFO | ', res)*/
+      console.log('RES | GET USER INFO | ', res)
       
       /** Mock данные о Идентификационных данных */
-      const data = identifyInfoMock
-      console.log('RES | GET USER INFO | ', data)
+      // const data = dataMock.identifyInfoMock
+      // console.log('RES | GET USER INFO | ', data)
 
       const updatedUserInfo = yield trasform._identifyUserInfo(storeOgrn, data, action.payload.inn)
 
@@ -319,19 +338,19 @@ const identifyUserSaga = function * () {
 /* Получение полной информации из источников об проверяемом пользователе */
 const identifyUserInfoSaga = function * () {
   while(true){
-    const action = yield take(GET_IDENTIFY_USER_INFO)
+    const action = yield take(GET_CROINFORM_USER_INFO)
     const reqnum = state => state[moduleName].get('reqnum')
-    const companyState = state => state[moduleName].get('companyResponse')
     const storeReqnum = yield select(reqnum)
+    const companyState = state => state[moduleName].get('companyResponse')
     const storeOgrn = yield select(companyState)
 
     try {
       yield put({
-        type: GET_IDENTIFY_USER_INFO + START,
-        loading: action.payload.inn
+        type: GET_CROINFORM_USER_INFO + START,
+        loading: action.payload.INN
       })
 
-      /* Переключение на mock данные 
+      /* Переключение на mock данные */
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -340,14 +359,28 @@ const identifyUserInfoSaga = function * () {
             mode: 'cors',
             credentials: 'include',
             body : JSON.stringify({ 
-              type: 'identify_user',
+              type: 'request_user',
               reqnum: storeReqnum,
               data: {
-                FirstName: action.payload.first_name,
-                MiddleName: action.payload.middle_name,
-                SurName: action.payload.last_name,
-                INN: action.payload.inn,
-                OGRN: storeOgrn.ogrn
+                OGRN: storeOgrn.ogrn,
+                INN: action.payload.INN,
+                FirstName: action.payload.FirstName,
+                FirstNameArch: action.payload.FirstNameArch,
+                MiddleName: action.payload.MiddleName,
+                SurName:action.payload.SurName,
+                DateOfBirth: action.payload.DateOfBirth,
+                Seria: action.payload.Seria,
+                Number: action.payload.Number,
+                RegionExp: action.payload.RegionExp,
+                CityExp: action.payload.CityExp,
+                StreetExp: action.payload.StreetExp,
+                HouseExp: action.payload.HouseExp,
+                BuildExp: action.payload.BuildExp,
+                BuildingExp: action.payload.BuildingExp,
+                FlatExp: action.payload.FlatExp,
+                AFF: 1,
+                Exp: 1,
+                ExpArch: 1
               }
             }),
           }
@@ -357,26 +390,25 @@ const identifyUserInfoSaga = function * () {
           throw new TypeError("Ошибка получения данных!")
         })
       })
-      
   
       const data = res.data
-      console.log('RES | GET USER INFO | ', res)*/
+      console.log('RES | GET CROINFORM USER INFO | ', JSON.stringify(res))
       
       /** Mock данные о Идентификационных данных */
-      const data = identifyInfoMock
-      console.log('RES | GET USER INFO | ', data)
+      // const data = dataMock.ipCroinformMock.data
+      // console.log('RES | GET CROINFORM USER INFO | ', data)
 
-      const updatedUserInfo = yield trasform._identifyUserInfo(storeOgrn, data, action.payload.inn)
+      // const updatedUserInfo = yield trasform._identifyUserInfo(storeOgrn, data, action.payload.inn)
 
       yield put({
-        type: GET_IDENTIFY_USER_INFO + SUCCESS,
-        payload: {updatedUserInfo},
-        loading: action.payload.inn
+        type: GET_CROINFORM_USER_INFO + SUCCESS,
+        payload: {data},
+        loading: action.payload.INN
       })
     } catch (err){
       yield put({
-        type: GET_IDENTIFY_USER_INFO + FAIL,
-        error: action.payload.inn
+        type: GET_CROINFORM_USER_INFO + FAIL,
+        error: action.payload.INN
       })
     }
   }
@@ -394,7 +426,7 @@ const loadCompanyPCSaga = function * () {
         type: LOAD_COMPANY_INFO + PC + UPDATE + START
       })
 
-      /* Запрос данных о приемниках 
+      /* Запрос данных о приемниках */
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -416,12 +448,13 @@ const loadCompanyPCSaga = function * () {
           throw new TypeError("Данные о кампании не обновлены!")
         })
       })
-      const data = res.data*/
+      const data = res.data
+      console.log('RES | PC update | ', data)
       
       /* Получение данных из mock */
-      const data = bicompactPCResMock
-      
-      console.log('RES | PC update | ', data)
+      // const data = dataMock.bicompactPCResMock
+      // console.log('RES | PC update | ', data)
+
       const store = state => state[moduleName].get('companyResponse')
       
       if(data === null) {

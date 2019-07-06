@@ -9,7 +9,8 @@ import "./main-organisation-info.scss";
 class MainCompanyInfo extends Component {
   state = {
     showRisk: false,
-    showHistory: false
+    showHistory: false,
+    error: false
   }
 
   showDrawer = drawer => {
@@ -18,9 +19,17 @@ class MainCompanyInfo extends Component {
     });
   };
 
+  componentDidCatch(err) {
+    console.log('err', err)
+    return this.setState({
+      error: true
+    })
+  }
+
   render() {
     const { companyResponse, companyResponse: { name, full_name, inn, ogrn, fns, sanctions, isponlit_proizvodstva, leaders_list } } = this.props;
-    const { showRisk, showHistory } = this.state
+    const { showRisk, showHistory, error } = this.state
+    if(error) return <div style={{textAlign: "center"}}>Ошибка в работе компонента "openBill -> SearchCompanyInput -> mainCompanyInfo", пожалуйста перезагрузите страницу</div>
     return (
       <>
         <Col span={20}>
