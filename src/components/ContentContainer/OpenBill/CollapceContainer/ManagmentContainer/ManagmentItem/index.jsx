@@ -3,9 +3,11 @@ import { Collapse, Icon, Spin, Descriptions, AutoComplete, Input, Button} from "
 import LeaderHeader from "../LeaderHeader";
 import PropTypes from "prop-types";
 import {region} from "../../../../../../store/mock";
+import CroinformDrawer from "../../../DrawerContainer/CroinformDrawer";
 
 export class ManagmentItem extends PureComponent {
   state = {
+    showCroinformResponse: false,
     edited: false,
     error: false,
     parseAddress: {
@@ -111,6 +113,19 @@ export class ManagmentItem extends PureComponent {
     actionGetUserCroinformInfo(user)
   }
 
+  /* Отображение Drawer с данными из Croinform */
+  showDrawer = e => {
+    e.stopPropagation();
+    this.setState({
+      showCroinformResponse: new Date()
+    });
+  };
+
+  onDoubleClickEvent = e => {
+    console.log('onDoubleClickEvent', e)
+    this.toggleEdited()
+  }
+
   /* Рендеринг физического лица */
   renderFoulderFlItem = (item, key, id) => {
     const { Item: DescriptionsItem } = Descriptions;
@@ -118,7 +133,7 @@ export class ManagmentItem extends PureComponent {
     const { Panel } = Collapse;
 
     const BtnExtra = ({ user }) => {
-      const { identifyUser } = this.props;
+      const { identifyUser, croinformRes } = this.props;
       const { userSelected, parseAddress, edited } = this.state;
       const croinformDisabled = !userSelected.inn && !userSelected.fio && !userSelected.passport && !parseAddress.RegionExp && !parseAddress.CityExp && !parseAddress.StreetExp &&!parseAddress.HouseExp
 
@@ -135,27 +150,35 @@ export class ManagmentItem extends PureComponent {
       return (
         <span className="heads-search">
           <Button
+            title="Показать ответ Croinform"
+            size="small"
+            style={{color: (croinformDisabled || edited || !croinformRes) ? "gray" : "rgba(14, 117, 253, 0.992)", marginRight: 5}}
+            disabled={croinformDisabled || edited || !croinformRes}
+            icon="solution"
+            onClick={e => this.showDrawer(e)}
+          />
+          <Button
             title="Проверить в Croinform"
             size="small"
-            style={{color: (croinformDisabled || edited) ? "gray" : "rgba(14, 117, 253, 0.992)", marginRight: 5}}
+            style={{color: (croinformDisabled || edited) ? "gray" : "#52c41a", marginRight: 5}}
             disabled={croinformDisabled || edited}
             icon="global"
             onClick={e => this.getCroinformIdentifyRequest(e)}
           />
           <Button
+            title="Поиск информации"
+            size="small"
+            style={{color: edited ? "gray" : "rgba(14, 117, 253, 0.992)"}}
+            disabled={edited}
+            icon="file-search"
+            onClick={e => identifyUserInfo(e)}
+          />
+          <Button
             title="Редактировать"
             size="small"
             style={{color: this.state.edited ? "#52c41a" : "rgba(14, 117, 253, 0.992)", marginRight: 5}}
-            // className={`heads-search-btn${this.state.edited ? "-green" : ""}`}
-            icon={this.state.edited ? "check" : "form"}
+            icon={edited ? "check" : "form"}
             onClick={e => editUserInfo(e)}
-          />
-          <Button
-            title="Поиск информации"
-            size="small"
-            style={{color: "rgba(14, 117, 253, 0.992)"}}
-            icon="file-search"
-            onClick={e => identifyUserInfo(e)}
           />
         </span>
       );
@@ -192,8 +215,8 @@ export class ManagmentItem extends PureComponent {
             </DescriptionsItem>
           )
           !edited && (passport !== "" || userSelected.passport) && descrArr.push(
-            <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Паспорт" span={1} >
-              { userSelected.passport  ? userSelected.passport : `${passport[0].seria} ${passport[0].number}` }
+            <DescriptionsItem  key={`${id}-${key}`} id={`${id}-${key}`} label="Паспорт" span={1} >
+              <label onDoubleClick={e => this.onDoubleClickEvent(e)}>{ userSelected.passport  ? userSelected.passport : `${passport[0].seria} ${passport[0].number}` }</label>
             </DescriptionsItem>
           )
         } else if ( user.hasOwnProperty(key) && key === "birthday" ) {
@@ -204,7 +227,7 @@ export class ManagmentItem extends PureComponent {
           )
           !edited && (birthday !== "" || userSelected.birthday) && descrArr.push(
             <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Дата рождения" span={1} >
-              { userSelected.birthday  ? userSelected.birthday : birthday[0] }
+              <label onDoubleClick={e => this.onDoubleClickEvent(e)}>{ userSelected.birthday  ? userSelected.birthday : birthday[0] }</label>
             </DescriptionsItem>
           )
         } else if ( user.hasOwnProperty(key) && key === "address" ) {
@@ -215,11 +238,11 @@ export class ManagmentItem extends PureComponent {
           );
           !edited && (address !== "" || (CityExp || StreetExp || HouseExp || BuildExp || BuildingExp || FlatExp || RegionExpText)) && descrArr.push(
             <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Адрес" span={1} >
-              { 
+              <label onDoubleClick={e => this.onDoubleClickEvent(e)}>{ 
                 (CityExp || StreetExp || HouseExp || BuildExp || BuildingExp || FlatExp || RegionExpText) ?
                 `${RegionExpText.toUpperCase()} ${StreetExp.toUpperCase()} ${HouseExp.toUpperCase()} ${BuildExp.toUpperCase()} ${BuildingExp.toUpperCase()} ${FlatExp.toUpperCase()}` :
                 address[0]
-              }
+              }</label>
             </DescriptionsItem>
           );
         }
@@ -252,13 +275,10 @@ export class ManagmentItem extends PureComponent {
     const passArr = passport.split(" ")
     const Number = passArr.pop()
     const Seria = passArr.pop()
-    console.log('Серия', Seria)
-    console.log('Номер', Number)
-    console.log('----------------------')
-    return {
-      Seria,
-      Number,
-    }
+    // console.log('Серия', Seria)
+    // console.log('Номер', Number)
+    // console.log('----------------------')
+    return { Seria, Number }
   }
 
   /* Парсинг ФИО */
@@ -267,16 +287,11 @@ export class ManagmentItem extends PureComponent {
     const MiddleName = fioArr.pop()
     const FirstName = fioArr.pop()
     const SurName = String(fioArr)
-
-    console.log('Имя', FirstName)
-    console.log('Отчество', MiddleName)
-    console.log('Фамилия', SurName)
-    console.log('----------------------')
-    return {
-      FirstName,
-      MiddleName,
-      SurName
-    }
+    // console.log('Имя', FirstName)
+    // console.log('Отчество', MiddleName)
+    // console.log('Фамилия', SurName)
+    // console.log('----------------------')
+    return { FirstName, MiddleName, SurName }
   }
 
   /* Парсинг адреса */
@@ -323,16 +338,15 @@ export class ManagmentItem extends PureComponent {
     if (p.length) {
       RegionExp = region.filter(item => item.title.toUpperCase().indexOf(p[0].toUpperCase()) !== -1)[0]
     }
-
-    console.log('Искодный адрес', address) // Регион
-    console.log('RegionExp', RegionExp ? RegionExp.value : RegionExp) // Регион
-    console.log('CityExp', CityExp) // Нас. пункт
-    console.log('StreetExp', StreetExp) // Улица
-    console.log('HouseExp', HouseExp) // Дом
-    console.log('BuildExp', BuildExp) // Корп
-    console.log('BuildingExp', BuildingExp) // Стр
-    console.log('FlatExp', FlatExp) // Квартира
-    console.log('----------------------')
+    // console.log('Искодный адрес', address) // Регион
+    // console.log('RegionExp', RegionExp ? RegionExp.value : RegionExp) // Регион
+    // console.log('CityExp', CityExp) // Нас. пункт
+    // console.log('StreetExp', StreetExp) // Улица
+    // console.log('HouseExp', HouseExp) // Дом
+    // console.log('BuildExp', BuildExp) // Корп
+    // console.log('BuildingExp', BuildingExp) // Стр
+    // console.log('FlatExp', FlatExp) // Квартира
+    // console.log('----------------------')
     this.setState(({parseAddress}) => ({
       parseAddress: {
         CityExp, // Нас. пункт
@@ -501,24 +515,27 @@ export class ManagmentItem extends PureComponent {
   }
 
   render() {
-    const { item, item: { inn }, activeKey, searchData } = this.props;
-    const {error} = this.state
+    const { item, item: { inn }, activeKey, searchData, croinformRes } = this.props;
+    const {error, showCroinformResponse} = this.state
     if(error) return <div>В компоненте произошла ошибка</div>
 
     return (
-      <Collapse
-        key={inn}
-        className="managment"
-        defaultActiveKey={inn}
-        onChange={this.callback}
-        bordered={false}
-        expandIcon={({ isActive }) => (
-          <Icon type={!isActive ? "plus-square" : "minus-square"} />
-        )}
-      >
-        {item.name && this.renderFoulderUlItem(item, activeKey)}
-        {item.middle_name && this.renderFoulderFlItem(item, activeKey, searchData)}
-      </Collapse>
+      <>
+        <Collapse
+          key={inn}
+          className="managment"
+          defaultActiveKey={inn}
+          onChange={this.callback}
+          bordered={false}
+          expandIcon={({ isActive }) => (
+            <Icon type={!isActive ? "plus-square" : "minus-square"} />
+          )}
+        >
+          {item.name && this.renderFoulderUlItem(item, activeKey)}
+          {item.middle_name && this.renderFoulderFlItem(item, activeKey, searchData)}
+        </Collapse>
+        <CroinformDrawer toggleDrawer={showCroinformResponse} croinformRes={croinformRes} user={item}/>
+      </>
     );
   }
 }

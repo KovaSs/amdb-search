@@ -8,16 +8,17 @@ import {
   decodedManagementSource, 
   identifyUser, 
   decodedCompanyName, 
-  actionGetUserCroinformInfo
+  actionGetUserCroinformInfo,
+  decodedСroinformResponse
 } from "../../../../../store/ducks/openBill";
 
 /** Вывод данных об руководстве */
-const ManagmentData = ({managementSource, identifyUser, requestLoading, companyName, actionGetUserCroinformInfo}) => {
+const ManagmentData = ({managementSource, identifyUser, requestLoading, companyName, actionGetUserCroinformInfo, croinformResponse}) => {
 
   const managementInfo = trasform._managementSource(managementSource)
   const heads = managementInfo.find( item => item.id === 'heads');
 
-  const renderHeads = heads.data.map( item =>  (
+  const renderHeads = heads.data.map( item => (
     <ManagmentItem 
       key={item.inn} 
       item={item} 
@@ -27,6 +28,7 @@ const ManagmentData = ({managementSource, identifyUser, requestLoading, companyN
       identifyUser={identifyUser}
       companyName={companyName}
       loading={requestLoading}
+      croinformRes={croinformResponse.get(item.inn)}
     />
   ))
 
@@ -37,17 +39,19 @@ const putStateToProps = state => {
   return {
     requestLoading: decodedRequestLoading(state),
     managementSource: decodedManagementSource(state),
-    companyName: decodedCompanyName(state)
+    companyName: decodedCompanyName(state),
+    croinformResponse: decodedСroinformResponse(state)
   }
 }
 
 const putActionsToProps = {
   identifyUser,
-  actionGetUserCroinformInfo
+  actionGetUserCroinformInfo,
 }
 
 export default connect(putStateToProps, putActionsToProps)(ManagmentData)
 
+/** Передаваемые в компонент props */
 ManagmentItem.propTypes = {
   /** Данные о руководящем составе */
   managementSource: PropTypes.shape({
@@ -57,5 +61,10 @@ ManagmentItem.propTypes = {
     founders_ul: PropTypes.array,
     befenicials: PropTypes.array
   }),
-  identifyUser: PropTypes.func.isRequired
+  /** Action для первичной идентификации проверяемого лица */
+  identifyUser: PropTypes.func.isRequired,
+  /** Action для проверки проверяемого лица с помощью Croinform */
+  actionGetUserCroinformInfo: PropTypes.func.isRequired,
+  /** Информация для отображения Loader cocтояния */
+  requestLoading: PropTypes.object
 }

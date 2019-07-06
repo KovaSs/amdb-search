@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { fieldsArr } from "./fields";
+import { fieldsArr, fieldsArrIP } from "./fields";
 
 class TransformData {
   _transformAllData = inputData => {
@@ -81,6 +81,31 @@ class TransformData {
       }
       return item
     })
+    return clonePrevData
+  }
+
+  _companySource_ip = (prevData, newData) => {
+    const clonePrevData = _.cloneDeep(prevData);
+    fieldsArrIP.map(item => {
+      for (const key in newData) {
+        if(item.search === key && !item.func) return _.assign(clonePrevData, { [item.id] : newData[item.search]})
+        else if(item.search === key && item.func)return _.assign(clonePrevData, { [item.id] : item.func(newData[item.search])})
+      }
+      return item
+    })
+    
+    const addHeds = (fio, inn, date) => {
+      const fioArr = fio.split(" ")
+      const middle_name = fioArr.pop()
+      const first_name = fioArr.pop()
+      const last_name = String(fioArr)
+      const position = "Собственник"
+      return {middle_name, last_name, first_name, position, inn, ActualDate: date}
+    }
+    
+    clonePrevData.heads = [addHeds(clonePrevData.full_name, clonePrevData.inn, clonePrevData.registration_date)]
+
+    console.log('clonePrevData  ->', clonePrevData)
     return clonePrevData
   }
 

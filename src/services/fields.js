@@ -180,3 +180,61 @@ export const fieldsArr = [
     }
   }}
 ]
+
+export const fieldsArrIP = [
+  {search: "FullNameRus", id: "full_name", title: "ФИО", data: ""},
+
+  {search: "INN", id: "inn", title: "ИНН", data: ""},
+
+  {search: "OGRNIP", id: "ogrn", title: "ОГРН", data: ""},
+
+  {search: "CompanyType", id: "company_type", title: "Тип компании", data: "", func: item =>  {
+    if(!item) return 'Данные отсутствуют'
+    return `${item.Code} / ${item.Name}`
+  }},
+
+  {search: "DateReg", id: "registration_date", title: "Дата регистрации", data: "", func: (item = 'Данные отсутствуют') => moment(item).format('DD.MM.YYYY')},
+
+  {search: "Status", id: "status", title: "Статус", data: "", func: item => {
+    if(!item) return 'Данные отсутствуют'
+    return `${item.GroupName} ${"/ " + moment(item.Date).format('DD.MM.YYYY')}`
+  }},
+
+  {search: "FederalTaxRegistrationCurrent", id: "address", title: "Юридический адресс", data: "", func: item => {
+    if(!item.RegAuthorityAddress) return 'Данные отсутствуют'
+    return item.RegAuthorityAddress
+  }},
+
+  {search: "OKVED2List", id: "okved", title: "Основной ОКВЭД", data: "",func: item => {
+    if(!item) return 'Данные отсутствуют'
+    if(Array.isArray(item.OKVED)) {
+      const okved = item.OKVED.filter(el =>  el.IsMain === 'true')
+      const { Code, Name } = okved[0]
+      return `${Code} / ${Name}`
+    } else {
+      return `${item.OKVED.Code} / ${item.OKVED.Name}`
+    }
+  }},
+
+  {search: "sex", id: "sex", title: "Пол", data: "", func: item => {
+    if(!item.Name) return 'Данные отсутствуют'
+    return item.Name
+  }},
+
+  {search: "PersonsWithoutWarrant", id: "heads", title: "Руководители", data: "", func: item => {
+    if(!item) return ['']
+      const { Person, ActualDate, Person: {Position} } = item
+      const first_name = Person.FIO.split(' ')[1]
+      const middle_name = Person.FIO.split(' ')[2]
+      const last_name = Person.FIO.split(' ')[0]
+      return [{first_name, middle_name, last_name, ActualDate, inn: Person.INN || 'не найден', position: Position.charAt(0).toUpperCase()+Position.substr(1).toLowerCase()}]
+  }},
+
+  {search: "", id: "isponlit_proizvodstva", title: "Исполнительные производства", data: ""},
+  
+  {search: "", id: "sanctions", title: "Санкции", data: ""},
+
+  {search: "", id: "fns", title: "ФНС", data: ""},
+
+  {search: "", id: "arbiter", title: "Арбитраж", data: ""}
+]

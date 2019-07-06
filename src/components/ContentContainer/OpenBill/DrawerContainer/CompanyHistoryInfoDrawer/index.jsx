@@ -8,6 +8,8 @@ const CompanyHistoryInfoDrawer = props => {
   const {onClose, visible, headHistory} = props
   const { Panel } = Collapse;
 
+  if(!headHistory) return <div style={{textAlign: "center"}}>Ошибка в работе компонента "openBill -> CompanyHistoryInfoDrawer", пожалуйста перезагрузите страницу</div>
+
   const _renderHeadsHistory = () => {
     return (
       <Panel header="Руководители" key="1" showArrow={false}>
@@ -70,7 +72,7 @@ const CompanyHistoryInfoDrawer = props => {
     }
     
     
-    return headHistory.map( (item, key) => {
+    const historyHeads =  headHistory.map( (item, key) => {
       return (
         <Collapse 
           key={item.inn}
@@ -83,6 +85,7 @@ const CompanyHistoryInfoDrawer = props => {
         </Collapse> 
       )
     })
+    return historyHeads
   }
 
   return (
