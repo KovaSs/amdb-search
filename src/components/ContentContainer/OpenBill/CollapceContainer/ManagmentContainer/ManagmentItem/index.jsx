@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Collapse, Icon, Spin, Descriptions, AutoComplete, Input, Button} from "antd";
+import { Collapse, Icon, Spin, Descriptions, AutoComplete, Input, Button, Badge} from "antd";
 import LeaderHeader from "../LeaderHeader";
 import PropTypes from "prop-types";
 import {region} from "../../../../../../store/mock";
@@ -130,6 +130,7 @@ export class ManagmentItem extends PureComponent {
   renderFoulderFlItem = (item, key, id) => {
     const { Item: DescriptionsItem } = Descriptions;
     const { identifyUser, loading, companyName } = this.props;
+    const { edited, userSelected } = this.state;
     const { Panel } = Collapse;
 
     const BtnExtra = ({ user }) => {
@@ -149,14 +150,16 @@ export class ManagmentItem extends PureComponent {
 
       return (
         <span className="heads-search">
-          <Button
-            title="Показать ответ Croinform"
-            size="small"
-            style={{color: (croinformDisabled || edited || !croinformRes) ? "gray" : "rgba(14, 117, 253, 0.992)", marginRight: 5}}
-            disabled={croinformDisabled || edited || !croinformRes}
-            icon="solution"
-            onClick={e => this.showDrawer(e)}
-          />
+          <Badge dot={croinformRes} offset={[-6,1]} status={croinformRes ? "success"  : ""}>
+            <Button
+              title="Показать ответ Croinform"
+              size="small"
+              style={{color: (croinformDisabled || edited || !croinformRes) ? "gray" : "rgba(14, 117, 253, 0.992)", marginRight: 5}}
+              disabled={croinformDisabled || edited || !croinformRes}
+              icon="solution"
+              onClick={e => this.showDrawer(e)}
+            />
+          </Badge>
           <Button
             title="Проверить в Croinform"
             size="small"
@@ -168,8 +171,8 @@ export class ManagmentItem extends PureComponent {
           <Button
             title="Поиск информации"
             size="small"
-            style={{color: edited ? "gray" : "rgba(14, 117, 253, 0.992)"}}
-            disabled={edited}
+            style={{color: "rgba(14, 117, 253, 0.992)", marginRight: 5}}
+            // disabled={edited}
             icon="file-search"
             onClick={e => identifyUserInfo(e)}
           />
@@ -257,14 +260,40 @@ export class ManagmentItem extends PureComponent {
         extra={<BtnExtra user={item} identifyUser={identifyUser} />}
       >
         <Spin spinning={loading.identifyUser[item.inn] ? true : false}>
-          <Descriptions
-            size="small"
-            bordered
-            border
-            column={{ md: 3, sm: 2, xs: 1 }}
-          >
-            {renderDescriptionItems()}
-          </Descriptions>
+          {
+            (item.identifyInfo || edited || userSelected.passport) && 
+            <Descriptions
+              size="small"
+              bordered
+              border
+              column={{ md: 3, sm: 2, xs: 1 }}
+            >
+              {renderDescriptionItems()}
+            </Descriptions>
+          }
+          {
+            !item.identifyInfo && !edited && (!userSelected.passport)  && 
+            <div style={{textAlign: "center", cursor: "pointer"}} >
+              <label onDoubleClick={e => this.onDoubleClickEvent(e)}>
+                Для ввода информации необходимой для проверки данного субъекта дважды кликните по этому сообщению или по кнопке
+              </label>
+              <Button
+                title="Редактировать"
+                size="small"
+                style={{color: "rgba(14, 117, 253, 0.992)", margin: "0 5px"}}
+                icon={"form"}
+              />
+              <label onDoubleClick={e => this.onDoubleClickEvent(e)}> 
+                на панели редактирования, для идентификации и получения данных для автозаполнения кликните по кнопке
+              </label>
+              <Button
+                title="Поиск информации"
+                size="small"
+                style={{color: "rgba(14, 117, 253, 0.992)", margin: "0 5px"}}
+                icon="file-search"
+              />
+            </div>
+          }
         </Spin>
       </Panel>
     );

@@ -241,14 +241,12 @@ const loadCompanyInfoSaga = function * () {
           if (res.ok) return res.json()
           throw new TypeError("Данные о кампании не обновлены!")
         })
-      })
+      }) */
 
-      /** Оригинальные данные
-      const data = res.data */
       /* Mock данные о ЮЛ */
-      // const res = {ip: false, data: dataMock.bicompactResMock}
+      // const res = {ip: false, data: dataMock.bicompactResMock, , reqnum: 666}
       /** Mock данные о ФЛ */
-      const res = {ip: true, data: dataMock.ipResMock.data}
+      const res = {ip: true, data: dataMock.ipResMock.data, reqnum: 666}
 
       const data = res.data
       console.log('RES | FIRST UPDATE | ', data)
@@ -259,16 +257,14 @@ const loadCompanyInfoSaga = function * () {
         const updatedData = yield trasform._companySource_ip(companyResponse, data)
         yield put({
           type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,
-          // id: res.reqnum, // Закоментировать при работе с mock данными
-          id: 666, // Разкоментировать при работе с mock данными
+          id: res.reqnum, 
           payload: {updatedData},
         })
       } else {
         const updatedData = yield trasform._get_company_info_companySource(companyResponse, data)
         yield put({
           type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,
-          // id: res.reqnum, // Закоментировать при работе с mock данными
-          id: 666, // Разкоментировать при работе с mock данными
+          id: res.reqnum,
           payload: {updatedData},
         })
       }
@@ -321,14 +317,13 @@ const identifyUserSaga = function * () {
           if (res.ok) return res.json()
           throw new TypeError("Ошибка получения данных!")
         })
-      })
+      })*/
+
+      /** Mock данные о Идентификационных данных */
+      const res = {ip: true, data: dataMock.identifyInfoMock, reqnum: 666}
 
       const data = res.data
-      console.log('RES | GET USER INFO | ', res) */
-      
-      /** Mock данные о Идентификационных данных */
-      const data = dataMock.identifyInfoMock
-      console.log('RES | GET USER INFO | ', data)
+      console.log('RES | GET USER INFO | ', res) 
 
       if(data) {
         const updatedUserInfo = yield trasform._identifyUserInfo(storeOgrn, data, action.payload.inn)
@@ -365,7 +360,7 @@ const identifyUserInfoSaga = function * () {
         loading: action.payload.INN
       })
 
-      /* Переключение на mock данные 
+      /* Переключение на mock данные
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -404,14 +399,13 @@ const identifyUserInfoSaga = function * () {
           if (res.ok) return res.json()
           throw new TypeError("Ошибка получения данных!")
         })
-      })
+      }) */
   
-      const data = res.data
-      console.log('RES | GET CROINFORM USER INFO | ', res) */
-      
       /** Mock данные о Идентификационных данных */
-      const data = dataMock.ipCroinformMock.data
-      console.log('RES | GET CROINFORM USER INFO | ', JSON.stringify(data))
+      const res = {ip: true, data: dataMock.ipCroinformMock.data, reqnum: 666}
+
+      const data = res.data
+      console.log('RES | GET CROINFORM USER INFO | ', res) 
 
       // const updatedUserInfo = yield trasform._identifyUserInfo(storeOgrn, data, action.payload.inn)
 
@@ -441,7 +435,7 @@ const loadCompanyPCSaga = function * () {
         type: LOAD_COMPANY_INFO + PC + UPDATE + START
       })
 
-      /* Запрос данных о приемниках 
+      /* Запрос данных о приемниках
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -462,14 +456,13 @@ const loadCompanyPCSaga = function * () {
           if (res.ok) return res.json()
           throw new TypeError("Данные о кампании не обновлены!")
         })
-      })
-      const data = res.data
-      console.log('RES | PC update | ', data) */
+      }) */
       
       /* Получение данных из mock */
-      const data = dataMock.bicompactPCResMock
+      const res = {ip: true, data: dataMock.bicompactPCResMock, reqnum: 666}
+      
+      const data = res.data
       console.log('RES | PC update | ', data)
-
       const store = state => state[moduleName].get('companyResponse')
       
       if(data === null) {

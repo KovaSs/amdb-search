@@ -98,6 +98,7 @@ class SearchCompanyInput extends PureComponent {
                 onPressEnter={this.handleSubmit}
                 option={{ initialValue : inn }}
                 disabled={showInfo}
+                allowClear={!showInfo}
               />
             )}
           </Form.Item>

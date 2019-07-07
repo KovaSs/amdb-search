@@ -14,9 +14,10 @@ const CroinformDrawer = props => {
     .replace(/id="content"/g, 'id="content" style="padding-top: 0;"')
     .replace(/class="mid"/g, 'class="mid" style="font-size: 1rem;"')
     .replace(/<table/g, '<table style="width: 100%; font-size: 1rem;"')
+    .replace(/\/\* Основные стили \*\//g, '/* Основные стили */ u{background-color: yellow;}')
     .replace(/<i/g, '<i style="font-size: 1rem;"')
     .replace(/<h2/g, '<h2 style="font-size: 1.5rem; font-weight: 500;"')
-    .replace(/<h3/g, '<h3 style="font-size: 1.5rem; font-weight: 500;"')
+    .replace(/<h3/g, '<h3 style="font-size: 1.2rem; font-weight: 500;"')
     .replace(/<h5/g, '<h5 style="font-size: 1.5rem; font-weight: 500;"')
     .replace(/<th/g, '<th style="font-weight: 500;"')
 
