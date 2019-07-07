@@ -125,5 +125,16 @@
   .edited-identify-info {
     padding: 0 5px;
   }
+
+  .ant-btn-icon-only:active {
+    -moz-transform: translatey(1px); /* Для Firefox */ 
+    -ms-transform: translatey(1px); /* Для IE */ 
+    -webkit-transform: translatey(1px); /* Для Safari, Chrome, iOS */ 
+    -o-transform:translatey(1px); /* Для Opera */ 
+    transform: translatey(1px);
+    -webkit-transition: 0.2s time;
+    -o-transition: 0.2s time;
+    transition: 0.2s time;
+  }
 }
 

@@ -27,7 +27,8 @@ const ManagmentData = ({managementSource, identifyUser, requestLoading, companyN
       actionGetUserCroinformInfo={actionGetUserCroinformInfo}
       identifyUser={identifyUser}
       companyName={companyName}
-      loading={requestLoading}
+      identifyUserloading={requestLoading.getIn(["identifyUser",item.inn])}
+      croinformRequestloading={requestLoading.getIn(["croinformRequest",item.inn])}
       croinformRes={croinformResponse.get(item.inn)}
     />
   ))

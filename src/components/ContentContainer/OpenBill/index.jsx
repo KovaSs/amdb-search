@@ -8,13 +8,6 @@ import SearchCompanyInput from "./SearchCompanyInput";
 import "./open-bill.scss"
 
 class OpenBill extends Component {
-  static propTypes = {
-    companyResponse: PropTypes.object,
-    requestLoading: PropTypes.object,
-    renderData: PropTypes.bool,
-    errors: PropTypes.object
-  }
-
   state = {
     showTable : false,
     loading : false,
@@ -25,7 +18,7 @@ class OpenBill extends Component {
   componentWillReceiveProps(nextProps) {
     const { companyResponse } = this.props
 
-    nextProps.requestLoading.companyMainInfoUpdate === true ?
+    nextProps.requestLoading.get("companyMainInfoUpdate") === true ?
       this.setState({
         loading: true
       }) :
@@ -110,6 +103,13 @@ const putStateToProps = state => {
     errors: decodedErrors(state),
     reqnum: decodedReqnum(state)
   }
+}
+
+OpenBill.propTypes = {
+  companyResponse: PropTypes.object,
+  requestLoading: PropTypes.object,
+  renderData: PropTypes.bool,
+  errors: PropTypes.object
 }
 
 export default connect(putStateToProps)(OpenBill);

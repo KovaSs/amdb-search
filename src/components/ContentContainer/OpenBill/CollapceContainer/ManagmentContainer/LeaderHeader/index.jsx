@@ -1,5 +1,5 @@
 import React from 'react'
-import moment from 'moment'
+import { getDate } from '../../../../../../services/momentDate'
 
 /** Рендеринг header title физического лица */
 const RenderLeaderNameHeader = props => {
@@ -10,7 +10,7 @@ const RenderLeaderNameHeader = props => {
       <label className="leader-name-header_position">{`${inn}`}</label>
       <label className="leader-name-header_position">{`${position}`}</label>
       <label className="leader-name-header_position">{`${companyName}`}</label>
-      <label className="leader-name-header_date">{`${moment(ActualDate).format('DD.MM.YYYY')}`}</label>
+      <label className="leader-name-header_date">{`${getDate(ActualDate)}`}</label>
       { id==='leaders_list' && <label className="leader-name-header_history">История</label> }
     </div>
   )

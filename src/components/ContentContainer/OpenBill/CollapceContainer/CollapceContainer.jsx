@@ -10,7 +10,7 @@ import "./collapce-container.scss";
 
 const CollapceContainer = props => {
   const { Panel } = Collapse;
-  const {companySource, riskSource, riskSource: {arbiter}, requestLoading : {companyPCUpdate, companyMainInfo} } = props
+  const {companySource, riskSource, riskSource: {arbiter}, requestLoading  } = props
 
   /** Преобразование входящих данных из props */
   const fullOrganistionInfo = trasform._companySource(companySource)
@@ -23,7 +23,7 @@ const CollapceContainer = props => {
   return (
     <Row className="table-info">
       <Col span={24}>
-        <Spin spinning={companyMainInfo} size="large" tip="Идет поиск данных" >
+        <Spin spinning={requestLoading.get("companyMainInfo")} size="large" tip="Идет поиск данных" >
           { companySource &&
             <Collapse 
               defaultActiveKey={['1', '2', '3', '4']} 
@@ -31,7 +31,7 @@ const CollapceContainer = props => {
               expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"}/> }
             >
               <Panel header="Общая информация" key="1" showArrow={false}>
-                <MainCompanyData loading={companyPCUpdate} fields={fullOrganistionInfo}/>
+                <MainCompanyData loading={requestLoading.get("companyPCUpdate")} fields={fullOrganistionInfo}/>
                 <StopListData  riskInfo={riskInfo} arbiter={arbiter}/>
               </Panel>
               <Panel header="Связанные лица" key="2" forceRender className="table-info-panel">

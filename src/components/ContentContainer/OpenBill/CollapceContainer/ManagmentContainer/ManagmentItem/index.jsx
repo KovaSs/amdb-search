@@ -129,7 +129,7 @@ export class ManagmentItem extends PureComponent {
   /* Рендеринг физического лица */
   renderFoulderFlItem = (item, key, id) => {
     const { Item: DescriptionsItem } = Descriptions;
-    const { identifyUser, loading, companyName } = this.props;
+    const { identifyUser, identifyUserloading, croinformRequestloading, companyName } = this.props;
     const { edited, userSelected } = this.state;
     const { Panel } = Collapse;
 
@@ -146,15 +146,20 @@ export class ManagmentItem extends PureComponent {
       const identifyUserInfo = e => {
         e.stopPropagation();
         identifyUser(user);
+        this.setState({edited: true})
       };
 
       return (
-        <span className="heads-search">
-          <Badge dot={croinformRes} offset={[-6,1]} status={croinformRes ? "success"  : ""}>
+        <span className="heads-search" style={{width: croinformRes ? 150 : 120}}>
+          <Badge dot={croinformRes ? true : false} offset={[-6,1]} status={croinformRes ? "success"  : ""} >
             <Button
               title="Показать ответ Croinform"
               size="small"
-              style={{color: (croinformDisabled || edited || !croinformRes) ? "gray" : "rgba(14, 117, 253, 0.992)", marginRight: 5}}
+              style={{
+                color: (croinformDisabled || edited || !croinformRes) ? "gray" : "rgba(14, 117, 253, 0.992)", 
+                marginRight: 5,
+                display: croinformRes ? "block" : "none"
+              }}
               disabled={croinformDisabled || edited || !croinformRes}
               icon="solution"
               onClick={e => this.showDrawer(e)}
@@ -165,7 +170,7 @@ export class ManagmentItem extends PureComponent {
             size="small"
             style={{color: (croinformDisabled || edited) ? "gray" : "#52c41a", marginRight: 5}}
             disabled={croinformDisabled || edited}
-            icon="global"
+            icon={croinformRequestloading ? "loading" : "global"}
             onClick={e => this.getCroinformIdentifyRequest(e)}
           />
           <Button
@@ -173,7 +178,7 @@ export class ManagmentItem extends PureComponent {
             size="small"
             style={{color: "rgba(14, 117, 253, 0.992)", marginRight: 5}}
             // disabled={edited}
-            icon="file-search"
+            icon={identifyUserloading ? "loading" : "file-search"}
             onClick={e => identifyUserInfo(e)}
           />
           <Button
@@ -259,7 +264,7 @@ export class ManagmentItem extends PureComponent {
         header={<LeaderHeader {...item} companyName={companyName} id={id} />}
         extra={<BtnExtra user={item} identifyUser={identifyUser} />}
       >
-        <Spin spinning={loading.identifyUser[item.inn] ? true : false}>
+        <Spin spinning={identifyUserloading || croinformRequestloading ? true : false}>
           {
             (item.identifyInfo || edited || userSelected.passport) && 
             <Descriptions
@@ -278,7 +283,6 @@ export class ManagmentItem extends PureComponent {
                 Для ввода информации необходимой для проверки данного субъекта дважды кликните по этому сообщению или по кнопке
               </label>
               <Button
-                title="Редактировать"
                 size="small"
                 style={{color: "rgba(14, 117, 253, 0.992)", margin: "0 5px"}}
                 icon={"form"}
@@ -287,7 +291,6 @@ export class ManagmentItem extends PureComponent {
                 на панели редактирования, для идентификации и получения данных для автозаполнения кликните по кнопке
               </label>
               <Button
-                title="Поиск информации"
                 size="small"
                 style={{color: "rgba(14, 117, 253, 0.992)", margin: "0 5px"}}
                 icon="file-search"
@@ -364,9 +367,8 @@ export class ManagmentItem extends PureComponent {
     }
     StreetExp = p.pop();
     if (p.length) CityExp = p.pop();
-    if (p.length) {
-      RegionExp = region.filter(item => item.title.toUpperCase().indexOf(p[0].toUpperCase()) !== -1)[0]
-    }
+    if (p.length) RegionExp = region.filter(item => item.title.toUpperCase().indexOf(p[0].toUpperCase()) !== -1)[0]
+    if(!RegionExp) RegionExp = {value: "", title: ""}
     // console.log('Искодный адрес', address) // Регион
     // console.log('RegionExp', RegionExp ? RegionExp.value : RegionExp) // Регион
     // console.log('CityExp', CityExp) // Нас. пункт
@@ -384,7 +386,7 @@ export class ManagmentItem extends PureComponent {
         BuildExp, // Корп
         BuildingExp, // Стр
         FlatExp, // Квар
-        RegionExp: RegionExp.value, // Регион
+        RegionExp: RegionExp.value !== undefined ? RegionExp.value : "", // Регион
         RegionExpText: RegionExp.title// Регион
       }
     })) 
@@ -448,18 +450,20 @@ export class ManagmentItem extends PureComponent {
 
     if ( keyId === "inn") {
       return (
-        <AutoComplete
-          key={keyId}
-          style={{ width: 250 }}
-          size="small"
-          value={userSelected[keyId]}
-          dataSource={user.inn ? data.map(renderOption) : false}
-          onSelect={handleSelectOption}
-          onChange={handleChangeInn}
-          placeholder="Введите ИНН"
-          filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
-          allowClear
-        />
+        <Badge count={data.length}>
+          <AutoComplete
+            key={keyId}
+            style={{ width: 250 }}
+            size="small"
+            value={userSelected[keyId]}
+            dataSource={user.inn ? data.map(renderOption) : false}
+            onSelect={handleSelectOption}
+            onChange={handleChangeInn}
+            placeholder="Введите ИНН"
+            filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
+            allowClear
+          />
+        </Badge>
       );
     } else if ( keyId === "fio") {
       return (
@@ -478,18 +482,20 @@ export class ManagmentItem extends PureComponent {
       );
     } else if ( keyId === "birthday") {
       return (
-        <AutoComplete
-          key={keyId}
-          style={{ width: 250 }}
-          size="small"
-          value={userSelected[keyId]}
-          dataSource={user.birthday ? data.map(renderOption) : false}
-          onSelect={handleSelectOption}
-          onChange={handleChangeBirthday}
-          placeholder="Введите дату рождения"
-          filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
-          allowClear
-        />
+        <Badge count={data.length}>
+          <AutoComplete
+            key={keyId}
+            style={{ width: 250 }}
+            size="small"
+            value={userSelected[keyId]}
+            dataSource={user.birthday ? data.map(renderOption) : false}
+            onSelect={handleSelectOption}
+            onChange={handleChangeBirthday}
+            placeholder="Введите дату рождения"
+            filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
+            allowClear
+          />
+        </Badge>
       );
     } else if ( keyId === "address") {
       return (
@@ -513,32 +519,38 @@ export class ManagmentItem extends PureComponent {
           <Input value={parseAddress.BuildingExp} onChange={handleChangeAddressBuildingExp} placeholder="Строение" style={{ width: 80 }} size="small"/>
           <Input value={parseAddress.FlatExp} onChange={handleChangeAddressFlatExp} placeholder="Квартира" style={{ width: 80 }} size="small"/>
           {"  "}
-          {user.address && <AutoComplete
-            key={keyId}
-            style={{ width: 200 }}
-            size="small"
-            dataSource={user.address ? data.map(renderOption) : false}
-            onChange={handleSelectAddressOption}
-            placeholder="Автозаполнения адреса"
-            filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
-            allowClear
-          />}
+          { user.address &&
+            <Badge count={data.length}>
+              <AutoComplete
+                key={keyId}
+                style={{ width: 200 }}
+                size="small"
+                dataSource={user.address ? data.map(renderOption) : false}
+                onChange={handleSelectAddressOption}
+                placeholder="Автозаполнения адреса"
+                filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
+                allowClear
+              />
+            </Badge>
+          }
         </>
       );
     } else if ( keyId === "passport") {
       return (
-        <AutoComplete
-          key={keyId}
-          style={{ width: 250 }}
-          size="small"
-          value={userSelected[keyId]}
-          dataSource={user.passport ? data.map(item => `${item.seria} ${item.number}`).map(renderOption) : false}
-          placeholder="Введите паспортные данные"
-          onSelect={handleSelectOption}
-          onChange={handleChangePassport}
-          filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
-          allowClear
-        />
+        <Badge count={data.length}>
+          <AutoComplete
+            key={keyId}
+            style={{ width: 250 }}
+            size="small"
+            value={userSelected[keyId]}
+            dataSource={user.passport ? data.map(item => `${item.seria} ${item.number}`).map(renderOption) : false}
+            placeholder="Введите паспортные данные"
+            onSelect={handleSelectOption}
+            onChange={handleChangePassport}
+            filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
+            allowClear
+          />
+        </Badge>
       );
     }
   }

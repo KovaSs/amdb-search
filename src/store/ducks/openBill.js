@@ -26,6 +26,7 @@ export const FAIL = '_FAIL'
 /** Reducer */
 const ReducerRecord = Record({
   inn: "",
+  isIp: false,
   reqnum: '',
   renderData: false,
   companyResponse: null,
@@ -68,6 +69,7 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
         .setIn(['errors', 'companyMainInfoUpdate'], false) 
         .set('renderData', true)
         .set('reqnum', id)
+        .set('isIp', action.isIp)
     case LOAD_COMPANY_INFO + UPDATE + FAIL:
       return state
         .setIn(['requestLoading', 'companyMainInfoUpdate'], false)
@@ -163,27 +165,22 @@ export const identifyUser = data => {
 /** Selectors */
 export const companyResSelector = state => state[moduleName].get('companyResponse')
 export const renderDataSelector = state => state[moduleName].get('renderData')
+export const isIpSelector = state => state[moduleName].get('isIp')
 export const reqnumSelector = state => state[moduleName].get('reqnum')
 export const innSelector = state => state[moduleName].get('inn')
 export const nameCompanySelector = state => state[moduleName].getIn(['companyResponse', 'name'])
 export const сroinformResSelector = state => state[moduleName].get('croinformResponse')
-export const requestLoadingSelector = state => state[moduleName].get('requestLoading').toJS()
+export const requestLoadingSelector = state => state[moduleName].get('requestLoading')
 export const errorsSelector = state => state[moduleName].get('errors').toJS()
 
 export const decodedCompanyResponse = createSelector( companyResSelector, (companyResponse) =>  companyResponse )
-
+export const decodedisIp = createSelector( isIpSelector, (isIp) =>  isIp )
 export const decodedСroinformResponse = createSelector( сroinformResSelector, (сroinformRes) =>  сroinformRes )
-
 export const decodedCompanyName = createSelector( nameCompanySelector, (companyName) =>  companyName )
-
 export const decodedReqnum = createSelector( reqnumSelector, (reqnum) => reqnum )
-
 export const decodedInn = createSelector( innSelector, (inn) => inn )
-
 export const decodedErrors = createSelector( errorsSelector, (errors) => errors )
-
 export const decodedRenderData = createSelector( renderDataSelector, (renderData) => renderData )
-
 export const decodedRequestLoading = createSelector( requestLoadingSelector, (requestLoading) => requestLoading )
 
 export const decodedMainCompanySource = createSelector(
@@ -192,7 +189,6 @@ export const decodedMainCompanySource = createSelector(
     return companySource
   }
 )
-
 export const decodedRiskSource = createSelector(
   companyResSelector, (companyResponse) => {
     const { arbiter, fns, sanctions, isponlit_proizvodstva } = companyResponse
@@ -200,7 +196,6 @@ export const decodedRiskSource = createSelector(
     return riskSource
   }
 )
-
 export const decodedManagementSource = createSelector(
   companyResSelector, (companyResponse) => {
     const { heads, management_companies, founders_fl, founders_ul, befenicials, leaders_list } = companyResponse
@@ -221,7 +216,7 @@ const loadCompanyInfoSaga = function * () {
         type: LOAD_COMPANY_INFO + UPDATE + START
       })
   
-      /* Переключение на mock данные 
+      /* Переключение на mock данные */
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -241,12 +236,12 @@ const loadCompanyInfoSaga = function * () {
           if (res.ok) return res.json()
           throw new TypeError("Данные о кампании не обновлены!")
         })
-      }) */
+      })
 
       /* Mock данные о ЮЛ */
-      // const res = {ip: false, data: dataMock.bicompactResMock, , reqnum: 666}
+      // const res = {ip: false, data: dataMock.bicompactResMock, reqnum: 666}
       /** Mock данные о ФЛ */
-      const res = {ip: true, data: dataMock.ipResMock.data, reqnum: 666}
+      // const res = {ip: true, data: dataMock.ipResMock.data, reqnum: 666}
 
       const data = res.data
       console.log('RES | FIRST UPDATE | ', data)
@@ -258,6 +253,7 @@ const loadCompanyInfoSaga = function * () {
         yield put({
           type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,
           id: res.reqnum, 
+          isIp: true,
           payload: {updatedData},
         })
       } else {
@@ -265,6 +261,7 @@ const loadCompanyInfoSaga = function * () {
         yield put({
           type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,
           id: res.reqnum,
+          isIp: false,
           payload: {updatedData},
         })
       }
@@ -272,6 +269,74 @@ const loadCompanyInfoSaga = function * () {
     } catch (err){
       yield put({
         type: LOAD_COMPANY_INFO + UPDATE + FAIL,
+      })
+    }
+  }
+}
+
+/* Получение данных о предшедственнниках и приемниках */
+const loadCompanyPCSaga = function * () {
+  while(true){
+    const action = yield take(LOAD_COMPANY_INFO + UPDATE + SUCCESS)
+    const store = state => state[moduleName].get('companyResponse')
+    const storeInn = yield select(store)
+    
+    try {
+      if(action.isIp) throw new TypeError("Данные о кампании не обновлены!")
+      yield put({
+        type: LOAD_COMPANY_INFO + PC + UPDATE + START
+      })
+
+      /* Запрос данных о приемниках*/
+      const res = yield call(() => {
+        return fetch(
+          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+          { 
+            method: 'POST',
+            mode: 'cors',
+            credentials: 'include',
+            body : JSON.stringify({ 
+              type: 'get_company_ps',
+              reqnum: action.id,
+              data: {
+                code: storeInn.inn
+              }
+            }),
+          }
+        )
+        .then(res => {
+          if (res.ok) return res.json()
+          throw new TypeError("Данные о кампании не обновлены!")
+        })
+      }) 
+      
+      /* Получение данных из mock */
+      // const res = {ip: true, data: dataMock.bicompactPCResMock, reqnum: 666}
+      
+      const data = res.data
+      console.log('RES | PC update | ', data)
+      const store = state => state[moduleName].get('companyResponse')
+      
+      if(data === null) {
+        const companyResponse = yield select(store)
+        const updatedData = yield trasform._get_company_info_companySource(companyResponse, { Successor : false, Predecessor: false})
+        yield put({
+          type: LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS,
+          // reqnum: res.reqnum,
+          payload: {updatedData},
+        })
+      } else {
+        const companyResponse = yield select(store)
+        const updatedData = yield trasform._get_company_info_companySource(companyResponse, data.Reorganizations)
+        yield put({
+          type: LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS,
+          // reqnum: res.reqnum,
+          payload: {updatedData},
+        })
+      }
+    } catch (err){
+      yield put({
+        type: LOAD_COMPANY_INFO + PC + UPDATE + FAIL,
       })
     }
   }
@@ -292,7 +357,7 @@ const identifyUserSaga = function * () {
         loading: action.payload.inn
       })
 
-      /* Переключение на mock данные 
+      /* Переключение на mock данные */
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -317,10 +382,10 @@ const identifyUserSaga = function * () {
           if (res.ok) return res.json()
           throw new TypeError("Ошибка получения данных!")
         })
-      })*/
+      })
 
       /** Mock данные о Идентификационных данных */
-      const res = {ip: true, data: dataMock.identifyInfoMock, reqnum: 666}
+      // const res = {ip: true, data: dataMock.identifyInfoMock, reqnum: 666}
 
       const data = res.data
       console.log('RES | GET USER INFO | ', res) 
@@ -360,7 +425,7 @@ const identifyUserInfoSaga = function * () {
         loading: action.payload.INN
       })
 
-      /* Переключение на mock данные
+      /* Переключение на mock данные */
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -399,15 +464,13 @@ const identifyUserInfoSaga = function * () {
           if (res.ok) return res.json()
           throw new TypeError("Ошибка получения данных!")
         })
-      }) */
+      })
   
       /** Mock данные о Идентификационных данных */
-      const res = {ip: true, data: dataMock.ipCroinformMock.data, reqnum: 666}
+      // const res = {ip: true, data: dataMock.ipCroinformMock.data, reqnum: 666}
 
       const data = res.data
       console.log('RES | GET CROINFORM USER INFO | ', res) 
-
-      // const updatedUserInfo = yield trasform._identifyUserInfo(storeOgrn, data, action.payload.inn)
 
       yield put({
         type: GET_CROINFORM_USER_INFO + SUCCESS,
@@ -418,73 +481,6 @@ const identifyUserInfoSaga = function * () {
       yield put({
         type: GET_CROINFORM_USER_INFO + FAIL,
         error: action.payload.INN
-      })
-    }
-  }
-}
-
-/* Получение данных о предшедственнниках и приемниках */
-const loadCompanyPCSaga = function * () {
-  while(true){
-    const action = yield take(LOAD_COMPANY_INFO + UPDATE + SUCCESS)
-    const store = state => state[moduleName].get('companyResponse')
-    const storeInn = yield select(store)
-
-    try {
-      yield put({
-        type: LOAD_COMPANY_INFO + PC + UPDATE + START
-      })
-
-      /* Запрос данных о приемниках
-      const res = yield call(() => {
-        return fetch(
-          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
-          { 
-            method: 'POST',
-            mode: 'cors',
-            credentials: 'include',
-            body : JSON.stringify({ 
-              type: 'get_company_ps',
-              reqnum: action.id,
-              data: {
-                code: storeInn.inn
-              }
-            }),
-          }
-        )
-        .then(res => {
-          if (res.ok) return res.json()
-          throw new TypeError("Данные о кампании не обновлены!")
-        })
-      }) */
-      
-      /* Получение данных из mock */
-      const res = {ip: true, data: dataMock.bicompactPCResMock, reqnum: 666}
-      
-      const data = res.data
-      console.log('RES | PC update | ', data)
-      const store = state => state[moduleName].get('companyResponse')
-      
-      if(data === null) {
-        const companyResponse = yield select(store)
-        const updatedData = yield trasform._get_company_info_companySource(companyResponse, { Successor : false, Predecessor: false})
-        yield put({
-          type: LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS,
-          // reqnum: res.reqnum,
-          payload: {updatedData},
-        })
-      } else {
-        const companyResponse = yield select(store)
-        const updatedData = yield trasform._get_company_info_companySource(companyResponse, data.Reorganizations)
-        yield put({
-          type: LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS,
-          // reqnum: res.reqnum,
-          payload: {updatedData},
-        })
-      }
-    } catch (err){
-      yield put({
-        type: LOAD_COMPANY_INFO + PC + UPDATE + FAIL,
       })
     }
   }

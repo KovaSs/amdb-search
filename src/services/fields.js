@@ -1,4 +1,4 @@
-import moment from 'moment'
+import {getDate} from './momentDate'
 
 export const fieldsArr = [
   {search: "ShortNameRus", id: "name", title: "Сокрашеное наименование", data: ""},
@@ -25,14 +25,14 @@ export const fieldsArr = [
     }
   }},
 
-  {search: "DateFirstReg", id: "registration_date", title: "Дата регистрации", data: "", func: (item = 'Данные отсутствуют') => moment(item).format('DD.MM.YYYY')},
+  {search: "DateFirstReg", id: "registration_date", title: "Дата регистрации", data: "", func: (item = 'Данные отсутствуют') => getDate(item)},
 
   {search: "Status", id: "status", title: "Статус", data: "", func: item => {
     if(!item) return 'Данные отсутствуют'
     const status = []
     item.GroupName && status.push(item.GroupName)
     item.Type !== item.GroupName && status.push(item.Type)
-    item.Date && status.push( moment(item.Date).format('DD.MM.YYYY'))
+    item.Date && status.push( getDate(item.Date))
     return status.join(' / ')
   }},
 
@@ -70,7 +70,7 @@ export const fieldsArr = [
   {search: "StaffNumberFTS", id: "workers_range_fns", title: "Численность персонала по данным ФНС", data: "", func: item => {
     if(!item) return 'Данные отсутствуют'
     const { Number: {ActualDate, content}} = item
-    return `${content} / ${moment(ActualDate).format('DD.MM.YYYY')}`
+    return `${content} / ${getDate(ActualDate)}`
   }},
 
   {search: "CharterCapital", id: "capital", title: "Уставной капитал", func: item => {
@@ -193,11 +193,11 @@ export const fieldsArrIP = [
     return `${item.Code} / ${item.Name}`
   }},
 
-  {search: "DateReg", id: "registration_date", title: "Дата регистрации", data: "", func: (item = 'Данные отсутствуют') => moment(item).format('DD.MM.YYYY')},
+  {search: "DateReg", id: "registration_date", title: "Дата регистрации", data: "", func: (item = 'Данные отсутствуют') => getDate(item)},
 
   {search: "Status", id: "status", title: "Статус", data: "", func: item => {
     if(!item) return 'Данные отсутствуют'
-    return `${item.GroupName} ${"/ " + moment(item.Date).format('DD.MM.YYYY')}`
+    return `${item.GroupName} ${"/ " + getDate(item.Date)}`
   }},
 
   {search: "FederalTaxRegistrationCurrent", id: "address", title: "Юридический адресс", data: "", func: item => {

@@ -1,7 +1,7 @@
 import React from 'react';
-import moment from 'moment'
 import { Drawer, Collapse, Icon } from "antd";
 import toggleDrawer from '../index'
+import { getDate } from '../../../../../services/momentDate'
 import './drawer-history.scss'
 
 const CompanyHistoryInfoDrawer = props => {
@@ -26,7 +26,7 @@ const CompanyHistoryInfoDrawer = props => {
         <div className="leader-name-header">
           <label className={`leader-name-header_fio${ id==='leaders_list' ? "_history" : ''}`}>{`${last_name} ${first_name} ${middle_name}`}</label>
           <label className="leader-name-header_position">{`${position}`}</label>
-          <label className="leader-name-header_date">{`${moment(ActualDate).format('DD.MM.YYYY')}`}</label>
+          <label className="leader-name-header_date">{`${getDate(ActualDate)}`}</label>
           { id==='leaders_list' && <label className="leader-name-header_history">История</label> }
         </div>
       )
