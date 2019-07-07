@@ -280,65 +280,66 @@ const loadCompanyPCSaga = function * () {
     const action = yield take(LOAD_COMPANY_INFO + UPDATE + SUCCESS)
     const store = state => state[moduleName].get('companyResponse')
     const storeInn = yield select(store)
-    
-    try {
-      if(action.isIp) throw new TypeError("Данные о кампании не обновлены!")
-      yield put({
-        type: LOAD_COMPANY_INFO + PC + UPDATE + START
-      })
-
-      /* Запрос данных о приемниках*/
-      const res = yield call(() => {
-        return fetch(
-          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
-          { 
-            method: 'POST',
-            mode: 'cors',
-            credentials: 'include',
-            body : JSON.stringify({ 
-              type: 'get_company_ps',
-              reqnum: action.id,
-              data: {
-                code: storeInn.inn
-              }
-            }),
-          }
-        )
-        .then(res => {
-          if (res.ok) return res.json()
-          throw new TypeError("Данные о кампании не обновлены!")
-        })
-      }) 
-      
-      /* Получение данных из mock */
-      // const res = {ip: true, data: dataMock.bicompactPCResMock, reqnum: 666}
-      
-      const data = res.data
-      console.log('RES | PC update | ', data)
-      const store = state => state[moduleName].get('companyResponse')
-      
-      if(data === null) {
-        const companyResponse = yield select(store)
-        const updatedData = yield trasform._get_company_info_companySource(companyResponse, { Successor : false, Predecessor: false})
+    if(!action.isIp) {
+      try {
         yield put({
-          type: LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS,
-          // reqnum: res.reqnum,
-          payload: {updatedData},
+          type: LOAD_COMPANY_INFO + PC + UPDATE + START
         })
-      } else {
-        const companyResponse = yield select(store)
-        const updatedData = yield trasform._get_company_info_companySource(companyResponse, data.Reorganizations)
+  
+        /* Запрос данных о приемниках*/
+        const res = yield call(() => {
+          return fetch(
+            `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+            { 
+              method: 'POST',
+              mode: 'cors',
+              credentials: 'include',
+              body : JSON.stringify({ 
+                type: 'get_company_ps',
+                reqnum: action.id,
+                data: {
+                  code: storeInn.inn
+                }
+              }),
+            }
+          )
+          .then(res => {
+            if (res.ok) return res.json()
+            throw new TypeError("Данные о кампании не обновлены!")
+          })
+        }) 
+        
+        /* Получение данных из mock */
+        // const res = {ip: true, data: dataMock.bicompactPCResMock, reqnum: 666}
+        
+        const data = res.data
+        console.log('RES | PC update | ', data)
+        const store = state => state[moduleName].get('companyResponse')
+        
+        if(data === null) {
+          const companyResponse = yield select(store)
+          const updatedData = yield trasform._get_company_info_companySource(companyResponse, { Successor : false, Predecessor: false})
+          yield put({
+            type: LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS,
+            // reqnum: res.reqnum,
+            payload: {updatedData},
+          })
+        } else {
+          const companyResponse = yield select(store)
+          const updatedData = yield trasform._get_company_info_companySource(companyResponse, data.Reorganizations)
+          yield put({
+            type: LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS,
+            // reqnum: res.reqnum,
+            payload: {updatedData},
+          })
+        }
+      } catch (err){
         yield put({
-          type: LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS,
-          // reqnum: res.reqnum,
-          payload: {updatedData},
+          type: LOAD_COMPANY_INFO + PC + UPDATE + FAIL,
         })
       }
-    } catch (err){
-      yield put({
-        type: LOAD_COMPANY_INFO + PC + UPDATE + FAIL,
-      })
     }
+    
   }
 }
 
@@ -347,19 +348,22 @@ const identifyUserSaga = function * () {
   while(true){
     const action = yield take(GET_IDENTIFY_USER)
     const reqnum = state => state[moduleName].get('reqnum')
-    const companyState = state => state[moduleName].get('companyResponse')
     const storeReqnum = yield select(reqnum)
+    const companyState = state => state[moduleName].get('companyResponse')
     const storeOgrn = yield select(companyState)
-
+    const isIP = state => state[moduleName].get('isIp')
+    const storeIsIP = yield select(isIP)
+    
     try {
       yield put({
         type: GET_IDENTIFY_USER + START,
         loading: action.payload.inn
       })
-
-      /* Переключение на mock данные */
+      
+      /* Запрос на идентификацию проверяемого объекта */
       const res = yield call(() => {
-        return fetch(
+        if(!storeIsIP) {
+          return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
           { 
             method: 'POST',
@@ -382,7 +386,30 @@ const identifyUserSaga = function * () {
           if (res.ok) return res.json()
           throw new TypeError("Ошибка получения данных!")
         })
-      })
+      } else {
+        return fetch(
+          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+          { 
+            method: 'POST',
+            mode: 'cors',
+            credentials: 'include',
+            body : JSON.stringify({ 
+              type: 'identify_user',
+              reqnum: storeReqnum,
+              data: {
+                FirstName: action.payload.first_name,
+                MiddleName: action.payload.middle_name,
+                SurName: action.payload.last_name,
+                INNIP: action.payload.inn,
+              }
+            }),
+          }
+        )
+        .then(res => {
+          if (res.ok) return res.json()
+          throw new TypeError("Ошибка получения данных!")
+        })
+      }})
 
       /** Mock данные о Идентификационных данных */
       // const res = {ip: true, data: dataMock.identifyInfoMock, reqnum: 666}

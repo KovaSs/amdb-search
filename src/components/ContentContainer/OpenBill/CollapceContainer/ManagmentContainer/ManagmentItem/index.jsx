@@ -556,7 +556,7 @@ export class ManagmentItem extends PureComponent {
   }
 
   render() {
-    const { item, item: { inn }, activeKey, searchData, croinformRes } = this.props;
+    const { item, item: { inn }, activeKey, searchData, croinformRes, croinformRequestloading } = this.props;
     const {error, showCroinformResponse} = this.state
     if(error) return <div>В компоненте произошла ошибка</div>
 
@@ -575,7 +575,7 @@ export class ManagmentItem extends PureComponent {
           {item.name && this.renderFoulderUlItem(item, activeKey)}
           {item.middle_name && this.renderFoulderFlItem(item, activeKey, searchData)}
         </Collapse>
-        <CroinformDrawer toggleDrawer={showCroinformResponse} croinformRes={croinformRes} user={item}/>
+        <CroinformDrawer loading={croinformRequestloading} toggleDrawer={showCroinformResponse} croinformRes={croinformRes} user={item}/>
       </>
     );
   }

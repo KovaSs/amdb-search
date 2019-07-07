@@ -1,10 +1,10 @@
 import React from 'react';
-import { Drawer, Collapse, Icon } from "antd";
+import { Drawer, Collapse, Icon, Spin } from "antd";
 import toggleDrawer from '../index'
 import './drawer-croinform.scss'
 
 const CroinformDrawer = props => {
-  const {onClose, visible, croinformRes} = props
+  const {onClose, visible, croinformRes, loading} = props
   const { Panel } = Collapse
   if(!croinformRes) return <div></div>
   const styledRes = croinformRes
@@ -35,7 +35,9 @@ const CroinformDrawer = props => {
           expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"}/> }
         >
           <Panel header="Результат проверки Croinform.ru" key="1" showArrow={false}>
-            <iframe srcDoc={styledRes} frameBorder="0" title="crionform-data" width="100%" height="800px"></iframe>
+            <Spin spinning={loading} tip="Идет поиск данных по измененному запросу">
+              <iframe srcDoc={styledRes} frameBorder="0" title="crionform-data" width="100%" height="800px"></iframe>
+            </Spin>
           </Panel>
         </Collapse>
       </Drawer>
