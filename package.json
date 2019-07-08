@@ -1,6 +1,6 @@
 {
   "name": "as-check",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "private": false,
   "proxy": "https://10.96.205.191:443/",
   "homepage": "https://10.96.205.191/AS_CHECK/",
@@ -10,7 +10,7 @@
     "url": "http://gitlab-cos/gpbu7806/AS-Check"
   },
   "dependencies": {
-    "antd": "3.19.7",
+    "antd": "^3.20.1",
     "connected-react-router": "6.4.0",
     "history": "^4.9.0",
     "immutable": "4.0.0-rc.12",
@@ -32,7 +32,7 @@
   "scripts": {
     "start": "react-scripts start",
     "server": "nodemon ./src/services/server.js",
-    "build": "react-scripts build",
+    "build": "set \"GENERATE_SOURCEMAP=false\" && react-scripts build",
     "test": "react-scripts test",
     "publish": "npm publish ./build",
     "eject": "react-scripts eject"

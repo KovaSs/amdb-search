@@ -6,7 +6,7 @@ import {
   clearCompanyInfo,
   decodedCompanyResponse, 
   decodedRenderData, 
-  decodedInn, 
+  decodedInn,
   decodedErrors
 } from "../../../../store/ducks/openBill";
 import SearchCompanyInput from "./SearchCompanyInput";

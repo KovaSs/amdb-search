@@ -1,4 +1,4 @@
-import moment from 'moment'
+import {getDate} from './momentDate'
 
 export const fieldsArr = [
   {search: "ShortNameRus", id: "name", title: "Сокрашеное наименование", data: ""},
@@ -25,14 +25,14 @@ export const fieldsArr = [
     }
   }},
 
-  {search: "DateFirstReg", id: "registration_date", title: "Дата регистрации", data: "", func: (item = 'Данные отсутствуют') => moment(item).format('DD.MM.YYYY')},
+  {search: "DateFirstReg", id: "registration_date", title: "Дата регистрации", data: "", func: (item = 'Данные отсутствуют') => getDate(item)},
 
   {search: "Status", id: "status", title: "Статус", data: "", func: item => {
     if(!item) return 'Данные отсутствуют'
     const status = []
     item.GroupName && status.push(item.GroupName)
     item.Type !== item.GroupName && status.push(item.Type)
-    item.Date && status.push( moment(item.Date).format('DD.MM.YYYY'))
+    item.Date && status.push( getDate(item.Date))
     return status.join(' / ')
   }},
 
@@ -70,7 +70,7 @@ export const fieldsArr = [
   {search: "StaffNumberFTS", id: "workers_range_fns", title: "Численность персонала по данным ФНС", data: "", func: item => {
     if(!item) return 'Данные отсутствуют'
     const { Number: {ActualDate, content}} = item
-    return `${content} / ${moment(ActualDate).format('DD.MM.YYYY')}`
+    return `${content} / ${getDate(ActualDate)}`
   }},
 
   {search: "CharterCapital", id: "capital", title: "Уставной капитал", func: item => {
@@ -179,4 +179,62 @@ export const fieldsArr = [
       return [{first_name, middle_name, last_name, ActualDate, inn: INN || 'не найден', position: Position.charAt(0).toUpperCase()+Position.substr(1).toLowerCase()}]
     }
   }}
+]
+
+export const fieldsArrIP = [
+  {search: "FullNameRus", id: "full_name", title: "ФИО", data: ""},
+
+  {search: "INN", id: "inn", title: "ИНН", data: ""},
+
+  {search: "OGRNIP", id: "ogrn", title: "ОГРН", data: ""},
+
+  {search: "CompanyType", id: "company_type", title: "Тип компании", data: "", func: item =>  {
+    if(!item) return 'Данные отсутствуют'
+    return `${item.Code} / ${item.Name}`
+  }},
+
+  {search: "DateReg", id: "registration_date", title: "Дата регистрации", data: "", func: (item = 'Данные отсутствуют') => item},
+
+  {search: "Status", id: "status", title: "Статус", data: "", func: item => {
+    if(!item) return 'Данные отсутствуют'
+    return `${item.GroupName} ${"/ " + getDate(item.Date)}`
+  }},
+
+  {search: "FederalTaxRegistrationCurrent", id: "address", title: "Юридический адресс", data: "", func: item => {
+    if(!item.RegAuthorityAddress) return 'Данные отсутствуют'
+    return item.RegAuthorityAddress
+  }},
+
+  {search: "OKVED2List", id: "okved", title: "Основной ОКВЭД", data: "",func: item => {
+    if(!item) return 'Данные отсутствуют'
+    if(Array.isArray(item.OKVED)) {
+      const okved = item.OKVED.filter(el =>  el.IsMain === 'true')
+      const { Code, Name } = okved[0]
+      return `${Code} / ${Name}`
+    } else {
+      return `${item.OKVED.Code} / ${item.OKVED.Name}`
+    }
+  }},
+
+  {search: "sex", id: "sex", title: "Пол", data: "", func: item => {
+    if(!item.Name) return 'Данные отсутствуют'
+    return item.Name
+  }},
+
+  {search: "PersonsWithoutWarrant", id: "heads", title: "Руководители", data: "", func: item => {
+    if(!item) return ['']
+      const { Person, ActualDate, Person: {Position} } = item
+      const first_name = Person.FIO.split(' ')[1]
+      const middle_name = Person.FIO.split(' ')[2]
+      const last_name = Person.FIO.split(' ')[0]
+      return [{first_name, middle_name, last_name, ActualDate, inn: Person.INN || 'не найден', position: Position.charAt(0).toUpperCase()+Position.substr(1).toLowerCase()}]
+  }},
+
+  {search: "", id: "isponlit_proizvodstva", title: "Исполнительные производства", data: ""},
+  
+  {search: "", id: "sanctions", title: "Санкции", data: ""},
+
+  {search: "", id: "fns", title: "ФНС", data: ""},
+
+  {search: "", id: "arbiter", title: "Арбитраж", data: ""}
 ]

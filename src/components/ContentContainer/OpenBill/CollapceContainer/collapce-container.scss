@@ -86,9 +86,9 @@
   .heads-search {
     position: absolute;
     display: inline-block;
-    width: 80px;
+    width: 150px;
     right: 0px;
-    top: 2px;
+    top: 1px;
     &-btn, &-btn-green{
       margin-right: 0.5rem;
       background-color: #fff;
@@ -120,6 +120,29 @@
   .arbiter-risk-info{
     width: 30rem;
     margin: 0 auto;
+  }
+
+  .edited-identify-info {
+    padding: 0 5px;
+  }
+
+  /* Анимация нажатия кнопки в модуле CheckList проверки руководителей */
+  .ant-btn-icon-only:active {
+    -moz-transform: translatey(1px); /* Для Firefox */ 
+    -ms-transform: translatey(1px); /* Для IE */ 
+    -webkit-transform: translatey(1px); /* Для Safari, Chrome, iOS */ 
+    -o-transform:translatey(1px); /* Для Opera */ 
+    transform: translatey(1px);
+    -webkit-transition: 0.2s time;
+    -o-transition: 0.2s time;
+    transition: 0.2s time;
+  }
+
+  /* Бордер для Descriptionlist добавления нового юзера в проверку*/ 
+  .description-border {
+    .ant-descriptions-view {
+      border: 1px solid #52c41a5c !important;
+    }
   }
 }
 

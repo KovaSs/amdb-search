@@ -1,12 +1,14 @@
 import React from 'react';
-import moment from 'moment'
 import { Drawer, Collapse, Icon } from "antd";
 import toggleDrawer from '../index'
+import { getDate } from '../../../../../services/momentDate'
 import './drawer-history.scss'
 
 const CompanyHistoryInfoDrawer = props => {
   const {onClose, visible, headHistory} = props
   const { Panel } = Collapse;
+
+  if(!headHistory) return <div style={{textAlign: "center"}}>Ошибка в работе компонента "openBill -> CompanyHistoryInfoDrawer", пожалуйста перезагрузите страницу</div>
 
   const _renderHeadsHistory = () => {
     return (
@@ -24,7 +26,7 @@ const CompanyHistoryInfoDrawer = props => {
         <div className="leader-name-header">
           <label className={`leader-name-header_fio${ id==='leaders_list' ? "_history" : ''}`}>{`${last_name} ${first_name} ${middle_name}`}</label>
           <label className="leader-name-header_position">{`${position}`}</label>
-          <label className="leader-name-header_date">{`${moment(ActualDate).format('DD.MM.YYYY')}`}</label>
+          <label className="leader-name-header_date">{`${getDate(ActualDate)}`}</label>
           { id==='leaders_list' && <label className="leader-name-header_history">История</label> }
         </div>
       )
@@ -70,7 +72,7 @@ const CompanyHistoryInfoDrawer = props => {
     }
     
     
-    return headHistory.map( (item, key) => {
+    const historyHeads =  headHistory.map( (item, key) => {
       return (
         <Collapse 
           key={item.inn}
@@ -83,6 +85,7 @@ const CompanyHistoryInfoDrawer = props => {
         </Collapse> 
       )
     })
+    return historyHeads
   }
 
   return (

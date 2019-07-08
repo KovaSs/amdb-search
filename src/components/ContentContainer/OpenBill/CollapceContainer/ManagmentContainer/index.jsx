@@ -3,21 +3,54 @@ import { connect } from "react-redux"
 import ManagmentItem from './ManagmentItem'
 import PropTypes from 'prop-types'
 import { trasform } from "../../../../../services/transformData";
-import { decodedRequestLoading, decodedManagementSource, identifyUser } from "../../../../../store/ducks/openBill";
+import AddNewUser from "./AddNewUser";
+import { 
+  decodedRequestLoading, 
+  decodedManagementSource, 
+  identifyUser, 
+  decodedCompanyName, 
+  actionGetUserCroinformInfo,
+  decodedСroinformResponse,
+  addNewUserToCheackList
+} from "../../../../../store/ducks/openBill";
 
 /** Вывод данных об руководстве */
-const ManagmentData = ({managementSource, identifyUser}) => {
+const ManagmentContainer = props => {
+  const { managementSource, identifyUser, requestLoading, companyName, actionGetUserCroinformInfo, croinformResponse, addUser, onSave, addNewUserToCheackList } = props
+  if(addUser) {
+    const user = {
+      ActualDate: Date.now(),
+      first_name: "Имя",
+      inn: "ИНН",
+      last_name: "Фамилия",
+      middle_name: "Отчество",
+      position: "Должность"
+    }
+    return (
+      <AddNewUser 
+        key={Date.now()}
+        user={user}
+        onSave={onSave}
+        addUser={addNewUserToCheackList}
+      />
+    )
+  }
 
   const managementInfo = trasform._managementSource(managementSource)
   const heads = managementInfo.find( item => item.id === 'heads');
 
-  const renderHeads = heads.data.map( item =>  (
+  const renderHeads = heads.data.map( item => (
     <ManagmentItem 
       key={item.inn} 
       item={item} 
       activeKey={item.inn} 
-      searchData={'heads'} 
+      searchData={'heads'}
+      actionGetUserCroinformInfo={actionGetUserCroinformInfo}
       identifyUser={identifyUser}
+      companyName={companyName}
+      identifyUserloading={requestLoading.getIn(["identifyUser",item.inn])}
+      croinformRequestloading={requestLoading.getIn(["croinformRequest",item.inn])}
+      croinformRes={croinformResponse.get(item.inn)}
     />
   ))
 
@@ -27,16 +60,21 @@ const ManagmentData = ({managementSource, identifyUser}) => {
 const putStateToProps = state => {
   return {
     requestLoading: decodedRequestLoading(state),
-    managementSource: decodedManagementSource(state)
+    managementSource: decodedManagementSource(state),
+    companyName: decodedCompanyName(state),
+    croinformResponse: decodedСroinformResponse(state)
   }
 }
 
 const putActionsToProps = {
-  identifyUser
+  identifyUser,
+  actionGetUserCroinformInfo,
+  addNewUserToCheackList
 }
 
-export default connect(putStateToProps, putActionsToProps)(ManagmentData)
+export default connect(putStateToProps, putActionsToProps)(ManagmentContainer)
 
+/** Передаваемые в компонент props */
 ManagmentItem.propTypes = {
   /** Данные о руководящем составе */
   managementSource: PropTypes.shape({
@@ -46,5 +84,10 @@ ManagmentItem.propTypes = {
     founders_ul: PropTypes.array,
     befenicials: PropTypes.array
   }),
-  identifyUser: PropTypes.func.isRequired
+  /** Action для первичной идентификации проверяемого лица */
+  identifyUser: PropTypes.func.isRequired,
+  /** Action для проверки проверяемого лица с помощью Croinform */
+  actionGetUserCroinformInfo: PropTypes.func.isRequired,
+  /** Информация для отображения Loader cocтояния */
+  requestLoading: PropTypes.object
 }

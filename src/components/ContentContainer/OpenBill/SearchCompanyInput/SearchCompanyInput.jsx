@@ -6,7 +6,8 @@ import "./search-company.scss"
 class SearchCompanyInput extends PureComponent {
   state = {
     showInfo : false,
-    clearField : false
+    clearField : false,
+    error: false
   }
 
   componentDidMount() {
@@ -28,6 +29,13 @@ class SearchCompanyInput extends PureComponent {
       })
     }
     this.openNotification(errors)
+  }
+
+  componentDidCatch(err) {
+    console.log('err', err)
+    return this.setState({
+      error: true
+    })
   }
   
   handleSubmit = e => {  
@@ -90,6 +98,7 @@ class SearchCompanyInput extends PureComponent {
                 onPressEnter={this.handleSubmit}
                 option={{ initialValue : inn }}
                 disabled={showInfo}
+                allowClear={!showInfo}
               />
             )}
           </Form.Item>
@@ -125,6 +134,8 @@ class SearchCompanyInput extends PureComponent {
   };
 
   render() {
+    const {error} = this.state
+    if(error) return <div style={{textAlign: "center"}}>Ошибка в работе компонента "openBill -> SearchCompanyInput", пожалуйста перезагрузите страницу</div>
     return (
       <Form className="ant-advanced-search-form" onSubmit={this.handleSubmit}>
         { this.getFields() }

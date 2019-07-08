@@ -2,6 +2,14 @@
 .credit-conveyor{
   color: rgba(0, 255, 242, 0.24);
 
+  .ant-badge-count {
+    height: 17px;
+    padding: 0px 5px;
+    font-size: 11px;
+    line-height: 16px;
+    min-width: 10px;
+  }
+
   &__risk-factor {
     margin: 1rem;
     &-meta {
@@ -108,7 +116,7 @@
     margin: 2rem 4rem;
     &__organisation {
       &-info {
-        margin: 0 0.5rem 0.5rem;
+        margin: 0;
         .lable {
           text-align: left;
           font-weight: bold;
@@ -138,7 +146,7 @@
         -ms-user-select: none; /* Internet Explorer (не поддерживается) */
         -o-user-select: none; /* Opera Presto (не поддерживается) */
         -webkit-user-select: none; /* Google Chrome, Opera Next, Safari */
-          }
+      }
     }
     &__lable-table {
       margin: 2rem 0 2rem 1rem;

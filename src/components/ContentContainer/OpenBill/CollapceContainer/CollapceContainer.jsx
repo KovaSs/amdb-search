@@ -1,5 +1,5 @@
-import React from "react";
-import { Row, Col, Spin, Collapse, Icon } from 'antd';
+import React, {useState} from "react";
+import { Row, Col, Spin, Collapse, Icon, Button } from 'antd';
 import PropTypes from "prop-types";
 import MainCompanyData from './MainCompanyData';
 import StopListData from './StopListData';
@@ -9,8 +9,10 @@ import "./collapce-container.scss";
 
 
 const CollapceContainer = props => {
+  const [addCheckUser, setAddCheckUser] = useState(false)
+
   const { Panel } = Collapse;
-  const {companySource, riskSource, riskSource: {arbiter}, requestLoading : {companyPCUpdate, companyMainInfo} } = props
+  const {companySource, riskSource, riskSource: {arbiter}, requestLoading  } = props
 
   /** Преобразование входящих данных из props */
   const fullOrganistionInfo = trasform._companySource(companySource)
@@ -20,10 +22,31 @@ const CollapceContainer = props => {
   const callback = key => {
   }
 
+  const BtnExtra = ({ user }) => {
+
+    const addUser = e => {
+      e.stopPropagation();
+      setAddCheckUser(!addCheckUser)
+      console.log('add user')
+    };
+
+    return (
+      <span className="heads-search" style={{width: 40}}>
+        <Button
+          title="Добавить еще..."
+          size="small"
+          icon={"user-add"}
+          style={{color: "rgba(14, 117, 253, 0.992)"}}
+          onClick={e => addUser(e)}
+        />
+      </span>
+    )
+  }
+
   return (
     <Row className="table-info">
       <Col span={24}>
-        <Spin spinning={companyMainInfo} size="large" tip="Идет поиск данных" >
+        <Spin spinning={requestLoading.get("companyMainInfo")} size="large" tip="Идет поиск данных" >
           { companySource &&
             <Collapse 
               defaultActiveKey={['1', '2', '3', '4']} 
@@ -31,10 +54,17 @@ const CollapceContainer = props => {
               expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"}/> }
             >
               <Panel header="Общая информация" key="1" showArrow={false}>
-                <MainCompanyData loading={companyPCUpdate} fields={fullOrganistionInfo}/>
+                <MainCompanyData loading={requestLoading.get("companyPCUpdate")} fields={fullOrganistionInfo}/>
                 <StopListData  riskInfo={riskInfo} arbiter={arbiter}/>
               </Panel>
-              <Panel header="Связанные лица" key="2" forceRender className="table-info-panel">
+              <Panel 
+                key="2" 
+                className="table-info-panel"
+                header="Связанные лица" 
+                forceRender
+                extra={<BtnExtra />}
+              >
+                { addCheckUser && <ManagmentContainer addUser={true} onSave={setAddCheckUser}/> }
                 <ManagmentContainer />
               </Panel>
             </Collapse>

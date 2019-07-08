@@ -56,7 +56,7 @@ const StopListData = ({riskInfo, arbiter, loading =false}) => {
 
   return (
     <Collapse 
-      defaultActiveKey={['1', '2']} 
+      // defaultActiveKey={['1', '2']} Раскоментировать при реализации стоп-листов
       onChange={callback}
       expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"} />}
       style={{marginTop: "5px"}}

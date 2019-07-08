@@ -2,13 +2,13 @@ import React, { Component } from 'react'
 import { Table, Input, Button, Icon, ConfigProvider, Empty } from 'antd';
 import { withRouter } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
-import moment from 'moment'
+import { getDate } from '../../../../services/momentDate'
 
 const data = [
   {
     key: '1',
     number: '1',
-    date: moment('2010-12-08').format('DD.MM.YYYY'),
+    date: getDate('2010-12-08'),
     info: {
       name: 'ШАМКОВ МАКСИМ АНАТОЛЬЕВИЧ',
       inn: '552801899036',
@@ -18,7 +18,7 @@ const data = [
   {
     key: '2',
     number: '2',
-    date: moment('2010-12-09').format('DD.MM.YYYY'),
+    date: getDate('2010-12-09'),
     info: {
       name: "ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ \"БЕЛЫЙ ДОМ\"",
       inn: '2901178314',
@@ -168,7 +168,7 @@ class TableContainer extends Component {
                   highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }} 
                   searchWords={this.state.searchText} 
                   autoEscape 
-                  textToHighlight={ (`${moment(record.info.birthday).format('DD.MM.YYYY')}г.`).toString()}
+                  textToHighlight={ (`${getDate(record.info.birthday)}г.`).toString()}
                 />
               </small> 
             }

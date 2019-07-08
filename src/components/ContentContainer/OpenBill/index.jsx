@@ -8,23 +8,17 @@ import SearchCompanyInput from "./SearchCompanyInput";
 import "./open-bill.scss"
 
 class OpenBill extends Component {
-  static propTypes = {
-    companyResponse: PropTypes.object,
-    requestLoading: PropTypes.object,
-    renderData: PropTypes.bool,
-    errors: PropTypes.object
-  }
-
   state = {
     showTable : false,
     loading : false,
-    newBill: true
+    newBill: true,
+    error: false
   }  
 
   componentWillReceiveProps(nextProps) {
     const { companyResponse } = this.props
 
-    nextProps.requestLoading.companyMainInfoUpdate === true ?
+    nextProps.requestLoading.get("companyMainInfoUpdate") === true ?
       this.setState({
         loading: true
       }) :
@@ -47,6 +41,13 @@ class OpenBill extends Component {
     document.title = "AC - Проверка | Открытие счета"
   }
 
+  componentDidCatch(err) {
+    console.log('err', err)
+    return this.setState({
+      error: true
+    })
+  }
+
   toggleVersion = () => {
     const { newBill } = this.state;
     this.setState({
@@ -61,8 +62,9 @@ class OpenBill extends Component {
   }
 
   render() {
-    const { showTable, loading, newBill } = this.state
+    const { showTable, loading, newBill, error } = this.state
     const { renderData } = this.props
+    if(error) return <div style={{textAlign: "center"}}>Ошибка в работе компонента "openBill", пожалуйста перезагрузите страницу</div>
 
     const newOpenBill = (
       <Row className="credit-conveyor">
@@ -101,6 +103,13 @@ const putStateToProps = state => {
     errors: decodedErrors(state),
     reqnum: decodedReqnum(state)
   }
+}
+
+OpenBill.propTypes = {
+  companyResponse: PropTypes.object,
+  requestLoading: PropTypes.object,
+  renderData: PropTypes.bool,
+  errors: PropTypes.object
 }
 
 export default connect(putStateToProps)(OpenBill);
