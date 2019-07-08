@@ -1,7 +1,8 @@
 import React, { PureComponent } from "react";
 import { Collapse, Icon, Spin, Descriptions, AutoComplete, Input, Button, Badge} from "antd";
-import LeaderHeader from "../LeaderHeader";
 import PropTypes from "prop-types";
+import _ from "lodash";
+import LeaderHeader from "../LeaderHeader";
 import {region} from "../../../../../../store/mock";
 import CroinformDrawer from "../../../DrawerContainer/CroinformDrawer";
 
@@ -41,13 +42,8 @@ export class ManagmentItem extends PureComponent {
     const { item: { inn, last_name, first_name,  middle_name, identifyInfo = { inn: "", fio: "", passport: "", birthday: "", address: ""}}} = this.props;
     this.setState({
       user: {
-        inn: [...new Set([inn, ...identifyInfo.inn])],
-        fio: [
-          ...new Set(
-            [`${last_name} ${first_name} ${middle_name}`],
-            ...identifyInfo.fio
-          )
-        ],
+        inn: _.union([inn], identifyInfo.inn),
+        fio: _.union( [`${last_name} ${first_name} ${middle_name}`], identifyInfo.fio ),
         passport: identifyInfo.passport,
         birthday: identifyInfo.birthday,
         address: identifyInfo.address
@@ -61,13 +57,8 @@ export class ManagmentItem extends PureComponent {
     if (item !== prevProps.item) {
       this.setState({
         user: {
-          inn: [...new Set([inn, ...identifyInfo.inn])],
-          fio: [
-            ...new Set(
-              [`${last_name} ${first_name} ${middle_name}`],
-              ...identifyInfo.fio
-            )
-          ],
+          inn: _.union([inn], identifyInfo.inn),
+          fio: _.union( [`${last_name} ${first_name} ${middle_name}`], identifyInfo.fio ),
           passport: identifyInfo.passport,
           birthday: identifyInfo.birthday,
           address: identifyInfo.address

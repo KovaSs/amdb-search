@@ -1,11 +1,11 @@
 import { Record, Map } from 'immutable'
 import { createSelector } from 'reselect'
-import { all, put, take, call, select, spawn } from 'redux-saga/effects'
+import { all, put, take, call, select, spawn, delay } from 'redux-saga/effects'
 import { trasform } from "../../services/transformData"
-import { companyRes, identifyInfoMock, bicompactResMock, bicompactPCResMock, ipResMock, ipCroinformMock } from '../mock'
+import { companyRes, identifyInfoMock, bicompactResMock, bicompactPCResMock, ipResMock, ipCroinformMock,  companySructRequestMock} from '../mock'
 
 /* Mock данные */
-const dataMock = { companyRes, identifyInfoMock, bicompactResMock, bicompactPCResMock, ipResMock, ipCroinformMock }
+const dataMock = { companyRes, identifyInfoMock, bicompactResMock, bicompactPCResMock, ipResMock, ipCroinformMock, companySructRequestMock }
 
 /** Constants */
 export const moduleName = 'openBill'
@@ -230,7 +230,7 @@ const loadCompanyInfoSaga = function * () {
         type: LOAD_COMPANY_INFO + UPDATE + START
       })
   
-      /* Переключение на mock данные */
+      /* Переключение на mock данные 
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -250,15 +250,16 @@ const loadCompanyInfoSaga = function * () {
           if (res.ok) return res.json()
           throw new TypeError("Данные о кампании не обновлены!")
         })
-      }) 
+      }) */
 
       /* Mock данные о ЮЛ */
-      // const res = {ip: false, data: dataMock.bicompactResMock, reqnum: 666}
+      yield delay(2000)
+      const res = {ip: false, data: dataMock.bicompactResMock, reqnum: 666}
       /** Mock данные о ФЛ */
       // const res = {ip: true, data: dataMock.ipResMock.data, reqnum: 666}
 
       const data = res.data
-      console.log('RES | FIRST UPDATE | ', data)
+      console.log("%cRES | FIRST UPDATE", "color: white; background-color: green; padding: 0 5px;", data)
       const store = state => state[moduleName].get('companyResponse')
       const companyResponse = yield select(store)
 
@@ -300,7 +301,7 @@ const loadCompanyPCSaga = function * () {
           type: LOAD_COMPANY_INFO + PC + UPDATE + START
         })
   
-        /* Запрос данных о приемниках */
+        /* Запрос данных о приемниках 
         const res = yield call(() => {
           return fetch(
             `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -321,13 +322,14 @@ const loadCompanyPCSaga = function * () {
             if (res.ok) return res.json()
             throw new TypeError("Данные о кампании не обновлены!")
           })
-        })
+        }) */
         
         /* Получение данных из mock */
-        // const res = {ip: true, data: dataMock.bicompactPCResMock, reqnum: 666}
+        yield delay(2000)
+        const res = {ip: true, data: dataMock.bicompactPCResMock, reqnum: 666}
         
         const data = res.data
-        console.log('RES | PC update | ', data)
+        console.log("%cRES | PC UPDATE", "color: white; background-color: green; padding: 0 5px;", res)
         const store = state => state[moduleName].get('companyResponse')
         
         if(data === null) {
@@ -373,7 +375,7 @@ const identifyUserSaga = function * () {
         loading: action.payload.inn
       })
       
-      /* Запрос на идентификацию проверяемого объекта */
+      /* Запрос на идентификацию проверяемого объекта 
       const res = yield call(() => {
         if(!storeIsIP) {
           return fetch(
@@ -422,13 +424,14 @@ const identifyUserSaga = function * () {
           if (res.ok) return res.json()
           throw new TypeError("Ошибка получения данных!")
         })
-      }}) 
+      }}) */
 
       /** Mock данные о Идентификационных данных */
-      // const res = {ip: true, data: dataMock.identifyInfoMock, reqnum: 666}
+      yield delay(2000)
+      const res = {ip: true, data: dataMock.identifyInfoMock, reqnum: 666}
 
       const data = res.data
-      console.log('RES | GET USER INFO | ', res) 
+      console.log("%cRES | GET USER INFO", "color: white; background-color: green; padding: 0 5px;", res)
 
       if(data) {
         const updatedUserInfo = yield trasform._identifyUserInfo(storeOgrn, data, action.payload.inn)
@@ -462,7 +465,7 @@ const getCompanyStructureSaga = function * () {
           type: GET_COMPANY_STRUCTURE + START
         })
   
-        /* Запрос данных о приемниках */
+        /* Запрос данных о приемниках 
         const res = yield call(() => {
           return fetch(
             `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -484,13 +487,14 @@ const getCompanyStructureSaga = function * () {
             if (res.ok) return res.json()
             throw new TypeError("Данные о кампании не обновлены!")
           })
-        })
+        }) */
         
         /* Получение данных из mock */
-        // const res = {ip: true, data: dataMock.bicompactPCResMock, reqnum: 666}
+        yield delay(2000)
+        const res = {...dataMock.companySructRequestMock}
         
         const data = res.data
-        console.log('RES | COMPANY STRUCTURE | ', JSON.stringify(res))
+        console.log("%cRES | COMPANY STRUCTURE", "color: white; background-color: green; padding: 0 5px;", res)
         // const store = state => state[moduleName].get('companyResponse')
         
         // const companyResponse = yield select(store)
@@ -524,7 +528,7 @@ const identifyUserInfoSaga = function * () {
         loading: action.payload.INN
       })
 
-      /* Переключение на mock данные */
+      /* Переключение на mock данные 
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -563,13 +567,14 @@ const identifyUserInfoSaga = function * () {
           if (res.ok) return res.json()
           throw new TypeError("Ошибка получения данных!")
         })
-      }) 
+      }) */
   
       /** Mock данные о Идентификационных данных */
-      // const res = {ip: true, data: dataMock.ipCroinformMock.data, reqnum: 666}
+      yield delay(2000)
+      const res = {...dataMock.ipCroinformMock}
 
       const data = res.data
-      console.log('RES | GET CROINFORM USER INFO | ', res) 
+      console.log("%cRES | GET CROINFORM USER INFO", "color: white; background-color: green; padding: 0 5px;", res)
 
       yield put({
         type: GET_CROINFORM_USER_INFO + SUCCESS,

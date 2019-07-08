@@ -12,16 +12,11 @@ export const fieldsArr = [
   {search: "CompanyType", id: "company_type", title: "Тип компании", data: "", func: item =>  {
     if(!item) return 'Данные отсутствуют'
     switch (item) {
-      case "1":
-        return 'Обычная компания'
-      case "3":
-        return 'Страховая компания'
-      case "4":
-        return 'Страховой брокер'
-      case "5":
-        return 'Банковская организация'
-      default:
-        return 'Данные отсутствуют'
+      case "1": return 'Обычная компания'
+      case "3": return 'Страховая компания'
+      case "4": return 'Страховой брокер'
+      case "5": return 'Банковская организация'
+      default: return 'Данные отсутствуют'
     }
   }},
 
