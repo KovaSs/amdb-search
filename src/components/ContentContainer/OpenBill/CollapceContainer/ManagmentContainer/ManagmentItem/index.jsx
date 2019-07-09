@@ -31,6 +31,9 @@ export class ManagmentItem extends PureComponent {
     userSelected: {
       inn: "",
       fio: "",
+      FirstName: "",
+      MiddleName: "",
+      SurName: "",
       passport: "",
       birthday: "",
       address: ""
@@ -83,7 +86,7 @@ export class ManagmentItem extends PureComponent {
     const { userSelected, parseAddress } = this.state;
     const { item, actionGetUserCroinformInfo } = this.props;
     const user = {
-      INN: userSelected.inn ? userSelected.inn : item.inn ,
+      INN: userSelected.inn ? userSelected.inn : item.inn,
       FirstName: userSelected.fio ? this.parsingSelectFio(userSelected.fio).FirstName : item.first_name, 
       FirstNameArch: userSelected.fio ? this.parsingSelectFio(userSelected.fio).FirstName : item.first_name,
       MiddleName: userSelected.fio ? this.parsingSelectFio(userSelected.fio).MiddleName : item.middle_name,
@@ -144,7 +147,7 @@ export class ManagmentItem extends PureComponent {
         <span className="heads-search" style={{width: croinformRes ? 150 : 120}}>
           <Badge dot={croinformRes ? true : false} offset={[-6,1]} status={croinformRes ? "success"  : ""} >
             <Button
-              title="Показать ответ Croinform"
+              title="Показать результаты проверки"
               size="small"
               style={{
                 color: (croinformDisabled || edited || !croinformRes) ? "gray" : "rgba(14, 117, 253, 0.992)", 
@@ -157,7 +160,7 @@ export class ManagmentItem extends PureComponent {
             />
           </Badge>
           <Button
-            title="Проверить в Croinform"
+            title="Проверить все"
             size="small"
             style={{color: (croinformDisabled || edited || parseAddress.RegionExp === "") ? "gray" : "#52c41a", marginRight: 5}}
             disabled={croinformDisabled || edited || parseAddress.RegionExp === ""}
@@ -187,7 +190,7 @@ export class ManagmentItem extends PureComponent {
     const renderDescriptionItems = () => {
       const {
         user,
-        user: { inn, fio, passport, birthday, address },
+        user: { passport, birthday, address },
         userSelected,
         parseAddress: {CityExp, StreetExp, HouseExp, BuildExp, BuildingExp, FlatExp, RegionExpText},
         edited
@@ -195,19 +198,7 @@ export class ManagmentItem extends PureComponent {
       const descrArr = [];
       const id = "heads";
       for (const key in user) {
-        if (user.hasOwnProperty(key) && key === "inn") {
-          inn.length > 1 && edited && descrArr.push(
-            <DescriptionsItem  key={`${id}-${key}`} id={`${id}-${key}`} label="ИНН" span={1} >
-              { this._renderInut(inn, "inn") }
-            </DescriptionsItem>
-          )
-        } else if (user.hasOwnProperty(key) && key === "fio") {
-          fio.length > 1 && edited && descrArr.push(
-            <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="ФИО" span={1} >
-              { this._renderInut(fio, "fio") }
-            </DescriptionsItem>
-          )
-        } else if ( user.hasOwnProperty(key) && key === "passport" ) {
+        if ( user.hasOwnProperty(key) && key === "passport" ) {
           edited && descrArr.push(
             <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Паспорт" span={1} >
               { this._renderInut(passport, "passport") }
@@ -252,7 +243,7 @@ export class ManagmentItem extends PureComponent {
     return (
       <Panel
         key={String(key)}
-        header={<LeaderHeader {...item} companyName={companyName} id={id} />}
+        header={<LeaderHeader {...item} companyName={companyName} id={id} editedInfo={this.renderChangeLeaderInfo}/>}
         extra={<BtnExtra user={item} identifyUser={identifyUser} />}
       >
         <Spin spinning={identifyUserloading || croinformRequestloading ? true : false}>
@@ -391,6 +382,89 @@ export class ManagmentItem extends PureComponent {
     })) 
   }
 
+  /** Рендеринг компонента изменения LeaderHeader при редактировании записи */
+  renderChangeLeaderInfo = () => {
+    const { user, userSelected } = this.state
+    const { Option } = AutoComplete;
+
+    // Рендеринг опций выпадающего меню
+    const renderFioOption = item =>  <Option key={item} text="SurName" title={item} value={item}> {item} </Option>
+    const renderInnOption = item =>  <Option key={`header-list-inn-${item}`} text="inn" title={item} value={item}> {item} </Option>
+
+    // Измененение данных по onChange
+    // const handleChangeInn = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, inn: value } }))
+    const handleChangeSurName = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, SurName: this.parsingSelectFio(value).SurName } }))
+
+    // Измененение данных по onSelect
+    const handleSelectOption = (value, option) =>  this.setState(({ userSelected }) => {
+      console.log('value', value)
+      console.log('option', option)
+      if(option.props.text === "SurName") {
+        const FIO = this.parsingSelectFio(value)
+        return { 
+          userSelected: 
+          { ...userSelected, 
+            FirstName: FIO.FirstName,
+            MiddleName: FIO.MiddleName,
+            SurName: FIO.SurName,
+          } 
+        }
+      } else {
+        return { userSelected: { ...userSelected, inn: value } }
+      }
+    })
+    return (
+      <>
+        <label className={`leader-name-header_fio`} onClick={e => e.stopPropagation()}>
+          <Badge count={user.fio.length > 1 ? user.fio.length : null }>
+            <AutoComplete
+              size="small"
+              key="last_name"
+              style={{ width: 150 }}
+              value={userSelected.SurName}
+              dataSource={user.fio ? user.fio.map(renderFioOption) : false}
+              onSelect={handleSelectOption}
+              onChange={handleChangeSurName}
+              placeholder="Фамилия"
+              // filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
+              allowClear
+            />
+          </Badge>
+          <Input 
+            size="small"
+            placeholder="Имя" 
+            style={{ width: 150 }} 
+            value={userSelected.FirstName} 
+            // onChange={handleChangeAddressCityExp} 
+          />
+          <Input 
+            size="small"
+            placeholder="Отчество" 
+            style={{ width: 150 }} 
+            value={userSelected.MiddleName} 
+            // onChange={handleChangeAddressCityExp} 
+          />
+        </label>
+        <label className="leader-name-header_position" onClick={e => e.stopPropagation()}>
+          <Badge count={user.inn.length > 1 ? user.fio.length : null }>
+            <AutoComplete
+              size="small"
+              key="header-list-inn"
+              style={{ width: 150 }}
+              // value={userSelected.inn}
+              dataSource={user.inn ? user.inn.map(renderInnOption) : false}
+              onSelect={handleSelectOption}
+              // onChange={handleChangeInn}
+              placeholder="ИНН"
+              // filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
+              allowClear
+            />
+          </Badge>
+        </label>
+      </>
+    )
+  }
+
 
   /* Рендеринг редактируемых инпутов  */
   _renderInut = (data, keyId) => {
@@ -400,8 +474,6 @@ export class ManagmentItem extends PureComponent {
     const passportMask = str =>  str.replace(/^([0-9]{4})([0-9]{6,10})/g, '$1 $2')
 
     // Изменение state через onChange
-    const handleChangeInn = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, inn: value } }))
-    const handleChangeFio = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, fio: value } }))
     const handleChangeBirthday = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, birthday: value } }))
     const handleChangePassport = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, passport: passportMask(value) } }))
     // Изменение распарсенного адреса
@@ -414,6 +486,8 @@ export class ManagmentItem extends PureComponent {
     const handleChangeAddressFlatExp = e => { const value = e.target.value; return this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, FlatExp: value} })) }
     // Изменение state через onSelect
     const handleSelectOption = (value, option) =>  this.setState(({ userSelected }) => {
+      console.log('value', value)
+      console.log('option', option)
       if(option.props.text === "address") this.parsingSelectAddress(value)
       if(option.props.text === "passport") this.parsingSelectPassport(value)
       if(option.props.text === "fio") this.parsingSelectFio(value)
@@ -449,39 +523,7 @@ export class ManagmentItem extends PureComponent {
       );
     };
 
-    if ( keyId === "inn") {
-      return (
-        <Badge count={data.length}>
-          <AutoComplete
-            key={keyId}
-            style={{ width: 250 }}
-            size="small"
-            value={userSelected[keyId]}
-            dataSource={user.inn ? data.map(renderOption) : false}
-            onSelect={handleSelectOption}
-            onChange={handleChangeInn}
-            placeholder="Введите ИНН"
-            filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
-            allowClear
-          />
-        </Badge>
-      );
-    } else if ( keyId === "fio") {
-      return (
-        <AutoComplete
-          key={keyId}
-          style={{ width: 250 }}
-          size="small"
-          value={userSelected[keyId]}
-          dataSource={user.fio ? data.map(renderOption) : false}
-          onSelect={handleSelectOption}
-          onChange={handleChangeFio}
-          placeholder="Введите ФИО"
-          filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
-          allowClear
-        />
-      );
-    } else if ( keyId === "birthday") {
+    if ( keyId === "birthday") {
       return (
         <Badge count={data.length}>
           <AutoComplete

@@ -1,11 +1,12 @@
 import { Record, Map } from 'immutable'
 import { createSelector } from 'reselect'
-import { all, put, take, call, select, spawn, delay } from 'redux-saga/effects'
+import { all, put, take, call, select, spawn } from 'redux-saga/effects'
 import { trasform } from "../../services/transformData"
-import { companyRes, identifyInfoMock, bicompactResMock, bicompactPCResMock, ipResMock, ipCroinformMock, companySructRequestMock } from '../mock'
+import { companyRes, identifyInfoMock, bicompactResMock, ipResMock, ipCroinformMock } from '../mock'
 
 /* Mock данные */
-const dataMock = { companyRes, identifyInfoMock, bicompactResMock, bicompactPCResMock, ipResMock, ipCroinformMock, companySructRequestMock }
+const dataMock = { companyRes, identifyInfoMock, bicompactResMock, ipResMock, ipCroinformMock }
+const cloCss = "color:white; background-color: green; padding: 0 5px"
 
 /** Constants */
 export const moduleName = 'openBill'
@@ -205,8 +206,8 @@ export const decodedMainCompanySource = createSelector(
 )
 export const decodedRiskSource = createSelector(
   companyResSelector, (companyResponse) => {
-    const { arbiter, fns, sanctions, isponlit_proizvodstva } = companyResponse
-    const riskSource = { arbiter, fns, sanctions, isponlit_proizvodstva }
+    const { arbiter, fns, sanctions, isponlit_proizvodstva, spiski, spark_spiski } = companyResponse
+    const riskSource = { arbiter, fns, sanctions, isponlit_proizvodstva, spiski, spark_spiski }
     return riskSource
   }
 )
@@ -257,8 +258,8 @@ const loadCompanyInfoSaga = function * () {
       /** Mock данные о ФЛ */
       // const res = {ip: true, data: dataMock.ipResMock.data, reqnum: 666}
 
-      const data = res.data
-      console.log("%cRES | FIRST UPDATE", "color:white; background-color: green; padding: 0 5px", res)
+      const data = res.data.company_info
+      console.log("%cRES | FIRST UPDATE", cloCss, res)
       const store = state => state[moduleName].get('companyResponse')
       const companyResponse = yield select(store)
 
@@ -281,77 +282,10 @@ const loadCompanyInfoSaga = function * () {
       }
 
     } catch (err){
+      console.log('err', err)
       yield put({
         type: LOAD_COMPANY_INFO + UPDATE + FAIL,
       })
-    }
-  }
-}
-
-/* Получение данных о предшедственнниках и приемниках */
-const loadCompanyPCSaga = function * () {
-  while(true){
-    const action = yield take(LOAD_COMPANY_INFO + UPDATE + SUCCESS)
-    const store = state => state[moduleName].get('companyResponse')
-    const storeInn = yield select(store)
-    if(!action.isIp) {
-      try {
-        yield put({
-          type: LOAD_COMPANY_INFO + PC + UPDATE + START
-        })
-  
-        /* Запрос данных о приемниках */
-        const res = yield call(() => {
-          return fetch(
-            `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
-            { 
-              method: 'POST',
-              mode: 'cors',
-              credentials: 'include',
-              body : JSON.stringify({ 
-                type: 'get_company_ps',
-                reqnum: action.id,
-                data: {
-                  code: storeInn.inn
-                }
-              }),
-            }
-          )
-          .then(res => {
-            if (res.ok) return res.json()
-            throw new TypeError("Данные о кампании не обновлены!")
-          })
-        })
-        
-        /* Получение данных из mock */
-        // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
-        
-        const data = res.data
-        console.log("%cRES | PC UPDATE", "color:white; background-color: green; padding: 0 5px", res)
-        const store = state => state[moduleName].get('companyResponse')
-        
-        if(data === null) {
-          const companyResponse = yield select(store)
-          const updatedData = yield trasform._get_company_info_companySource(companyResponse, { Successor : false, Predecessor: false})
-          yield put({
-            type: LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS,
-            // reqnum: res.reqnum,
-            payload: {updatedData},
-          })
-        } else {
-          const companyResponse = yield select(store)
-          const updatedData = yield trasform._get_company_info_companySource(companyResponse, data.Reorganizations)
-          yield put({
-            type: LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS,
-            // reqnum: res.reqnum,
-            payload: {updatedData},
-          })
-        }
-      } catch (err){
-        yield put({
-          type: LOAD_COMPANY_INFO + PC + UPDATE + FAIL,
-        })
-      }
     }
   }
 }
@@ -450,65 +384,6 @@ const identifyUserSaga = function * () {
   }
 }
 
-/* Идентификация пользователя */
-const getCompanyStructureSaga = function * () {
-  while(true){
-    const action = yield take(LOAD_COMPANY_INFO + UPDATE + SUCCESS)
-    const store = state => state[moduleName].get('companyResponse')
-    const storeState = yield select(store)
-    if(!action.isIp) {
-      try {
-        yield put({
-          type: GET_COMPANY_STRUCTURE + START
-        })
-  
-        /* Запрос данных о приемниках */
-        const res = yield call(() => {
-          return fetch(
-            `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
-            { 
-              method: 'POST',
-              mode: 'cors',
-              credentials: 'include',
-              body : JSON.stringify({ 
-                type: 'company_structure',
-                reqnum: action.id,
-                data: {
-                  INN: storeState.inn,
-                  OGRN: storeState.ogrn
-                }
-              }),
-            }
-          )
-          .then(res => {
-            if (res.ok) return res.json()
-            throw new TypeError("Данные о кампании не обновлены!")
-          })
-        }) 
-        
-        /* Получение данных из mock */
-        // yield delay(2000); const res = {...dataMock.companySructRequestMock}
-        
-        const data = res.data
-        console.log("%cRES | COMPANY STRUCTURE", "color:white; background-color: green; padding: 0 5px", res)
-        // const store = state => state[moduleName].get('companyResponse')
-        
-        // const companyResponse = yield select(store)
-        // const updatedData = yield trasform._get_company_info_companySource(companyResponse, { Successor : false, Predecessor: false})
-        yield put({
-          type: GET_COMPANY_STRUCTURE + SUCCESS,
-          // reqnum: res.reqnum,
-          payload: {data},
-        })
-      } catch (err){
-        yield put({
-          type: GET_COMPANY_STRUCTURE + FAIL,
-        })
-      }
-    }
-  }
-}
-
 /* Получение полной информации из источников об проверяемом пользователе */
 const identifyUserInfoSaga = function * () {
   while(true){
@@ -563,7 +438,7 @@ const identifyUserInfoSaga = function * () {
           if (res.ok) return res.json()
           throw new TypeError("Ошибка получения данных!")
         })
-      })
+      }) 
   
       /** Mock данные о Идентификационных данных */
       // yield delay(2000); const res = {ip: true, data: dataMock.ipCroinformMock.data, reqnum: 666}
@@ -586,11 +461,8 @@ const identifyUserInfoSaga = function * () {
 }
 
 export const saga = function * () {
-  yield spawn(getCompanyStructureSaga)
-  yield spawn(loadCompanyPCSaga)
-
+  yield spawn(loadCompanyInfoSaga)
   yield all([
-    loadCompanyInfoSaga(),
     identifyUserSaga(),
     identifyUserInfoSaga()
   ])

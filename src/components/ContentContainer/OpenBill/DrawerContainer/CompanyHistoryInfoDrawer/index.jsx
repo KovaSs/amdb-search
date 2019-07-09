@@ -75,7 +75,7 @@ const CompanyHistoryInfoDrawer = props => {
     const historyHeads =  headHistory.map( (item, key) => {
       return (
         <Collapse 
-          key={item.inn}
+          key={`${item.inn}-${key}`}
           className="managment"
           bordered={false}
           expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"} />}

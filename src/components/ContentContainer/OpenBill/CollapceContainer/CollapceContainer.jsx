@@ -88,9 +88,6 @@ CollapceContainer.propTypes = {
   companySource: PropTypes.object,
   /** Данные о риск факторах */
   riskSource: PropTypes.shape({
-    isponlit_proizvodstva: PropTypes.array,
-    sanctions: PropTypes.array,
-    fns: PropTypes.array,
     arbiter: PropTypes.object
   }),
 }

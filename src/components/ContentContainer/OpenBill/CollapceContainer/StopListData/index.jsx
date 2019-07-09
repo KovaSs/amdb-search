@@ -33,17 +33,17 @@ const StopListData = ({riskInfo, arbiter, loading =false}) => {
     if ( item.data !== undefined && item.data !== "" && item.id !== "arbiter" && !Array.isArray(item.data)) {
       return (
         <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={1}>
-          <span style={{color: "red"}}>{ item.data }</span>
+          <span style={{color: item.id === "spark_spiski" ? "" : "red"}}>{ item.data }</span>
         </DescriptionsItem>
       )
-    } else if(item.id === "arbiter") {
+    } else if(item.id === "arbiter" && item.data !== "") {
       return (
         <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={1}>
           <RenderAbiterTable />
         </DescriptionsItem>
       )
     } else if (Array.isArray(item.data)) {
-      const itemArray = item.data.map((el, key) => <span key={key} style={{color: "red"}}>{el} <br /> </span>)
+      const itemArray = item.data.map((el, key) => <span key={key} style={{color: item.id === "spark_spiski" ? "" : "red"}}>{el} <br /> </span>)
       return (
         <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={2}>
           { itemArray }
@@ -56,12 +56,12 @@ const StopListData = ({riskInfo, arbiter, loading =false}) => {
 
   return (
     <Collapse 
-      // defaultActiveKey={['1', '2']} Раскоментировать при реализации стоп-листов
+      defaultActiveKey={['1', '2']} Раскоментировать при реализации стоп-листов
       onChange={callback}
       expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"} />}
       style={{marginTop: "5px"}}
     >
-      <Panel header="Стоп-листы" key="1" showArrow={false}>
+      <Panel header="Стоп-листы / Cписки" key="1" showArrow={false}>
         <Spin spinning={loading}>
           <Descriptions size="small" bordered border column={{md:3, sm:2, xs:1}}>
             {renderDescriptionFields}

@@ -73,15 +73,21 @@ class TransformData {
   }
 
   _get_company_info_companySource = (prevData, newData) => {
-    const clonePrevData = _.cloneDeep(prevData);
-    fieldsArr.map(item => {
-      for (const key in newData) {
-        if(item.search === key && !item.func) return _.assign(clonePrevData, { [item.id] : newData[item.search]})
-        else if(item.search === key && item.func)return _.assign(clonePrevData, { [item.id] : item.func(newData[item.search])})
-      }
-      return item
-    })
-    return clonePrevData
+    try {
+      const clonePrevData = _.cloneDeep(prevData);
+        fieldsArr.map(item => {
+          for (const key in newData) {
+            if(item.search === "Predecessor" && item.func ) return _.assign(clonePrevData, { [item.id] : newData.ps.Data ? item.func(newData.ps.Data.Report.Reorganizations[item.search]) : ""})
+            else if(item.search === "Successor" && item.func ) return _.assign(clonePrevData, { [item.id] : newData.ps.Data ? item.func(newData.ps.Data.Report.Reorganizations[item.search]) : ""})
+            else if(item.search === key && !item.func) return _.assign(clonePrevData, { [item.id] : newData[item.search]})
+            else if(item.search === key && item.func)return _.assign(clonePrevData, { [item.id] : item.func(newData[item.search])})
+          }
+          return item
+        })
+      return clonePrevData
+    } catch (error) {
+      console.log('Ошибка в преобразовании company_type', error)
+    }
   }
 
   _addNewUserToCheckList = (prevData, newData) => {
