@@ -13,6 +13,4 @@ const putStateToProps = state => {
   }
 }
 
-
-
 export default connect(putStateToProps)(Container)

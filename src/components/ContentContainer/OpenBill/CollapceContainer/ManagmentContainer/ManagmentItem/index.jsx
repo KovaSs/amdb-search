@@ -1,7 +1,8 @@
 import React, { PureComponent } from "react";
 import { Collapse, Icon, Spin, Descriptions, AutoComplete, Input, Button, Badge} from "antd";
-import LeaderHeader from "../LeaderHeader";
 import PropTypes from "prop-types";
+import { union } from "lodash";
+import LeaderHeader from "../LeaderHeader";
 import {region} from "../../../../../../store/mock";
 import CroinformDrawer from "../../../DrawerContainer/CroinformDrawer";
 
@@ -41,13 +42,8 @@ export class ManagmentItem extends PureComponent {
     const { item: { inn, last_name, first_name,  middle_name, identifyInfo = { inn: "", fio: "", passport: "", birthday: "", address: ""}}} = this.props;
     this.setState({
       user: {
-        inn: [...new Set([inn, ...identifyInfo.inn])],
-        fio: [
-          ...new Set(
-            [`${last_name} ${first_name} ${middle_name}`],
-            ...identifyInfo.fio
-          )
-        ],
+        inn: union([inn], identifyInfo.inn), 
+        fio: union( [`${last_name} ${first_name} ${middle_name}`], identifyInfo.fio ), 
         passport: identifyInfo.passport,
         birthday: identifyInfo.birthday,
         address: identifyInfo.address
@@ -61,13 +57,8 @@ export class ManagmentItem extends PureComponent {
     if (item !== prevProps.item) {
       this.setState({
         user: {
-          inn: [...new Set([inn, ...identifyInfo.inn])],
-          fio: [
-            ...new Set(
-              [`${last_name} ${first_name} ${middle_name}`],
-              ...identifyInfo.fio
-            )
-          ],
+          inn: union([inn], identifyInfo.inn), 
+          fio: union( [`${last_name} ${first_name} ${middle_name}`], identifyInfo.fio ), 
           passport: identifyInfo.passport,
           birthday: identifyInfo.birthday,
           address: identifyInfo.address
@@ -160,7 +151,7 @@ export class ManagmentItem extends PureComponent {
                 marginRight: 5,
                 display: croinformRes ? "block" : "none"
               }}
-              disabled={croinformDisabled || edited || !croinformRes}
+              disabled={croinformDisabled || edited || !croinformRes }
               icon="solution"
               onClick={e => this.showDrawer(e)}
             />
@@ -168,8 +159,8 @@ export class ManagmentItem extends PureComponent {
           <Button
             title="Проверить в Croinform"
             size="small"
-            style={{color: (croinformDisabled || edited) ? "gray" : "#52c41a", marginRight: 5}}
-            disabled={croinformDisabled || edited}
+            style={{color: (croinformDisabled || edited || parseAddress.RegionExp === "") ? "gray" : "#52c41a", marginRight: 5}}
+            disabled={croinformDisabled || edited || parseAddress.RegionExp === ""}
             icon={croinformRequestloading ? "loading" : "global"}
             onClick={e => this.getCroinformIdentifyRequest(e)}
           />
@@ -278,22 +269,30 @@ export class ManagmentItem extends PureComponent {
           }
           {
             !item.identifyInfo && !edited && (!userSelected.passport)  && 
-            <div style={{textAlign: "center", cursor: "pointer"}} >
+            <div style={{textAlign: "center", cursor: "default", color: "gray"}} >
               <label onDoubleClick={e => this.onDoubleClickEvent(e)}>
                 Для ввода информации необходимой для проверки данного субъекта дважды кликните по этому сообщению или по кнопке
               </label>
-              <Button
+              <Icon
                 size="small"
-                style={{color: "rgba(14, 117, 253, 0.992)", margin: "0 5px"}}
-                icon={"form"}
-              />
+                style={{
+                  color: "rgba(14, 117, 253, 0.992)", 
+                  margin: "0 5px",
+                  cursor: "default"
+                }}
+                type={"form"}
+                />
               <label onDoubleClick={e => this.onDoubleClickEvent(e)}> 
                 на панели редактирования, для идентификации и получения данных для автозаполнения кликните по кнопке
               </label>
-              <Button
+              <Icon
                 size="small"
-                style={{color: "rgba(14, 117, 253, 0.992)", margin: "0 5px"}}
-                icon="file-search"
+                style={{
+                  color: "rgba(14, 117, 253, 0.992)", 
+                  margin: "0 5px",
+                  cursor: "default"
+                }}
+                type="file-search"
               />
             </div>
           }
@@ -386,7 +385,7 @@ export class ManagmentItem extends PureComponent {
         BuildExp, // Корп
         BuildingExp, // Стр
         FlatExp, // Квар
-        RegionExp: RegionExp.value !== undefined ? RegionExp.value : "", // Регион
+        RegionExp: RegionExp.value, // Регион
         RegionExpText: RegionExp.title// Регион
       }
     })) 
@@ -398,11 +397,13 @@ export class ManagmentItem extends PureComponent {
     const { Option } = AutoComplete;
     const { user, userSelected, parseAddress } = this.state
 
+    const passportMask = str =>  str.replace(/^([0-9]{4})([0-9]{6,10})/g, '$1 $2')
+
     // Изменение state через onChange
     const handleChangeInn = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, inn: value } }))
     const handleChangeFio = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, fio: value } }))
     const handleChangeBirthday = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, birthday: value } }))
-    const handleChangePassport = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, passport: value } }))
+    const handleChangePassport = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, passport: passportMask(value) } }))
     // Изменение распарсенного адреса
     const handleChangeAddressRegionExp = value =>  this.setState(({ parseAddress }) => ( { parseAddress: { ...parseAddress, RegionExpText: value } }))
     const handleChangeAddressCityExp = e => { const value = e.target.value; return this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, CityExp: value} })) }
@@ -485,7 +486,7 @@ export class ManagmentItem extends PureComponent {
         <Badge count={data.length}>
           <AutoComplete
             key={keyId}
-            style={{ width: 250 }}
+            style={{ width: 200 }}
             size="small"
             value={userSelected[keyId]}
             dataSource={user.birthday ? data.map(renderOption) : false}

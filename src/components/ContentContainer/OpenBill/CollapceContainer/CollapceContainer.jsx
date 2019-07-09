@@ -1,5 +1,5 @@
-import React from "react";
-import { Row, Col, Spin, Collapse, Icon } from 'antd';
+import React, {useState} from "react";
+import { Row, Col, Spin, Collapse, Icon, Button } from 'antd';
 import PropTypes from "prop-types";
 import MainCompanyData from './MainCompanyData';
 import StopListData from './StopListData';
@@ -9,6 +9,8 @@ import "./collapce-container.scss";
 
 
 const CollapceContainer = props => {
+  const [addCheckUser, setAddCheckUser] = useState(false)
+
   const { Panel } = Collapse;
   const {companySource, riskSource, riskSource: {arbiter}, requestLoading  } = props
 
@@ -18,6 +20,27 @@ const CollapceContainer = props => {
 
   /** Стандартный функционал отслеживания активный панелей */
   const callback = key => {
+  }
+
+  const BtnExtra = ({ user }) => {
+
+    const addUser = e => {
+      e.stopPropagation();
+      setAddCheckUser(!addCheckUser)
+      console.log('add user')
+    };
+
+    return (
+      <span className="heads-search" style={{width: 40}}>
+        <Button
+          title="Добавить еще..."
+          size="small"
+          icon={"user-add"}
+          style={{color: "rgba(14, 117, 253, 0.992)"}}
+          onClick={e => addUser(e)}
+        />
+      </span>
+    )
   }
 
   return (
@@ -34,7 +57,14 @@ const CollapceContainer = props => {
                 <MainCompanyData loading={requestLoading.get("companyPCUpdate")} fields={fullOrganistionInfo}/>
                 <StopListData  riskInfo={riskInfo} arbiter={arbiter}/>
               </Panel>
-              <Panel header="Связанные лица" key="2" forceRender className="table-info-panel">
+              <Panel 
+                key="2" 
+                className="table-info-panel"
+                header="Связанные лица" 
+                forceRender
+                extra={<BtnExtra />}
+              >
+                { addCheckUser && <ManagmentContainer addUser={true} onSave={setAddCheckUser}/> }
                 <ManagmentContainer />
               </Panel>
             </Collapse>

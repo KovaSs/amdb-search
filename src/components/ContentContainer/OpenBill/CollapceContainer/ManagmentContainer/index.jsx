@@ -3,17 +3,38 @@ import { connect } from "react-redux"
 import ManagmentItem from './ManagmentItem'
 import PropTypes from 'prop-types'
 import { trasform } from "../../../../../services/transformData";
+import AddNewUser from "./AddNewUser";
 import { 
   decodedRequestLoading, 
   decodedManagementSource, 
   identifyUser, 
   decodedCompanyName, 
   actionGetUserCroinformInfo,
-  decodedСroinformResponse
+  decodedСroinformResponse,
+  addNewUserToCheackList
 } from "../../../../../store/ducks/openBill";
 
 /** Вывод данных об руководстве */
-const ManagmentData = ({managementSource, identifyUser, requestLoading, companyName, actionGetUserCroinformInfo, croinformResponse}) => {
+const ManagmentContainer = props => {
+  const { managementSource, identifyUser, requestLoading, companyName, actionGetUserCroinformInfo, croinformResponse, addUser, onSave, addNewUserToCheackList } = props
+  if(addUser) {
+    const user = {
+      ActualDate: Date.now(),
+      first_name: "Имя",
+      inn: "ИНН",
+      last_name: "Фамилия",
+      middle_name: "Отчество",
+      position: "Должность"
+    }
+    return (
+      <AddNewUser 
+        key={Date.now()}
+        user={user}
+        onSave={onSave}
+        addUser={addNewUserToCheackList}
+      />
+    )
+  }
 
   const managementInfo = trasform._managementSource(managementSource)
   const heads = managementInfo.find( item => item.id === 'heads');
@@ -48,9 +69,10 @@ const putStateToProps = state => {
 const putActionsToProps = {
   identifyUser,
   actionGetUserCroinformInfo,
+  addNewUserToCheackList
 }
 
-export default connect(putStateToProps, putActionsToProps)(ManagmentData)
+export default connect(putStateToProps, putActionsToProps)(ManagmentContainer)
 
 /** Передаваемые в компонент props */
 ManagmentItem.propTypes = {

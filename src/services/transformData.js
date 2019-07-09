@@ -84,6 +84,12 @@ class TransformData {
     return clonePrevData
   }
 
+  _addNewUserToCheckList = (prevData, newData) => {
+    const clonePrevData = _.cloneDeep(prevData);
+    clonePrevData.heads.push(newData)
+    return clonePrevData
+  }
+
   _companySource_ip = (prevData, newData) => {
     const clonePrevData = _.cloneDeep(prevData);
     fieldsArrIP.map(item => {
@@ -102,10 +108,7 @@ class TransformData {
       const position = "Собственник"
       return {middle_name, last_name, first_name, position, inn, ActualDate: date}
     }
-    
     clonePrevData.heads = [addHeds(clonePrevData.full_name, clonePrevData.inn, clonePrevData.registration_date)]
-
-    console.log('clonePrevData  ->', clonePrevData)
     return clonePrevData
   }
 

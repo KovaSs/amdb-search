@@ -1,6 +1,6 @@
 {
   "name": "as-check",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": false,
   "proxy": "https://10.96.205.191:443/",
   "homepage": "https://10.96.205.191/AS_CHECK/",
@@ -10,7 +10,7 @@
     "url": "http://gitlab-cos/gpbu7806/AS-Check"
   },
   "dependencies": {
-    "antd": "^3.19.7",
+    "antd": "^3.20.1",
     "connected-react-router": "6.4.0",
     "history": "^4.9.0",
     "immutable": "4.0.0-rc.12",
@@ -27,7 +27,8 @@
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",
     "redux-saga": "^1.0.3",
-    "reselect": "^4.0.0"
+    "reselect": "^4.0.0",
+    "react-id-generator": "^0.1.6"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -46,13 +47,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "concurrently": "^4.1.0",
-    "nodemon": "^1.18.11",
-    "express": "^4.16.4",
-    "http-auth": "^3.2.3",
-    "axios": "^0.18.0",
     "node-sass": "^4.11.0",
-    "react-id-generator": "^0.1.6",
     "sass-loader": "^7.1.0"
   },
   "publishConfig": {

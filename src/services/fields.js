@@ -193,7 +193,7 @@ export const fieldsArrIP = [
     return `${item.Code} / ${item.Name}`
   }},
 
-  {search: "DateReg", id: "registration_date", title: "Дата регистрации", data: "", func: (item = 'Данные отсутствуют') => getDate(item)},
+  {search: "DateReg", id: "registration_date", title: "Дата регистрации", data: "", func: (item = 'Данные отсутствуют') => item},
 
   {search: "Status", id: "status", title: "Статус", data: "", func: item => {
     if(!item) return 'Данные отсутствуют'
