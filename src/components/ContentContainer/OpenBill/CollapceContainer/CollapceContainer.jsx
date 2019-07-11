@@ -7,7 +7,6 @@ import ManagmentContainer from './ManagmentContainer';
 import { trasform } from "../../../../services/utils";
 import "./collapce-container.scss";
 
-
 const CollapceContainer = props => {
   const [addCheckUser, setAddCheckUser] = useState(false)
 

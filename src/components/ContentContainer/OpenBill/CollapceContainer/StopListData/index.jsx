@@ -2,6 +2,13 @@ import React from 'react'
 import { Table,  Descriptions, Collapse, Icon, Spin } from 'antd'
 import { trasform } from "../../../../../services/utils";
 
+const styleCss = {
+  autoScroll : {
+    maxHeight: 120,
+    overflowY: "auto"
+  }
+}
+
 const StopListData = ({riskInfo, arbiter, loading =false}) => {
   const { Panel } = Collapse;
 
@@ -33,7 +40,7 @@ const StopListData = ({riskInfo, arbiter, loading =false}) => {
     if ( item.data !== undefined && item.data !== "" && item.id !== "arbiter" && !Array.isArray(item.data)) {
       return (
         <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={1}>
-          <span style={{color: item.id === "spark_spiski" ? "" : "red"}}>{ item.data }</span>
+          <span style={{...styleCss.autoScroll, color: item.id === "spark_spiski" ? "" : "red"}}>{ item.data }</span>
         </DescriptionsItem>
       )
     } else if(item.id === "arbiter" && item.data !== "") {
@@ -46,7 +53,7 @@ const StopListData = ({riskInfo, arbiter, loading =false}) => {
       const itemArray = item.data.map((el, key) => <span key={key} style={{color: item.id === "spark_spiski" ? "" : "red"}}>{el} <br /> </span>)
       return (
         <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={2}>
-          { itemArray }
+          <div style={styleCss.autoScroll}>{ itemArray }</div>
         </DescriptionsItem>
       )
     }else {

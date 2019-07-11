@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import moment from 'moment'
+import idGenerator from 'react-id-generator';
 import { fieldsArr, fieldsArrIP } from "./fields";
 
 class TransformData {
@@ -69,7 +70,7 @@ class TransformData {
       }
       return item
     })
-    console.table(clgData)
+    // console.table(clgData)
     return fullOrganistionInfo
   }
 
@@ -193,11 +194,10 @@ class TransformData {
       return item
     })
 
-    window.clonePrevData = clonePrevData
-
     if(clonePrevData.founders_fl.length) {
       const addNewHeads = clonePrevData.founders_fl.map(item => {
         return {
+          id: idGenerator(),
           ActualDate: item.date ? item.date : getDate(Date.now()),
           fio: item.fio,
           first_name: parsingFio(item.fio).FirstName,
@@ -210,20 +210,35 @@ class TransformData {
       })
       console.log('DIFFERENSE',_.differenceBy(addNewHeads, clonePrevData.heads, 'inn'))
       clonePrevData.heads = _.union(clonePrevData.heads, _.differenceBy(addNewHeads, clonePrevData.heads, 'inn'))
+    } else if(clonePrevData.share_holders_fl.length) {
+      const shareHolders_fl = clonePrevData.share_holders_fl.map(item => {
+        return {
+          id: idGenerator(),
+          ActualDate: item.date ? item.date : getDate(Date.now()),
+          fio: item.fio,
+          inn: item.innfl ? item.innfl : "Не найден",
+          first_name: parsingFio(item.fio).FirstName,
+          last_name: parsingFio(item.fio).SurName,
+          middle_name: parsingFio(item.fio).MiddleName,
+          position: `Акционер (${item.capitalSharesPercent ? `${item.capitalSharesPercent}` : ""}${item.votingSharesPercent ? ` / ${item.votingSharesPercent}` : ""}) `,
+        }
+      })
+      console.log('DIFFERENSE share holders',_.differenceBy(shareHolders_fl, clonePrevData.heads, 'inn'))
+      clonePrevData.heads = _.union(clonePrevData.heads, _.differenceBy(shareHolders_fl, clonePrevData.heads, 'inn'))
     }
+    console.table("clonePrevData", clonePrevData)
     console.table(clgData)
     return clonePrevData
   }
 
   /** Обновление информации по Связанным лицам, если это ЮЛ */
   _updateManagmentULSource = (prevData, newData, user) => {
-    console.log('newData', newData)
-    console.log('user', user)
     const newStore = _.cloneDeep(prevData);
     for (const key in newData) {
       if (key === "heads_fl" && newData.heads_fl.length) {
         const addNewHeadsFl = newData.heads_fl.map(item => {
           return {
+            id: idGenerator(),
             ActualDate: item.date ? item.date : getDate(Date.now()),
             fio: item.fio,
             first_name: parsingFio(item.fio).FirstName,
@@ -244,6 +259,7 @@ class TransformData {
       } else if (key === "founders_fl" && newData.founders_fl.length) {
         const addNewFoundersFl = newData.founders_fl.map(item => {
           return {
+            id: idGenerator(),
             ActualDate: item.date ? item.date : getDate(Date.now()),
             fio: item.fio,
             first_name: parsingFio(item.fio).FirstName,
@@ -265,6 +281,7 @@ class TransformData {
       } else if (key === "shared_holders_fl" && newData.shared_holders_fl.length) {
         const addNewSharedHoldersFl = newData.shared_holders_fl.map(item => {
           return {
+            id: idGenerator(),
             ActualDate: item.date ? item.date : getDate(Date.now()),
             fio: item.fio,
             first_name: parsingFio(item.fio).FirstName,

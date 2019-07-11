@@ -41,9 +41,9 @@ const ManagmentContainer = props => {
 
   const renderHeads = heads.data.map( item => (
     <ManagmentItem 
-      key={item.inn} 
+      key={item.id ? item.id : item.inn} 
       item={item} 
-      activeKey={item.inn} 
+      activeKey={item.id ? item.id : item.inn} 
       searchData={'heads'}
       actionGetUserCroinformInfo={actionGetUserCroinformInfo}
       identifyUser={identifyUser}

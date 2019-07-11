@@ -1,8 +1,15 @@
 import React from 'react'
 import { Descriptions, Spin } from 'antd'
 
-const MainCompanyData = ({fields, loading}) => {
+/** CSS стили */
+const styleCss = {
+  autoScroll : {
+    maxHeight: 120,
+    overflowY: "auto"
+  }
+}
 
+const MainCompanyData = ({fields, loading}) => {
   /** Рендеринг информационных полей об организации */
   const renderCompanySourceDescriptionFields = fields.filter(item => {
     return item.data && 
@@ -34,7 +41,7 @@ const MainCompanyData = ({fields, loading}) => {
       const itemArray = item.data.map((el, key) => <a href={`tel:${el}`} key={item.id + '_' + key}>{el} </a>)
       return (
         <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={item.data.length > 4 ? 2 : 1}>
-          { itemArray }
+          <div style={styleCss.autoScroll}>{ itemArray }</div>
         </DescriptionsItem>
       )
     } else if(!Array.isArray(item.data) && item.id === "phone_list") {
@@ -52,7 +59,7 @@ const MainCompanyData = ({fields, loading}) => {
       const itemArray = item.data.map((el, key) => <span key={key}>{el} <br /> </span>)
       return (
         <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={2}>
-          { itemArray }
+          <div style={styleCss.autoScroll}>{ itemArray }</div>
         </DescriptionsItem>
       )
     } else {
