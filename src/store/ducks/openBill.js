@@ -1,7 +1,7 @@
 import { Record, Map } from 'immutable'
 import { createSelector } from 'reselect'
 import { all, put, take, call, select, spawn } from 'redux-saga/effects'
-import { trasform } from "../../services/transformData"
+import { trasform } from "../../services/utils"
 import { companyRes, identifyInfoMock, bicompactResMock, ipResMock, ipCroinformMock } from '../mock'
 
 /* Mock данные */
@@ -18,9 +18,9 @@ export const CLEAR_COMPANY_INFO = `${prefix}/CLEAR_COMPANY_INFO`
 export const GET_IDENTIFY_USER = `${prefix}/GET_IDENTIFY_USER`
 export const GET_CROINFORM_USER_INFO = `${prefix}/GET_CROINFORM_USER_INFO`
 export const ADD_USER_TO_CHECK_LIST = `${prefix}/ADD_USER_TO_CHECK_LIST`
-export const GET_COMPANY_STRUCTURE = `${prefix}/GET_COMPANY_STRUCTURE`
+export const GET_AFFILATES_LIST = `${prefix}/GET_AFFILATES_LIST`
+export const GET_AFFILATES_UL = `${prefix}/GET_AFFILATES_UL`
 
-export const PC = '_PC'
 export const START = '_START'
 export const SUCCESS = '_SUCCESS'
 export const UPDATE = '_UPDATE'
@@ -37,14 +37,16 @@ const ReducerRecord = Record({
   requestLoading: new Map({
     companyMainInfo: false, 
     companyMainInfoUpdate: false, 
-    companyPCUpdate: false,
+    getAffilatesList: false,
+    getAffilatesUl: new Map({}),
     identifyUser: new Map({}),
     croinformRequest: new Map({})
   }),
   errors: new Map({
     companyMainInfo: false, 
     companyMainInfoUpdate: false, 
-    companyPCUpdate: false,
+    getAffilatesList: false,
+    getAffilatesUl: new Map({}),
     identifyUser: new Map({}),
     croinformRequest: new Map({})
   })
@@ -79,19 +81,33 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
         .setIn(['errors', 'companyMainInfoUpdate'], true)
         .set('renderData', false)
 
-    case LOAD_COMPANY_INFO + PC + UPDATE + START:
+    case GET_AFFILATES_LIST + START:
       return state
-        .setIn(['requestLoading', 'companyPCUpdate'], true)
-        .setIn(['errors', 'companyPCUpdate'], false)
-    case LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS:
+      .setIn(['requestLoading', 'getAffilatesList'], true)
+      .setIn(['errors', 'getAffilatesList'], false)      
+    case GET_AFFILATES_LIST + SUCCESS:
       return state
         .set('companyResponse', payload.updatedData)
-        .setIn(['requestLoading', 'companyPCUpdate'], false)
-        .setIn(['errors', 'companyPCUpdate'], false) 
-    case LOAD_COMPANY_INFO + PC + UPDATE + FAIL:
+        .setIn(['requestLoading', 'getAffilatesList'], false)
+        .setIn(['errors', 'getAffilatesList'], false) 
+    case GET_AFFILATES_LIST + FAIL:
       return state
-        .setIn(['requestLoading', 'companyPCUpdate'], false)
-        .setIn(['errors', 'companyPCUpdate'], true)
+        .setIn(['requestLoading', 'getAffilatesList'], false)
+        .setIn(['errors', 'getAffilatesList'], true)
+
+    case GET_AFFILATES_UL + START:
+      return state
+      .setIn(['requestLoading', 'getAffilatesUl', action.inn], true)
+      .setIn(['errors', 'getAffilatesUl', action.inn], false)      
+    case GET_AFFILATES_UL + SUCCESS:
+      return state
+        .set('companyResponse', payload.updatedData)
+        .setIn(['requestLoading', 'getAffilatesUl', action.inn], false)
+        .setIn(['errors', 'getAffilatesUl', action.inn], false) 
+    case GET_AFFILATES_UL + FAIL:
+      return state
+        .setIn(['requestLoading', 'getAffilatesUl', action.inn], false)
+        .setIn(['errors', 'getAffilatesUl', action.inn], true)
 
     case GET_IDENTIFY_USER + START:
       return state
@@ -290,6 +306,146 @@ const loadCompanyInfoSaga = function * () {
   }
 }
 
+/* Получение данных о предшедственнниках и приемниках */
+const loadAffilatesListSaga = function * () {
+  while(true){
+    const action = yield take(LOAD_COMPANY_INFO + UPDATE + SUCCESS)
+    const store = state => state[moduleName].get('companyResponse')
+    const storeInn = yield select(store)
+    if(!action.isIp) {
+      try {
+        yield put({
+          type: GET_AFFILATES_LIST + START
+        })
+  
+        /* Запрос данных о приемниках */
+        const res = yield call(() => {
+          return fetch(
+            `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+            { 
+              method: 'POST',
+              mode: 'cors',
+              credentials: 'include',
+              body : JSON.stringify({ 
+                type: 'get_affilates',
+                reqnum: action.id,
+                data: {
+                  code: storeInn.inn
+                }
+              }),
+            }
+          )
+          .then(res => {
+            if (res.ok) return res.json()
+            throw new TypeError("Данные о кампании не обновлены!")
+          })
+        })
+        
+        /* Получение данных из mock */
+        // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
+        
+        const data = res.data
+        console.log("%cRES | GET AFFILATES LIST", "color:white; background-color: green; padding: 0 5px", res)
+        const store = state => state[moduleName].get('companyResponse')
+        
+        const companyResponse = yield select(store)
+        const updatedData = yield trasform._updateManagmentSource(companyResponse, data)
+
+        yield put({
+          type: GET_AFFILATES_LIST + SUCCESS,
+          // reqnum: res.reqnum,
+          payload: {updatedData},
+        })
+      } catch (err){
+        console.log('err', err)
+        yield put({
+          type: GET_AFFILATES_LIST + FAIL,
+        })
+      }
+    }
+  }
+}
+
+/* Получение данных о предшедственнниках и приемниках */
+const loadAffilatesUlSaga = function * () {
+  while(true){
+    const action = yield take(GET_AFFILATES_LIST + SUCCESS)
+    if(action.payload.updatedData.founders_ul.length) {
+      yield all(action.payload.updatedData.founders_ul.map(item => {
+        if(item.inn) return spawn(getRequestAffiliatesUlSaga, item.inn, item)
+        else return item
+      }))
+    }else if(action.payload.updatedData.heads_ul.length) {
+      yield all(action.payload.updatedData.heads_ul.map(item => {
+        if(item.inn) return spawn(getRequestAffiliatesUlSaga, item.inn, item)
+        else return item
+      }))
+    }else if(action.payload.updatedData.share_holders_ul.length) {
+      yield all(action.payload.updatedData.share_holders_ul.map(item => {
+        if(item.inn) return spawn(getRequestAffiliatesUlSaga, item.inn, item)
+        else return item
+      }))
+    }
+  }
+}
+
+const getRequestAffiliatesUlSaga = function * (inn, user) {
+  try {
+    yield put({
+      type: GET_AFFILATES_UL + START,
+      inn
+    })
+
+    const store = state => state[moduleName]
+    const storeState = yield select(store)
+    /* Запрос данных о приемниках */
+    const res = yield call(() => {
+      return fetch(
+        `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+        { 
+          method: 'POST',
+          mode: 'cors',
+          credentials: 'include',
+          body : JSON.stringify({ 
+            type: 'get_affilates',
+            reqnum: storeState.get('reqnum'),
+            data: {
+              code: inn
+            }
+          }),
+        }
+      )
+      .then(res => {
+        if (res.ok) return res.json()
+        throw new TypeError("Данные о кампании не обновлены!")
+      })
+    })
+    
+    /* Получение данных из mock */
+    // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
+    
+    const data = res.data
+    console.log("%cRES | GET CHECK AFFILATES UL", "color:white; background-color: green; padding: 0 5px", res)
+    
+    const companyRes = yield select(store)
+    const updatedData = yield trasform._updateManagmentULSource(companyRes.get("companyResponse"), data, user)
+
+    yield put({
+      type: GET_AFFILATES_UL + SUCCESS,
+      payload: {updatedData},
+      inn: inn
+    })
+  } catch (err){
+    console.log('err', err)
+    yield put({
+      type: GET_AFFILATES_UL + FAIL,
+      inn: inn
+    })
+  }
+}
+
+
+
 /* Идентификация пользователя */
 const identifyUserSaga = function * () {
   while(true){
@@ -462,6 +618,8 @@ const identifyUserInfoSaga = function * () {
 
 export const saga = function * () {
   yield spawn(loadCompanyInfoSaga)
+  yield spawn(loadAffilatesListSaga)
+  yield spawn(loadAffilatesUlSaga)
   yield all([
     identifyUserSaga(),
     identifyUserInfoSaga()

@@ -1,9 +1,18 @@
 import React from 'react'
-import { getDate } from '../../../../../../services/momentDate'
+import { Tag } from 'antd'
+import { getDate } from '../../../../../../services/utils'
 
 /** Рендеринг header title физического лица */
-const RenderLeaderNameHeader = props => {
+const LeaderHeader = props => {
   const { first_name, last_name, middle_name, position, ActualDate, id, inn, companyName, organisation, edited=false, editedInfo : RenderEditedLeader} = props
+
+  const renderPositionTag = () => {
+    if(Array.isArray(position)) return position.map(item => {
+      if(item !== "") return <Tag key={""} color="blue" >{item}</Tag>
+      else return null
+    })
+    return <Tag color="blue" >{position}</Tag>
+  }
 
   const RenderLeaderInfo = () => {
     return (
@@ -22,7 +31,9 @@ const RenderLeaderNameHeader = props => {
     <div className="leader-name-header">
       { edited ? <RenderEditedLeader /> : <RenderLeaderInfo /> }
       <label className="leader-name-header_position">
-        {`${position}`}
+        {
+          renderPositionTag()
+        }
       </label>
       <label className="leader-name-header_position">
         {`${organisation ? organisation : companyName}`}
@@ -39,4 +50,4 @@ const RenderLeaderNameHeader = props => {
   )
 }
 
-export default RenderLeaderNameHeader
+export default LeaderHeader

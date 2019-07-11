@@ -1,7 +1,7 @@
 import React from 'react';
 import { Drawer, Collapse, Icon } from "antd";
 import toggleDrawer from '../index'
-import { getDate } from '../../../../../services/momentDate'
+import { getDate } from '../../../../../services/utils'
 import './drawer-history.scss'
 
 const CompanyHistoryInfoDrawer = props => {

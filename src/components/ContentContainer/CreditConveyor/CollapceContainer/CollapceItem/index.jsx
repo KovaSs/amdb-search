@@ -1,6 +1,6 @@
 import React from 'react'
 import { Collapse, Col, Row, Icon, Table, Descriptions } from 'antd'
-import { trasform } from "../../../../../services/transformData"
+import { trasform } from "../../../../../services/utils"
 
 const CollapceItem = props => {
   const { Panel } = Collapse

@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from "react-redux"
 import ManagmentItem from './ManagmentItem'
 import PropTypes from 'prop-types'
-import { trasform } from "../../../../../services/transformData";
+import { trasform } from "../../../../../services/utils";
 import AddNewUser from "./AddNewUser";
 import { 
   decodedRequestLoading, 

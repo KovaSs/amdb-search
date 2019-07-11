@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Table, Input, Button, Icon, ConfigProvider, Empty } from 'antd';
 import { withRouter } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
-import { getDate } from '../../../../services/momentDate'
+import { getDate } from '../../../../services/utils'
 
 const data = [
   {

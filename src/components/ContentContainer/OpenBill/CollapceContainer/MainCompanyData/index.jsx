@@ -11,6 +11,12 @@ const MainCompanyData = ({fields, loading}) => {
       item.id !== "founders_fl" && 
       item.id !== "founders_ul" && 
       item.id !== "heads"  && 
+      item.id !== "fl"  && 
+      item.id !== "ul"  && 
+      item.id !== "heads_ul"  && 
+      item.id !== "heads_fl"  && 
+      item.id !== "share_holders_fl"  && 
+      item.id !== "share_holders_ul"  && 
       item.id !== "leaders_list"  && 
       item.id !== "management_companies" && 
       item.id !== "name"  && 
@@ -33,6 +39,15 @@ const MainCompanyData = ({fields, loading}) => {
       )
     } else if(!Array.isArray(item.data) && item.id === "phone_list") {
       return <DescriptionsItem id={ item.id } key={ item.id } label={ item.title }><a href={`tel:${item.data}`} key={item.id}>{item.data} </a></DescriptionsItem>
+    } else if(!Array.isArray(item.data) && item.id === "index_of_due_diligence") {
+      return <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={item.data.length > 20 ? 2 : 1}>{item.data}</DescriptionsItem>
+    } else if(Array.isArray(item.data) && item.id === "previous_address") {
+      const itemArray = item.data.map((el, key) => <span key={key}>{el} <br /> </span>)
+      return (
+        <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={item.data.length > 3 ? 2 : 1}>
+          { itemArray }
+        </DescriptionsItem>
+      )
     } else if(Array.isArray(item.data)) {
       const itemArray = item.data.map((el, key) => <span key={key}>{el} <br /> </span>)
       return (

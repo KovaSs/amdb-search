@@ -1,6 +1,6 @@
 import React from 'react'
 import { Table,  Descriptions, Collapse, Icon, Spin } from 'antd'
-import { trasform } from "../../../../../services/transformData";
+import { trasform } from "../../../../../services/utils";
 
 const StopListData = ({riskInfo, arbiter, loading =false}) => {
   const { Panel } = Collapse;

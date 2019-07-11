@@ -27,47 +27,16 @@ export const companyRes = {
   "heads": [],
   "isponlit_proizvodstva": "",  
   "sanctions": "",
-  
-  "founders_fl": [{
-    "inn": "670700894121",
-    "middle_name": "Ивановна",
-    "last_name": "Масютина",
-    "first_name": "Жанна",
-    "position": "Генеральный директор"
-  }],
-  "management_companies":[{
-    "name":"ООО Ушан",
-    "inn":"7743895330",
-    "address":"Москва Киевское шоссе 22-й (п Московский) ДОМОВЛАДЕНИЕ 6 СТРОЕНИЕ 1"
-    }],
-  "founders_ul": 
-    [
-      {
-        "name": "ООО \"БИКОМПАКТ 2.0\"",
-        "inn": "7725735213",
-        "full_name": "ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ \"БИКОМПАКТ 2.0\""
-      },
-      {
-        "name":"ООО Ушан",
-        "inn":"7743895330",
-        "address":"Москва Киевское шоссе 22-й (п Московский) ДОМОВЛАДЕНИЕ 6 СТРОЕНИЕ 1"
-      }
-    ],
-  "befenicials": 
-    [
-      {
-        "inn": "670700894121",
-        "first_name": "Жанна",
-        "last_name": "Масютина",
-        "middle_name": "Ивановна",
-        "position": "Генеральный директор"
-      },
-      {
-        "name":"ООО Ушан",
-        "inn":"7743895330",
-        "address":"Москва Киевское шоссе 22-й (п Московский) ДОМОВЛАДЕНИЕ 6 СТРОЕНИЕ 1"
-      }
-    ]
+  "founders_fl": [],
+  "management_companies":[],
+  "founders_ul": [],
+  "befenicials": [],
+  "ul" : [],
+  "fl" : [],
+  "heads_ul" : [],
+  "heads_fl" : [],
+  "share_holders_fl" : [],
+  "share_holders_ul" : []
 }
 
 export const companyResponse = {

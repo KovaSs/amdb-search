@@ -1,4 +1,5 @@
-import {getDate} from './momentDate'
+import {getDate, parsingFio} from './utils'
+
 
 export const fieldsArr = [
   {search: "ShortNameRus", id: "name", title: "Сокрашеное наименование", data: "", func: item => item.replace(/\\/g, "")},
@@ -39,17 +40,6 @@ export const fieldsArr = [
     }
   }},
 
-  {search: "LegalAddresses", id: "address", title: "Юридический адресс", data: "", func: item => {
-    try {
-      if(!item) return 'Данные отсутствуют'
-      const { Address } = item
-      if(Array.isArray(item.Address)) return Address[0].Address
-      else return Address.Address
-    } catch {
-      console.log('Ошибка в преобразовании company_type', item)
-    }
-  }},
-
   {search: "PreviousAddress", id: "previous_address", title: "Предыдущие адреса", data: "", func: item => {
     try {
       if(!item) return 'Данные отсутствуют'
@@ -61,6 +51,17 @@ export const fieldsArr = [
       else return Address.Address
     } catch (error) {
       console.log('Ошибка в преобразовании previous_address', item, error)
+    }
+  }},
+
+  {search: "LegalAddresses", id: "address", title: "Юридический адресс", data: "", func: item => {
+    try {
+      if(!item) return 'Данные отсутствуют'
+      const { Address } = item
+      if(Array.isArray(item.Address)) return Address[0].Address
+      else return Address.Address
+    } catch {
+      console.log('Ошибка в преобразовании company_type', item)
     }
   }},
 
@@ -212,30 +213,49 @@ export const fieldsArr = [
   }},
 
   {search: "", id: "befenicials", title: "Бенефициары", data: ""},
+  {search: "founders_fl", id: "founders_fl", title: "Учредители / Физические лица", data: ""},
+  {search: "founders_ul", id: "founders_ul", title: "Учредители / Юридичекие лица", data: ""},
+  {search: "fl", id: "fl", title: "История / Физические лица", data: ""},
+  {search: "ul", id: "ul", title: "История / Юридичекие лица", data: ""},
+  {search: "heads_ul", id: "heads_ul", title: "Руководство / Юридичекие лица", data: ""},
+  {search: "heads_fl", id: "heads_fl", title: "Руководство / Физические лица", data: ""},
+  {search: "share_holders_fl", id: "share_holders_fl", title: "Акционеры / Физические лица", data: ""},
+  {search: "share_holders_ul", id: "share_holders_ul", title: "Акционеры / Юридичекие лица", data: ""},
 
-  {search: "", id: "founders_fl", title: "Физические лица", data: ""},
-
-  {search: "", id: "founders_ul", title: "Юридичекие лица", data: ""},
 
   {search: "PersonsWithoutWarrant", id: "heads", title: "Руководители", data: "", func: item => {
     try {
       if(!item) return ''
       if(Array.isArray(item.Person)) {
         const heads = []
-        item.Person.map(el =>  {
-          const { Person, ActualDate, Person: {Position} } = el
-          const first_name = Person.FIO.split(' ')[1]
-          const middle_name = Person.FIO.split(' ')[2]
-          const last_name = Person.FIO.split(' ')[0]
-          return heads.push({first_name, middle_name, last_name, ActualDate, inn: Person.INN || 'не найден', position: Position.charAt(0).toUpperCase()+Position.substr(1).toLowerCase()})
+        item.Person.map(elem =>  {
+          const { INN, Position, FIO } = elem
+          const first_name = parsingFio(FIO).FirstName
+          const middle_name = parsingFio(FIO).MiddleName
+          const last_name = parsingFio(FIO).SurName
+          return heads.push({
+            ActualDate: item.ActualDate,
+            first_name, 
+            middle_name, 
+            last_name, 
+            inn: INN || 'не найден', 
+            position: Position ? Position.charAt(0).toUpperCase()+Position.substr(1).toLowerCase() : ""
+          })
         })
         return heads
       } else {
         const { Person, ActualDate, Person: {Position} } = item
-        const first_name = Person.FIO.split(' ')[1]
-        const middle_name = Person.FIO.split(' ')[2]
-        const last_name = Person.FIO.split(' ')[0]
-        return [{first_name, middle_name, last_name, ActualDate, inn: Person.INN || 'не найден', position: Position.charAt(0).toUpperCase()+Position.substr(1).toLowerCase()}]
+        const first_name = parsingFio(Person.FIO).FirstName
+        const middle_name = parsingFio(Person.FIO).MiddleName
+        const last_name = parsingFio(Person.FIO).SurName
+        return [{
+          first_name, 
+          middle_name, 
+          last_name, 
+          ActualDate, 
+          inn: Person.INN || 'не найден', 
+          position: Position ? Position.charAt(0).toUpperCase()+Position.substr(1).toLowerCase() : ""
+        }]
       }
     } catch (error) {
       console.log('Ошибка в преобразовании heads', item, error)

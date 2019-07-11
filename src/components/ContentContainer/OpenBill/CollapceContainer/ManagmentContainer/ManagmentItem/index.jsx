@@ -206,7 +206,7 @@ export class ManagmentItem extends PureComponent {
           )
           !edited && (passport !== "" || userSelected.passport) && descrArr.push(
             <DescriptionsItem  key={`${id}-${key}`} id={`${id}-${key}`} label="Паспорт" span={1} >
-              <label onDoubleClick={e => this.onDoubleClickEvent(e)}>{ userSelected.passport  ? userSelected.passport : `${passport[0].seria} ${passport[0].number}` }</label>
+              <label onDoubleClick={e => this.onDoubleClickEvent(e)}>{ userSelected.passport  ? userSelected.passport : passport.length ? `${passport[0].seria} ${passport[0].number}` : "" }</label>
             </DescriptionsItem>
           )
         } else if ( user.hasOwnProperty(key) && key === "birthday" ) {
@@ -608,7 +608,7 @@ export class ManagmentItem extends PureComponent {
         <Collapse
           key={inn}
           className="managment"
-          defaultActiveKey={inn}
+          // defaultActiveKey={inn}
           onChange={this.callback}
           bordered={false}
           expandIcon={({ isActive }) => (

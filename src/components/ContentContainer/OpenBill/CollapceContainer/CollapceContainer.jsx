@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import MainCompanyData from './MainCompanyData';
 import StopListData from './StopListData';
 import ManagmentContainer from './ManagmentContainer';
-import { trasform } from "../../../../services/transformData";
+import { trasform } from "../../../../services/utils";
 import "./collapce-container.scss";
 
 
@@ -54,7 +54,7 @@ const CollapceContainer = props => {
               expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"}/> }
             >
               <Panel header="Общая информация" key="1" showArrow={false}>
-                <MainCompanyData loading={requestLoading.get("companyPCUpdate")} fields={fullOrganistionInfo}/>
+                <MainCompanyData loading={false} fields={fullOrganistionInfo}/>
                 <StopListData  riskInfo={riskInfo} arbiter={arbiter}/>
               </Panel>
               <Panel 

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { Collapse, Icon, Descriptions, Button, Input} from "antd"
-import { getDate } from "../../../../../../services/momentDate";
+import { getDate } from "../../../../../../services/utils";
 
 class AddNewUser extends Component {
   state = {
