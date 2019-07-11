@@ -11,7 +11,7 @@ export class ManagmentItem extends PureComponent {
     showCroinformResponse: false,
     edited: false,
     error: false,
-    selectKey: "",
+    openPanel: false,
     parseAddress: {
       CityExp: '', // Нас. пункт
       StreetExp: '', // Улица
@@ -127,7 +127,7 @@ export class ManagmentItem extends PureComponent {
   renderFoulderFlItem = (item, key, id) => {
     const { Item: DescriptionsItem } = Descriptions;
     const { identifyUser, identifyUserloading, croinformRequestloading, companyName } = this.props;
-    const { edited, userSelected } = this.state;
+    const { edited, userSelected, openPanel } = this.state;
     const { Panel } = Collapse;
 
     const BtnExtra = ({ user }) => {
@@ -141,7 +141,7 @@ export class ManagmentItem extends PureComponent {
       };
 
       const identifyUserInfo = e => {
-        if(edited || !croinformDisabled) {
+        if(openPanel) {
           e.stopPropagation();
         }
         identifyUser(user);
@@ -604,20 +604,12 @@ export class ManagmentItem extends PureComponent {
   }
 
   callback = key => {
-    const { activeKeys } = this.state
-    if(activeKeys === key[0]) {
-      console.log('click', key[0], true)
-    } else {
-      console.log('click', key[0], false)
-    }
-    this.setState({
-
-    })
+    key.length ?  this.setState({ openPanel : true }) : this.setState({ openPanel : false })
   }
 
   render() {
     const { item, item: { inn }, activeKey, searchData, croinformRes, croinformRequestloading } = this.props;
-    const {error, showCroinformResponse, selectKey} = this.state
+    const {error, showCroinformResponse} = this.state
     if(error) return <div>В компоненте произошла ошибка</div>
 
     return (
@@ -625,7 +617,7 @@ export class ManagmentItem extends PureComponent {
         <Collapse
           key={inn}
           className="managment"
-          defaultActiveKey={selectKey}
+          // defaultActiveKey={inn}
           onChange={this.callback}
           bordered={false}
           expandIcon={({ isActive }) => (

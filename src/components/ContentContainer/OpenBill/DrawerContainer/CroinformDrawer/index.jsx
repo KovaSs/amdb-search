@@ -1,7 +1,6 @@
 import React from 'react';
 import { Drawer, Collapse, Icon, Spin } from "antd";
 import toggleDrawer from '../index'
-import './drawer-croinform.scss'
 
 const CroinformDrawer = props => {
   const {onClose, visible, croinformRes, loading} = props
