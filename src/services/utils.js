@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
 import moment from 'moment'
-import idGenerator from 'react-id-generator';
 import { fieldsArr, fieldsArrIP } from "./fields";
 
 class TransformData {
@@ -86,6 +85,13 @@ class TransformData {
           }
           return item
         })
+      const updateHeads = clonePrevData.heads.map(item => ({
+        ...item,
+        fio: `${item.last_name} ${item.first_name} ${item.middle_name}`,
+        id: uuid()
+      }))
+      clonePrevData.heads = updateHeads
+      console.log('FIRST', clonePrevData)
       return clonePrevData
     } catch (error) {
       console.log('Ошибка в преобразовании company_type', error)
@@ -197,7 +203,7 @@ class TransformData {
     if(clonePrevData.founders_fl.length) {
       const addNewHeads = clonePrevData.founders_fl.map(item => {
         return {
-          id: idGenerator(),
+          id: uuid(),
           ActualDate: item.date ? item.date : getDate(Date.now()),
           fio: item.fio,
           first_name: parsingFio(item.fio).FirstName,
@@ -208,12 +214,13 @@ class TransformData {
           share: item.share
         }
       })
-      console.log('DIFFERENSE',_.differenceBy(addNewHeads, clonePrevData.heads, 'inn'))
-      clonePrevData.heads = _.union(clonePrevData.heads, _.differenceBy(addNewHeads, clonePrevData.heads, 'inn'))
+      console.log('intersection',_.intersection(addNewHeads, clonePrevData.heads))
+      console.log('DIFFERENSE',_.differenceBy(addNewHeads, clonePrevData.heads, 'fio'))
+      clonePrevData.heads = _.union(clonePrevData.heads, _.differenceBy(addNewHeads, clonePrevData.heads, 'fio'))
     } else if(clonePrevData.share_holders_fl.length) {
       const shareHolders_fl = clonePrevData.share_holders_fl.map(item => {
         return {
-          id: idGenerator(),
+          id: uuid(),
           ActualDate: item.date ? item.date : getDate(Date.now()),
           fio: item.fio,
           inn: item.innfl ? item.innfl : "Не найден",
@@ -223,8 +230,8 @@ class TransformData {
           position: `Акционер (${item.capitalSharesPercent ? `${item.capitalSharesPercent}` : ""}${item.votingSharesPercent ? ` / ${item.votingSharesPercent}` : ""}) `,
         }
       })
-      console.log('DIFFERENSE share holders',_.differenceBy(shareHolders_fl, clonePrevData.heads, 'inn'))
-      clonePrevData.heads = _.union(clonePrevData.heads, _.differenceBy(shareHolders_fl, clonePrevData.heads, 'inn'))
+      console.log('DIFFERENSE share holders',_.differenceBy(shareHolders_fl, clonePrevData.heads, 'fio'))
+      clonePrevData.heads = _.union(clonePrevData.heads, _.differenceBy(shareHolders_fl, clonePrevData.heads, 'fio'))
     }
     console.table("clonePrevData", clonePrevData)
     console.table(clgData)
@@ -238,7 +245,7 @@ class TransformData {
       if (key === "heads_fl" && newData.heads_fl.length) {
         const addNewHeadsFl = newData.heads_fl.map(item => {
           return {
-            id: idGenerator(),
+            id: uuid(),
             ActualDate: item.date ? item.date : getDate(Date.now()),
             fio: item.fio,
             first_name: parsingFio(item.fio).FirstName,
@@ -254,12 +261,12 @@ class TransformData {
             share: user.share
           }
         })
-        newStore.heads = _.union(newStore.heads, _.differenceBy(addNewHeadsFl, newStore.heads, 'inn'))
-        console.log('HeadsFl', _.differenceBy(addNewHeadsFl, newStore.heads, 'inn') )
+        newStore.heads = _.union(newStore.heads, _.differenceBy(addNewHeadsFl, newStore.heads, 'fio'))
+        console.log('HeadsFl', _.differenceBy(addNewHeadsFl, newStore.heads, 'fio') )
       } else if (key === "founders_fl" && newData.founders_fl.length) {
         const addNewFoundersFl = newData.founders_fl.map(item => {
           return {
-            id: idGenerator(),
+            id: uuid(),
             ActualDate: item.date ? item.date : getDate(Date.now()),
             fio: item.fio,
             first_name: parsingFio(item.fio).FirstName,
@@ -275,13 +282,13 @@ class TransformData {
             share: user.share ? user.share : ""
           }
         })
-        newStore.heads = _.union(newStore.heads, _.differenceBy(addNewFoundersFl, newStore.heads, 'inn'))
+        newStore.heads = _.union(newStore.heads, _.differenceBy(addNewFoundersFl, newStore.heads, 'fio'))
         // console.log('heads_fl', newData.heads_fl, newData.heads_fl.length, true )
-        console.log('FoundersFl', _.differenceBy(addNewFoundersFl, newStore.heads, 'inn') )
+        console.log('FoundersFl', _.differenceBy(addNewFoundersFl, newStore.heads, 'fio') )
       } else if (key === "shared_holders_fl" && newData.shared_holders_fl.length) {
         const addNewSharedHoldersFl = newData.shared_holders_fl.map(item => {
           return {
-            id: idGenerator(),
+            id: uuid(),
             ActualDate: item.date ? item.date : getDate(Date.now()),
             fio: item.fio,
             first_name: parsingFio(item.fio).FirstName,
@@ -427,6 +434,10 @@ export const parsingAddress = address => {
     RegionExpText: RegionExp.title// Регион
   }
 }
+
+/** Генерация Id ключей */
+// eslint-disable-next-line
+export const uuid = ()=> ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15 >> c/4).toString(16));
 
 /** Преобразование даты к формату DD.MM.YYYY */
 export const getDate = data => {

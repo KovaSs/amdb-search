@@ -4,7 +4,7 @@ import { Descriptions, Spin } from 'antd'
 /** CSS стили */
 const styleCss = {
   autoScroll : {
-    maxHeight: 120,
+    maxHeight: 102,
     overflowY: "auto"
   }
 }

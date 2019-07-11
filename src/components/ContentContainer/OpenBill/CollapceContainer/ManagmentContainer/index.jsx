@@ -48,8 +48,8 @@ const ManagmentContainer = props => {
       actionGetUserCroinformInfo={actionGetUserCroinformInfo}
       identifyUser={identifyUser}
       companyName={companyName}
-      identifyUserloading={requestLoading.getIn(["identifyUser",item.inn])}
-      croinformRequestloading={requestLoading.getIn(["croinformRequest",item.inn])}
+      identifyUserloading={requestLoading.getIn(["identifyUser",item.id])}
+      croinformRequestloading={requestLoading.getIn(["croinformRequest",item.id])}
       croinformRes={croinformResponse.get(item.inn)}
     />
   ))

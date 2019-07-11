@@ -4,7 +4,7 @@ import { trasform } from "../../../../../services/utils";
 
 const styleCss = {
   autoScroll : {
-    maxHeight: 120,
+    maxHeight: 102,
     overflowY: "auto"
   }
 }

@@ -460,7 +460,7 @@ const identifyUserSaga = function * () {
     try {
       yield put({
         type: GET_IDENTIFY_USER + START,
-        loading: action.payload.inn
+        loading: action.payload.id
       })
       
       /* Запрос на идентификацию проверяемого объекта */
@@ -525,7 +525,7 @@ const identifyUserSaga = function * () {
         yield put({
           type: GET_IDENTIFY_USER + SUCCESS,
           payload: {updatedUserInfo},
-          loading: action.payload.inn
+          loading: action.payload.id
         })
       } else {
         throw new TypeError("Ошибка получения данных!")
@@ -534,7 +534,7 @@ const identifyUserSaga = function * () {
     } catch (err){
       yield put({
         type: GET_IDENTIFY_USER + FAIL,
-        error: action.payload.inn
+        error: action.payload.id
       })
     }
   }
