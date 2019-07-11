@@ -11,6 +11,7 @@ export class ManagmentItem extends PureComponent {
     showCroinformResponse: false,
     edited: false,
     error: false,
+    selectKey: "",
     parseAddress: {
       CityExp: '', // Нас. пункт
       StreetExp: '', // Улица
@@ -44,6 +45,7 @@ export class ManagmentItem extends PureComponent {
   componentDidMount() {
     const { item: { inn, last_name, first_name,  middle_name, identifyInfo = { inn: "", fio: "", passport: "", birthday: "", address: ""}}} = this.props;
     this.setState({
+      selectKey: inn,
       user: {
         inn: union([inn], identifyInfo.inn), 
         fio: union( [`${last_name} ${first_name} ${middle_name}`], identifyInfo.fio ), 
@@ -59,6 +61,7 @@ export class ManagmentItem extends PureComponent {
     const { item, item: { inn, last_name, first_name,  middle_name, identifyInfo = { inn: "", fio: "", passport: "", birthday: "", address: ""}}} = this.props;
     if (item !== prevProps.item) {
       this.setState({
+        selectKey: inn,
         user: {
           inn: union([inn], identifyInfo.inn), 
           fio: union( [`${last_name} ${first_name} ${middle_name}`], identifyInfo.fio ), 
@@ -138,7 +141,9 @@ export class ManagmentItem extends PureComponent {
       };
 
       const identifyUserInfo = e => {
-        e.stopPropagation();
+        if(edited || !croinformDisabled) {
+          e.stopPropagation();
+        }
         identifyUser(user);
         this.setState({edited: true})
       };
@@ -598,9 +603,21 @@ export class ManagmentItem extends PureComponent {
     }
   }
 
+  callback = key => {
+    const { activeKeys } = this.state
+    if(activeKeys === key[0]) {
+      console.log('click', key[0], true)
+    } else {
+      console.log('click', key[0], false)
+    }
+    this.setState({
+
+    })
+  }
+
   render() {
     const { item, item: { inn }, activeKey, searchData, croinformRes, croinformRequestloading } = this.props;
-    const {error, showCroinformResponse} = this.state
+    const {error, showCroinformResponse, selectKey} = this.state
     if(error) return <div>В компоненте произошла ошибка</div>
 
     return (
@@ -608,7 +625,7 @@ export class ManagmentItem extends PureComponent {
         <Collapse
           key={inn}
           className="managment"
-          // defaultActiveKey={inn}
+          defaultActiveKey={selectKey}
           onChange={this.callback}
           bordered={false}
           expandIcon={({ isActive }) => (

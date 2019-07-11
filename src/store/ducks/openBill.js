@@ -456,7 +456,7 @@ const identifyUserSaga = function * () {
     const storeOgrn = yield select(companyState)
     const isIP = state => state[moduleName].get('isIp')
     const storeIsIP = yield select(isIP)
-    
+    console.log('ACTION', action)
     try {
       yield put({
         type: GET_IDENTIFY_USER + START,
@@ -480,7 +480,7 @@ const identifyUserSaga = function * () {
                 MiddleName: action.payload.middle_name,
                 SurName: action.payload.last_name,
                 INN: action.payload.inn,
-                OGRN: storeOgrn.ogrn
+                OGRN: action.payload.organisation ? action.payload.organisation.ogrn : storeOgrn.ogrn
               }
             }),
           }

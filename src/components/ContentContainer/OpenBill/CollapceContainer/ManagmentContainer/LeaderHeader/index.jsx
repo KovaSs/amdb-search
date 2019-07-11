@@ -1,5 +1,6 @@
 import React from 'react'
 import { Tag } from 'antd'
+import idGenerator from 'react-id-generator';
 import { getDate } from '../../../../../../services/utils'
 
 /** Рендеринг header title физического лица */
@@ -8,7 +9,7 @@ const LeaderHeader = props => {
 
   const renderPositionTag = () => {
     if(Array.isArray(position)) return position.map(item => {
-      if(item !== "") return <Tag key={""} color="blue" >{item}</Tag>
+      if(item !== "") return <Tag key={idGenerator("item_")} color="blue" >{item}</Tag>
       else return null
     })
     return <Tag color="blue" >{position}</Tag>
@@ -36,7 +37,7 @@ const LeaderHeader = props => {
         }
       </label>
       <label className="leader-name-header_position">
-        {`${organisation ? organisation : companyName}`}
+        {`${organisation ? organisation.name : companyName}`}
       </label>
       <label className="leader-name-header_date">
         {`${getDate(ActualDate)}`}

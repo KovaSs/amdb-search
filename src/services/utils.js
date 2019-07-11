@@ -199,6 +199,7 @@ class TransformData {
       const addNewHeads = clonePrevData.founders_fl.map(item => {
         return {
           ActualDate: item.date ? item.date : getDate(Date.now()),
+          fio: item.fio,
           first_name: parsingFio(item.fio).FirstName,
           inn: item.innfl ? item.innfl : "Не найден",
           last_name: parsingFio(item.fio).SurName,
@@ -224,49 +225,64 @@ class TransformData {
         const addNewHeadsFl = newData.heads_fl.map(item => {
           return {
             ActualDate: item.date ? item.date : getDate(Date.now()),
-            first_name: parsingFio(item.fio).FirstName,
-            inn: item.innfl ? item.innfl : "Не найден",
-            last_name: parsingFio(item.fio).SurName,
-            middle_name: parsingFio(item.fio).MiddleName,
-            position: ["Учредитель",item.position ? item.position : ""],
-            organisation: user.fullName ? user.fullName : "",
-            share: user.share
-          }
-        })
-        newStore.heads = _.union(newStore.heads, _.differenceBy(addNewHeadsFl, newStore.heads, 'inn'))
-        console.log('addNewHeadsFl', newStore.heads )
-      } else if (key === "founders_fl" && newData.founders_fl.length) {
-        const addNewFoundersFl = newData.founders_fl.map(item => {
-          return {
-            ActualDate: item.date ? item.date : getDate(Date.now()),
+            fio: item.fio,
             first_name: parsingFio(item.fio).FirstName,
             inn: item.innfl ? item.innfl : "Не найден",
             last_name: parsingFio(item.fio).SurName,
             middle_name: parsingFio(item.fio).MiddleName,
             position: ["Учредитель", item.position ? item.position : ""],
-            organisation: user.fullName ? user.fullName : "",
+            organisation: {
+              name: user.fullName ? getShortCompName(user.fullName) : "",
+              inn: user.inn ? user.inn : "",
+              ogrn: user.ogrn ? user.ogrn : ""
+            },
+            share: user.share
+          }
+        })
+        newStore.heads = _.union(newStore.heads, _.differenceBy(addNewHeadsFl, newStore.heads, 'inn'))
+        console.log('HeadsFl', _.differenceBy(addNewHeadsFl, newStore.heads, 'inn') )
+      } else if (key === "founders_fl" && newData.founders_fl.length) {
+        const addNewFoundersFl = newData.founders_fl.map(item => {
+          return {
+            ActualDate: item.date ? item.date : getDate(Date.now()),
+            fio: item.fio,
+            first_name: parsingFio(item.fio).FirstName,
+            inn: item.innfl ? item.innfl : "Не найден",
+            last_name: parsingFio(item.fio).SurName,
+            middle_name: parsingFio(item.fio).MiddleName,
+            position: ["Учредитель", item.position ? item.position : ""],
+            organisation: {
+              name: user.fullName ? getShortCompName(user.fullName) : "",
+              inn: user.inn ? user.inn : "",
+              ogrn: user.ogrn ? user.ogrn : ""
+            },
             share: user.share ? user.share : ""
           }
         })
         newStore.heads = _.union(newStore.heads, _.differenceBy(addNewFoundersFl, newStore.heads, 'inn'))
         // console.log('heads_fl', newData.heads_fl, newData.heads_fl.length, true )
-        console.log('addNewFoundersFl', newStore.heads )
+        console.log('FoundersFl', _.differenceBy(addNewFoundersFl, newStore.heads, 'inn') )
       } else if (key === "shared_holders_fl" && newData.shared_holders_fl.length) {
         const addNewSharedHoldersFl = newData.shared_holders_fl.map(item => {
           return {
             ActualDate: item.date ? item.date : getDate(Date.now()),
+            fio: item.fio,
             first_name: parsingFio(item.fio).FirstName,
             inn: item.innfl ? item.innfl : "Не найден",
             last_name: parsingFio(item.fio).SurName,
             middle_name: parsingFio(item.fio).MiddleName,
             position: ["Акционер", item.position ? item.position : ""],
-            organisation: user.fullName ? user.fullName : "",
+            organisation: {
+              name: user.fullName ? getShortCompName(user.fullName) : "",
+              inn: user.inn ? user.inn : "",
+              ogrn: user.ogrn ? user.ogrn : ""
+            },
             share: user.share ? user.share : ""
           }
         })
         newStore.heads = _.union(newStore.heads, _.differenceBy(addNewSharedHoldersFl, newStore.heads, 'inn'))
         // console.log('heads_fl', newData.heads_fl, newData.heads_fl.length, true )
-        console.log('addNewSharedHoldersFl', newStore.heads )
+        console.log('SharedHoldersFl', _.differenceBy(addNewSharedHoldersFl, newStore.heads, 'inn') )
       }
     }
     return newStore
@@ -398,6 +414,17 @@ export const parsingAddress = address => {
 /** Преобразование даты к формату DD.MM.YYYY */
 export const getDate = data => {
   return moment(data).format('DD.MM.YYYY')
+}
+
+/** Преобразование имени кампании к укороченной версии */
+export const getShortCompName = name => {
+  return name
+  .replace(/^Общество с ограниченной ответственностью/gi, 'ООО')
+  .replace(/^Публичное акционерное общество/gi, 'ПАО')
+  .replace(/^Закрытое акционерное общество/gi, 'ПАО')
+  .replace(/^Открытое акционерное общество/gi, 'ОАО')
+  .replace(/^Акционерное общество/gi, 'АО')
+  .replace(/Финансово-Промышленная корпорация/gi, 'ФПК')
 }
 
 export const trasform = new TransformData();
