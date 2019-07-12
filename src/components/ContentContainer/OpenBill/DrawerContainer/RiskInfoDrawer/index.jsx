@@ -1,85 +1,60 @@
 import React, { Component } from 'react';
-import { Drawer, AutoComplete, Input, Button, Row, Col, Table } from "antd";
+import { Drawer, AutoComplete, Input, Button, Row, Col, Table, Collapse, Icon, ConfigProvider, Empty } from "antd";
+import { differenceBy } from 'lodash'
 import toggleDrawer from '../index'
 import "./risk-info-digest.scss"
-import { uuid } from '../../../../../services/utils';
+import { uuid, getTimeAndDate } from '../../../../../services/utils';
+
+const styleCss = {
+  h2 : {
+    marginLeft: 10
+  }
+}
 
 class RiskInfoDrawer extends Component {
   state = {
     riskFactors: [],
     digestSourse: [],
+    historySourse: [],
     selectedKod: "",
     selectedText: "",
     selectedComment: ""
   }
 
-  componentDidMount() {
-    console.log(`mount`)
-    fetch(
-      `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
-      { 
-        method: 'POST',
-        mode: 'cors',
-        credentials: 'include',
-        body : JSON.stringify({ 
-          type: 'digest',
-          data: {}
-        }),
-      }
-    )
-    .then(res => {
-      if (res.ok) return res.json()
-      throw new TypeError("Данные о кампании не обновлены!")
-    })
-    .then( res => {
+  componentDidUpdate(prevProps) {
+    const { digets } = this.props
+    if(prevProps.digets !== digets) {
       this.setState(() =>({
-        riskFactors: res.data.risks,
-        digestSourse: res.data.digits
+        riskFactors: digets.risks,
+        digestSourse: digets.digest,
+        historySourse: digets.history,
       }))
-    })
+    }
   }
 
   submitRiskFactor = () => {
-    const { reqnum } = this.props
+    const { addRiskFactor } = this.props
     const { selectedKod, selectedComment } = this.state
-    if(selectedKod && selectedComment ) {
-      fetch(
-        `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
-        { 
-          method: 'POST',
-          mode: 'cors',
-          credentials: 'include',
-          body : JSON.stringify({ 
-            type: 'digest',
-            reqnum: reqnum,
-            data: {
-              t_user_request_risk_id: selectedKod,
-              comment: selectedComment
-            }
-          }),
-        }
-      )
-      .then(res => {
-        if (res.ok) return res.json()
-        throw new TypeError("Ввод риск фактора не осуществлен!")
+
+    if(selectedKod && selectedComment) {
+      addRiskFactor({
+        t_user_request_risk_id: selectedKod,
+        comment: selectedComment
       })
-      .then( res => {
-        this.setState(() =>({
-          riskFactors: res.data.risks,
-          digestSourse: res.data.digest,
-          selectedKod: "",
-          selectedText: "",
-          selectedComment: ""
-        }))
+      this.setState({
+        selectedKod: "",
+        selectedText: "",
+        selectedComment: ""
       })
     }
   }
 
   render() {
     const { Option } = AutoComplete
-    const { TextArea } = Input
-    const { onClose, visible } = this.props
-    const { riskFactors, selectedText, selectedComment, digestSourse } = this.state
+    const { Panel } = Collapse
+    const { onClose, visible, deleteRiskFactor, requestLoading} = this.props
+    const { riskFactors, selectedText, selectedComment, digestSourse, historySourse } = this.state
+    const loadingStatus = requestLoading.get("digestList") || requestLoading.get("addRistFactorInDigestList") || requestLoading.get("deleteRistFactorInDigestList")
 
     const renderOption = item => {
       return (
@@ -94,92 +69,8 @@ class RiskInfoDrawer extends Component {
       )
     }
 
-    const Btn = props => {
-      const deleteRiskFactor = () => {
-        console.log('props.factor', props.factor)
-        const { reqnum } = this.props
-          fetch(
-            `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
-            { 
-              method: 'POST',
-              mode: 'cors',
-              credentials: 'include',
-              body : JSON.stringify({ 
-                type: 'digest',
-                reqnum: reqnum,
-                data: {
-                  delete: props.factor.id
-                }
-              }),
-            }
-          )
-          .then(res => {
-            if (res.ok) return res.json()
-            throw new TypeError("Ввод риск фактора не осуществлен!")
-          })
-          .then( res => {
-            this.setState(() =>({
-              riskFactors: res.data.risks,
-              digestSourse: res.data.digest,
-              selectedKod: "",
-              selectedText: "",
-              selectedComment: ""
-            }))
-          })
-      }
-      return (
-        <Button 
-          onClick={deleteRiskFactor}
-        >
-          Удалить
-        </Button>
-      )
-    }
-
-     /** Табилица Вывода риск факторов */
-    const RenderRisksTable = () => {
-      const arbiterData = digestSourse ? digestSourse.map(item => {
-        return {
-          key: uuid(),
-          kod: item.t_user_request_risk_id,
-          comment: item.comment,
-          id: item.rowid,
-          delete: "Взаимодействие и удаление записи"
-        }
-      }) : []
-      const columns = [
-        { title: 'Код', dataIndex: 'kod'},
-        { title: 'Комментарий', dataIndex: 'comment' }, 
-        { title: 'Удалить', render: (data, record) => <Btn factor={record}/>}
-      ];
-      return (
-        <Table
-          size="small"
-          columns={columns}
-          align="center"
-          dataSource={arbiterData}
-          style={{marginTop: 20}}
-          bordered
-          pagination={false}
-          className="arbiter-risk-info"
-        />
-      )
-    }
-
-    const handleSelectOption = value =>  this.setState({ selectedKod: value })
-    const handleChangeOntion = value =>  this.setState({ selectedText: value })
-    const handleChangeComment = e =>  {const value = e.target.value; this.setState({ selectedComment: value })}
-
-    return (
-      <Drawer
-        width={"50%"}
-        placement="right"
-        closable={false}
-        onClose={onClose}
-        visible={visible}
-      >
-        <h2>Дайджест</h2>
-        <Row className="add-risk-digest">
+    const RiskInfoComponent = () => {
+      return <Row className="add-risk-digest">
           <Col span={6}>
             <AutoComplete
               size="small"
@@ -194,9 +85,10 @@ class RiskInfoDrawer extends Component {
               allowClear
             />
           </Col>
-          <Col span={16}>
-            <TextArea 
-              row={3}
+          <Col span={15}>
+            <Input 
+              placeholder="Введите комментарий"
+              size="small"
               value={selectedComment}
               onChange={handleChangeComment}
             />
@@ -209,10 +101,106 @@ class RiskInfoDrawer extends Component {
               Добавить 
             </Button>
           </Col>
-          <Col span={24}>
-            {RenderRisksTable()}
-          </Col>
         </Row>
+    }
+
+    const Btn = props => {
+      const deleteFactor = () => {
+        console.log('props.factor', props.factor)
+        deleteRiskFactor({ delete: props.factor.id })
+      }
+      return <Button  onClick={deleteFactor} > Удалить </Button>
+    }
+
+    const showFactorsMask = item => ({
+      key: uuid(),
+      id: item.rowid,
+      kod: item.t_user_request_risk_id,
+      date: item.vremya_akceptovaniya_zapisi ? getTimeAndDate(item.vremya_akceptovaniya_zapisi) : "Дата записи отсутствует" ,
+      user: item.user_name ? item.user_name : "Имя пользователя отсутствует",
+      comment: item.comment
+    })
+
+     /** Табилица Вывода риск факторов */
+    const renderRisksTable = () => {
+      const digestData = digestSourse ? digestSourse.map(showFactorsMask) : []
+      const columns = [
+        { title: 'Дата записи', dataIndex: 'date'},
+        { title: 'Пользователь', dataIndex: 'user'},
+        { title: 'Код риск-фактора', dataIndex: 'kod'},
+        { title: 'Комментарий', dataIndex: 'comment' }, 
+        { title: '', render: (data, record) => <Btn factor={record}/>}
+      ];
+      return (
+        <ConfigProvider renderEmpty = { () => <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={ <span>Введите риск фактор</span> } /> }>
+          <Table
+            size="small"
+            align="center"
+            title={RiskInfoComponent}
+            loading={loadingStatus}
+            columns={columns}
+            dataSource={digestData}
+            bordered
+            pagination={false}
+            className="arbiter-risk-info"
+          />
+        </ConfigProvider>
+      )
+    }
+
+     /** Табилица Вывода Истории по риск факторам */
+    const renderRisksTableHistoryRequest = () => {
+      const historyData = historySourse ? differenceBy(historySourse, digestSourse, "rowid").map(showFactorsMask) : []
+      const columns = [
+        { title: 'Дата записи', dataIndex: 'date'},
+        { title: 'Пользователь', dataIndex: 'user'},
+        { title: 'Код риск-фактора', dataIndex: 'kod'},
+        { title: 'Комментарий', dataIndex: 'comment' }, 
+        { title: '', render: (data, record) => <Btn factor={record}/>}
+      ];
+      return (
+        <ConfigProvider renderEmpty = { () => <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={ <span>Исторические данные отвутствуют</span> } /> }>
+          <Table
+            size="small"
+            align="center"
+            loading={loadingStatus}
+            columns={columns}
+            dataSource={historyData}
+            bordered
+            pagination={false}
+            className="arbiter-risk-info"
+          />
+        </ConfigProvider>
+      )
+    }
+
+    const handleSelectOption = value =>  this.setState({ selectedKod: value })
+    const handleChangeOntion = value =>  this.setState({ selectedText: value })
+    const handleChangeComment = e =>  {const value = e.target.value; this.setState({ selectedComment: value })}
+
+    return (
+      <Drawer
+        width={"50%"}
+        placement="right"
+        closable={false}
+        onClose={onClose}
+        visible={visible}
+        className="add-risk-digest"
+      >
+        <h2 style={styleCss.h2}>Результаты проверки</h2>
+        <Collapse 
+          size="small"
+          defaultActiveKey={['1', '2', '3', '4']} 
+          expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"}/> }
+        >
+          <Panel header="Ручной ввод риск факторов" key="1" showArrow={false}>
+            {renderRisksTable()}
+          </Panel>
+          <Panel header="История результатов проверки" key="2" showArrow={false}>
+            {renderRisksTableHistoryRequest()}
+          </Panel>
+        </Collapse>
+        
       </Drawer>
     );
   }

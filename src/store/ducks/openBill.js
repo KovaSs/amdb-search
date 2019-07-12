@@ -20,6 +20,9 @@ export const GET_CROINFORM_USER_INFO = `${prefix}/GET_CROINFORM_USER_INFO`
 export const ADD_USER_TO_CHECK_LIST = `${prefix}/ADD_USER_TO_CHECK_LIST`
 export const GET_AFFILATES_LIST = `${prefix}/GET_AFFILATES_LIST`
 export const GET_AFFILATES_UL = `${prefix}/GET_AFFILATES_UL`
+export const LOAD_DIGEST_LIST = `${prefix}/LOAD_DIGEST_LIST`
+export const ADD_RISK_FACTOR_IN_DIGEST_LIST = `${prefix}/ADD_RISK_FACTOR_IN_DIGEST_LIST`
+export const DELETE_RISK_FACTOR_IN_DIGEST_LIST = `${prefix}/DELETE_RISK_FACTOR_IN_DIGEST_LIST`
 
 export const START = '_START'
 export const SUCCESS = '_SUCCESS'
@@ -33,11 +36,15 @@ const ReducerRecord = Record({
   reqnum: '',
   renderData: false,
   companyResponse: null,
+  digestList: null, 
   croinformResponse: new Map({}),
   requestLoading: new Map({
     companyMainInfo: false, 
     companyMainInfoUpdate: false, 
     getAffilatesList: false,
+    digestList: false,
+    addRistFactorInDigestList: false,
+    deleteRistFactorInDigestList: false,
     getAffilatesUl: new Map({}),
     identifyUser: new Map({}),
     croinformRequest: new Map({})
@@ -46,6 +53,9 @@ const ReducerRecord = Record({
     companyMainInfo: false, 
     companyMainInfoUpdate: false, 
     getAffilatesList: false,
+    digestList: false,
+    addRistFactorInDigestList: false,
+    deleteRistFactorInDigestList: false,
     getAffilatesUl: new Map({}),
     identifyUser: new Map({}),
     croinformRequest: new Map({})
@@ -137,6 +147,48 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
         .setIn(['requestLoading', 'croinformRequest'], false)
         .setIn(['errors', 'croinformRequest', action.loading], true)
 
+    case LOAD_DIGEST_LIST + START:
+      return state
+        .setIn(['requestLoading', 'digestList'], true)
+        .setIn(['errors', 'digestList'], false)
+    case LOAD_DIGEST_LIST + SUCCESS:
+      return state
+        .set('digestList', payload.digest)
+        .setIn(['requestLoading', 'digestList'], false)
+        .setIn(['errors', 'digestList'], false) 
+    case LOAD_DIGEST_LIST + FAIL:
+      return state
+        .setIn(['requestLoading', 'digestList'], false)
+        .setIn(['errors', 'digestList'], true)
+
+    case ADD_RISK_FACTOR_IN_DIGEST_LIST + START:
+      return state
+        .setIn(['requestLoading', 'addRistFactorInDigestList'], true)
+        .setIn(['errors', 'addRistFactorInDigestList'], false)
+    case ADD_RISK_FACTOR_IN_DIGEST_LIST + SUCCESS:
+      return state
+        .set('digestList', payload.digest)
+        .setIn(['requestLoading', 'addRistFactorInDigestList'], false)
+        .setIn(['errors', 'addRistFactorInDigestList'], false) 
+    case ADD_RISK_FACTOR_IN_DIGEST_LIST + FAIL:
+      return state
+        .setIn(['requestLoading', 'addRistFactorInDigestList'], false)
+        .setIn(['errors', 'addRistFactorInDigestList'], true)
+
+    case DELETE_RISK_FACTOR_IN_DIGEST_LIST + START:
+      return state
+        .setIn(['requestLoading', 'deleteRistFactorInDigestList'], true)
+        .setIn(['errors', 'deleteRistFactorInDigestList'], false)
+    case DELETE_RISK_FACTOR_IN_DIGEST_LIST + SUCCESS:
+      return state
+        .set('digestList', payload.digest)
+        .setIn(['requestLoading', 'deleteRistFactorInDigestList'], false)
+        .setIn(['errors', 'deleteRistFactorInDigestList'], false) 
+    case DELETE_RISK_FACTOR_IN_DIGEST_LIST + FAIL:
+      return state
+        .setIn(['requestLoading', 'deleteRistFactorInDigestList'], false)
+        .setIn(['errors', 'deleteRistFactorInDigestList'], true)
+
     case ADD_USER_TO_CHECK_LIST:
       return state
         .set('companyResponse', trasform._addNewUserToCheckList(state.get('companyResponse'), payload.newUser))
@@ -192,9 +244,24 @@ export const addNewUserToCheackList = newUser => {
     payload: {newUser}
   }
 }
+// Добавление нового риск-фактора
+export const addRiskFactor = factor => {
+  return {
+    type: ADD_RISK_FACTOR_IN_DIGEST_LIST,
+    payload: {...factor}
+  }
+}
+// Добавление нового риск-фактора
+export const deleteRiskFactor = factor => {
+  return {
+    type: DELETE_RISK_FACTOR_IN_DIGEST_LIST,
+    payload: {...factor}
+  }
+}
 
 /** Selectors */
 export const companyResSelector = state => state[moduleName].get('companyResponse')
+export const digetsListSelector = state => state[moduleName].get('digestList')
 export const renderDataSelector = state => state[moduleName].get('renderData')
 export const isIpSelector = state => state[moduleName].get('isIp')
 export const reqnumSelector = state => state[moduleName].get('reqnum')
@@ -205,6 +272,7 @@ export const requestLoadingSelector = state => state[moduleName].get('requestLoa
 export const errorsSelector = state => state[moduleName].get('errors').toJS()
 
 export const decodedCompanyResponse = createSelector( companyResSelector, (companyResponse) =>  companyResponse )
+export const decodedDigetsList = createSelector( digetsListSelector, (digets) =>  digets )
 export const decodedisIp = createSelector( isIpSelector, (isIp) =>  isIp )
 export const decodedСroinformResponse = createSelector( сroinformResSelector, (сroinformRes) =>  сroinformRes )
 export const decodedCompanyName = createSelector( nameCompanySelector, (companyName) =>  companyName )
@@ -236,7 +304,6 @@ export const decodedManagementSource = createSelector(
 )
 
 /** Sagas */
-
 /* Получение основных данных о кампании */
 const loadCompanyInfoSaga = function * () {
   while(true){
@@ -385,6 +452,163 @@ const loadAffilatesUlSaga = function * () {
         if(item.inn) return spawn(getRequestAffiliatesUlSaga, item.inn, item)
         else return item
       }))
+    }
+  }
+}
+
+/* Получение данных о риск-факторах */
+const loadDigestListSaga = function * () {
+  while(true){
+    yield take(LOAD_COMPANY_INFO + UPDATE + SUCCESS)
+    const reqnum = state => state[moduleName].get('reqnum')
+    const storeReqnum = yield select(reqnum)
+    try {
+      yield put({
+        type: LOAD_DIGEST_LIST + START
+      })
+
+      /* Запрос данных для DigetsList */
+      const res = yield call(() => {
+        return fetch(
+          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+          { 
+            method: 'POST',
+            mode: 'cors',
+            credentials: 'include',
+            body : JSON.stringify({ 
+              type: 'digest',
+              reqnum: storeReqnum,
+              data: {}
+            }),
+          }
+        )
+        .then(res => {
+          if (res.ok) return res.json()
+          throw new TypeError("Данные о кампании не обновлены!")
+        })
+      })
+      
+      /* Получение данных из mock */
+      // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
+      
+      const digest = res.data
+      console.log("%cRES | LOAD DIGEST LIST", "color:white; background-color: green; padding: 0 5px", res)
+
+      yield put({
+        type: LOAD_DIGEST_LIST + SUCCESS,
+        payload: {digest},
+      })
+    } catch (err){
+      console.log('err', err)
+      yield put({
+        type: LOAD_DIGEST_LIST + FAIL,
+      })
+    }
+  }
+}
+
+/* Добавление нового риск-фактора в DigetsList */
+const addRiskFactorSaga = function * () {
+  while(true){
+    const action = yield take(ADD_RISK_FACTOR_IN_DIGEST_LIST)
+    const reqnum = state => state[moduleName].get('reqnum')
+    const storeReqnum = yield select(reqnum)
+    try {
+      yield put({
+        type: ADD_RISK_FACTOR_IN_DIGEST_LIST + START
+      })
+
+      /* Запрос на добавление нового риск-фактора  */
+      const res = yield call(() => {
+        return fetch(
+          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+          { 
+            method: 'POST',
+            mode: 'cors',
+            credentials: 'include',
+            body : JSON.stringify({ 
+              type: 'digest',
+              reqnum: storeReqnum,
+              data: {
+                ...action.payload
+              }
+            }),
+          }
+        )
+        .then(res => {
+          if (res.ok) return res.json()
+          throw new TypeError("Данные о кампании не обновлены!")
+        })
+      })
+      
+      /* Получение данных из mock */
+      // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
+      
+      const digest = res.data
+      console.log("%cRES | ADD RISK FACTOR IN DIGEST LIST", "color:white; background-color: green; padding: 0 5px", res)
+
+      yield put({
+        type: ADD_RISK_FACTOR_IN_DIGEST_LIST + SUCCESS,
+        payload: {digest},
+      })
+    } catch (err){
+      console.log('err', err)
+      yield put({
+        type: ADD_RISK_FACTOR_IN_DIGEST_LIST + FAIL,
+      })
+    }
+  }
+}
+
+/* Удаление риск-фактора в DigetsList */
+const deleteRiskFactorSaga = function * () {
+  while(true){
+    const action = yield take(DELETE_RISK_FACTOR_IN_DIGEST_LIST)
+    const reqnum = state => state[moduleName].get('reqnum')
+    const storeReqnum = yield select(reqnum)
+    try {
+      yield put({
+        type: DELETE_RISK_FACTOR_IN_DIGEST_LIST + START
+      })
+
+      /* Запрос на добавление нового риск-фактора  */
+      const res = yield call(() => {
+        return fetch(
+          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+          { 
+            method: 'POST',
+            mode: 'cors',
+            credentials: 'include',
+            body : JSON.stringify({ 
+              type: 'digest',
+              reqnum: storeReqnum,
+              data: {
+                ...action.payload
+              }
+            }),
+          }
+        )
+        .then(res => {
+          if (res.ok) return res.json()
+          throw new TypeError("Данные о кампании не обновлены!")
+        })
+      })
+      
+      /* Получение данных из mock */
+      // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
+      
+      const digest = res.data
+      console.log("%cRES | ADD RISK FACTOR IN DIGEST LIST", "color:white; background-color: green; padding: 0 5px", res)
+
+      yield put({
+        type: DELETE_RISK_FACTOR_IN_DIGEST_LIST + SUCCESS,
+        payload: {digest},
+      })
+    } catch (err){
+      console.log('err', err)
+      yield put({
+        type: DELETE_RISK_FACTOR_IN_DIGEST_LIST + FAIL,
+      })
     }
   }
 }
@@ -620,10 +844,15 @@ export const saga = function * () {
   yield spawn(loadCompanyInfoSaga)
   yield spawn(loadAffilatesListSaga)
   yield spawn(loadAffilatesUlSaga)
-  yield all([
-    identifyUserSaga(),
-    identifyUserInfoSaga()
-  ])
+  yield spawn(loadDigestListSaga)
+  yield spawn(addRiskFactorSaga)
+  yield spawn(deleteRiskFactorSaga)
+  yield spawn(identifyUserSaga)
+  yield spawn(identifyUserInfoSaga)
+  // yield all([
+  //   identifyUserSaga(),
+  //   identifyUserInfoSaga()
+  // ])
 }
 
 export default openBillReducer

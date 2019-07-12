@@ -3,7 +3,14 @@ import { Col, Row, Badge, Avatar, Button } from "antd";
 import { connect } from "react-redux";
 import RiskInfoDrawer from "../../DrawerContainer/RiskInfoDrawer";
 import CompanyHistoryInfoDrawer from "../../DrawerContainer/CompanyHistoryInfoDrawer";
-import { decodedCompanyResponse, decodedisIp, decodedReqnum } from "../../../../../store/ducks/openBill";
+import { 
+  decodedCompanyResponse, 
+  decodedisIp, 
+  decodedDigetsList, 
+  addRiskFactor, 
+  deleteRiskFactor, 
+  decodedRequestLoading 
+} from "../../../../../store/ducks/openBill";
 import "./main-organisation-info.scss";
 
 class MainCompanyInfo extends Component {
@@ -81,7 +88,15 @@ class MainCompanyInfo extends Component {
   }
 
   render() {
-    const { companyResponse, reqnum, companyResponse: { fns, sanctions, isponlit_proizvodstva, leaders_list }, isIp } = this.props;
+    const { 
+      companyResponse,
+      requestLoading,
+      digets, 
+      addRiskFactor, 
+      deleteRiskFactor, 
+      companyResponse: { fns, sanctions, isponlit_proizvodstva, leaders_list }, 
+      isIp 
+    } = this.props;
     const { showRisk, showHistory, error } = this.state
     if(error) return <div style={{textAlign: "center"}}>Ошибка в работе компонента "openBill -> SearchCompanyInput -> mainCompanyInfo", пожалуйста перезагрузите страницу</div>
     return (
@@ -123,7 +138,14 @@ class MainCompanyInfo extends Component {
             </Col>
           </Row>
         </Col>
-        <RiskInfoDrawer reqnum={reqnum} toggleDrawer={showRisk} companyResponse={companyResponse}/> 
+        <RiskInfoDrawer 
+          addRiskFactor={addRiskFactor} 
+          deleteRiskFactor={deleteRiskFactor} 
+          digets={digets}
+          requestLoading={requestLoading}
+          toggleDrawer={showRisk} 
+          companyResponse={companyResponse}
+        /> 
         {!isIp && <CompanyHistoryInfoDrawer toggleDrawer={showHistory} headHistory={leaders_list}/>}
       </>
     )
@@ -132,10 +154,15 @@ class MainCompanyInfo extends Component {
 
 const putStateToProps = state => {
   return {
-    companyResponse: decodedCompanyResponse(state),
     isIp: decodedisIp(state),
-    reqnum: decodedReqnum(state)
+    requestLoading: decodedRequestLoading(state),
+    companyResponse: decodedCompanyResponse(state),
+    digets: decodedDigetsList(state)
   }
 }
+const putActionToProps = {
+  addRiskFactor,
+  deleteRiskFactor
+}
 
-export default connect(putStateToProps)(MainCompanyInfo)
+export default connect(putStateToProps, putActionToProps)(MainCompanyInfo)

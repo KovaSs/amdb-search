@@ -444,6 +444,10 @@ export const getDate = data => {
   return moment(data).format('DD.MM.YYYY')
 }
 
+export const getTimeAndDate = data => {
+  return moment(data).format('DD.MM.YYYY h:mm:ss')
+}
+
 /** Преобразование имени кампании к укороченной версии */
 export const getShortCompName = name => {
   return name
