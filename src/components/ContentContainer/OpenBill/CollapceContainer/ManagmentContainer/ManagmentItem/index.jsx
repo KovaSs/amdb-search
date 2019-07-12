@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Collapse, Icon, Spin, Descriptions, AutoComplete, Input, Button, Badge} from "antd";
+import { Collapse, Icon, Spin, Descriptions, AutoComplete, Input, Button, Badge } from "antd";
 import PropTypes from "prop-types";
 import { union } from "lodash";
 import LeaderHeader from "../LeaderHeader";
@@ -137,7 +137,9 @@ export class ManagmentItem extends PureComponent {
       const showBtn = propsItem.hasOwnProperty('identifyInfo')
 
       const editUserInfo = e => {
-        e.stopPropagation();
+        if(openPanel) {
+          e.stopPropagation();
+        }
         this.toggleEdited();
       };
 
