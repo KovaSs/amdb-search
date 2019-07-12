@@ -1,7 +1,6 @@
 import React from 'react'
 import { Tag } from 'antd'
-import idGenerator from 'react-id-generator';
-import { getDate } from '../../../../../../services/utils'
+import { getDate, uuid } from '../../../../../../services/utils'
 
 /** Рендеринг header title физического лица */
 const LeaderHeader = props => {
@@ -9,7 +8,7 @@ const LeaderHeader = props => {
 
   const renderPositionTag = () => {
     if(Array.isArray(position)) return position.map(item => {
-      if(item !== "") return <Tag key={idGenerator("item_")} color="blue" >{item}</Tag>
+      if(item !== "") return <Tag key={uuid()} color="blue" >{item}</Tag>
       else return null
     })
     return <Tag color="blue" >{position}</Tag>

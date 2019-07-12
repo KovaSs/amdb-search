@@ -107,7 +107,7 @@ export class ManagmentItem extends PureComponent {
       FlatExp: parseAddress.FlatExp, 
     }
     console.log('user', user)
-    actionGetUserCroinformInfo(user)
+    actionGetUserCroinformInfo(user, item.id)
   }
 
   /* Отображение Drawer с данными из Croinform */
@@ -131,9 +131,10 @@ export class ManagmentItem extends PureComponent {
     const { Panel } = Collapse;
 
     const BtnExtra = ({ user }) => {
-      const { identifyUser, croinformRes } = this.props;
+      const { identifyUser, croinformRes, item: propsItem } = this.props;
       const { userSelected, parseAddress, edited } = this.state;
       const croinformDisabled = !userSelected.inn && !userSelected.fio && !userSelected.passport && !parseAddress.RegionExp && !parseAddress.CityExp && !parseAddress.StreetExp &&!parseAddress.HouseExp
+      const showBtn = propsItem.hasOwnProperty('identifyInfo')
 
       const editUserInfo = e => {
         e.stopPropagation();
@@ -149,17 +150,17 @@ export class ManagmentItem extends PureComponent {
       };
 
       return (
-        <span className="heads-search" style={{width: croinformRes ? 150 : 120}}>
+        <span className="heads-search" style={{width: showBtn ? 150 : 120}}>
           <Badge dot={croinformRes ? true : false} offset={[-6,1]} status={croinformRes ? "success"  : ""} >
             <Button
               title="Показать результаты проверки"
               size="small"
               style={{
-                color: (croinformDisabled || edited || !croinformRes) ? "gray" : "rgba(14, 117, 253, 0.992)", 
+                color: ( edited || !showBtn) ? "gray" : "rgba(14, 117, 253, 0.992)", 
                 marginRight: 5,
-                display: croinformRes ? "block" : "none"
+                display: showBtn ? "block" : "none"
               }}
-              disabled={croinformDisabled || edited || !croinformRes }
+              disabled={edited || !showBtn }
               icon="solution"
               onClick={e => this.showDrawer(e)}
             />
@@ -491,8 +492,6 @@ export class ManagmentItem extends PureComponent {
     const handleChangeAddressFlatExp = e => { const value = e.target.value; return this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, FlatExp: value} })) }
     // Изменение state через onSelect
     const handleSelectOption = (value, option) =>  this.setState(({ userSelected }) => {
-      console.log('value', value)
-      console.log('option', option)
       if(option.props.text === "address") this.parsingSelectAddress(value)
       if(option.props.text === "passport") this.parsingSelectPassport(value)
       if(option.props.text === "fio") this.parsingSelectFio(value)

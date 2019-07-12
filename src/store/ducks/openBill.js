@@ -139,7 +139,7 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
         .setIn(['errors', 'croinformRequest', action.loading], false)
     case GET_CROINFORM_USER_INFO + SUCCESS:
       return state
-        .setIn(['croinformResponse', action.loading], payload.data)
+        .setIn(['croinformResponse', action.loading], payload.html)
         .setIn(['requestLoading', 'croinformRequest', action.loading], false)
         .setIn(['errors', 'croinformRequest', action.loading], false) 
     case GET_CROINFORM_USER_INFO + FAIL:
@@ -210,10 +210,11 @@ export const actionChangeInn = inn => {
   }
 }
 // Проверка юзера через Croinform
-export const actionGetUserCroinformInfo = user => {
+export const actionGetUserCroinformInfo = (user, id) => {
   return {
     type: GET_CROINFORM_USER_INFO,
-    payload: {...user}
+    payload: {...user},
+    loading: id
   }
 }
 // Загрузка основных перевоначальных данных о кампании
@@ -776,7 +777,7 @@ const identifyUserInfoSaga = function * () {
     try {
       yield put({
         type: GET_CROINFORM_USER_INFO + START,
-        loading: action.payload.INN
+        loading: action.loading
       })
 
       /* Переключение на mock данные */
@@ -823,18 +824,18 @@ const identifyUserInfoSaga = function * () {
       /** Mock данные о Идентификационных данных */
       // yield delay(2000); const res = {ip: true, data: dataMock.ipCroinformMock.data, reqnum: 666}
 
-      const data = res.data
+      const html = res.data.html
       console.log("%cRES | GET CROINFORM USER INFO |", "color:white; background-color: green; padding: 0 5px", res)
 
       yield put({
         type: GET_CROINFORM_USER_INFO + SUCCESS,
-        payload: {data},
-        loading: action.payload.INN
+        payload: {html},
+        loading: action.loading
       })
     } catch (err){
       yield put({
         type: GET_CROINFORM_USER_INFO + FAIL,
-        error: action.payload.INN
+        error: action.loading
       })
     }
   }

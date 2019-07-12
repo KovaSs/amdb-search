@@ -50,7 +50,7 @@ const ManagmentContainer = props => {
       companyName={companyName}
       identifyUserloading={requestLoading.getIn(["identifyUser",item.id])}
       croinformRequestloading={requestLoading.getIn(["croinformRequest",item.id])}
-      croinformRes={croinformResponse.get(item.inn)}
+      croinformRes={croinformResponse.get(item.id)}
     />
   ))
 
