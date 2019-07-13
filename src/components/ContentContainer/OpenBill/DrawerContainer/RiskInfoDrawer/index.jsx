@@ -54,7 +54,8 @@ class RiskInfoDrawer extends Component {
     const { Panel } = Collapse
     const { onClose, visible, deleteRiskFactor, requestLoading} = this.props
     const { riskFactors, selectedText, selectedComment, digestSourse, historySourse } = this.state
-    const loadingStatus = requestLoading.get("digestList") || requestLoading.get("addRistFactorInDigestList") || requestLoading.get("deleteRistFactorInDigestList")
+    const loadingDigetsStatus = requestLoading.get("digestList") || requestLoading.get("addRistFactorInDigestList") || requestLoading.get("deleteRistFactorInDigestList")
+    const loadingHistoryStatus = requestLoading.get("digestList") || requestLoading.get("deleteRistFactorInDigestList")
 
     const renderOption = item => {
       return (
@@ -137,7 +138,7 @@ class RiskInfoDrawer extends Component {
             size="small"
             align="center"
             title={RiskInfoComponent}
-            loading={loadingStatus}
+            loading={loadingDigetsStatus}
             columns={columns}
             dataSource={digestData}
             bordered
@@ -163,7 +164,7 @@ class RiskInfoDrawer extends Component {
           <Table
             size="small"
             align="center"
-            loading={loadingStatus}
+            loading={loadingHistoryStatus}
             columns={columns}
             dataSource={historyData}
             bordered

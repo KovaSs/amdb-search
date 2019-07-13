@@ -3,7 +3,8 @@ import { Collapse, Icon, Spin, Descriptions, AutoComplete, Input, Button, Badge 
 import PropTypes from "prop-types";
 import { union } from "lodash";
 import LeaderHeader from "../LeaderHeader";
-import {region} from "../../../../../../store/mock";
+import LeaderEditedHeader from "../LeaderEditedHeader";
+import {region, parsingFio} from "../../../../../../services/utils";
 import CroinformDrawer from "../../../DrawerContainer/CroinformDrawer";
 
 export class ManagmentItem extends PureComponent {
@@ -45,13 +46,18 @@ export class ManagmentItem extends PureComponent {
   componentDidMount() {
     const { item: { inn, last_name, first_name,  middle_name, identifyInfo = { inn: "", fio: "", passport: "", birthday: "", address: ""}}} = this.props;
     this.setState({
-      selectKey: inn,
       user: {
         inn: union([inn], identifyInfo.inn), 
         fio: union( [`${last_name} ${first_name} ${middle_name}`], identifyInfo.fio ), 
         passport: identifyInfo.passport,
         birthday: identifyInfo.birthday,
         address: identifyInfo.address
+      },
+      userSelected: {
+        inn: inn,
+        FirstName: first_name,
+        MiddleName: middle_name,
+        SurName: last_name,
       }
     });
   }
@@ -61,13 +67,18 @@ export class ManagmentItem extends PureComponent {
     const { item, item: { inn, last_name, first_name,  middle_name, identifyInfo = { inn: "", fio: "", passport: "", birthday: "", address: ""}}} = this.props;
     if (item !== prevProps.item) {
       this.setState({
-        selectKey: inn,
         user: {
           inn: union([inn], identifyInfo.inn), 
           fio: union( [`${last_name} ${first_name} ${middle_name}`], identifyInfo.fio ), 
           passport: identifyInfo.passport,
           birthday: identifyInfo.birthday,
           address: identifyInfo.address
+        },
+        userSelected: {
+          inn: inn,
+          FirstName: first_name,
+          MiddleName: middle_name,
+          SurName: last_name,
         }
       });
     }
@@ -90,10 +101,10 @@ export class ManagmentItem extends PureComponent {
     const { item, actionGetUserCroinformInfo } = this.props;
     const user = {
       INN: userSelected.inn ? userSelected.inn : item.inn,
-      FirstName: userSelected.fio ? this.parsingSelectFio(userSelected.fio).FirstName : item.first_name, 
-      FirstNameArch: userSelected.fio ? this.parsingSelectFio(userSelected.fio).FirstName : item.first_name,
-      MiddleName: userSelected.fio ? this.parsingSelectFio(userSelected.fio).MiddleName : item.middle_name,
-      SurName: userSelected.fio ? this.parsingSelectFio(userSelected.fio).SurName : item.last_name,
+      FirstName: userSelected.fio ? parsingFio(userSelected.fio).FirstName : item.first_name, 
+      FirstNameArch: userSelected.fio ? parsingFio(userSelected.fio).FirstName : item.first_name,
+      MiddleName: userSelected.fio ? parsingFio(userSelected.fio).MiddleName : item.middle_name,
+      SurName: userSelected.fio ? parsingFio(userSelected.fio).SurName : item.last_name,
       DateOfBirth: userSelected.birthday, 
       Seria: this.parsingSelectPassport(userSelected.passport).Seria,
       Number: this.parsingSelectPassport(userSelected.passport).Number,
@@ -106,7 +117,6 @@ export class ManagmentItem extends PureComponent {
       BuildingExp: parseAddress.BuildingExp, 
       FlatExp: parseAddress.FlatExp, 
     }
-    console.log('user', user)
     actionGetUserCroinformInfo(user, item.id)
   }
 
@@ -119,7 +129,6 @@ export class ManagmentItem extends PureComponent {
   };
 
   onDoubleClickEvent = e => {
-    console.log('onDoubleClickEvent', e)
     this.toggleEdited()
   }
 
@@ -127,7 +136,7 @@ export class ManagmentItem extends PureComponent {
   renderFoulderFlItem = (item, key, id) => {
     const { Item: DescriptionsItem } = Descriptions;
     const { identifyUser, identifyUserloading, croinformRequestloading, companyName } = this.props;
-    const { edited, userSelected, openPanel } = this.state;
+    const { edited, userSelected, openPanel, user } = this.state;
     const { Panel } = Collapse;
 
     const BtnExtra = ({ user }) => {
@@ -147,7 +156,14 @@ export class ManagmentItem extends PureComponent {
         if(openPanel) {
           e.stopPropagation();
         }
-        identifyUser(user);
+        console.log('user', user)
+        identifyUser({
+          ...user,
+          first_name: userSelected.FirstName ? userSelected.FirstName : user.first_name,
+          middle_name: userSelected.MiddleName ? userSelected.MiddleName : user.middle_name,
+          last_name: userSelected.SurName ? userSelected.SurName : user.last_name,
+          inn: userSelected.inn ? userSelected.inn : user.inn,
+        });
         this.setState({edited: true})
       };
 
@@ -251,7 +267,26 @@ export class ManagmentItem extends PureComponent {
     return (
       <Panel
         key={String(key)}
-        header={<LeaderHeader {...item} companyName={companyName} id={id} editedInfo={this.renderChangeLeaderInfo}/>}
+        header={ edited ? 
+          <LeaderEditedHeader 
+            user={user}
+            userSelected={userSelected}
+            item={item} 
+            companyName={companyName}
+            onAction = {{
+              handleSelectOption: this._handleSelectOption,
+              handleChangeInn: this._handleChangeInn,
+              handleChangeSurName: this._handleChangeSurName,
+              handleChangeMiddleName: this._handleChangeMiddleName,
+              handleChangeFirstName: this._handleChangeFirstName,
+            }}
+          /> :
+          <LeaderHeader 
+            item={item}
+            userSelected={userSelected}
+            companyName={companyName} 
+          />
+        }
         extra={<BtnExtra user={item} identifyUser={identifyUser} />}
       >
         <Spin spinning={identifyUserloading || croinformRequestloading ? true : false}>
@@ -300,6 +335,31 @@ export class ManagmentItem extends PureComponent {
     );
   };
 
+  // Измененение данных в RenderEditedHeader на onChange
+  _handleChangeInn = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, inn: value } }))
+  _handleChangeFirstName = ({target: {value}}) => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, FirstName: value } }))
+  _handleChangeMiddleName = ({target: {value}}) => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, MiddleName: value } }))
+  _handleChangeSurName = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, SurName: value } }))
+
+  // Измененение данных в RenderEditedHeader по onSelect
+  _handleSelectOption = (value, option) =>  this.setState(({ userSelected }) => {
+    console.log('value', value)
+    console.log('option', option)
+    if(option.props.text === "SurName") {
+      const FIO = parsingFio(option.props.title)
+      return { 
+        userSelected: 
+        { ...userSelected, 
+          FirstName: FIO.FirstName,
+          MiddleName: FIO.MiddleName,
+          SurName: FIO.SurName,
+        } 
+      }
+    } else {
+      return { userSelected: { ...userSelected, inn: value } }
+    }
+  })
+
   /* Парсинг Паспорта */
   parsingSelectPassport = passport => {
     const passArr = passport.split(" ")
@@ -309,19 +369,6 @@ export class ManagmentItem extends PureComponent {
     // console.log('Номер', Number)
     // console.log('----------------------')
     return { Seria, Number }
-  }
-
-  /* Парсинг ФИО */
-  parsingSelectFio = fio => {
-    const fioArr = fio.split(" ")
-    const MiddleName = fioArr.pop()
-    const FirstName = fioArr.pop()
-    const SurName = String(fioArr)
-    // console.log('Имя', FirstName)
-    // console.log('Отчество', MiddleName)
-    // console.log('Фамилия', SurName)
-    // console.log('----------------------')
-    return { FirstName, MiddleName, SurName }
   }
 
   /* Парсинг адреса */
@@ -390,90 +437,6 @@ export class ManagmentItem extends PureComponent {
     })) 
   }
 
-  /** Рендеринг компонента изменения LeaderHeader при редактировании записи */
-  renderChangeLeaderInfo = () => {
-    const { user, userSelected } = this.state
-    const { Option } = AutoComplete;
-
-    // Рендеринг опций выпадающего меню
-    const renderFioOption = item =>  <Option key={item} text="SurName" title={item} value={item}> {item} </Option>
-    const renderInnOption = item =>  <Option key={`header-list-inn-${item}`} text="inn" title={item} value={item}> {item} </Option>
-
-    // Измененение данных по onChange
-    // const handleChangeInn = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, inn: value } }))
-    const handleChangeSurName = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, SurName: this.parsingSelectFio(value).SurName } }))
-
-    // Измененение данных по onSelect
-    const handleSelectOption = (value, option) =>  this.setState(({ userSelected }) => {
-      console.log('value', value)
-      console.log('option', option)
-      if(option.props.text === "SurName") {
-        const FIO = this.parsingSelectFio(value)
-        return { 
-          userSelected: 
-          { ...userSelected, 
-            FirstName: FIO.FirstName,
-            MiddleName: FIO.MiddleName,
-            SurName: FIO.SurName,
-          } 
-        }
-      } else {
-        return { userSelected: { ...userSelected, inn: value } }
-      }
-    })
-    return (
-      <>
-        <label className={`leader-name-header_fio`} onClick={e => e.stopPropagation()}>
-          <Badge count={user.fio.length > 1 ? user.fio.length : null }>
-            <AutoComplete
-              size="small"
-              key="last_name"
-              style={{ width: 150 }}
-              value={userSelected.SurName}
-              dataSource={user.fio ? user.fio.map(renderFioOption) : false}
-              onSelect={handleSelectOption}
-              onChange={handleChangeSurName}
-              placeholder="Фамилия"
-              // filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
-              allowClear
-            />
-          </Badge>
-          <Input 
-            size="small"
-            placeholder="Имя" 
-            style={{ width: 150 }} 
-            value={userSelected.FirstName} 
-            // onChange={handleChangeAddressCityExp} 
-          />
-          <Input 
-            size="small"
-            placeholder="Отчество" 
-            style={{ width: 150 }} 
-            value={userSelected.MiddleName} 
-            // onChange={handleChangeAddressCityExp} 
-          />
-        </label>
-        <label className="leader-name-header_position" onClick={e => e.stopPropagation()}>
-          <Badge count={user.inn.length > 1 ? user.fio.length : null }>
-            <AutoComplete
-              size="small"
-              key="header-list-inn"
-              style={{ width: 150 }}
-              // value={userSelected.inn}
-              dataSource={user.inn ? user.inn.map(renderInnOption) : false}
-              onSelect={handleSelectOption}
-              // onChange={handleChangeInn}
-              placeholder="ИНН"
-              // filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
-              allowClear
-            />
-          </Badge>
-        </label>
-      </>
-    )
-  }
-
-
   /* Рендеринг редактируемых инпутов  */
   _renderInut = (data, keyId) => {
     const { Option } = AutoComplete;
@@ -494,14 +457,11 @@ export class ManagmentItem extends PureComponent {
     const handleChangeAddressFlatExp = e => { const value = e.target.value; return this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, FlatExp: value} })) }
     // Изменение state через onSelect
     const handleSelectOption = (value, option) =>  this.setState(({ userSelected }) => {
-      if(option.props.text === "address") this.parsingSelectAddress(value)
-      if(option.props.text === "passport") this.parsingSelectPassport(value)
-      if(option.props.text === "fio") this.parsingSelectFio(value)
       return { userSelected: { ...userSelected, [option.props.text]: value } }
     })
-    const handleSelectAddressOption = value =>  {
-      this.parsingSelectAddress(value)
-    }
+
+    const handleSelectAddressOption = value =>  this.parsingSelectAddress(value)
+
     // Изменение региона на onChange
     const handleSelectRegionOption = value => this.setState(({parseAddress}) => {
       return {

@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { cloneDeep, assign, intersection, differenceBy, union } from 'lodash';
 import moment from 'moment'
 import { fieldsArr, fieldsArrIP } from "./fields";
 
@@ -6,7 +6,7 @@ class TransformData {
   _transformAllData = inputData => {
     const Field = (search, title, data) => ({ search, title, data })
     let clgData = {}
-    const cloneFieldsArr = _.cloneDeep(fieldsArr);
+    const cloneFieldsArr = cloneDeep(fieldsArr);
     const fullOrganistionInfo = cloneFieldsArr.map( item => {      
       const _arbiterTransform = item => {
         return item = [{
@@ -40,14 +40,14 @@ class TransformData {
         if(item.id === el && item.id === "arbiter") {
           let newData = _arbiterTransform(inputData[el])
           clgData[el] = new Field(item.search, item.title, newData)
-          return _.assign(item, { "data" : newData})
+          return assign(item, { "data" : newData})
         } else if(item.id === el && item.id === "heads") {
           let newData = _headersTransform(inputData[el])
           clgData[el] = new Field(item.search, item.title, newData)
-          return _.assign(item, { "data" : newData})
+          return assign(item, { "data" : newData})
         } else if(item.id === el ) {
           clgData[el] = new Field(item.search, item.title, inputData[el])
-          return _.assign(item, { "data" : inputData[el]})
+          return assign(item, { "data" : inputData[el]})
         }
       }
       return item
@@ -59,12 +59,12 @@ class TransformData {
   _companySource = inputData => {
     const Field = (search, title, data) => ({ search, title, data })
     let clgData = {}
-    const cloneFieldsArr = _.cloneDeep(fieldsArr);
+    const cloneFieldsArr = cloneDeep(fieldsArr);
     const fullOrganistionInfo = cloneFieldsArr.map( item => {
       for (const el in inputData) {
         if(item.id === el ) {
           clgData[el] = new Field(item.search, item.title, inputData[el])
-          return _.assign(item, { "data" : inputData[el]})
+          return assign(item, { "data" : inputData[el]})
         }
       }
       return item
@@ -75,13 +75,13 @@ class TransformData {
 
   _get_company_info_companySource = (prevData, newData) => {
     try {
-      const clonePrevData = _.cloneDeep(prevData);
+      const clonePrevData = cloneDeep(prevData);
         fieldsArr.map(item => {
           for (const key in newData) {
-            if(item.search === "Predecessor" && item.func ) return _.assign(clonePrevData, { [item.id] : newData.ps.Data ? item.func(newData.ps.Data.Report.Reorganizations[item.search]) : ""})
-            else if(item.search === "Successor" && item.func ) return _.assign(clonePrevData, { [item.id] : newData.ps.Data ? item.func(newData.ps.Data.Report.Reorganizations[item.search]) : ""})
-            else if(item.search === key && !item.func) return _.assign(clonePrevData, { [item.id] : newData[item.search]})
-            else if(item.search === key && item.func)return _.assign(clonePrevData, { [item.id] : item.func(newData[item.search])})
+            if(item.search === "Predecessor" && item.func ) return assign(clonePrevData, { [item.id] : newData.ps.Data ? item.func(newData.ps.Data.Report.Reorganizations[item.search]) : ""})
+            else if(item.search === "Successor" && item.func ) return assign(clonePrevData, { [item.id] : newData.ps.Data ? item.func(newData.ps.Data.Report.Reorganizations[item.search]) : ""})
+            else if(item.search === key && !item.func) return assign(clonePrevData, { [item.id] : newData[item.search]})
+            else if(item.search === key && item.func)return assign(clonePrevData, { [item.id] : item.func(newData[item.search])})
           }
           return item
         })
@@ -99,17 +99,17 @@ class TransformData {
   }
 
   _addNewUserToCheckList = (prevData, newData) => {
-    const clonePrevData = _.cloneDeep(prevData);
+    const clonePrevData = cloneDeep(prevData);
     clonePrevData.heads.push(newData)
     return clonePrevData
   }
 
   _companySource_ip = (prevData, newData) => {
-    const clonePrevData = _.cloneDeep(prevData);
+    const clonePrevData = cloneDeep(prevData);
     fieldsArrIP.map(item => {
       for (const key in newData) {
-        if(item.search === key && !item.func) return _.assign(clonePrevData, { [item.id] : newData[item.search]})
-        else if(item.search === key && item.func)return _.assign(clonePrevData, { [item.id] : item.func(newData[item.search])})
+        if(item.search === key && !item.func) return assign(clonePrevData, { [item.id] : newData[item.search]})
+        else if(item.search === key && item.func)return assign(clonePrevData, { [item.id] : item.func(newData[item.search])})
       }
       return item
     })
@@ -127,7 +127,7 @@ class TransformData {
   }
 
   _identifyUserInfo = (prevData, newData, inn) => {
-    const clonePrevData = _.cloneDeep(prevData);
+    const clonePrevData = cloneDeep(prevData);
     clonePrevData.heads.map( item =>  {
       if(item.inn === inn) item.identifyInfo = newData
       return item
@@ -138,12 +138,12 @@ class TransformData {
   _managementSource = inputData => {
     const Field = (search, title, data) => ({ search, title, data })
     let clgData = {}
-    const cloneFieldsArr = _.cloneDeep(fieldsArr);
+    const cloneFieldsArr = cloneDeep(fieldsArr);
     const fullOrganistionInfo = cloneFieldsArr.map( item => {
       for (const el in inputData) {
         if(item.id === el ) {
           clgData[el] = new Field(item.search, item.title, inputData[el])
-          return _.assign(item, { "data" : inputData[el]})
+          return assign(item, { "data" : inputData[el]})
         }
       }
       return item
@@ -162,8 +162,8 @@ class TransformData {
   _updateManagmentSource = (prevData, newData) => {
     const Field = (search, title, data) => ({ search, title, data })
     let clgData = {}
-    const cloneFieldsArr = _.cloneDeep(fieldsArr);
-    const clonePrevData = _.cloneDeep(prevData);
+    const cloneFieldsArr = cloneDeep(fieldsArr);
+    const clonePrevData = cloneDeep(prevData);
 
     cloneFieldsArr.map( item => {
       for (const el in newData) {
@@ -180,7 +180,7 @@ class TransformData {
           ) 
             && el.func) {
           clgData[el] = new Field(item.search, item.title, newData[el])
-          return _.assign(clonePrevData, { [item.id] : item.func(newData[item.search])})
+          return assign(clonePrevData, { [item.id] : item.func(newData[item.search])})
         } else if( item.search === el && 
           ( 
             item.search === "founders_fl" || 
@@ -194,7 +194,7 @@ class TransformData {
           ) 
             && !el.func) {
           clgData[el] = new Field(item.search, item.title, newData[el])
-          return _.assign(clonePrevData, { [item.id] : newData[item.search]})
+          return assign(clonePrevData, { [item.id] : newData[item.search]})
         }
       }
       return item
@@ -214,9 +214,9 @@ class TransformData {
           share: item.share
         }
       })
-      console.log('intersection',_.intersection(addNewHeads, clonePrevData.heads))
-      console.log('DIFFERENSE',_.differenceBy(addNewHeads, clonePrevData.heads, 'fio'))
-      clonePrevData.heads = _.union(clonePrevData.heads, _.differenceBy(addNewHeads, clonePrevData.heads, 'fio'))
+      console.log('intersection',intersection(addNewHeads, clonePrevData.heads))
+      console.log('DIFFERENSE',differenceBy(addNewHeads, clonePrevData.heads, 'fio'))
+      clonePrevData.heads = union(clonePrevData.heads, differenceBy(addNewHeads, clonePrevData.heads, 'fio'))
     } else if(clonePrevData.share_holders_fl.length) {
       const shareHolders_fl = clonePrevData.share_holders_fl.map(item => {
         return {
@@ -230,8 +230,8 @@ class TransformData {
           position: `Акционер (${item.capitalSharesPercent ? `${item.capitalSharesPercent}` : ""}${item.votingSharesPercent ? ` / ${item.votingSharesPercent}` : ""}) `,
         }
       })
-      console.log('DIFFERENSE share holders',_.differenceBy(shareHolders_fl, clonePrevData.heads, 'fio'))
-      clonePrevData.heads = _.union(clonePrevData.heads, _.differenceBy(shareHolders_fl, clonePrevData.heads, 'fio'))
+      console.log('DIFFERENSE share holders',differenceBy(shareHolders_fl, clonePrevData.heads, 'fio'))
+      clonePrevData.heads = union(clonePrevData.heads, differenceBy(shareHolders_fl, clonePrevData.heads, 'fio'))
     }
     console.table("clonePrevData", clonePrevData)
     console.table(clgData)
@@ -240,7 +240,7 @@ class TransformData {
 
   /** Обновление информации по Связанным лицам, если это ЮЛ */
   _updateManagmentULSource = (prevData, newData, user) => {
-    const newStore = _.cloneDeep(prevData);
+    const newStore = cloneDeep(prevData);
     for (const key in newData) {
       if (key === "heads_fl" && newData.heads_fl.length) {
         const addNewHeadsFl = newData.heads_fl.map(item => {
@@ -261,8 +261,8 @@ class TransformData {
             share: user.share
           }
         })
-        newStore.heads = _.union(newStore.heads, _.differenceBy(addNewHeadsFl, newStore.heads, 'fio'))
-        console.log('HeadsFl', _.differenceBy(addNewHeadsFl, newStore.heads, 'fio') )
+        newStore.heads = union(newStore.heads, differenceBy(addNewHeadsFl, newStore.heads, 'fio'))
+        console.log('HeadsFl', differenceBy(addNewHeadsFl, newStore.heads, 'fio') )
       } else if (key === "founders_fl" && newData.founders_fl.length) {
         const addNewFoundersFl = newData.founders_fl.map(item => {
           return {
@@ -282,9 +282,9 @@ class TransformData {
             share: user.share ? user.share : ""
           }
         })
-        newStore.heads = _.union(newStore.heads, _.differenceBy(addNewFoundersFl, newStore.heads, 'fio'))
+        newStore.heads = union(newStore.heads, differenceBy(addNewFoundersFl, newStore.heads, 'fio'))
         // console.log('heads_fl', newData.heads_fl, newData.heads_fl.length, true )
-        console.log('FoundersFl', _.differenceBy(addNewFoundersFl, newStore.heads, 'fio') )
+        console.log('FoundersFl', differenceBy(addNewFoundersFl, newStore.heads, 'fio') )
       } else if (key === "shared_holders_fl" && newData.shared_holders_fl.length) {
         const addNewSharedHoldersFl = newData.shared_holders_fl.map(item => {
           return {
@@ -304,9 +304,9 @@ class TransformData {
             share: user.share ? user.share : ""
           }
         })
-        newStore.heads = _.union(newStore.heads, _.differenceBy(addNewSharedHoldersFl, newStore.heads, 'inn'))
+        newStore.heads = union(newStore.heads, differenceBy(addNewSharedHoldersFl, newStore.heads, 'inn'))
         // console.log('heads_fl', newData.heads_fl, newData.heads_fl.length, true )
-        console.log('SharedHoldersFl', _.differenceBy(addNewSharedHoldersFl, newStore.heads, 'inn') )
+        console.log('SharedHoldersFl', differenceBy(addNewSharedHoldersFl, newStore.heads, 'inn') )
       }
     }
     return newStore
@@ -315,12 +315,12 @@ class TransformData {
   _riskSource = inputData => {
     const Risk = (search, title, data) => ({ search, title, data })
     let clgRiskData = {}
-    const cloneFieldsArr = _.cloneDeep(fieldsArr);
+    const cloneFieldsArr = cloneDeep(fieldsArr);
     const riskOrganistionInfo = cloneFieldsArr.map( item => {
       for (const el in inputData) {
         if(item.id === el ) {
           clgRiskData[el] = new Risk(item.search, item.title, inputData[el])
-          return _.assign(item, { "data" : inputData[el]})
+          return assign(item, { "data" : inputData[el]})
         }
       }
       return item

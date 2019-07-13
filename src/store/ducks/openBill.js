@@ -1,11 +1,14 @@
 import { Record, Map } from 'immutable'
 import { createSelector } from 'reselect'
 import { all, put, take, call, select, spawn } from 'redux-saga/effects'
+// import { delay } from 'redux-saga/effects'
 import { trasform } from "../../services/utils"
-import { companyRes, identifyInfoMock, bicompactResMock, ipResMock, ipCroinformMock } from '../mock'
+// import { companyRes, identifyInfoMock, bicompactResMock, ipResMock, ipCroinformMock } from '../mock'
+import { companyRes } from '../mock'
 
 /* Mock данные */
-const dataMock = { companyRes, identifyInfoMock, bicompactResMock, ipResMock, ipCroinformMock }
+// const dataMock = { companyRes, identifyInfoMock, bicompactResMock, ipResMock, ipCroinformMock }
+const dataMock = { companyRes }
 const cloCss = "color:white; background-color: green; padding: 0 5px"
 
 /** Constants */
@@ -335,7 +338,7 @@ const loadCompanyInfoSaga = function * () {
           if (res.ok) return res.json()
           throw new TypeError("Данные о кампании не обновлены!")
         })
-      })
+      }) 
 
       /* Mock данные о ЮЛ */
       // yield delay(2000); const res = {...dataMock.bicompactResMock}
