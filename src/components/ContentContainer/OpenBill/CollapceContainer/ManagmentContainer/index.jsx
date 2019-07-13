@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from "react-redux"
 import ManagmentItem from './ManagmentItem'
 import PropTypes from 'prop-types'
-import { trasform } from "../../../../../services/transformData";
+import { trasform } from "../../../../../services/utils";
 import AddNewUser from "./AddNewUser";
 import { 
   decodedRequestLoading, 
@@ -41,16 +41,16 @@ const ManagmentContainer = props => {
 
   const renderHeads = heads.data.map( item => (
     <ManagmentItem 
-      key={item.inn} 
+      key={item.id ? item.id : item.inn} 
       item={item} 
-      activeKey={item.inn} 
+      activeKey={item.id ? item.id : item.inn} 
       searchData={'heads'}
       actionGetUserCroinformInfo={actionGetUserCroinformInfo}
       identifyUser={identifyUser}
       companyName={companyName}
-      identifyUserloading={requestLoading.getIn(["identifyUser",item.inn])}
-      croinformRequestloading={requestLoading.getIn(["croinformRequest",item.inn])}
-      croinformRes={croinformResponse.get(item.inn)}
+      identifyUserloading={requestLoading.getIn(["identifyUser",item.id])}
+      croinformRequestloading={requestLoading.getIn(["croinformRequest",item.id])}
+      croinformRes={croinformResponse.get(item.id)}
     />
   ))
 

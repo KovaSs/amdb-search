@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
-import { Collapse, Icon, Spin, Descriptions, AutoComplete, Input, Button, Badge} from "antd";
+import { Collapse, Icon, Spin, Descriptions, AutoComplete, Input, Button, Badge } from "antd";
 import PropTypes from "prop-types";
-import _ from "lodash";
+import { union } from "lodash";
 import LeaderHeader from "../LeaderHeader";
 import {region} from "../../../../../../store/mock";
 import CroinformDrawer from "../../../DrawerContainer/CroinformDrawer";
@@ -11,6 +11,7 @@ export class ManagmentItem extends PureComponent {
     showCroinformResponse: false,
     edited: false,
     error: false,
+    openPanel: false,
     parseAddress: {
       CityExp: '', // Нас. пункт
       StreetExp: '', // Улица
@@ -31,6 +32,9 @@ export class ManagmentItem extends PureComponent {
     userSelected: {
       inn: "",
       fio: "",
+      FirstName: "",
+      MiddleName: "",
+      SurName: "",
       passport: "",
       birthday: "",
       address: ""
@@ -41,9 +45,10 @@ export class ManagmentItem extends PureComponent {
   componentDidMount() {
     const { item: { inn, last_name, first_name,  middle_name, identifyInfo = { inn: "", fio: "", passport: "", birthday: "", address: ""}}} = this.props;
     this.setState({
+      selectKey: inn,
       user: {
-        inn: _.union([inn], identifyInfo.inn),
-        fio: _.union( [`${last_name} ${first_name} ${middle_name}`], identifyInfo.fio ),
+        inn: union([inn], identifyInfo.inn), 
+        fio: union( [`${last_name} ${first_name} ${middle_name}`], identifyInfo.fio ), 
         passport: identifyInfo.passport,
         birthday: identifyInfo.birthday,
         address: identifyInfo.address
@@ -56,9 +61,10 @@ export class ManagmentItem extends PureComponent {
     const { item, item: { inn, last_name, first_name,  middle_name, identifyInfo = { inn: "", fio: "", passport: "", birthday: "", address: ""}}} = this.props;
     if (item !== prevProps.item) {
       this.setState({
+        selectKey: inn,
         user: {
-          inn: _.union([inn], identifyInfo.inn),
-          fio: _.union( [`${last_name} ${first_name} ${middle_name}`], identifyInfo.fio ),
+          inn: union([inn], identifyInfo.inn), 
+          fio: union( [`${last_name} ${first_name} ${middle_name}`], identifyInfo.fio ), 
           passport: identifyInfo.passport,
           birthday: identifyInfo.birthday,
           address: identifyInfo.address
@@ -83,7 +89,7 @@ export class ManagmentItem extends PureComponent {
     const { userSelected, parseAddress } = this.state;
     const { item, actionGetUserCroinformInfo } = this.props;
     const user = {
-      INN: userSelected.inn ? userSelected.inn : item.inn ,
+      INN: userSelected.inn ? userSelected.inn : item.inn,
       FirstName: userSelected.fio ? this.parsingSelectFio(userSelected.fio).FirstName : item.first_name, 
       FirstNameArch: userSelected.fio ? this.parsingSelectFio(userSelected.fio).FirstName : item.first_name,
       MiddleName: userSelected.fio ? this.parsingSelectFio(userSelected.fio).MiddleName : item.middle_name,
@@ -101,7 +107,7 @@ export class ManagmentItem extends PureComponent {
       FlatExp: parseAddress.FlatExp, 
     }
     console.log('user', user)
-    actionGetUserCroinformInfo(user)
+    actionGetUserCroinformInfo(user, item.id)
   }
 
   /* Отображение Drawer с данными из Croinform */
@@ -121,43 +127,48 @@ export class ManagmentItem extends PureComponent {
   renderFoulderFlItem = (item, key, id) => {
     const { Item: DescriptionsItem } = Descriptions;
     const { identifyUser, identifyUserloading, croinformRequestloading, companyName } = this.props;
-    const { edited, userSelected } = this.state;
+    const { edited, userSelected, openPanel } = this.state;
     const { Panel } = Collapse;
 
     const BtnExtra = ({ user }) => {
-      const { identifyUser, croinformRes } = this.props;
+      const { identifyUser, croinformRes, item: propsItem } = this.props;
       const { userSelected, parseAddress, edited } = this.state;
       const croinformDisabled = !userSelected.inn && !userSelected.fio && !userSelected.passport && !parseAddress.RegionExp && !parseAddress.CityExp && !parseAddress.StreetExp &&!parseAddress.HouseExp
+      const showBtn = propsItem.hasOwnProperty('identifyInfo')
 
       const editUserInfo = e => {
-        e.stopPropagation();
+        if(openPanel) {
+          e.stopPropagation();
+        }
         this.toggleEdited();
       };
 
       const identifyUserInfo = e => {
-        e.stopPropagation();
+        if(openPanel) {
+          e.stopPropagation();
+        }
         identifyUser(user);
         this.setState({edited: true})
       };
 
       return (
-        <span className="heads-search" style={{width: croinformRes ? 150 : 120}}>
+        <span className="heads-search" style={{width: showBtn ? 150 : 120}}>
           <Badge dot={croinformRes ? true : false} offset={[-6,1]} status={croinformRes ? "success"  : ""} >
             <Button
-              title="Показать ответ Croinform"
+              title="Показать результаты проверки"
               size="small"
               style={{
-                color: (croinformDisabled || edited || !croinformRes) ? "gray" : "rgba(14, 117, 253, 0.992)", 
+                color: ( edited || !showBtn) ? "gray" : "rgba(14, 117, 253, 0.992)", 
                 marginRight: 5,
-                display: croinformRes ? "block" : "none"
+                display: showBtn ? "block" : "none"
               }}
-              disabled={croinformDisabled || edited || !croinformRes }
+              disabled={edited || !showBtn }
               icon="solution"
               onClick={e => this.showDrawer(e)}
             />
           </Badge>
           <Button
-            title="Проверить в Croinform"
+            title="Проверить все"
             size="small"
             style={{color: (croinformDisabled || edited || parseAddress.RegionExp === "") ? "gray" : "#52c41a", marginRight: 5}}
             disabled={croinformDisabled || edited || parseAddress.RegionExp === ""}
@@ -187,7 +198,7 @@ export class ManagmentItem extends PureComponent {
     const renderDescriptionItems = () => {
       const {
         user,
-        user: { inn, fio, passport, birthday, address },
+        user: { passport, birthday, address },
         userSelected,
         parseAddress: {CityExp, StreetExp, HouseExp, BuildExp, BuildingExp, FlatExp, RegionExpText},
         edited
@@ -195,19 +206,7 @@ export class ManagmentItem extends PureComponent {
       const descrArr = [];
       const id = "heads";
       for (const key in user) {
-        if (user.hasOwnProperty(key) && key === "inn") {
-          inn.length > 1 && edited && descrArr.push(
-            <DescriptionsItem  key={`${id}-${key}`} id={`${id}-${key}`} label="ИНН" span={1} >
-              { this._renderInut(inn, "inn") }
-            </DescriptionsItem>
-          )
-        } else if (user.hasOwnProperty(key) && key === "fio") {
-          fio.length > 1 && edited && descrArr.push(
-            <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="ФИО" span={1} >
-              { this._renderInut(fio, "fio") }
-            </DescriptionsItem>
-          )
-        } else if ( user.hasOwnProperty(key) && key === "passport" ) {
+        if ( user.hasOwnProperty(key) && key === "passport" ) {
           edited && descrArr.push(
             <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Паспорт" span={1} >
               { this._renderInut(passport, "passport") }
@@ -215,7 +214,7 @@ export class ManagmentItem extends PureComponent {
           )
           !edited && (passport !== "" || userSelected.passport) && descrArr.push(
             <DescriptionsItem  key={`${id}-${key}`} id={`${id}-${key}`} label="Паспорт" span={1} >
-              <label onDoubleClick={e => this.onDoubleClickEvent(e)}>{ userSelected.passport  ? userSelected.passport : `${passport[0].seria} ${passport[0].number}` }</label>
+              <label onDoubleClick={e => this.onDoubleClickEvent(e)}>{ userSelected.passport  ? userSelected.passport : passport.length ? `${passport[0].seria} ${passport[0].number}` : "" }</label>
             </DescriptionsItem>
           )
         } else if ( user.hasOwnProperty(key) && key === "birthday" ) {
@@ -252,7 +251,7 @@ export class ManagmentItem extends PureComponent {
     return (
       <Panel
         key={String(key)}
-        header={<LeaderHeader {...item} companyName={companyName} id={id} />}
+        header={<LeaderHeader item={item} companyName={companyName} edited={edited} id={id} editedInfo={this.renderChangeLeaderInfo}/>}
         extra={<BtnExtra user={item} identifyUser={identifyUser} />}
       >
         <Spin spinning={identifyUserloading || croinformRequestloading ? true : false}>
@@ -391,6 +390,91 @@ export class ManagmentItem extends PureComponent {
     })) 
   }
 
+  /** Рендеринг компонента изменения LeaderHeader при редактировании записи */
+  renderChangeLeaderInfo = () => {
+    const { user, userSelected } = this.state
+    const { Option } = AutoComplete;
+
+    // Рендеринг опций выпадающего меню
+    const renderFioOption = item =>  <Option key={item} text="SurName" title={item} value={item}> {item} </Option>
+    const renderInnOption = item =>  <Option key={`header-list-inn-${item}`} text="inn" title={item} value={item}> {item} </Option>
+
+    // Измененение данных по onChange
+    // const handleChangeInn = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, inn: value } }))
+    const handleChangeSurName = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, SurName: this.parsingSelectFio(value).SurName } }))
+
+    // Измененение данных по onSelect
+    const handleSelectOption = (value, option) =>  this.setState(({ userSelected }) => {
+      console.log('value', value)
+      console.log('option', option)
+      if(option.props.text === "SurName") {
+        const FIO = this.parsingSelectFio(value)
+        return { 
+          userSelected: 
+          { ...userSelected, 
+            FirstName: FIO.FirstName,
+            MiddleName: FIO.MiddleName,
+            SurName: FIO.SurName,
+          } 
+        }
+      } else {
+        return { userSelected: { ...userSelected, inn: value } }
+      }
+    })
+    return (
+      <>
+        <label className="leader-name-header_fio" onClick={e => e.stopPropagation()}>
+          <Badge count={user.fio.length > 1 ? user.fio.length : null }>
+            <AutoComplete
+              size="small"
+              key="last_name"
+              style={{ width: 150 }}
+              value={userSelected.SurName}
+              optionLabelProp={""}
+              dataSource={user.fio ? user.fio.map(renderFioOption) : false}
+              onSelect={handleSelectOption}
+              onChange={handleChangeSurName}
+              placeholder="Фамилия"
+              // filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
+              allowClear
+            />
+          </Badge>
+          <Input 
+            size="small"
+            placeholder="Имя" 
+            style={{ width: 150 }} 
+            value={userSelected.FirstName} 
+            // onChange={handleChangeAddressCityExp} 
+          />
+          <Input 
+            size="small"
+            placeholder="Отчество" 
+            style={{ width: 150 }} 
+            value={userSelected.MiddleName} 
+            // onChange={handleChangeAddressCityExp} 
+          />
+        </label>
+        <label className="leader-name-header_position" onClick={e => e.stopPropagation()}>
+          <Badge count={user.inn.length > 1 ? user.fio.length : null }>
+            <AutoComplete
+              size="small"
+              key="header-list-inn"
+              style={{ width: 150 }}
+              // value={userSelected.inn}
+              dataSource={user.inn ? user.inn.map(renderInnOption) : false}
+              onSelect={handleSelectOption}
+              optionLabelProp={""}
+              // onChange={handleChangeInn}
+              placeholder="ИНН"
+              // filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
+              allowClear
+            />
+          </Badge>
+        </label>
+      </>
+    )
+  }
+
 
   /* Рендеринг редактируемых инпутов  */
   _renderInut = (data, keyId) => {
@@ -400,8 +484,6 @@ export class ManagmentItem extends PureComponent {
     const passportMask = str =>  str.replace(/^([0-9]{4})([0-9]{6,10})/g, '$1 $2')
 
     // Изменение state через onChange
-    const handleChangeInn = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, inn: value } }))
-    const handleChangeFio = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, fio: value } }))
     const handleChangeBirthday = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, birthday: value } }))
     const handleChangePassport = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, passport: passportMask(value) } }))
     // Изменение распарсенного адреса
@@ -449,39 +531,7 @@ export class ManagmentItem extends PureComponent {
       );
     };
 
-    if ( keyId === "inn") {
-      return (
-        <Badge count={data.length}>
-          <AutoComplete
-            key={keyId}
-            style={{ width: 250 }}
-            size="small"
-            value={userSelected[keyId]}
-            dataSource={user.inn ? data.map(renderOption) : false}
-            onSelect={handleSelectOption}
-            onChange={handleChangeInn}
-            placeholder="Введите ИНН"
-            filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
-            allowClear
-          />
-        </Badge>
-      );
-    } else if ( keyId === "fio") {
-      return (
-        <AutoComplete
-          key={keyId}
-          style={{ width: 250 }}
-          size="small"
-          value={userSelected[keyId]}
-          dataSource={user.fio ? data.map(renderOption) : false}
-          onSelect={handleSelectOption}
-          onChange={handleChangeFio}
-          placeholder="Введите ФИО"
-          filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
-          allowClear
-        />
-      );
-    } else if ( keyId === "birthday") {
+    if ( keyId === "birthday") {
       return (
         <Badge count={data.length}>
           <AutoComplete
@@ -556,6 +606,10 @@ export class ManagmentItem extends PureComponent {
     }
   }
 
+  callback = key => {
+    key.length ?  this.setState({ openPanel : true }) : this.setState({ openPanel : false })
+  }
+
   render() {
     const { item, item: { inn }, activeKey, searchData, croinformRes, croinformRequestloading } = this.props;
     const {error, showCroinformResponse} = this.state
@@ -566,7 +620,7 @@ export class ManagmentItem extends PureComponent {
         <Collapse
           key={inn}
           className="managment"
-          defaultActiveKey={inn}
+          // defaultActiveKey={inn}
           onChange={this.callback}
           bordered={false}
           expandIcon={({ isActive }) => (

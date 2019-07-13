@@ -1,7 +1,7 @@
 import { Record, Map } from 'immutable'
 import { createSelector } from 'reselect'
 import { all, put, take, call, select } from 'redux-saga/effects'
-import { trasform } from "../../services/transformData"
+import { trasform } from "../../services/utils"
 import { companyRes } from '../mock'
 
 /** Constants */

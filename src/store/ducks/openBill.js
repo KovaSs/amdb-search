@@ -1,11 +1,12 @@
 import { Record, Map } from 'immutable'
 import { createSelector } from 'reselect'
 import { all, put, take, call, select, spawn, delay } from 'redux-saga/effects'
-import { trasform } from "../../services/transformData"
-import { companyRes, identifyInfoMock, bicompactResMock, bicompactPCResMock, ipResMock, ipCroinformMock,  companySructRequestMock} from '../mock'
+import { trasform } from "../../services/utils"
+import { companyRes, identifyInfoMock, bicompactResMock, ipResMock, ipCroinformMock } from '../mock'
 
 /* Mock данные */
-const dataMock = { companyRes, identifyInfoMock, bicompactResMock, bicompactPCResMock, ipResMock, ipCroinformMock, companySructRequestMock }
+const dataMock = { companyRes, identifyInfoMock, bicompactResMock, ipResMock, ipCroinformMock }
+const cloCss = "color:white; background-color: green; padding: 0 5px"
 
 /** Constants */
 export const moduleName = 'openBill'
@@ -17,9 +18,12 @@ export const CLEAR_COMPANY_INFO = `${prefix}/CLEAR_COMPANY_INFO`
 export const GET_IDENTIFY_USER = `${prefix}/GET_IDENTIFY_USER`
 export const GET_CROINFORM_USER_INFO = `${prefix}/GET_CROINFORM_USER_INFO`
 export const ADD_USER_TO_CHECK_LIST = `${prefix}/ADD_USER_TO_CHECK_LIST`
-export const GET_COMPANY_STRUCTURE = `${prefix}/GET_COMPANY_STRUCTURE`
+export const GET_AFFILATES_LIST = `${prefix}/GET_AFFILATES_LIST`
+export const GET_AFFILATES_UL = `${prefix}/GET_AFFILATES_UL`
+export const LOAD_DIGEST_LIST = `${prefix}/LOAD_DIGEST_LIST`
+export const ADD_RISK_FACTOR_IN_DIGEST_LIST = `${prefix}/ADD_RISK_FACTOR_IN_DIGEST_LIST`
+export const DELETE_RISK_FACTOR_IN_DIGEST_LIST = `${prefix}/DELETE_RISK_FACTOR_IN_DIGEST_LIST`
 
-export const PC = '_PC'
 export const START = '_START'
 export const SUCCESS = '_SUCCESS'
 export const UPDATE = '_UPDATE'
@@ -32,18 +36,27 @@ const ReducerRecord = Record({
   reqnum: '',
   renderData: false,
   companyResponse: null,
+  digestList: null, 
   croinformResponse: new Map({}),
   requestLoading: new Map({
     companyMainInfo: false, 
     companyMainInfoUpdate: false, 
-    companyPCUpdate: false,
+    getAffilatesList: false,
+    digestList: false,
+    addRistFactorInDigestList: false,
+    deleteRistFactorInDigestList: false,
+    getAffilatesUl: new Map({}),
     identifyUser: new Map({}),
     croinformRequest: new Map({})
   }),
   errors: new Map({
     companyMainInfo: false, 
     companyMainInfoUpdate: false, 
-    companyPCUpdate: false,
+    getAffilatesList: false,
+    digestList: false,
+    addRistFactorInDigestList: false,
+    deleteRistFactorInDigestList: false,
+    getAffilatesUl: new Map({}),
     identifyUser: new Map({}),
     croinformRequest: new Map({})
   })
@@ -78,19 +91,33 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
         .setIn(['errors', 'companyMainInfoUpdate'], true)
         .set('renderData', false)
 
-    case LOAD_COMPANY_INFO + PC + UPDATE + START:
+    case GET_AFFILATES_LIST + START:
       return state
-        .setIn(['requestLoading', 'companyPCUpdate'], true)
-        .setIn(['errors', 'companyPCUpdate'], false)
-    case LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS:
+      .setIn(['requestLoading', 'getAffilatesList'], true)
+      .setIn(['errors', 'getAffilatesList'], false)      
+    case GET_AFFILATES_LIST + SUCCESS:
       return state
         .set('companyResponse', payload.updatedData)
-        .setIn(['requestLoading', 'companyPCUpdate'], false)
-        .setIn(['errors', 'companyPCUpdate'], false) 
-    case LOAD_COMPANY_INFO + PC + UPDATE + FAIL:
+        .setIn(['requestLoading', 'getAffilatesList'], false)
+        .setIn(['errors', 'getAffilatesList'], false) 
+    case GET_AFFILATES_LIST + FAIL:
       return state
-        .setIn(['requestLoading', 'companyPCUpdate'], false)
-        .setIn(['errors', 'companyPCUpdate'], true)
+        .setIn(['requestLoading', 'getAffilatesList'], false)
+        .setIn(['errors', 'getAffilatesList'], true)
+
+    case GET_AFFILATES_UL + START:
+      return state
+      .setIn(['requestLoading', 'getAffilatesUl', action.inn], true)
+      .setIn(['errors', 'getAffilatesUl', action.inn], false)      
+    case GET_AFFILATES_UL + SUCCESS:
+      return state
+        .set('companyResponse', payload.updatedData)
+        .setIn(['requestLoading', 'getAffilatesUl', action.inn], false)
+        .setIn(['errors', 'getAffilatesUl', action.inn], false) 
+    case GET_AFFILATES_UL + FAIL:
+      return state
+        .setIn(['requestLoading', 'getAffilatesUl', action.inn], false)
+        .setIn(['errors', 'getAffilatesUl', action.inn], true)
 
     case GET_IDENTIFY_USER + START:
       return state
@@ -112,13 +139,55 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
         .setIn(['errors', 'croinformRequest', action.loading], false)
     case GET_CROINFORM_USER_INFO + SUCCESS:
       return state
-        .setIn(['croinformResponse', action.loading], payload.data)
+        .setIn(['croinformResponse', action.loading], payload.html)
         .setIn(['requestLoading', 'croinformRequest', action.loading], false)
         .setIn(['errors', 'croinformRequest', action.loading], false) 
     case GET_CROINFORM_USER_INFO + FAIL:
       return state
         .setIn(['requestLoading', 'croinformRequest'], false)
         .setIn(['errors', 'croinformRequest', action.loading], true)
+
+    case LOAD_DIGEST_LIST + START:
+      return state
+        .setIn(['requestLoading', 'digestList'], true)
+        .setIn(['errors', 'digestList'], false)
+    case LOAD_DIGEST_LIST + SUCCESS:
+      return state
+        .set('digestList', payload.digest)
+        .setIn(['requestLoading', 'digestList'], false)
+        .setIn(['errors', 'digestList'], false) 
+    case LOAD_DIGEST_LIST + FAIL:
+      return state
+        .setIn(['requestLoading', 'digestList'], false)
+        .setIn(['errors', 'digestList'], true)
+
+    case ADD_RISK_FACTOR_IN_DIGEST_LIST + START:
+      return state
+        .setIn(['requestLoading', 'addRistFactorInDigestList'], true)
+        .setIn(['errors', 'addRistFactorInDigestList'], false)
+    case ADD_RISK_FACTOR_IN_DIGEST_LIST + SUCCESS:
+      return state
+        .set('digestList', payload.digest)
+        .setIn(['requestLoading', 'addRistFactorInDigestList'], false)
+        .setIn(['errors', 'addRistFactorInDigestList'], false) 
+    case ADD_RISK_FACTOR_IN_DIGEST_LIST + FAIL:
+      return state
+        .setIn(['requestLoading', 'addRistFactorInDigestList'], false)
+        .setIn(['errors', 'addRistFactorInDigestList'], true)
+
+    case DELETE_RISK_FACTOR_IN_DIGEST_LIST + START:
+      return state
+        .setIn(['requestLoading', 'deleteRistFactorInDigestList'], true)
+        .setIn(['errors', 'deleteRistFactorInDigestList'], false)
+    case DELETE_RISK_FACTOR_IN_DIGEST_LIST + SUCCESS:
+      return state
+        .set('digestList', payload.digest)
+        .setIn(['requestLoading', 'deleteRistFactorInDigestList'], false)
+        .setIn(['errors', 'deleteRistFactorInDigestList'], false) 
+    case DELETE_RISK_FACTOR_IN_DIGEST_LIST + FAIL:
+      return state
+        .setIn(['requestLoading', 'deleteRistFactorInDigestList'], false)
+        .setIn(['errors', 'deleteRistFactorInDigestList'], true)
 
     case ADD_USER_TO_CHECK_LIST:
       return state
@@ -141,10 +210,11 @@ export const actionChangeInn = inn => {
   }
 }
 // Проверка юзера через Croinform
-export const actionGetUserCroinformInfo = user => {
+export const actionGetUserCroinformInfo = (user, id) => {
   return {
     type: GET_CROINFORM_USER_INFO,
-    payload: {...user}
+    payload: {...user},
+    loading: id
   }
 }
 // Загрузка основных перевоначальных данных о кампании
@@ -175,9 +245,24 @@ export const addNewUserToCheackList = newUser => {
     payload: {newUser}
   }
 }
+// Добавление нового риск-фактора
+export const addRiskFactor = factor => {
+  return {
+    type: ADD_RISK_FACTOR_IN_DIGEST_LIST,
+    payload: {...factor}
+  }
+}
+// Добавление нового риск-фактора
+export const deleteRiskFactor = factor => {
+  return {
+    type: DELETE_RISK_FACTOR_IN_DIGEST_LIST,
+    payload: {...factor}
+  }
+}
 
 /** Selectors */
 export const companyResSelector = state => state[moduleName].get('companyResponse')
+export const digetsListSelector = state => state[moduleName].get('digestList')
 export const renderDataSelector = state => state[moduleName].get('renderData')
 export const isIpSelector = state => state[moduleName].get('isIp')
 export const reqnumSelector = state => state[moduleName].get('reqnum')
@@ -188,6 +273,7 @@ export const requestLoadingSelector = state => state[moduleName].get('requestLoa
 export const errorsSelector = state => state[moduleName].get('errors').toJS()
 
 export const decodedCompanyResponse = createSelector( companyResSelector, (companyResponse) =>  companyResponse )
+export const decodedDigetsList = createSelector( digetsListSelector, (digets) =>  digets )
 export const decodedisIp = createSelector( isIpSelector, (isIp) =>  isIp )
 export const decodedСroinformResponse = createSelector( сroinformResSelector, (сroinformRes) =>  сroinformRes )
 export const decodedCompanyName = createSelector( nameCompanySelector, (companyName) =>  companyName )
@@ -205,8 +291,8 @@ export const decodedMainCompanySource = createSelector(
 )
 export const decodedRiskSource = createSelector(
   companyResSelector, (companyResponse) => {
-    const { arbiter, fns, sanctions, isponlit_proizvodstva } = companyResponse
-    const riskSource = { arbiter, fns, sanctions, isponlit_proizvodstva }
+    const { arbiter, fns, sanctions, isponlit_proizvodstva, spiski, spark_spiski } = companyResponse
+    const riskSource = { arbiter, fns, sanctions, isponlit_proizvodstva, spiski, spark_spiski }
     return riskSource
   }
 )
@@ -219,7 +305,6 @@ export const decodedManagementSource = createSelector(
 )
 
 /** Sagas */
-
 /* Получение основных данных о кампании */
 const loadCompanyInfoSaga = function * () {
   while(true){
@@ -253,13 +338,12 @@ const loadCompanyInfoSaga = function * () {
       }) */
 
       /* Mock данные о ЮЛ */
-      yield delay(2000)
-      const res = {ip: false, data: dataMock.bicompactResMock, reqnum: 666}
+      yield delay(2000); const res = {...dataMock.bicompactResMock}
       /** Mock данные о ФЛ */
       // const res = {ip: true, data: dataMock.ipResMock.data, reqnum: 666}
 
-      const data = res.data
-      console.log("%cRES | FIRST UPDATE", "color: white; background-color: green; padding: 0 5px;", data)
+      const data = res.data.company_info
+      console.log("%cRES | FIRST UPDATE", cloCss, res)
       const store = state => state[moduleName].get('companyResponse')
       const companyResponse = yield select(store)
 
@@ -282,6 +366,7 @@ const loadCompanyInfoSaga = function * () {
       }
 
     } catch (err){
+      console.log('err', err)
       yield put({
         type: LOAD_COMPANY_INFO + UPDATE + FAIL,
       })
@@ -290,7 +375,7 @@ const loadCompanyInfoSaga = function * () {
 }
 
 /* Получение данных о предшедственнниках и приемниках */
-const loadCompanyPCSaga = function * () {
+const loadAffilatesListSaga = function * () {
   while(true){
     const action = yield take(LOAD_COMPANY_INFO + UPDATE + SUCCESS)
     const store = state => state[moduleName].get('companyResponse')
@@ -298,7 +383,7 @@ const loadCompanyPCSaga = function * () {
     if(!action.isIp) {
       try {
         yield put({
-          type: LOAD_COMPANY_INFO + PC + UPDATE + START
+          type: GET_AFFILATES_LIST + START
         })
   
         /* Запрос данных о приемниках 
@@ -310,7 +395,7 @@ const loadCompanyPCSaga = function * () {
               mode: 'cors',
               credentials: 'include',
               body : JSON.stringify({ 
-                type: 'get_company_ps',
+                type: 'get_affilates',
                 reqnum: action.id,
                 data: {
                   code: storeInn.inn
@@ -325,38 +410,266 @@ const loadCompanyPCSaga = function * () {
         }) */
         
         /* Получение данных из mock */
-        yield delay(2000)
-        const res = {ip: true, data: dataMock.bicompactPCResMock, reqnum: 666}
+        yield delay(150000); const res = {...dataMock.bicompactPCResMock}
         
         const data = res.data
-        console.log("%cRES | PC UPDATE", "color: white; background-color: green; padding: 0 5px;", res)
+        console.log("%cRES | GET AFFILATES LIST", "color:white; background-color: green; padding: 0 5px", res)
         const store = state => state[moduleName].get('companyResponse')
         
-        if(data === null) {
-          const companyResponse = yield select(store)
-          const updatedData = yield trasform._get_company_info_companySource(companyResponse, { Successor : false, Predecessor: false})
-          yield put({
-            type: LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS,
-            // reqnum: res.reqnum,
-            payload: {updatedData},
-          })
-        } else {
-          const companyResponse = yield select(store)
-          const updatedData = yield trasform._get_company_info_companySource(companyResponse, data.Reorganizations)
-          yield put({
-            type: LOAD_COMPANY_INFO + PC + UPDATE + SUCCESS,
-            // reqnum: res.reqnum,
-            payload: {updatedData},
-          })
-        }
-      } catch (err){
+        const companyResponse = yield select(store)
+        const updatedData = yield trasform._updateManagmentSource(companyResponse, data)
+
         yield put({
-          type: LOAD_COMPANY_INFO + PC + UPDATE + FAIL,
+          type: GET_AFFILATES_LIST + SUCCESS,
+          // reqnum: res.reqnum,
+          // payload: {updatedData},
+        })
+      } catch (err){
+        console.log('err', err)
+        yield put({
+          type: GET_AFFILATES_LIST + FAIL,
         })
       }
     }
   }
 }
+
+/* Получение данных о предшедственнниках и приемниках */
+const loadAffilatesUlSaga = function * () {
+  while(true){
+    const action = yield take(GET_AFFILATES_LIST + SUCCESS)
+    if(action.payload.updatedData.founders_ul.length) {
+      yield all(action.payload.updatedData.founders_ul.map(item => {
+        if(item.inn) return spawn(getRequestAffiliatesUlSaga, item.inn, item)
+        else return item
+      }))
+    }else if(action.payload.updatedData.heads_ul.length) {
+      yield all(action.payload.updatedData.heads_ul.map(item => {
+        if(item.inn) return spawn(getRequestAffiliatesUlSaga, item.inn, item)
+        else return item
+      }))
+    }else if(action.payload.updatedData.share_holders_ul.length) {
+      yield all(action.payload.updatedData.share_holders_ul.map(item => {
+        if(item.inn) return spawn(getRequestAffiliatesUlSaga, item.inn, item)
+        else return item
+      }))
+    }
+  }
+}
+
+/* Получение данных о риск-факторах */
+const loadDigestListSaga = function * () {
+  while(true){
+    yield take(LOAD_COMPANY_INFO + UPDATE + SUCCESS)
+    const reqnum = state => state[moduleName].get('reqnum')
+    const storeReqnum = yield select(reqnum)
+    try {
+      yield put({
+        type: LOAD_DIGEST_LIST + START
+      })
+
+      /* Запрос данных для DigetsList */
+      const res = yield call(() => {
+        return fetch(
+          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+          { 
+            method: 'POST',
+            mode: 'cors',
+            credentials: 'include',
+            body : JSON.stringify({ 
+              type: 'digest',
+              reqnum: storeReqnum,
+              data: {}
+            }),
+          }
+        )
+        .then(res => {
+          if (res.ok) return res.json()
+          throw new TypeError("Данные о кампании не обновлены!")
+        })
+      })
+      
+      /* Получение данных из mock */
+      // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
+      
+      const digest = res.data
+      console.log("%cRES | LOAD DIGEST LIST", "color:white; background-color: green; padding: 0 5px", res)
+
+      yield put({
+        type: LOAD_DIGEST_LIST + SUCCESS,
+        payload: {digest},
+      })
+    } catch (err){
+      console.log('err', err)
+      yield put({
+        type: LOAD_DIGEST_LIST + FAIL,
+      })
+    }
+  }
+}
+
+/* Добавление нового риск-фактора в DigetsList */
+const addRiskFactorSaga = function * () {
+  while(true){
+    const action = yield take(ADD_RISK_FACTOR_IN_DIGEST_LIST)
+    const reqnum = state => state[moduleName].get('reqnum')
+    const storeReqnum = yield select(reqnum)
+    try {
+      yield put({
+        type: ADD_RISK_FACTOR_IN_DIGEST_LIST + START
+      })
+
+      /* Запрос на добавление нового риск-фактора  */
+      const res = yield call(() => {
+        return fetch(
+          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+          { 
+            method: 'POST',
+            mode: 'cors',
+            credentials: 'include',
+            body : JSON.stringify({ 
+              type: 'digest',
+              reqnum: storeReqnum,
+              data: {
+                ...action.payload
+              }
+            }),
+          }
+        )
+        .then(res => {
+          if (res.ok) return res.json()
+          throw new TypeError("Данные о кампании не обновлены!")
+        })
+      })
+      
+      /* Получение данных из mock */
+      // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
+      
+      const digest = res.data
+      console.log("%cRES | ADD RISK FACTOR IN DIGEST LIST", "color:white; background-color: green; padding: 0 5px", res)
+
+      yield put({
+        type: ADD_RISK_FACTOR_IN_DIGEST_LIST + SUCCESS,
+        payload: {digest},
+      })
+    } catch (err){
+      console.log('err', err)
+      yield put({
+        type: ADD_RISK_FACTOR_IN_DIGEST_LIST + FAIL,
+      })
+    }
+  }
+}
+
+/* Удаление риск-фактора в DigetsList */
+const deleteRiskFactorSaga = function * () {
+  while(true){
+    const action = yield take(DELETE_RISK_FACTOR_IN_DIGEST_LIST)
+    const reqnum = state => state[moduleName].get('reqnum')
+    const storeReqnum = yield select(reqnum)
+    try {
+      yield put({
+        type: DELETE_RISK_FACTOR_IN_DIGEST_LIST + START
+      })
+
+      /* Запрос на добавление нового риск-фактора  */
+      const res = yield call(() => {
+        return fetch(
+          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+          { 
+            method: 'POST',
+            mode: 'cors',
+            credentials: 'include',
+            body : JSON.stringify({ 
+              type: 'digest',
+              reqnum: storeReqnum,
+              data: {
+                ...action.payload
+              }
+            }),
+          }
+        )
+        .then(res => {
+          if (res.ok) return res.json()
+          throw new TypeError("Данные о кампании не обновлены!")
+        })
+      })
+      
+      /* Получение данных из mock */
+      // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
+      
+      const digest = res.data
+      console.log("%cRES | ADD RISK FACTOR IN DIGEST LIST", "color:white; background-color: green; padding: 0 5px", res)
+
+      yield put({
+        type: DELETE_RISK_FACTOR_IN_DIGEST_LIST + SUCCESS,
+        payload: {digest},
+      })
+    } catch (err){
+      console.log('err', err)
+      yield put({
+        type: DELETE_RISK_FACTOR_IN_DIGEST_LIST + FAIL,
+      })
+    }
+  }
+}
+
+const getRequestAffiliatesUlSaga = function * (inn, user) {
+  try {
+    yield put({
+      type: GET_AFFILATES_UL + START,
+      inn
+    })
+
+    const store = state => state[moduleName]
+    const storeState = yield select(store)
+    /* Запрос данных о приемниках */
+    const res = yield call(() => {
+      return fetch(
+        `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+        { 
+          method: 'POST',
+          mode: 'cors',
+          credentials: 'include',
+          body : JSON.stringify({ 
+            type: 'get_affilates',
+            reqnum: storeState.get('reqnum'),
+            data: {
+              code: inn
+            }
+          }),
+        }
+      )
+      .then(res => {
+        if (res.ok) return res.json()
+        throw new TypeError("Данные о кампании не обновлены!")
+      })
+    })
+    
+    /* Получение данных из mock */
+    // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
+    
+    const data = res.data
+    console.log("%cRES | GET CHECK AFFILATES UL", "color:white; background-color: green; padding: 0 5px", res)
+    
+    const companyRes = yield select(store)
+    const updatedData = yield trasform._updateManagmentULSource(companyRes.get("companyResponse"), data, user)
+
+    yield put({
+      type: GET_AFFILATES_UL + SUCCESS,
+      payload: {updatedData},
+      inn: inn
+    })
+  } catch (err){
+    console.log('err', err)
+    yield put({
+      type: GET_AFFILATES_UL + FAIL,
+      inn: inn
+    })
+  }
+}
+
+
 
 /* Идентификация пользователя */
 const identifyUserSaga = function * () {
@@ -368,14 +681,14 @@ const identifyUserSaga = function * () {
     const storeOgrn = yield select(companyState)
     const isIP = state => state[moduleName].get('isIp')
     const storeIsIP = yield select(isIP)
-    
+    console.log('ACTION', action)
     try {
       yield put({
         type: GET_IDENTIFY_USER + START,
-        loading: action.payload.inn
+        loading: action.payload.id
       })
       
-      /* Запрос на идентификацию проверяемого объекта 
+      /* Запрос на идентификацию проверяемого объекта */
       const res = yield call(() => {
         if(!storeIsIP) {
           return fetch(
@@ -392,7 +705,7 @@ const identifyUserSaga = function * () {
                 MiddleName: action.payload.middle_name,
                 SurName: action.payload.last_name,
                 INN: action.payload.inn,
-                OGRN: storeOgrn.ogrn
+                OGRN: action.payload.organisation ? action.payload.organisation.ogrn : storeOgrn.ogrn
               }
             }),
           }
@@ -424,21 +737,20 @@ const identifyUserSaga = function * () {
           if (res.ok) return res.json()
           throw new TypeError("Ошибка получения данных!")
         })
-      }}) */
+      }})
 
       /** Mock данные о Идентификационных данных */
-      yield delay(2000)
-      const res = {ip: true, data: dataMock.identifyInfoMock, reqnum: 666}
+      // yield delay(2000); const res = {ip: true, data: dataMock.identifyInfoMock, reqnum: 666}
 
       const data = res.data
-      console.log("%cRES | GET USER INFO", "color: white; background-color: green; padding: 0 5px;", res)
+      console.log("%cRES | GET USER INFO", "color:white; background-color: green; padding: 0 5px", res)
 
       if(data) {
         const updatedUserInfo = yield trasform._identifyUserInfo(storeOgrn, data, action.payload.inn)
         yield put({
           type: GET_IDENTIFY_USER + SUCCESS,
           payload: {updatedUserInfo},
-          loading: action.payload.inn
+          loading: action.payload.id
         })
       } else {
         throw new TypeError("Ошибка получения данных!")
@@ -447,68 +759,8 @@ const identifyUserSaga = function * () {
     } catch (err){
       yield put({
         type: GET_IDENTIFY_USER + FAIL,
-        error: action.payload.inn
+        error: action.payload.id
       })
-    }
-  }
-}
-
-/* Идентификация пользователя */
-const getCompanyStructureSaga = function * () {
-  while(true){
-    const action = yield take(LOAD_COMPANY_INFO + UPDATE + SUCCESS)
-    const store = state => state[moduleName].get('companyResponse')
-    const storeState = yield select(store)
-    if(!action.isIp) {
-      try {
-        yield put({
-          type: GET_COMPANY_STRUCTURE + START
-        })
-  
-        /* Запрос данных о приемниках 
-        const res = yield call(() => {
-          return fetch(
-            `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
-            { 
-              method: 'POST',
-              mode: 'cors',
-              credentials: 'include',
-              body : JSON.stringify({ 
-                type: 'company_structure',
-                reqnum: action.id,
-                data: {
-                  INN: storeState.inn,
-                  OGRN: storeState.ogrn
-                }
-              }),
-            }
-          )
-          .then(res => {
-            if (res.ok) return res.json()
-            throw new TypeError("Данные о кампании не обновлены!")
-          })
-        }) */
-        
-        /* Получение данных из mock */
-        yield delay(2000)
-        const res = {...dataMock.companySructRequestMock}
-        
-        const data = res.data
-        console.log("%cRES | COMPANY STRUCTURE", "color: white; background-color: green; padding: 0 5px;", res)
-        // const store = state => state[moduleName].get('companyResponse')
-        
-        // const companyResponse = yield select(store)
-        // const updatedData = yield trasform._get_company_info_companySource(companyResponse, { Successor : false, Predecessor: false})
-        yield put({
-          type: GET_COMPANY_STRUCTURE + SUCCESS,
-          // reqnum: res.reqnum,
-          payload: {data},
-        })
-      } catch (err){
-        yield put({
-          type: GET_COMPANY_STRUCTURE + FAIL,
-        })
-      }
     }
   }
 }
@@ -525,10 +777,10 @@ const identifyUserInfoSaga = function * () {
     try {
       yield put({
         type: GET_CROINFORM_USER_INFO + START,
-        loading: action.payload.INN
+        loading: action.loading
       })
 
-      /* Переключение на mock данные 
+      /* Переключение на mock данные */
       const res = yield call(() => {
         return fetch(
           `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -567,38 +819,41 @@ const identifyUserInfoSaga = function * () {
           if (res.ok) return res.json()
           throw new TypeError("Ошибка получения данных!")
         })
-      }) */
+      }) 
   
       /** Mock данные о Идентификационных данных */
-      yield delay(2000)
-      const res = {...dataMock.ipCroinformMock}
+      // yield delay(2000); const res = {ip: true, data: dataMock.ipCroinformMock.data, reqnum: 666}
 
-      const data = res.data
-      console.log("%cRES | GET CROINFORM USER INFO", "color: white; background-color: green; padding: 0 5px;", res)
+      const html = res.data.html
+      console.log("%cRES | GET CROINFORM USER INFO |", "color:white; background-color: green; padding: 0 5px", res)
 
       yield put({
         type: GET_CROINFORM_USER_INFO + SUCCESS,
-        payload: {data},
-        loading: action.payload.INN
+        payload: {html},
+        loading: action.loading
       })
     } catch (err){
       yield put({
         type: GET_CROINFORM_USER_INFO + FAIL,
-        error: action.payload.INN
+        error: action.loading
       })
     }
   }
 }
 
 export const saga = function * () {
-  yield spawn(getCompanyStructureSaga)
-  yield spawn(loadCompanyPCSaga)
-
-  yield all([
-    loadCompanyInfoSaga(),
-    identifyUserSaga(),
-    identifyUserInfoSaga()
-  ])
+  yield spawn(loadCompanyInfoSaga)
+  yield spawn(loadAffilatesListSaga)
+  yield spawn(loadAffilatesUlSaga)
+  yield spawn(loadDigestListSaga)
+  yield spawn(addRiskFactorSaga)
+  yield spawn(deleteRiskFactorSaga)
+  yield spawn(identifyUserSaga)
+  yield spawn(identifyUserInfoSaga)
+  // yield all([
+  //   identifyUserSaga(),
+  //   identifyUserInfoSaga()
+  // ])
 }
 
 export default openBillReducer
