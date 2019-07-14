@@ -2,8 +2,6 @@ import React from 'react'
 import { Tag } from 'antd'
 import { getDate, uuid } from '../../../../../../services/utils'
 
-
-
 /** Рендеринг header title физического лица */
 const LeaderHeader = props => {
   const { 

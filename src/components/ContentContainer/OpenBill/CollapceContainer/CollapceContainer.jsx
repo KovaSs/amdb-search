@@ -1,9 +1,10 @@
-import React, {useState} from "react";
+import React, {useState, Fragment} from "react";
 import { Row, Col, Spin, Collapse, Icon, Button } from 'antd';
 import PropTypes from "prop-types";
 import MainCompanyData from './MainCompanyData';
 import StopListData from './StopListData';
 import ManagmentContainer from './ManagmentContainer';
+import LoaderMessage from './LoaderMessage';
 import { trasform } from "../../../../services/utils";
 import "./collapce-container.scss";
 
@@ -11,11 +12,24 @@ const CollapceContainer = props => {
   const [addCheckUser, setAddCheckUser] = useState(false)
 
   const { Panel } = Collapse;
-  const {companySource, riskSource, riskSource: {arbiter}, requestLoading  } = props
+  const {companySource, riskSource, riskSource: {arbiter}, requestLoading, company  } = props
 
   /** Преобразование входящих данных из props */
   const fullOrganistionInfo = trasform._companySource(companySource)
   const riskInfo = trasform._riskSource(riskSource)
+
+  const renderAffiliatersULLoader = () => {
+    const AffilatesUl = requestLoading.get("getAffilatesUl").toJS()
+    const loadingArr = []
+    for (const key in AffilatesUl) {
+      loadingArr.push(
+        <Fragment key={key}>
+          { AffilatesUl[key].loading && <LoaderMessage company={AffilatesUl[key].name} loading={AffilatesUl[key].loading}/> }
+        </Fragment>
+      )
+    }
+    return loadingArr
+  }
 
   /** Стандартный функционал отслеживания активный панелей */
   const callback = key => {
@@ -65,6 +79,8 @@ const CollapceContainer = props => {
               >
                 { addCheckUser && <ManagmentContainer addUser={true} onSave={setAddCheckUser}/> }
                 <ManagmentContainer />
+                { requestLoading.get("getAffilatesList") && <LoaderMessage company={company.name} loading={requestLoading.get("getAffilatesList")}/> }
+                { renderAffiliatersULLoader() }
               </Panel>
             </Collapse>
           }
@@ -80,6 +96,7 @@ CollapceContainer.propTypes = {
   /** Данные о состоянии loaders */
   requestLoading: PropTypes.shape({
     companyMainInfo: PropTypes.bool, 
+    getAffilatesList: PropTypes.bool, 
     companyMainInfoUpdate: PropTypes.bool, 
     companyPCUpdate: PropTypes.bool
   }),

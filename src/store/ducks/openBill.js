@@ -2,7 +2,7 @@ import { Record, Map } from 'immutable'
 import { createSelector } from 'reselect'
 import { all, put, take, call, select, spawn } from 'redux-saga/effects'
 // import { delay } from 'redux-saga/effects'
-import { trasform } from "../../services/utils"
+import { trasform, getShortCompName } from "../../services/utils"
 // import { companyRes, identifyInfoMock, bicompactResMock, ipResMock, ipCroinformMock } from '../mock'
 import { companyRes } from '../mock'
 
@@ -110,17 +110,17 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
 
     case GET_AFFILATES_UL + START:
       return state
-      .setIn(['requestLoading', 'getAffilatesUl', action.inn], true)
-      .setIn(['errors', 'getAffilatesUl', action.inn], false)      
+      .setIn(['requestLoading', 'getAffilatesUl', action.loading.inn], {loading: true, name: action.loading.name})
+      .setIn(['errors', 'getAffilatesUl', action.loading.inn], {error: false, name: action.loading.name})      
     case GET_AFFILATES_UL + SUCCESS:
       return state
         .set('companyResponse', payload.updatedData)
-        .setIn(['requestLoading', 'getAffilatesUl', action.inn], false)
-        .setIn(['errors', 'getAffilatesUl', action.inn], false) 
+        .setIn(['requestLoading', 'getAffilatesUl', action.loading.inn], {loading: false, name: action.loading.name})
+        .setIn(['errors', 'getAffilatesUl', action.loading.inn], {error: false, name: action.loading.name}) 
     case GET_AFFILATES_UL + FAIL:
       return state
-        .setIn(['requestLoading', 'getAffilatesUl', action.inn], false)
-        .setIn(['errors', 'getAffilatesUl', action.inn], true)
+        .setIn(['requestLoading', 'getAffilatesUl', action.loading.inn], {loading: false, name: action.loading.name})
+        .setIn(['errors', 'getAffilatesUl', action.loading.inn], {error: true, name: action.loading.name})
 
     case GET_IDENTIFY_USER + START:
       return state
@@ -618,10 +618,11 @@ const deleteRiskFactorSaga = function * () {
 }
 
 const getRequestAffiliatesUlSaga = function * (inn, user) {
+  console.log('USER ->', user)
   try {
     yield put({
       type: GET_AFFILATES_UL + START,
-      inn
+      loading: {inn, name: getShortCompName(user.fullName)}
     })
 
     const store = state => state[moduleName]
@@ -661,13 +662,13 @@ const getRequestAffiliatesUlSaga = function * (inn, user) {
     yield put({
       type: GET_AFFILATES_UL + SUCCESS,
       payload: {updatedData},
-      inn: inn
+      loading: {inn, name: getShortCompName(user.fullName)}
     })
   } catch (err){
     console.log('err', err)
     yield put({
       type: GET_AFFILATES_UL + FAIL,
-      inn: inn
+      loading: {inn, name: getShortCompName(user.fullName)}
     })
   }
 }

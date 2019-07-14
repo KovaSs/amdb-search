@@ -144,5 +144,11 @@
       border: 1px solid #52c41a5c !important;
     }
   }
+
+  /* Сообщение о загрузке аффилированных лиц*/
+  .ant-alert.ant-alert-no-icon {
+    padding: 5px 15px;
+    margin-top: 5px;
+  }
 }
 
