@@ -235,7 +235,7 @@ export const getIdentifyUser = (ip, reqnum, action, storeOgrn) => {
   }
 }
 
-/** Полная проверка проверяемого лица */
+/** Полная получение данных из Croinform на проверяемое лицо */
 export const getIdentifyUserInfo = (reqnum, action, storeOgrn) => {
   return fetch(
     `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
