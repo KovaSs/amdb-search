@@ -35,7 +35,7 @@ const RenderEditedLeader = props => {
     <div className="leader-name-header">
       <span onClick={e => e.stopPropagation()} style={{marginRight: 10}}>
         <span className="leader-name-header_fio" >
-          <Badge count={user.fio.length ? user.fio.length : null }>
+          <Badge count={user.fio.length > 1 ? user.fio.length : null }>
             <AutoComplete
               size="small"
               key="last_name"
@@ -66,7 +66,7 @@ const RenderEditedLeader = props => {
           />
         </span>
         <span className="leader-name-header_position">
-          <Badge count={user.inn.length ? user.inn.length : null }>
+          <Badge count={user.inn.length > 1 ? user.inn.length : null }>
             <AutoComplete
               size="small"
               key="header-list-inn"

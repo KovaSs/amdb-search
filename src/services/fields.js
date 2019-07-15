@@ -1,4 +1,4 @@
-import {getDate, parsingFio} from './utils'
+import {getDate, parsingFio, sumTrans} from './utils'
 
 
 export const fieldsArr = [
@@ -103,7 +103,7 @@ export const fieldsArr = [
     try {
       if(!item) return 'Данные отсутствуют'
       // eslint-disable-next-line
-      return item.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1' + '\u200A')
+      return sumTrans(item)
     } catch (error) {
       console.log('Ошибка в преобразовании capital', item, error)
     }
@@ -172,7 +172,7 @@ export const fieldsArr = [
         return `${item.ListName.Id} / ${item.ListName.content}`
       }
     } catch (error) {
-      console.log('Ошибка в преобразовании arbiter', item, error)
+      console.log('Ошибка в преобразовании spark_spiski', item, error)
     }
   }},
 
@@ -298,9 +298,10 @@ export const fieldsArrIP = [
 
   {search: "OGRNIP", id: "ogrn", title: "ОГРН", data: ""},
 
-  {search: "CompanyType", id: "company_type", title: "Тип компании", data: "", func: item =>  {
+  {search: "CompanySizeStr", id: "company_type", title: "Тип компании", data: "", func: item =>  {
     if(!item) return 'Данные отсутствуют'
-    return `${item.Code} / ${item.Name}`
+    else if (item === " / ") return ""
+    else return `${item.Code} / ${item.Name}`
   }},
 
   {search: "DateReg", id: "registration_date", title: "Дата регистрации", data: "", func: (item = 'Данные отсутствуют') => item},
@@ -331,14 +332,7 @@ export const fieldsArrIP = [
     return item.Name
   }},
 
-  {search: "PersonsWithoutWarrant", id: "heads", title: "Руководители", data: "", func: item => {
-    if(!item) return ['']
-      const { Person, ActualDate, Person: {Position} } = item
-      const first_name = Person.FIO.split(' ')[1]
-      const middle_name = Person.FIO.split(' ')[2]
-      const last_name = Person.FIO.split(' ')[0]
-      return [{first_name, middle_name, last_name, ActualDate, inn: Person.INN || 'не найден', position: Position.charAt(0).toUpperCase()+Position.substr(1).toLowerCase()}]
-  }},
+  {search: "", id: "heads", title: "Руководители", data: ""},
 
   {search: "", id: "isponlit_proizvodstva", title: "Исполнительные производства", data: ""},
   
@@ -346,5 +340,23 @@ export const fieldsArrIP = [
 
   {search: "", id: "fns", title: "ФНС", data: ""},
 
-  {search: "", id: "arbiter", title: "Арбитраж", data: ""}
+  {search: "arbitrazh", id: "arbiter", title: "Арбитраж", data: "", func: item => {
+    try {
+      if(!item) return ''
+      const arbiter = {
+        "istec":{
+          "year": item.istec[0],
+          "year3": item.istec[1]
+        },
+        "otvet":{
+          "year": item.otvetchik[0],
+          "year3": item.otvetchik[0]
+        },
+        "other": item.prochee ? item.prochee : ""
+      }
+      return arbiter
+    } catch (error) {
+      console.log('Ошибка в преобразовании arbiter', item, error)
+    }
+  }},
 ]

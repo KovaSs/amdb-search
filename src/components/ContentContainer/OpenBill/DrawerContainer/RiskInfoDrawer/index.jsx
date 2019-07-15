@@ -107,7 +107,6 @@ class RiskInfoDrawer extends Component {
 
     const Btn = props => {
       const deleteFactor = () => {
-        console.log('props.factor', props.factor)
         deleteRiskFactor({ delete: props.factor.id })
       }
       return <Button  onClick={deleteFactor} > Удалить </Button>

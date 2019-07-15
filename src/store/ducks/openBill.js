@@ -5,6 +5,19 @@ import { all, put, take, call, select, spawn } from 'redux-saga/effects'
 import { trasform, getShortCompName } from "../../services/utils"
 // import { companyRes, identifyInfoMock, bicompactResMock, ipResMock, ipCroinformMock } from '../mock'
 import { companyRes } from '../mock'
+import { 
+  getLoadCompanyInfo,
+  getStopListFlBirthdate,
+  getAffilatesList,
+  getStopListFlInn,
+  getDigestList,
+  getAddRiskFactor,
+  getIdentifyUser,
+  getDeleteRiskFactor,
+  getIdentifyUserInfo,
+  getRequestAffiliatesUl,
+  getStopListFlPassport
+} from '../../services/api'
 
 /* Mock данные */
 // const dataMock = { companyRes, identifyInfoMock, bicompactResMock, ipResMock, ipCroinformMock }
@@ -23,6 +36,9 @@ export const GET_CROINFORM_USER_INFO = `${prefix}/GET_CROINFORM_USER_INFO`
 export const ADD_USER_TO_CHECK_LIST = `${prefix}/ADD_USER_TO_CHECK_LIST`
 export const GET_AFFILATES_LIST = `${prefix}/GET_AFFILATES_LIST`
 export const GET_AFFILATES_UL = `${prefix}/GET_AFFILATES_UL`
+export const GET_STOP_LISTS_BIRTHDATE_FL = `${prefix}/GET_STOP_LISTS_BIRTHDATE_FL`
+export const GET_STOP_LISTS_PASSPORT_FL = `${prefix}/GET_STOP_LISTS_PASSPORT_FL`
+export const GET_STOP_LISTS_INN_FL = `${prefix}/GET_STOP_LISTS_INN_FL`
 export const LOAD_DIGEST_LIST = `${prefix}/LOAD_DIGEST_LIST`
 export const ADD_RISK_FACTOR_IN_DIGEST_LIST = `${prefix}/ADD_RISK_FACTOR_IN_DIGEST_LIST`
 export const DELETE_RISK_FACTOR_IN_DIGEST_LIST = `${prefix}/DELETE_RISK_FACTOR_IN_DIGEST_LIST`
@@ -317,28 +333,10 @@ const loadCompanyInfoSaga = function * () {
       yield put({
         type: LOAD_COMPANY_INFO + UPDATE + START
       })
-  
+      // eq=2&method=mainData&startDate=2019-06-14&endDate=2019-07-14
       /* Переключение на mock данные */
-      const res = yield call(() => {
-        return fetch(
-          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
-          { 
-            method: 'POST',
-            mode: 'cors',
-            credentials: 'include',
-            body : JSON.stringify({ 
-              type: 'get_company_info',
-              data: {
-                code: action.inn
-              }
-            }),
-          }
-        )
-        .then(res => {
-          if (res.ok) return res.json()
-          throw new TypeError("Данные о кампании не обновлены!")
-        })
-      }) 
+
+      const res = yield call(getLoadCompanyInfo, action.inn)
 
       /* Mock данные о ЮЛ */
       // yield delay(2000); const res = {...dataMock.bicompactResMock}
@@ -350,7 +348,7 @@ const loadCompanyInfoSaga = function * () {
       const store = state => state[moduleName].get('companyResponse')
       const companyResponse = yield select(store)
 
-      if(res.ip) {
+      if(res.data.ip) {
         const updatedData = yield trasform._companySource_ip(companyResponse, data)
         yield put({
           type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,
@@ -390,27 +388,7 @@ const loadAffilatesListSaga = function * () {
         })
   
         /* Запрос данных о приемниках */
-        const res = yield call(() => {
-          return fetch(
-            `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
-            { 
-              method: 'POST',
-              mode: 'cors',
-              credentials: 'include',
-              body : JSON.stringify({ 
-                type: 'get_affilates',
-                reqnum: action.id,
-                data: {
-                  code: storeInn.inn
-                }
-              }),
-            }
-          )
-          .then(res => {
-            if (res.ok) return res.json()
-            throw new TypeError("Данные о кампании не обновлены!")
-          })
-        })
+        const res = yield call(getAffilatesList, action.id, storeInn.inn)
         
         /* Получение данных из mock */
         // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
@@ -460,6 +438,110 @@ const loadAffilatesUlSaga = function * () {
   }
 }
 
+/* Получение данных по БД стоп-листов */
+const loadStopListDataSaga = function * () {
+  while(true){
+    const action = yield take(GET_CROINFORM_USER_INFO)
+    const store = state => state[moduleName].get('companyResponse')
+    const storeState = yield select(store)
+    const user = storeState.heads.filter(item => item.id === action.loading)[0]
+    // console.log('%cUSER', "background-color: red;", user)
+    // console.log('%cACTION', "background-color: red;", action)
+    if(user.identifyInfo.birthday.length) {
+      yield all(user.identifyInfo.birthday.map(birthdate => {
+        if(birthdate) return spawn(getStopListFlBirthdateSaga, birthdate, user)
+        else return birthdate
+      }))
+    }
+    yield spawn(getStopListFlPassportSaga, action.payload)
+    yield spawn(getStopListFlInnSaga, user, action.payload.INN)
+  }
+}
+
+/* Поиск пользователя в стоп-листах по Дате рождения */
+const getStopListFlBirthdateSaga = function * (birthdate, user) {
+  try {
+    yield put({
+      type: GET_STOP_LISTS_BIRTHDATE_FL + START,
+      loading: `${user.id}-${birthdate}`
+    })
+
+    /* Запрос данных о стоп-листах */
+    const res = yield call(getStopListFlBirthdate, user, birthdate)
+
+    const data = res.data
+    console.log("%cRES | GET STOP LISTS BIRTHDATE FL", "color:white; background-color: green; padding: 0 5px", res)
+
+    yield put({
+      type: GET_STOP_LISTS_BIRTHDATE_FL + SUCCESS,
+      payload: {data},
+      loading: `${user.id}-${birthdate}`
+    })
+  } catch (err){
+    console.log('err', err)
+    yield put({
+      type: GET_STOP_LISTS_BIRTHDATE_FL + FAIL,
+      loading: `${user.id}-${birthdate}`
+    })
+  }
+}
+
+/* Поиск пользователя в стоп-листах по паспорту */
+const getStopListFlPassportSaga = function * (user) {
+  try {
+    yield put({
+      type: GET_STOP_LISTS_PASSPORT_FL + START,
+      loading: `${user.id}-${user.Seria} ${user.Number}`
+    })
+
+    /* Запрос данных о стоп-листах */
+    const res = yield call(getStopListFlPassport, user)
+    
+    const data = res.data
+    console.log("%cRES | GET STOP LISTS PASSPORT FL", "color:white; background-color: green; padding: 0 5px", res)
+
+    yield put({
+      type: GET_STOP_LISTS_PASSPORT_FL + SUCCESS,
+      payload: {data},
+      loading: `${user.id}-${user.Seria} ${user.Number}`
+    })
+  } catch (err){
+    console.log('err', err)
+    yield put({
+      type: GET_STOP_LISTS_PASSPORT_FL + FAIL,
+      loading: `${user.id}-${user.Seria} ${user.Number}`
+    })
+  }
+}
+
+/* Поиск пользователя в стоп-листах по паспорту */
+const getStopListFlInnSaga = function * (user, inn) {
+  try {
+    yield put({
+      type: GET_STOP_LISTS_INN_FL + START,
+      loading: `${user.id}-${inn}`
+    })
+
+    /* Запрос данных о стоп-листах */
+    const res = yield call(getStopListFlInn, inn)
+    
+    const data = res.data
+    console.log("%cRES | GET STOP LISTS PASSPORT FL", "color:white; background-color: green; padding: 0 5px", res)
+
+    yield put({
+      type: GET_STOP_LISTS_INN_FL + SUCCESS,
+      payload: {data},
+      loading: `${user.id}-${inn}`
+    })
+  } catch (err){
+    console.log('err', err)
+    yield put({
+      type: GET_STOP_LISTS_INN_FL + FAIL,
+      loading: `${user.id}-${inn}`
+    })
+  }
+}
+
 /* Получение данных о риск-факторах */
 const loadDigestListSaga = function * () {
   while(true){
@@ -472,25 +554,7 @@ const loadDigestListSaga = function * () {
       })
 
       /* Запрос данных для DigetsList */
-      const res = yield call(() => {
-        return fetch(
-          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
-          { 
-            method: 'POST',
-            mode: 'cors',
-            credentials: 'include',
-            body : JSON.stringify({ 
-              type: 'digest',
-              reqnum: storeReqnum,
-              data: {}
-            }),
-          }
-        )
-        .then(res => {
-          if (res.ok) return res.json()
-          throw new TypeError("Данные о кампании не обновлены!")
-        })
-      })
+      const res = yield call(getDigestList, storeReqnum)
       
       /* Получение данных из mock */
       // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
@@ -523,27 +587,7 @@ const addRiskFactorSaga = function * () {
       })
 
       /* Запрос на добавление нового риск-фактора  */
-      const res = yield call(() => {
-        return fetch(
-          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
-          { 
-            method: 'POST',
-            mode: 'cors',
-            credentials: 'include',
-            body : JSON.stringify({ 
-              type: 'digest',
-              reqnum: storeReqnum,
-              data: {
-                ...action.payload
-              }
-            }),
-          }
-        )
-        .then(res => {
-          if (res.ok) return res.json()
-          throw new TypeError("Данные о кампании не обновлены!")
-        })
-      })
+      const res = yield call(getAddRiskFactor, storeReqnum, action.payload)
       
       /* Получение данных из mock */
       // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
@@ -576,27 +620,7 @@ const deleteRiskFactorSaga = function * () {
       })
 
       /* Запрос на добавление нового риск-фактора  */
-      const res = yield call(() => {
-        return fetch(
-          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
-          { 
-            method: 'POST',
-            mode: 'cors',
-            credentials: 'include',
-            body : JSON.stringify({ 
-              type: 'digest',
-              reqnum: storeReqnum,
-              data: {
-                ...action.payload
-              }
-            }),
-          }
-        )
-        .then(res => {
-          if (res.ok) return res.json()
-          throw new TypeError("Данные о кампании не обновлены!")
-        })
-      })
+      const res = yield call(getDeleteRiskFactor, storeReqnum, action.payload)
       
       /* Получение данных из mock */
       // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
@@ -618,7 +642,6 @@ const deleteRiskFactorSaga = function * () {
 }
 
 const getRequestAffiliatesUlSaga = function * (inn, user) {
-  console.log('USER ->', user)
   try {
     yield put({
       type: GET_AFFILATES_UL + START,
@@ -627,28 +650,9 @@ const getRequestAffiliatesUlSaga = function * (inn, user) {
 
     const store = state => state[moduleName]
     const storeState = yield select(store)
+
     /* Запрос данных о приемниках */
-    const res = yield call(() => {
-      return fetch(
-        `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
-        { 
-          method: 'POST',
-          mode: 'cors',
-          credentials: 'include',
-          body : JSON.stringify({ 
-            type: 'get_affilates',
-            reqnum: storeState.get('reqnum'),
-            data: {
-              code: inn
-            }
-          }),
-        }
-      )
-      .then(res => {
-        if (res.ok) return res.json()
-        throw new TypeError("Данные о кампании не обновлены!")
-      })
-    })
+    const res = yield call(getRequestAffiliatesUl, storeState.get('reqnum'), inn)
     
     /* Получение данных из mock */
     // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
@@ -673,8 +677,6 @@ const getRequestAffiliatesUlSaga = function * (inn, user) {
   }
 }
 
-
-
 /* Идентификация пользователя */
 const identifyUserSaga = function * () {
   while(true){
@@ -685,7 +687,6 @@ const identifyUserSaga = function * () {
     const storeOgrn = yield select(companyState)
     const isIP = state => state[moduleName].get('isIp')
     const storeIsIP = yield select(isIP)
-    console.log('ACTION', action)
     try {
       yield put({
         type: GET_IDENTIFY_USER + START,
@@ -693,55 +694,7 @@ const identifyUserSaga = function * () {
       })
       
       /* Запрос на идентификацию проверяемого объекта */
-      const res = yield call(() => {
-        if(!storeIsIP) {
-          return fetch(
-          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
-          { 
-            method: 'POST',
-            mode: 'cors',
-            credentials: 'include',
-            body : JSON.stringify({ 
-              type: 'identify_user',
-              reqnum: storeReqnum,
-              data: {
-                FirstName: action.payload.first_name,
-                MiddleName: action.payload.middle_name,
-                SurName: action.payload.last_name,
-                INN: action.payload.inn,
-                OGRN: action.payload.organisation ? action.payload.organisation.ogrn : storeOgrn.ogrn
-              }
-            }),
-          }
-        )
-        .then(res => {
-          if (res.ok) return res.json()
-          throw new TypeError("Ошибка получения данных!")
-        })
-      } else {
-        return fetch(
-          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
-          { 
-            method: 'POST',
-            mode: 'cors',
-            credentials: 'include',
-            body : JSON.stringify({ 
-              type: 'identify_user',
-              reqnum: storeReqnum,
-              data: {
-                FirstName: action.payload.first_name,
-                MiddleName: action.payload.middle_name,
-                SurName: action.payload.last_name,
-                INNIP: action.payload.inn,
-              }
-            }),
-          }
-        )
-        .then(res => {
-          if (res.ok) return res.json()
-          throw new TypeError("Ошибка получения данных!")
-        })
-      }})
+      const res = yield call(getIdentifyUser, storeIsIP, storeReqnum, action, storeOgrn)
 
       /** Mock данные о Идентификационных данных */
       // yield delay(2000); const res = {ip: true, data: dataMock.identifyInfoMock, reqnum: 666}
@@ -778,6 +731,8 @@ const identifyUserInfoSaga = function * () {
     const companyState = state => state[moduleName].get('companyResponse')
     const storeOgrn = yield select(companyState)
 
+    console.log('action', action)
+
     try {
       yield put({
         type: GET_CROINFORM_USER_INFO + START,
@@ -785,46 +740,8 @@ const identifyUserInfoSaga = function * () {
       })
 
       /* Переключение на mock данные */
-      const res = yield call(() => {
-        return fetch(
-          `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
-          { 
-            method: 'POST',
-            mode: 'cors',
-            credentials: 'include',
-            body : JSON.stringify({ 
-              type: 'request_user',
-              reqnum: storeReqnum,
-              data: {
-                OGRN: storeOgrn.ogrn,
-                INN: action.payload.INN,
-                FirstName: action.payload.FirstName,
-                FirstNameArch: action.payload.FirstNameArch,
-                MiddleName: action.payload.MiddleName,
-                SurName:action.payload.SurName,
-                DateOfBirth: action.payload.DateOfBirth,
-                Seria: action.payload.Seria,
-                Number: action.payload.Number,
-                RegionExp: action.payload.RegionExp,
-                CityExp: action.payload.CityExp,
-                StreetExp: action.payload.StreetExp,
-                HouseExp: action.payload.HouseExp,
-                BuildExp: action.payload.BuildExp,
-                BuildingExp: action.payload.BuildingExp,
-                FlatExp: action.payload.FlatExp,
-                AFF: 1,
-                Exp: 1,
-                ExpArch: 1
-              }
-            }),
-          }
-        )
-        .then(res => {
-          if (res.ok) return res.json()
-          throw new TypeError("Ошибка получения данных!")
-        })
-      }) 
-  
+      const res = yield call(getIdentifyUserInfo, storeReqnum, action, storeOgrn)
+
       /** Mock данные о Идентификационных данных */
       // yield delay(2000); const res = {ip: true, data: dataMock.ipCroinformMock.data, reqnum: 666}
 
@@ -854,10 +771,7 @@ export const saga = function * () {
   yield spawn(deleteRiskFactorSaga)
   yield spawn(identifyUserSaga)
   yield spawn(identifyUserInfoSaga)
-  // yield all([
-  //   identifyUserSaga(),
-  //   identifyUserInfoSaga()
-  // ])
+  yield spawn(loadStopListDataSaga)
 }
 
 export default openBillReducer

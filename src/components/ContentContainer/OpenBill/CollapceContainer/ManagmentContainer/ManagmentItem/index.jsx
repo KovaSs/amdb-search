@@ -156,7 +156,6 @@ export class ManagmentItem extends PureComponent {
         if(openPanel) {
           e.stopPropagation();
         }
-        console.log('user', user)
         identifyUser({
           ...user,
           first_name: userSelected.FirstName ? userSelected.FirstName : user.first_name,
@@ -343,8 +342,6 @@ export class ManagmentItem extends PureComponent {
 
   // Измененение данных в RenderEditedHeader по onSelect
   _handleSelectOption = (value, option) =>  this.setState(({ userSelected }) => {
-    console.log('value', value)
-    console.log('option', option)
     if(option.props.text === "SurName") {
       const FIO = parsingFio(option.props.title)
       return { 
@@ -365,9 +362,6 @@ export class ManagmentItem extends PureComponent {
     const passArr = passport.split(" ")
     const Number = passArr.pop()
     const Seria = passArr.pop()
-    // console.log('Серия', Seria)
-    // console.log('Номер', Number)
-    // console.log('----------------------')
     return { Seria, Number }
   }
 
@@ -414,15 +408,6 @@ export class ManagmentItem extends PureComponent {
     if (p.length) CityExp = p.pop();
     if (p.length) RegionExp = region.filter(item => item.title.toUpperCase().indexOf(p[0].toUpperCase()) !== -1)[0]
     if(!RegionExp) RegionExp = {value: "", title: ""}
-    // console.log('Искодный адрес', address) // Регион
-    // console.log('RegionExp', RegionExp ? RegionExp.value : RegionExp) // Регион
-    // console.log('CityExp', CityExp) // Нас. пункт
-    // console.log('StreetExp', StreetExp) // Улица
-    // console.log('HouseExp', HouseExp) // Дом
-    // console.log('BuildExp', BuildExp) // Корп
-    // console.log('BuildingExp', BuildingExp) // Стр
-    // console.log('FlatExp', FlatExp) // Квартира
-    // console.log('----------------------')
     this.setState(({parseAddress}) => ({
       parseAddress: {
         CityExp, // Нас. пункт

@@ -64,9 +64,6 @@ const CompanyHistoryInfoDrawer = props => {
     const BtnExtra = ({user}) => {
       const identifyUserInfo = e => {
         e.stopPropagation()
-        console.log('Добаление на проверку', user)
-        // const { identifyUser } = props
-        // identifyUser(user)
       }
       return <Icon title="Добавить на проверку" className='heads-search-btn' type="user-add" onClick={ (e) => identifyUserInfo(e) }/>
     }

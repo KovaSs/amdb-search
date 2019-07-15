@@ -33,7 +33,6 @@ class AddNewUser extends Component {
     const BtnExtra = ({user}) => {
       const isUserTrue = user.first_name && user.inn && user.first_name && user.last_name && user.middle_name && user.position && user.organisation
       const addUserInCheckList = e => {
-        console.log('isUserTrue', !!isUserTrue)
         e.stopPropagation();
         addUser({...user, ActualDate: getDate(Date.now())})
         onSave(false)

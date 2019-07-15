@@ -40,7 +40,6 @@ const CollapceContainer = props => {
     const addUser = e => {
       e.stopPropagation();
       setAddCheckUser(!addCheckUser)
-      console.log('add user')
     };
 
     return (
