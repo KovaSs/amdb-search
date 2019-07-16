@@ -275,3 +275,29 @@ export const getIdentifyUserInfo = (reqnum, action, storeOgrn) => {
     throw new TypeError("Ошибка получения данных!")
   })
 }
+
+/** Полная получение данных из Croinform на проверяемое лицо */
+export const getFsspInfo = (reqnum, action) => {
+  return fetch(
+    `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+    { 
+      method: 'POST',
+      mode: 'cors',
+      credentials: 'include',
+      body : JSON.stringify({ 
+        type: 'fssp',
+        reqnum: reqnum,
+        data: {
+          FirstName: action.payload.FirstName,
+          MiddleName: action.payload.MiddleName,
+          SurName:action.payload.SurName,
+          DateOfBirth: action.payload.DateOfBirth,
+        }
+      }),
+    }
+  )
+  .then(res => {
+    if (res.ok) return res.json()
+    throw new TypeError("Ошибка получения данных!")
+  })
+}

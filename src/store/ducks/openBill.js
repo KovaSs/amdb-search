@@ -16,7 +16,8 @@ import {
   getDeleteRiskFactor,
   getIdentifyUserInfo,
   getRequestAffiliatesUl,
-  getStopListFlPassport
+  getStopListFlPassport,
+  getFsspInfo
 } from '../../services/api'
 
 /* Mock данные */
@@ -42,6 +43,7 @@ export const GET_STOP_LISTS_INN_FL = `${prefix}/GET_STOP_LISTS_INN_FL`
 export const LOAD_DIGEST_LIST = `${prefix}/LOAD_DIGEST_LIST`
 export const ADD_RISK_FACTOR_IN_DIGEST_LIST = `${prefix}/ADD_RISK_FACTOR_IN_DIGEST_LIST`
 export const DELETE_RISK_FACTOR_IN_DIGEST_LIST = `${prefix}/DELETE_RISK_FACTOR_IN_DIGEST_LIST`
+export const GET_FSSP_INFO = `${prefix}/GET_FSSP_INFO`
 
 export const START = '_START'
 export const SUCCESS = '_SUCCESS'
@@ -158,7 +160,7 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
         .setIn(['errors', 'croinformRequest', action.loading], false)
     case GET_CROINFORM_USER_INFO + SUCCESS:
       return state
-        .setIn(['croinformResponse', action.loading], payload.html)
+        .setIn(['croinformResponse', action.loading], payload)
         .setIn(['requestLoading', 'croinformRequest', action.loading], false)
         .setIn(['errors', 'croinformRequest', action.loading], false) 
     case GET_CROINFORM_USER_INFO + FAIL:
@@ -310,8 +312,8 @@ export const decodedMainCompanySource = createSelector(
 )
 export const decodedRiskSource = createSelector(
   companyResSelector, (companyResponse) => {
-    const { arbiter, fns, sanctions, isponlit_proizvodstva, spiski, spark_spiski } = companyResponse
-    const riskSource = { arbiter, fns, sanctions, isponlit_proizvodstva, spiski, spark_spiski }
+    const { arbiter, fns, sanctions, isponlit_proizvodstva, spiski, spark_spiski, arbiter_other } = companyResponse
+    const riskSource = { arbiter, fns, sanctions, isponlit_proizvodstva, spiski, spark_spiski, arbiter_other }
     return riskSource
   }
 )
@@ -443,6 +445,7 @@ const loadStopListDataSaga = function * () {
   while(true){
     const action = yield take(GET_CROINFORM_USER_INFO)
     const store = state => state[moduleName].get('companyResponse')
+    const storeReqnum = state => state[moduleName].get('reqnum')
     const storeState = yield select(store)
     const user = storeState.heads.filter(item => item.id === action.loading)[0]
     // console.log('%cUSER', "background-color: red;", user)
@@ -455,6 +458,7 @@ const loadStopListDataSaga = function * () {
     }
     yield spawn(getStopListFlPassportSaga, action.payload)
     yield spawn(getStopListFlInnSaga, user, action.payload.INN)
+    yield spawn(getFsspInfoSaga, yield select(storeReqnum), action, user)
   }
 }
 
@@ -538,6 +542,34 @@ const getStopListFlInnSaga = function * (user, inn) {
     yield put({
       type: GET_STOP_LISTS_INN_FL + FAIL,
       loading: `${user.id}-${inn}`
+    })
+  }
+}
+
+/* Поиск пользователя в стоп-листах по паспорту */
+const getFsspInfoSaga = function * (reqnum, action, user) {
+  try {
+    yield put({
+      type: GET_FSSP_INFO + START,
+      loading: user.id
+    })
+
+    /* Запрос данных о стоп-листах */
+    const res = yield call(getFsspInfo, reqnum, action)
+    
+    const data = res.data
+    console.log("%cRES | GET FSSP INFO", "color:white; background-color: green; padding: 0 5px", res)
+
+    yield put({
+      type: GET_FSSP_INFO + SUCCESS,
+      payload: {data},
+      loading: user.id
+    })
+  } catch (err){
+    console.log('err', err)
+    yield put({
+      type: GET_FSSP_INFO + FAIL,
+      loading: user.id
     })
   }
 }
@@ -642,10 +674,11 @@ const deleteRiskFactorSaga = function * () {
 }
 
 const getRequestAffiliatesUlSaga = function * (inn, user) {
+  console.log('user', user)
   try {
     yield put({
       type: GET_AFFILATES_UL + START,
-      loading: {inn, name: getShortCompName(user.fullName)}
+      loading: {inn, name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name)}
     })
 
     const store = state => state[moduleName]
@@ -666,13 +699,13 @@ const getRequestAffiliatesUlSaga = function * (inn, user) {
     yield put({
       type: GET_AFFILATES_UL + SUCCESS,
       payload: {updatedData},
-      loading: {inn, name: getShortCompName(user.fullName)}
+      loading: {inn, name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name)}
     })
   } catch (err){
     console.log('err', err)
     yield put({
       type: GET_AFFILATES_UL + FAIL,
-      loading: {inn, name: getShortCompName(user.fullName)}
+      loading: {inn, name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name)}
     })
   }
 }
@@ -746,11 +779,13 @@ const identifyUserInfoSaga = function * () {
       // yield delay(2000); const res = {ip: true, data: dataMock.ipCroinformMock.data, reqnum: 666}
 
       const html = res.data.html
+      const lists = res.data.lists
+      const vector = res.data.parse_ci_request.vektor_fl
       console.log("%cRES | GET CROINFORM USER INFO |", "color:white; background-color: green; padding: 0 5px", res)
 
       yield put({
         type: GET_CROINFORM_USER_INFO + SUCCESS,
-        payload: {html},
+        payload: {html, lists, vector},
         loading: action.loading
       })
     } catch (err){

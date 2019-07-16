@@ -31,6 +31,7 @@ const MainCompanyData = ({fields, loading}) => {
       item.id !== "sanctions"  && 
       item.id !== "inn"  && 
       item.id !== "spiski"  && 
+      item.id !== "arbiter_other"  && 
       item.id !== "spark_spiski"  && 
       item.id !== "ogrn"  && 
       item.id !== "isponlit_proizvodstva"  && 

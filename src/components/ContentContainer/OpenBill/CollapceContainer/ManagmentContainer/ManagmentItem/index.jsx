@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { union } from "lodash";
 import LeaderHeader from "../LeaderHeader";
 import LeaderEditedHeader from "../LeaderEditedHeader";
-import {region, parsingFio} from "../../../../../../services/utils";
+import {region, parsingFio, parsingPassport} from "../../../../../../services/utils";
 import CroinformDrawer from "../../../DrawerContainer/CroinformDrawer";
 
 export class ManagmentItem extends PureComponent {
@@ -106,8 +106,8 @@ export class ManagmentItem extends PureComponent {
       MiddleName: userSelected.fio ? parsingFio(userSelected.fio).MiddleName : item.middle_name,
       SurName: userSelected.fio ? parsingFio(userSelected.fio).SurName : item.last_name,
       DateOfBirth: userSelected.birthday, 
-      Seria: this.parsingSelectPassport(userSelected.passport).Seria,
-      Number: this.parsingSelectPassport(userSelected.passport).Number,
+      Seria: parsingPassport(userSelected.passport).Seria,
+      Number: parsingPassport(userSelected.passport).Number,
 
       RegionExp: parseAddress.RegionExp, 
       CityExp: parseAddress.CityExp, 
@@ -135,7 +135,7 @@ export class ManagmentItem extends PureComponent {
   /* Рендеринг физического лица */
   renderFoulderFlItem = (item, key, id) => {
     const { Item: DescriptionsItem } = Descriptions;
-    const { identifyUser, identifyUserloading, croinformRequestloading, companyName } = this.props;
+    const { identifyUser, identifyUserloading, croinformRequestloading, companyName, croinformRes } = this.props;
     const { edited, userSelected, openPanel, user } = this.state;
     const { Panel } = Collapse;
 
@@ -270,8 +270,10 @@ export class ManagmentItem extends PureComponent {
           <LeaderEditedHeader 
             user={user}
             userSelected={userSelected}
-            item={item} 
+            item={item}
+            identifyUserloading={identifyUserloading}
             companyName={companyName}
+            croinformRes={croinformRes}
             onAction = {{
               handleSelectOption: this._handleSelectOption,
               handleChangeInn: this._handleChangeInn,
@@ -282,6 +284,7 @@ export class ManagmentItem extends PureComponent {
           /> :
           <LeaderHeader 
             item={item}
+            croinformRes={croinformRes}
             userSelected={userSelected}
             companyName={companyName} 
           />
@@ -357,14 +360,6 @@ export class ManagmentItem extends PureComponent {
     }
   })
 
-  /* Парсинг Паспорта */
-  parsingSelectPassport = passport => {
-    const passArr = passport.split(" ")
-    const Number = passArr.pop()
-    const Seria = passArr.pop()
-    return { Seria, Number }
-  }
-
   /* Парсинг адреса */
   parsingSelectAddress = address => {
     if(!address) return this.setState(({parseAddress}) => ({
@@ -431,7 +426,7 @@ export class ManagmentItem extends PureComponent {
 
     // Изменение state через onChange
     const handleChangeBirthday = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, birthday: value } }))
-    const handleChangePassport = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, passport: passportMask(value) } }))
+    const handleChangePassport = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, passport: value ? passportMask(value) : value } }))
     // Изменение распарсенного адреса
     const handleChangeAddressRegionExp = value =>  this.setState(({ parseAddress }) => ( { parseAddress: { ...parseAddress, RegionExpText: value } }))
     const handleChangeAddressCityExp = e => { const value = e.target.value; return this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, CityExp: value} })) }

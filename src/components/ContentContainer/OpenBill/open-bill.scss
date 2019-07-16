@@ -68,10 +68,10 @@
     margin: 2rem 4rem;
     &__organisation {
       &-info {
+        border-bottom: 1px solid #e8e8e8;
         &:last-child {
           border-bottom: none;
         }
-        border-bottom: 1px solid #e8e8e8;
         .lable {
           text-align: left;
           font-weight: bold;

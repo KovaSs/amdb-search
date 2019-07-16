@@ -123,9 +123,9 @@ export const fieldsArr = [
 
   {search: "FailureScoreStr", id: "failure_score", title: "Индекс финансового риска", data: ""},
   
-  {search: "", id: "isponlit_proizvodstva", title: "Исполнительные производства", data: ""},
+  {search: "ispolnitelnye_proizvodstva", id: "isponlit_proizvodstva", title: "Исполнительные производства", data: ""},
   
-  {search: "", id: "sanctions", title: "Санкции", data: ""},
+  {search: "sankcii", id: "sanctions", title: "Санкции", data: ""},
 
   {search: "fns", id: "fns", title: "ФНС", data: "", func: item => {
     try {
@@ -159,6 +159,8 @@ export const fieldsArr = [
       console.log('Ошибка в преобразовании arbiter', item, error)
     }
   }},
+
+  {search: "", id: "arbiter_other", title: "Арбитраж прочее", data: ""},
 
   {search: "spiski", id: "spiski", title: "Найденов списках", data: ""},
 
@@ -287,7 +289,16 @@ export const fieldsArr = [
     } catch (error) {
       console.log('Ошибка в преобразовании leaders_list', item, error)
     }
-  }}
+  }},
+
+  {search: "Sex", id: "sex", title: "Пол", data: "", func: item => {
+    if(!item.Name) return 'Данные отсутствуют'
+    return item.Name
+  }},
+
+  {search: "BirthDate", id: "birthdate", title: "Дата рождения", data: ""},
+
+  {search: "BirthPlace", id: "birth_place", title: "Место рождения", data: ""},
 ]
 
 /** Поля для парсинга ИП */
@@ -295,6 +306,10 @@ export const fieldsArrIP = [
   {search: "FullNameRus", id: "full_name", title: "ФИО", data: ""},
 
   {search: "INN", id: "inn", title: "ИНН", data: ""},
+
+  {search: "BirthDate", id: "birthdate", title: "Дата рождения", data: ""},
+
+  {search: "BirthPlace", id: "birth_place", title: "Место рождения", data: ""},
 
   {search: "OGRNIP", id: "ogrn", title: "ОГРН", data: ""},
 
@@ -318,7 +333,8 @@ export const fieldsArrIP = [
 
   {search: "OKVED2List", id: "okved", title: "Основной ОКВЭД", data: "",func: item => {
     if(!item) return 'Данные отсутствуют'
-    if(Array.isArray(item.OKVED)) {
+    else if(!item.OKVED.length) return ""
+    if(Array.isArray(item.OKVED) && item.OKVED.length) {
       const okved = item.OKVED.filter(el =>  el.IsMain === 'true')
       const { Code, Name } = okved[0]
       return `${Code} / ${Name}`
@@ -327,7 +343,7 @@ export const fieldsArrIP = [
     }
   }},
 
-  {search: "sex", id: "sex", title: "Пол", data: "", func: item => {
+  {search: "Sex", id: "sex", title: "Пол", data: "", func: item => {
     if(!item.Name) return 'Данные отсутствуют'
     return item.Name
   }},
@@ -339,6 +355,12 @@ export const fieldsArrIP = [
   {search: "", id: "sanctions", title: "Санкции", data: ""},
 
   {search: "", id: "fns", title: "ФНС", data: ""},
+
+  {search: "spiski", id: "spiski", title: "Найденов списках", data: ""},
+
+  {search: "sankcii", id: "sanctions", title: "Санкции", data: ""},
+
+  {search: "", id: "arbiter_other", title: "Арбитраж прочее", data: ""},
 
   {search: "arbitrazh", id: "arbiter", title: "Арбитраж", data: "", func: item => {
     try {
@@ -359,4 +381,6 @@ export const fieldsArrIP = [
       console.log('Ошибка в преобразовании arbiter', item, error)
     }
   }},
+
+  {search: "", id: "arbiter_other", title: "Арбитраж прочее", data: ""},
 ]

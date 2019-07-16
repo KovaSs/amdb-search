@@ -109,12 +109,13 @@ return name
 .replace(/^Открытое акционерное общество/gi, 'ОАО')
 .replace(/^Акционерное общество/gi, 'АО')
 .replace(/Финансово-Промышленная корпорация/gi, 'ФПК')
+.replace(/Управляющая компания/gi, 'УК')
 }
 
 export const htmlTransform = str => {
 return str
   .replace(/id="header"/g, 'id="header" style="display:none"')
-  .replace(/id="paper"/g, 'id="paper" style="padding-top:0"')
+  .replace(/id="paper"/g, 'id="paper" style="padding-top:0; border: 0;"')
   .replace(/id="requestInfo"/g, 'id="requestInfo" style="top:2rem"')
   .replace(/id="content"/g, 'id="content" style="padding-top: 0;"')
   .replace(/class="mid"/g, 'class="mid" style="font-size: 1rem;"')
@@ -217,6 +218,9 @@ class TransformData {
         id: uuid()
       }))
       clonePrevData.heads = updateHeads
+      if(clonePrevData.arbiter.other.length) {
+        clonePrevData.arbiter_other = clonePrevData.arbiter.other
+      }
       return clonePrevData
     } catch (error) {
       console.log('Ошибка в преобразовании company_type', error)
@@ -248,6 +252,9 @@ class TransformData {
       return {middle_name, last_name, first_name, position, inn, ActualDate: date}
     }
     clonePrevData.heads = [addHeds(clonePrevData.full_name, clonePrevData.inn, clonePrevData.registration_date)]
+    if(clonePrevData.arbiter.other.length) {
+      clonePrevData.arbiter_other = clonePrevData.arbiter.other
+    }
     return clonePrevData
   }
 
@@ -377,9 +384,9 @@ class TransformData {
             inn: item.innfl ? item.innfl : "Не найден",
             last_name: parsingFio(item.fio).SurName,
             middle_name: parsingFio(item.fio).MiddleName,
-            position: [`Учредитель (${user.share.sum})`, item.position ? item.position : ""],
+            position: [`Учредитель${user.share ? ` (${user.share.sum})` : ''}`, item.position ? item.position : ""],
             organisation: {
-              name: user.fullName ? getShortCompName(user.fullName) : "",
+              name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name),
               inn: user.inn ? user.inn : "",
               ogrn: user.ogrn ? user.ogrn : ""
             },
@@ -401,7 +408,7 @@ class TransformData {
             middle_name: parsingFio(item.fio).MiddleName,
             position: [`Учредитель${user.share ? ` (${user.share.sum})` : ""}`, item.position ? item.position : ""],
             organisation: {
-              name: user.fullName ? getShortCompName(user.fullName) : "",
+              name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name),
               inn: user.inn ? user.inn : "",
               ogrn: user.ogrn ? user.ogrn : ""
             },
@@ -423,7 +430,7 @@ class TransformData {
             middle_name: parsingFio(item.fio).MiddleName,
             position: ["Акционер", item.position ? item.position : ""],
             organisation: {
-              name: user.fullName ? getShortCompName(user.fullName) : "",
+              name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name),
               inn: user.inn ? user.inn : "",
               ogrn: user.ogrn ? user.ogrn : ""
             },

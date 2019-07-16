@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table,  Descriptions, Collapse, Icon, Spin } from 'antd'
+import { Table,  Descriptions, Collapse, Icon, Spin, Row, Col } from 'antd'
 import { trasform } from "../../../../../services/utils";
 
 const styleCss = {
@@ -25,13 +25,17 @@ const StopListData = ({riskInfo, arbiter, loading =false}) => {
       { title: 'За 3 года', dataIndex: 'year3' }
     ];
     return (
-      <Table
-        columns={columns}
-        dataSource={arbiterData}
-        bordered
-        pagination={false}
-        className="arbiter-risk-info"
-      />
+      <Row>
+        <Col span={arbiter.other ? 12 : 24}>
+          <Table
+            columns={columns}
+            dataSource={arbiterData}
+            bordered
+            pagination={false}
+            className="arbiter-risk-info"
+          />
+        </Col>
+      </Row>
     )
   }
 
