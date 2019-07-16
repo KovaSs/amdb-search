@@ -45,7 +45,7 @@ export const getAffilatesList = (id, inn) => {
   })
 }
 
-/** Получение данных по дате рождения (стоп-листы) */
+/** Получение данных по дате рождения из белой БД (стоп-листы) */
 export const getStopListFlBirthdate = (user, birthdate) => {
   return fetch(
     `/cgi-bin/serg/0/6/9/reports/253/stoplist_server_script?method=bases&surname=${user.last_name}&firstname=${user.first_name}&middlename=${user.middle_name}&birthdate=${getUSDate(birthdate)}&type=fl`, 
@@ -61,7 +61,23 @@ export const getStopListFlBirthdate = (user, birthdate) => {
   })
 }
 
-/** Получение  данных по паспорту (стоп-листы) */
+/** Получение данных по дате рождения из скрытой БД (стоп-листы) */
+export const getBlackStopListFlBirthdate = (user, birthdate) => {
+  return fetch(
+    `/cgi-bin/ser4/0/6/9/reports/253/STOP_LIST_deb_search.pl?type=fl&method=bases&surname=${user.last_name}&firstname=${user.first_name}&middlename=${user.middle_name}&birthdate=${getUSDate(birthdate)}`, 
+    { 
+      method: 'GET',
+      mode: 'cors',
+      credentials: 'include'
+    }
+  )
+  .then(res => {
+    if (res.ok) return res.json()
+    throw new TypeError("Данные о кампании не обновлены!")
+  })
+}
+
+/** Получение  данных по паспорту из белой БД (стоп-листы) */
 export const getStopListFlPassport = user => {
   return fetch(
     `/cgi-bin/serg/0/6/9/reports/253/stoplist_server_script?method=bases&type=fl&passport=${user.Seria} ${user.Number}&series=${user.Seria}&number=${user.Number}`, 
@@ -77,10 +93,42 @@ export const getStopListFlPassport = user => {
   })
 }
 
-/** Получение  данных по ИНН (стоп-листы) */
+/** Получение  данных по паспорту из скрытой БД (стоп-листы) */
+export const getBlackStopListFlPassport = user => {
+  return fetch(
+    `/cgi-bin/ser4/0/6/9/reports/253/STOP_LIST_deb_search.pl?method=bases&type=fl&passport=${user.Seria} ${user.Number}&series=${user.Seria}&number=${user.Number}`, 
+    { 
+      method: 'GET',
+      mode: 'cors',
+      credentials: 'include'
+    }
+  )
+  .then(res => {
+    if (res.ok) return res.json()
+    throw new TypeError("Данные о кампании не обновлены!")
+  })
+}
+
+/** Получение  данных по ИНН из белой БД (стоп-листы) */
 export const getStopListFlInn = inn => {
   return fetch(
     `/cgi-bin/serg/0/6/9/reports/253/stoplist_server_script?method=bases&type=fl&inn=${inn}`, 
+    { 
+      method: 'GET',
+      mode: 'cors',
+      credentials: 'include'
+    }
+  )
+  .then(res => {
+    if (res.ok) return res.json()
+    throw new TypeError("Данные о кампании не обновлены!")
+  })
+}
+
+/** Получение  данных по ИНН из скрытой БД (стоп-листы) */
+export const getBlackStopListFlInn = inn => {
+  return fetch(
+    `/cgi-bin/ser4/0/6/9/reports/253/STOP_LIST_deb_search.pl?method=bases&type=fl&inn=${inn}`, 
     { 
       method: 'GET',
       mode: 'cors',
@@ -276,7 +324,7 @@ export const getIdentifyUserInfo = (reqnum, action, storeOgrn) => {
   })
 }
 
-/** Полная получение данных из Croinform на проверяемое лицо */
+/** Получение данных ФССП */
 export const getFsspInfo = (reqnum, action) => {
   return fetch(
     `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 

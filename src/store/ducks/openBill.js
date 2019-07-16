@@ -10,6 +10,7 @@ import {
   getStopListFlBirthdate,
   getAffilatesList,
   getStopListFlInn,
+  getBlackStopListFlInn,
   getDigestList,
   getAddRiskFactor,
   getIdentifyUser,
@@ -17,7 +18,9 @@ import {
   getIdentifyUserInfo,
   getRequestAffiliatesUl,
   getStopListFlPassport,
-  getFsspInfo
+  getBlackStopListFlPassport,
+  getFsspInfo,
+  getBlackStopListFlBirthdate
 } from '../../services/api'
 
 /* Mock данные */
@@ -38,6 +41,7 @@ export const ADD_USER_TO_CHECK_LIST = `${prefix}/ADD_USER_TO_CHECK_LIST`
 export const GET_AFFILATES_LIST = `${prefix}/GET_AFFILATES_LIST`
 export const GET_AFFILATES_UL = `${prefix}/GET_AFFILATES_UL`
 export const GET_STOP_LISTS_BIRTHDATE_FL = `${prefix}/GET_STOP_LISTS_BIRTHDATE_FL`
+export const GET_BLACK_STOP_LISTS_BIRTHDATE_FL = `${prefix}/GET_BLACK_STOP_LISTS_BIRTHDATE_FL`
 export const GET_STOP_LISTS_PASSPORT_FL = `${prefix}/GET_STOP_LISTS_PASSPORT_FL`
 export const GET_STOP_LISTS_INN_FL = `${prefix}/GET_STOP_LISTS_INN_FL`
 export const LOAD_DIGEST_LIST = `${prefix}/LOAD_DIGEST_LIST`
@@ -455,8 +459,13 @@ const loadStopListDataSaga = function * () {
         if(birthdate) return spawn(getStopListFlBirthdateSaga, birthdate, user)
         else return birthdate
       }))
+      yield all(user.identifyInfo.birthday.map(birthdate => {
+        if(birthdate) return spawn(getBlackStopListFlBirthdateSaga, birthdate, user)
+        else return birthdate
+      }))
     }
     yield spawn(getStopListFlPassportSaga, action.payload)
+    yield spawn(getBlackStopListFlPassportSaga, action.payload)
     yield spawn(getStopListFlInnSaga, user, action.payload.INN)
     yield spawn(getFsspInfoSaga, yield select(storeReqnum), action, user)
   }
@@ -490,7 +499,35 @@ const getStopListFlBirthdateSaga = function * (birthdate, user) {
   }
 }
 
-/* Поиск пользователя в стоп-листах по паспорту */
+/* Поиск пользователя в стоп-листах по Дате рождения */
+const getBlackStopListFlBirthdateSaga = function * (birthdate, user) {
+  try {
+    yield put({
+      type: GET_BLACK_STOP_LISTS_BIRTHDATE_FL + START,
+      loading: `${user.id}-${birthdate}`
+    })
+
+    /* Запрос данных о стоп-листах */
+    const res = yield call(getBlackStopListFlBirthdate, user, birthdate)
+
+    const data = res.data
+    console.log("%cRES | GET STOP LISTS BIRTHDATE FL", "color:white; background-color: green; padding: 0 5px", res)
+
+    yield put({
+      type: GET_BLACK_STOP_LISTS_BIRTHDATE_FL + SUCCESS,
+      payload: {data},
+      loading: `${user.id}-${birthdate}`
+    })
+  } catch (err){
+    console.log('err', err)
+    yield put({
+      type: GET_BLACK_STOP_LISTS_BIRTHDATE_FL + FAIL,
+      loading: `${user.id}-${birthdate}`
+    })
+  }
+}
+
+/* Поиск пользователя в белой БД (стоп-листы) по паспорту */
 const getStopListFlPassportSaga = function * (user) {
   try {
     yield put({
@@ -500,6 +537,34 @@ const getStopListFlPassportSaga = function * (user) {
 
     /* Запрос данных о стоп-листах */
     const res = yield call(getStopListFlPassport, user)
+    
+    const data = res.data
+    console.log("%cRES | GET STOP LISTS PASSPORT FL", "color:white; background-color: green; padding: 0 5px", res)
+
+    yield put({
+      type: GET_STOP_LISTS_PASSPORT_FL + SUCCESS,
+      payload: {data},
+      loading: `${user.id}-${user.Seria} ${user.Number}`
+    })
+  } catch (err){
+    console.log('err', err)
+    yield put({
+      type: GET_STOP_LISTS_PASSPORT_FL + FAIL,
+      loading: `${user.id}-${user.Seria} ${user.Number}`
+    })
+  }
+}
+
+/* Поиск пользователя в скрытой БД (стоп-листы) по паспорту */
+const getBlackStopListFlPassportSaga = function * (user) {
+  try {
+    yield put({
+      type: GET_STOP_LISTS_PASSPORT_FL + START,
+      loading: `${user.id}-${user.Seria} ${user.Number}`
+    })
+
+    /* Запрос данных в скрытую БД (стоп-листы) */
+    const res = yield call(getBlackStopListFlPassport, user)
     
     const data = res.data
     console.log("%cRES | GET STOP LISTS PASSPORT FL", "color:white; background-color: green; padding: 0 5px", res)
