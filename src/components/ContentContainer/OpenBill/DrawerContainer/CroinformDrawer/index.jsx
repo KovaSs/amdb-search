@@ -1,6 +1,6 @@
 import React from 'react';
-import { Drawer, Spin, Descriptions, Tabs } from "antd";
-import { htmlTransform } from '../../../../../services/utils'
+import { Drawer, Spin, Descriptions, Tabs, Collapse, Empty } from "antd";
+import { htmlTransform, htmlTransformFssp } from '../../../../../services/utils'
 import toggleDrawer from '../index'
 
 const styleCss = {
@@ -10,11 +10,13 @@ const styleCss = {
 }
 
 const CroinformDrawer = props => {
-  const {onClose, visible, croinformRes, loading, user} = props
+  const {onClose, visible, croinformRes, loading, user , fsspInfo, fssploading} = props
   const { Item: DescriptionsItem } = Descriptions
   const { TabPane } = Tabs
+  const { Panel } = Collapse
 
   const styledIdentifyRes = user.hasOwnProperty('identifyInfo') ? htmlTransform(user.identifyInfo.html) : ""
+  const styledfsspInfo = fsspInfo ? htmlTransformFssp(fsspInfo) : ""
   const styledCroinformHtmlRes = (croinformRes && croinformRes.html)? htmlTransform(croinformRes.html) : ""
   const croinformVectorRes = (croinformRes && croinformRes.hasOwnProperty('vector')) ? croinformRes.vector : []
   const croinformListsRes = (croinformRes && croinformRes.lists.length) ? croinformRes.lists : []
@@ -40,9 +42,41 @@ const CroinformDrawer = props => {
     return arr
   }
 
+  const renderList = () => {
+    return (
+      <TabPane tab="Списки" key="1">
+        <Collapse 
+          defaultActiveKey={['1', '2', '3', '4']} 
+        >
+          <Panel header="Списки" key="1" showArrow={false}>
+            <Spin spinning={loading} tip="Идет поиск данных по измененному запросу">
+              <Descriptions
+                key="vector-descr"
+                size="small"
+                bordered
+                border
+                column={{ md: 1, sm: 1, xs: 1 }}
+              >
+                { renderDescrList() }
+              </Descriptions>
+            </Spin>
+          </Panel>
+          <Panel header="Данные ФССП" key="2" showArrow={false}>
+            <Spin spinning={fssploading} tip="Идет поиск данных в ФССП">
+              { fsspInfo ?
+                <iframe srcDoc={styledfsspInfo} frameBorder="0" title="identify-data" width="100%" height="600px"/> :
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={ <span> Данные отвутствуют </span> } />
+              }
+            </Spin>
+          </Panel>
+        </Collapse>
+      </TabPane>
+    )
+  }
+
     return (
       <Drawer
-        width={"50%"}
+        width={"60%"}
         placement="right"
         closable={false}
         onClose={onClose}
@@ -51,31 +85,17 @@ const CroinformDrawer = props => {
       >
         <h2 style={styleCss.h2}>Результаты проверки</h2>
         <Tabs >
-          { (croinformRes && (croinformRes.vector.length || croinformRes.lists.length)) &&
-            <TabPane tab="Списки" key="1">
-              <Spin spinning={loading} tip="Идет поиск данных по измененному запросу">
-                <Descriptions
-                  key="vector-descr"
-                  size="small"
-                  bordered
-                  border
-                  column={{ md: 1, sm: 1, xs: 1 }}
-                >
-                  { renderDescrList() }
-                </Descriptions>
-              </Spin>
-            </TabPane>
-          }
+          { (croinformRes && (croinformRes.vector.length || croinformRes.lists.length || fsspInfo.length)) && renderList() }
           { (croinformRes && croinformRes.html) &&
             <TabPane tab="Croinform" key="2">
               <Spin spinning={loading} tip="Идет поиск данных по измененному запросу">
-                <iframe srcDoc={styledCroinformHtmlRes} frameBorder="0" title="crionform-data" width="100%" height="800px"></iframe>
+                <iframe srcDoc={styledCroinformHtmlRes} frameBorder="0" title="crionform-data" width="100%" height="800px"/>
               </Spin>
             </TabPane>
           }
           <TabPane tab="Идентификация" key="3">
             <Spin spinning={false} tip="Идет поиск данных по измененному запросу">
-              <iframe srcDoc={styledIdentifyRes} frameBorder="0" title="identify-data" width="100%" height="800px"></iframe>
+              <iframe srcDoc={styledIdentifyRes} frameBorder="0" title="identify-data" width="100%" height="800px"/>
             </Spin>
           </TabPane>
         </Tabs>

@@ -244,9 +244,9 @@ export const getIdentifyUser = (ip, reqnum, action, storeOgrn) => {
           type: 'identify_user',
           reqnum: reqnum,
           data: {
-            FirstName: action.payload.first_name.toUpperCase(),
-            MiddleName: action.payload.middle_name.toUpperCase(),
-            SurName: action.payload.last_name.toUpperCase(),
+            FirstName: action.payload.first_name,
+            MiddleName: action.payload.middle_name,
+            SurName: action.payload.last_name,
             INN: action.payload.inn,
             OGRN: action.payload.organisation ? action.payload.organisation.ogrn : storeOgrn.ogrn
           }
@@ -295,7 +295,7 @@ export const getIdentifyUserInfo = (reqnum, action, storeOgrn) => {
         type: 'request_user',
         reqnum: reqnum,
         data: {
-          OGRN: storeOgrn.ogrn,
+          // OGRN: storeOgrn.ogrn,
           INN: action.payload.INN,
           FirstName: action.payload.FirstName,
           FirstNameArch: action.payload.FirstNameArch,

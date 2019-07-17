@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Collapse, Icon, Spin, Descriptions, AutoComplete, Input, Button, Badge } from "antd";
+import { Collapse, Icon, Spin, Descriptions, AutoComplete, Input, Button, Badge, notification } from "antd";
 import PropTypes from "prop-types";
 import { union } from "lodash";
 import LeaderHeader from "../LeaderHeader";
@@ -64,7 +64,11 @@ export class ManagmentItem extends PureComponent {
 
   /* Обновление данных state при идентификации физического лица */
   componentDidUpdate(prevProps) {
-    const { item, item: { inn, last_name, first_name,  middle_name, identifyInfo = { inn: "", fio: "", passport: "", birthday: "", address: ""}}} = this.props;
+    const { 
+      item,
+      errors,
+      item: { inn, last_name, first_name,  middle_name, identifyInfo = { inn: "", fio: "", passport: "", birthday: "", address: ""}}
+    } = this.props;
     if (item !== prevProps.item) {
       this.setState({
         user: {
@@ -82,6 +86,7 @@ export class ManagmentItem extends PureComponent {
         }
       });
     }
+    if(errors && errors !== prevProps.errors) this.openNotification(errors)
   }
 
   componentDidCatch(err) {
@@ -93,6 +98,29 @@ export class ManagmentItem extends PureComponent {
 
   toggleEdited = () => {
     this.setState(({ edited }) => ({ edited: !edited }));
+  };
+
+  openNotification = err => {
+    const _errMessage = err => {
+      const key = Date.now();
+      // const confirmBtn = (
+      //   <Button type="primary" size="small" onClick={() => notification.close(key)}>
+      //     Повторить запрос
+      //   </Button>
+      // );
+      const _close = () => console.log( `Notification was closed. Either the close button was clicked or duration time elapsed.`)
+      notification['error']({
+        message: `Ошибка получения данных`,
+        description: err.message,
+        // confirmBtn,
+        duration: 4,
+        // btn: confirmBtn,
+        key,
+        onClose: _close,
+      });
+    }
+
+    if(err.status) return _errMessage(err)
   };
 
   getCroinformIdentifyRequest = e => {
@@ -549,7 +577,16 @@ export class ManagmentItem extends PureComponent {
   }
 
   render() {
-    const { item, item: { inn }, activeKey, searchData, croinformRes, croinformRequestloading } = this.props;
+    const { 
+      item, 
+      item: { inn }, 
+      activeKey,
+      fssploading, 
+      searchData, 
+      croinformRes, 
+      croinformRequestloading, 
+      fsspInfo 
+    } = this.props;
     const {error, showCroinformResponse} = this.state
     if(error) return <div>В компоненте произошла ошибка</div>
 
@@ -558,7 +595,6 @@ export class ManagmentItem extends PureComponent {
         <Collapse
           key={inn}
           className="managment"
-          // defaultActiveKey={inn}
           onChange={this.callback}
           bordered={false}
           expandIcon={({ isActive }) => (
@@ -568,7 +604,14 @@ export class ManagmentItem extends PureComponent {
           {item.name && this.renderFoulderUlItem(item, activeKey)}
           {item.middle_name && this.renderFoulderFlItem(item, activeKey, searchData)}
         </Collapse>
-        <CroinformDrawer loading={croinformRequestloading} toggleDrawer={showCroinformResponse} croinformRes={croinformRes} user={item}/>
+        <CroinformDrawer 
+          user={item}
+          fsspInfo={fsspInfo}
+          fssploading={fssploading}
+          loading={croinformRequestloading} 
+          toggleDrawer={showCroinformResponse} 
+          croinformRes={croinformRes} 
+        />
       </>
     );
   }

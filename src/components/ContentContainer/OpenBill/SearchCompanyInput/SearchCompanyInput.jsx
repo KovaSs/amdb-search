@@ -28,7 +28,7 @@ class SearchCompanyInput extends PureComponent {
         clearField : false
       })
     }
-    this.openNotification(errors)
+    if(errors && errors !== prevProps.errors && errors.status) this.openNotification(errors)
   }
 
   componentDidCatch(err) {
@@ -109,18 +109,18 @@ class SearchCompanyInput extends PureComponent {
   }
 
   openNotification = err => {
-    const _errMessage = (err, message) => {
-      const key = err;
-      const confirmBtn = (
-        <Button type="primary" size="small" onClick={() => notification.close(key)}>
-          Повторить запрос
-        </Button>
-      );
-      const _close = () => console.log( `Notification ${err} was closed. Either the close button was clicked or duration time elapsed.`)
+    const _errMessage = err => {
+      const key = err.time;
+      // const confirmBtn = (
+      //   <Button type="primary" size="small" onClick={() => notification.close(key)}>
+      //     Повторить запрос
+      //   </Button>
+      // );
+      const _close = () => console.log( `Notification was closed. Either the close button was clicked or duration time elapsed.`)
       notification['error']({
         message: `Ошибка получения данных`,
-        description: `Произошла ошибка при выполнении запроса ${message}`,
-        confirmBtn,
+        description: err.message,
+        // confirmBtn,
         duration: 4,
         // btn: confirmBtn,
         key,
@@ -128,8 +128,7 @@ class SearchCompanyInput extends PureComponent {
       });
     }
 
-    if(err.companyMainInfoUpdate) return _errMessage("companyMainInfoUpdate","основных данных о кампании")
-    err.companyPCUpdate && _errMessage("companyPCUpdate","данных о приемниках / предшедственниках")
+    if(err.status) return _errMessage(err)
 
   };
 

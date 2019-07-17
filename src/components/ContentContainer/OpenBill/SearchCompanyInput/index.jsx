@@ -18,7 +18,7 @@ const putStateToProps = state => {
     companyResponse: decodedCompanyResponse(state),
     renderData: decodedRenderData(state),
     inn: decodedInn(state), 
-    errors: decodedErrors(state)
+    errors: decodedErrors(state).get("companyMainInfoUpdate")
   }
 }
 

@@ -11,12 +11,26 @@ import {
   decodedCompanyName, 
   actionGetUserCroinformInfo,
   decodedСroinformResponse,
-  addNewUserToCheackList
+  addNewUserToCheackList,
+  decodedErrors,
+  decodedFsspInfo
 } from "../../../../../store/ducks/openBill";
 
 /** Вывод данных об руководстве */
 const ManagmentContainer = props => {
-  const { managementSource, identifyUser, requestLoading, companyName, actionGetUserCroinformInfo, croinformResponse, addUser, onSave, addNewUserToCheackList } = props
+  const { 
+    managementSource, 
+    identifyUser, 
+    requestLoading, 
+    companyName, 
+    actionGetUserCroinformInfo, 
+    croinformResponse, 
+    addUser, 
+    onSave,
+    fsspInfo,
+    addNewUserToCheackList,
+    errors
+  } = props
   if(addUser) {
     const user = {
       ActualDate: Date.now(),
@@ -41,15 +55,18 @@ const ManagmentContainer = props => {
 
   const renderHeads = heads.data.map( item => (
     <ManagmentItem 
-      key={item.id ? item.id : item.inn} 
+      key={item.id} 
       item={item} 
-      activeKey={item.id ? item.id : item.inn} 
+      activeKey={item.id} 
       searchData={'heads'}
+      errors={errors.getIn(["identifyUser", item.id])}
       actionGetUserCroinformInfo={actionGetUserCroinformInfo}
       identifyUser={identifyUser}
       companyName={companyName}
+      fsspInfo={fsspInfo.get(item.id)}
       identifyUserloading={requestLoading.getIn(["identifyUser",item.id])}
       croinformRequestloading={requestLoading.getIn(["croinformRequest",item.id])}
+      fssploading={requestLoading.getIn(["fsspInfo",item.id])}
       croinformRes={croinformResponse.get(item.id)}
     />
   ))
@@ -62,7 +79,9 @@ const putStateToProps = state => {
     requestLoading: decodedRequestLoading(state),
     managementSource: decodedManagementSource(state),
     companyName: decodedCompanyName(state),
-    croinformResponse: decodedСroinformResponse(state)
+    croinformResponse: decodedСroinformResponse(state),
+    errors: decodedErrors(state),
+    fsspInfo: decodedFsspInfo(state)
   }
 }
 

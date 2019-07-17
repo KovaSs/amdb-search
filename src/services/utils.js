@@ -15,6 +15,22 @@ export const  parsingFio = fio => {
   return { FirstName, MiddleName, SurName }
 }
 
+/** Получение данных из БД (стоп-листы) */
+export const getLists = (obj, base="", table="", content=[]) => {
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      base = key
+      for (const id in obj[key]) {
+        if (obj[key].hasOwnProperty(id)) {
+          table = id;
+          content = obj[key][id].rows.map(item => item.filter(el => el !== "" && el !== null && el !== "!^!  \r"))
+        }
+      }
+    }
+  }
+  return {base, table, content}
+}
+
 /* Парсинг Паспорта */
 export const parsingPassport = passport => {
 const passArr = passport.split(" ")
@@ -126,6 +142,20 @@ return str
   .replace(/<h3/g, '<h3 style="font-size: 1.2rem; font-weight: 500;"')
   .replace(/<h5/g, '<h5 style="font-size: 1.5rem; font-weight: 500;"')
   .replace(/<th/g, '<th style="font-weight: 500;"')
+}
+
+export const htmlTransformFssp = str => {
+  return str
+  .replace(/<span>Распечатать<\/span>/g, '')
+  // eslint-disable-next-line
+  .replace(/  ,  ,  ,  , /g, '')
+  // eslint-disable-next-line
+  .replace(/,  ,/g, '')
+  .replace(/<div class="iss"/g, '<div font="1.35em "Segoe UI","Segoe WP","Segoe UI Regular","Segoe UI Cyrillic Regular","Helvetica Neue", Helvetica, Tahoma, Arial Unicode MS, sans-serif"')
+  .replace(/<tr class=" "/g, '<tr style="text-align: center;"')
+  .replace(/<td class="first"/g, '<td style="text-align: center;padding-bottom: 5px;"')
+  // .replace(/<table/g, '<table style="font-size: 8pt;"')
+  .replace(/<td class=""/g, '<td style="text-align: center;padding-bottom: 5px;"')
 }
 
 class TransformData {
