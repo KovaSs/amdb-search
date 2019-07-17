@@ -174,8 +174,8 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
         .setIn(['errors', 'croinformRequest', action.loading], false) 
     case GET_CROINFORM_USER_INFO + FAIL:
       return state
-        .setIn(['requestLoading', 'croinformRequest'], false)
-        .setIn(['errors', 'croinformRequest', action.loading], true)
+        .setIn(['requestLoading', 'croinformRequest', action.loading], false)
+        .setIn(['errors', 'croinformRequest', action.loading], { status: action.error.status, message: action.error.message, time: action.error.time })
 
     case GET_FSSP_INFO + START:
       return state
@@ -496,7 +496,6 @@ const loadStopListDataSaga = function * (action) {
   }
 }
 
-
 /* Поиск пользователя в стоп-листах по Дате рождения */
 const getStopListFlBirthdateSaga = function * (birthdate, user) {
   try {
@@ -641,7 +640,6 @@ const getStopListFlInnSaga = function * (user, inn) {
     })
   }
 }
-
 
 /* Запрос данныз по ФССП */
 const getFsspInfoSaga = function * (reqnum, action, user) {
@@ -878,9 +876,15 @@ const identifyUserInfoSaga = function * (action) {
       loading: action.loading
     })
   } catch (err){
+    const { FirstName, MiddleName, SurName } = action.payload
     yield put({
       type: GET_CROINFORM_USER_INFO + FAIL,
-      error: action.loading
+      loading: action.loading,
+      error: {
+        status: true,
+        time: Date.now(),
+        message: `Данные полной проверки "${SurName} ${FirstName} ${MiddleName}" не получены`
+      }
     })
   }
 

@@ -33,6 +33,7 @@ export const getLists = (obj, base="", table="", content=[]) => {
 
 /* Парсинг Паспорта */
 export const parsingPassport = passport => {
+if(!passport) return { Seria: "", Number: "" }
 const passArr = passport.split(" ")
 const Number = passArr.pop()
 const Seria = passArr.pop()

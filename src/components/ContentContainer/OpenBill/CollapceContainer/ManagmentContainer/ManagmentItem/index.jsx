@@ -67,7 +67,7 @@ export class ManagmentItem extends PureComponent {
     const { 
       item,
       errors,
-      item: { inn, last_name, first_name,  middle_name, identifyInfo = { inn: "", fio: "", passport: "", birthday: "", address: ""}}
+      item: { id, inn, last_name, first_name,  middle_name, identifyInfo = { inn: "", fio: "", passport: "", birthday: "", address: ""}}
     } = this.props;
     if (item !== prevProps.item) {
       this.setState({
@@ -86,7 +86,8 @@ export class ManagmentItem extends PureComponent {
         }
       });
     }
-    if(errors && errors !== prevProps.errors) this.openNotification(errors)
+    if(errors.getIn(["identifyUser", id]) && errors.getIn(["identifyUser", id]).time !== prevProps.errors.getIn(["identifyUser", id]).time) this.openNotification(errors)
+    if(errors.getIn(["croinformRequest", id]) && errors.getIn(["croinformRequest", id]).time !== prevProps.errors.getIn(["croinformRequest", id]).time) this.openNotification(errors)
   }
 
   componentDidCatch(err) {
@@ -101,26 +102,21 @@ export class ManagmentItem extends PureComponent {
   };
 
   openNotification = err => {
-    const _errMessage = err => {
-      const key = Date.now();
-      // const confirmBtn = (
-      //   <Button type="primary" size="small" onClick={() => notification.close(key)}>
-      //     Повторить запрос
-      //   </Button>
-      // );
+    const { item: { id } } = this.props
+    const _showMessage = err => {
+      const key = err.time;
       const _close = () => console.log( `Notification was closed. Either the close button was clicked or duration time elapsed.`)
       notification['error']({
+        key,
         message: `Ошибка получения данных`,
         description: err.message,
-        // confirmBtn,
         duration: 4,
-        // btn: confirmBtn,
-        key,
         onClose: _close,
       });
     }
 
-    if(err.status) return _errMessage(err)
+    if(err.getIn(["identifyUser", id]) && err.getIn(["identifyUser", id]).status) return _showMessage(err.getIn(["identifyUser", id]))
+    if(err.getIn(["croinformRequest", id]) && err.getIn(["croinformRequest", id]).status) return _showMessage(err.getIn(["croinformRequest", id]))
   };
 
   getCroinformIdentifyRequest = e => {
@@ -579,8 +575,7 @@ export class ManagmentItem extends PureComponent {
   render() {
     const { 
       item, 
-      item: { inn }, 
-      activeKey,
+      item: { inn, id }, 
       fssploading, 
       searchData, 
       croinformRes, 
@@ -601,8 +596,8 @@ export class ManagmentItem extends PureComponent {
             <Icon type={!isActive ? "plus-square" : "minus-square"} />
           )}
         >
-          {item.name && this.renderFoulderUlItem(item, activeKey)}
-          {item.middle_name && this.renderFoulderFlItem(item, activeKey, searchData)}
+          {item.name && this.renderFoulderUlItem(item, id)}
+          {item.middle_name && this.renderFoulderFlItem(item, id, searchData)}
         </Collapse>
         <CroinformDrawer 
           user={item}
@@ -621,6 +616,5 @@ export default ManagmentItem;
 
 ManagmentItem.propTypes = {
   /** Данные о состоянии loaders */
-  activeKey: PropTypes.string.isRequired,
   identifyUser: PropTypes.func.isRequired,
 };

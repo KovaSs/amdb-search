@@ -57,9 +57,8 @@ const ManagmentContainer = props => {
     <ManagmentItem 
       key={item.id} 
       item={item} 
-      activeKey={item.id} 
       searchData={'heads'}
-      errors={errors.getIn(["identifyUser", item.id])}
+      errors={errors}
       actionGetUserCroinformInfo={actionGetUserCroinformInfo}
       identifyUser={identifyUser}
       companyName={companyName}
