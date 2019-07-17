@@ -91,21 +91,21 @@ const CroinformDrawer = props => {
               <Tabs >
                 <TabPane tab="Croinform" key="1">
                   <Spin spinning={loading} tip="Идет поиск данных по измененному запросу">
-                    <iframe srcDoc={styledCroinformHtmlRes} frameBorder="0" title="crionform-data" width="100%" height="800px"/>
+                    <iframe srcDoc={styledCroinformHtmlRes} frameBorder="0" title="crionform-data" width="100%" height={`${window.innerHeight*0.79}px`}/>
                   </Spin>
                 </TabPane>
                 <TabPane tab="Идентификация" key="2">
                   <Spin spinning={false} tip="Идет поиск данных по измененному запросу">
-                    <iframe srcDoc={styledIdentifyRes} frameBorder="0" title="identify-data" width="100%" height="800px"/>
+                    <iframe srcDoc={styledIdentifyRes} frameBorder="0" title="identify-data" width="100%" height={`${window.innerHeight*0.79}px`}/>
                   </Spin>
                 </TabPane>
               </Tabs>
             </TabPane>
           }
           { (styledIdentifyRes && !styledCroinformHtmlRes) ?
-            <TabPane tab="Идентификация" key="3">
+            <TabPane tab="Идентификация" key="1">
               <Spin spinning={false} tip="Идет поиск данных по измененному запросу">
-                <iframe srcDoc={styledIdentifyRes} frameBorder="0" title="identify-data" width="100%" height="800px"/>
+                <iframe srcDoc={styledIdentifyRes} frameBorder="0" title="identify-data" width="100%" height={`${window.innerHeight*0.84}px`}/>
               </Spin>
             </TabPane> : null
           }

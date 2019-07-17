@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import { Row, Col, Form, Input, notification, Button } from "antd"
 import MainCompanyInfo from "./MainCompanyInfo"
-import "./search-company.scss"
 
 class SearchCompanyInput extends PureComponent {
   state = {

@@ -481,19 +481,19 @@ const loadStopListDataSaga = function * (action) {
   const user = storeState.heads.filter(item => item.id === action.loading)[0]
   yield spawn(getFsspInfoSaga, yield select(storeReqnum), action, user)
   // Стоп-листы
-  yield spawn(getStopListFlPassportSaga, action.payload)
-  yield spawn(getBlackStopListFlPassportSaga, action.payload)
-  yield spawn(getStopListFlInnSaga, user, action.payload.INN)
-  if(user.identifyInfo.birthday.length) {
-    yield all(user.identifyInfo.birthday.map(birthdate => {
-      if(birthdate) return spawn(getStopListFlBirthdateSaga, birthdate, user)
-      else return birthdate
-    }))
-    yield all(user.identifyInfo.birthday.map(birthdate => {
-      if(birthdate) return spawn(getBlackStopListFlBirthdateSaga, birthdate, user)
-      else return birthdate
-    }))
-  }
+  // yield spawn(getStopListFlPassportSaga, action.payload)
+  // yield spawn(getBlackStopListFlPassportSaga, action.payload)
+  // yield spawn(getStopListFlInnSaga, user, action.payload.INN)
+  // if(user.identifyInfo.birthday.length) {
+  //   yield all(user.identifyInfo.birthday.map(birthdate => {
+  //     if(birthdate) return spawn(getStopListFlBirthdateSaga, birthdate, user)
+  //     else return birthdate
+  //   }))
+  //   yield all(user.identifyInfo.birthday.map(birthdate => {
+  //     if(birthdate) return spawn(getBlackStopListFlBirthdateSaga, birthdate, user)
+  //     else return birthdate
+  //   }))
+  // }
 }
 
 /* Поиск пользователя в стоп-листах по Дате рождения */

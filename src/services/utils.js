@@ -132,7 +132,7 @@ return name
 export const htmlTransform = str => {
 return str
   .replace(/id="header"/g, 'id="header" style="display:none"')
-  .replace(/id="paper"/g, 'id="paper" style="padding-top:0; border: 0;"')
+  .replace(/id="paper"/g, 'id="paper" style="padding-top:0; border: 0; margin-left: 0; margin-right: 0; box-shadow: none;"')
   .replace(/id="requestInfo"/g, 'id="requestInfo" style="top:2rem"')
   .replace(/id="content"/g, 'id="content" style="padding-top: 0;"')
   .replace(/class="mid"/g, 'class="mid" style="font-size: 1rem;"')

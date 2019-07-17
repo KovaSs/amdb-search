@@ -21,6 +21,7 @@ export class ContentContainer extends Component {
             <Route path='/electronic-bank-garantees' exact component={ElectronicBankGarantees}/>
             <Route path='/electronic-bank-garantees/:id' render={this.getSearchObject}/>
             <Route path='/early-warning-system' exact component={EarlyWarningSystem}/>
+            <Route path='/test' exact render={this.getTestRequest}/>
           </Switch>
         </div>
       </Content>
@@ -30,6 +31,35 @@ export class ContentContainer extends Component {
   getSearchObject = ({match}) => {
     const { id } = match.params
     return <ObjectRequestItem objectInn={id} />
+  }
+
+  getTestRequest = () => {
+    const request = () => {
+      return fetch(
+        `/cgi-bin/ser4/0/6/9/reports/253/STOP_LIST_deb_search_2.pl`, 
+        { 
+          method: 'POST',
+          mode: 'cors',
+          credentials: 'include',
+          body : JSON.stringify({ 
+            type: 'fl',
+            method: 'bases',
+            surname: "Масютина",
+            firstname: "Жанна",
+            middlename: "Ивановна",
+            birthdate: ["1976-12-10", "1971-12-10", "1976-10-01"],
+            series: "6602",
+            number: "604372",
+            inn: "670700894121"
+          }),
+        }
+      )
+      .then(res => {
+        if (res.ok) return res.json()
+        throw new TypeError("Ошибка получения данных!")
+      })
+    }
+    return <button onClick={request}> Запрос </button>
   }
 }
 
