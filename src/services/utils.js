@@ -246,7 +246,8 @@ class TransformData {
       const updateHeads = clonePrevData.heads.map(item => ({
         ...item,
         fio: `${item.last_name} ${item.first_name} ${item.middle_name}`,
-        id: uuid()
+        id: uuid(),
+        timeRequest: Date.now()
       }))
       clonePrevData.heads = updateHeads
       if(clonePrevData.arbiter.other.length) {
@@ -292,7 +293,10 @@ class TransformData {
   _identifyUserInfo = (prevData, newData, inn) => {
     const clonePrevData = cloneDeep(prevData);
     clonePrevData.heads.map( item =>  {
-      if(item.inn === inn) item.identifyInfo = newData
+      if(item.inn === inn) {
+        item.timeRequest = Date.now()
+        item.identifyInfo = newData
+      }
       return item
     })
     return clonePrevData

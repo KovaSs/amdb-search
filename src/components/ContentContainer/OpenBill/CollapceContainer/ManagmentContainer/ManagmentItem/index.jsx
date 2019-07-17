@@ -63,7 +63,7 @@ export class ManagmentItem extends PureComponent {
   }
 
   /* Обновление данных state при идентификации физического лица */
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const { 
       item,
       errors,
@@ -86,6 +86,14 @@ export class ManagmentItem extends PureComponent {
         }
       });
     }
+
+    if(
+      (identifyInfo && !identifyInfo.passport.length)  ||
+      (identifyInfo && !identifyInfo.birthday.length) ||
+      (identifyInfo && !identifyInfo.address.length) ||
+      (identifyInfo && !identifyInfo.inn.length)    
+    ) { this.showNoEnoughData(prevProps, prevState) }
+
     if(errors.getIn(["identifyUser", id]) && errors.getIn(["identifyUser", id]).time !== prevProps.errors.getIn(["identifyUser", id]).time) this.openNotification(errors)
     if(errors.getIn(["croinformRequest", id]) && errors.getIn(["croinformRequest", id]).time !== prevProps.errors.getIn(["croinformRequest", id]).time) this.openNotification(errors)
   }
@@ -101,10 +109,35 @@ export class ManagmentItem extends PureComponent {
     this.setState(({ edited }) => ({ edited: !edited }));
   };
 
+  showNoEnoughData = (prevProps, prevState) => {
+    const { item, item: {identifyInfo : response, id, fio} } = this.props
+    if(!response) return
+    else if (response === prevProps) return
+    else if (item.timeRequest === prevProps.item.timeRequest) return
+
+    const errMessage = `Данные ${!response.passport.length ? "паспорта, " : ""}${!response.birthday.length ? 'даты рождения, ' : ""}${!response.address.length ? 'адреса ' : ""} отсутствуют`
+
+    const _showMessage = () => {
+      const key = id;
+      const errStatus = response.passport.length || response.birthday.length || response.address.length
+      const _close = () => console.log( `Notification was closed. Either the close button was clicked or duration time elapsed.`)
+      !errStatus && 
+      notification['error']({
+        key,
+        message: `${fio} недостаточно данных для проверки`,
+        description: errMessage,
+        duration: 4,
+        onClose: _close,
+      });
+    }
+
+    _showMessage()
+  }
+
   openNotification = err => {
     const { item: { id } } = this.props
     const _showMessage = err => {
-      const key = err.time;
+      const key = err ? err.time : Date.now();
       const _close = () => console.log( `Notification was closed. Either the close button was clicked or duration time elapsed.`)
       notification['error']({
         key,
@@ -115,8 +148,8 @@ export class ManagmentItem extends PureComponent {
       });
     }
 
-    if(err.getIn(["identifyUser", id]) && err.getIn(["identifyUser", id]).status) return _showMessage(err.getIn(["identifyUser", id]))
-    if(err.getIn(["croinformRequest", id]) && err.getIn(["croinformRequest", id]).status) return _showMessage(err.getIn(["croinformRequest", id]))
+    if(err.getIn(["identifyUser", id]) && err.getIn(["identifyUser", id]).status) _showMessage(err.getIn(["identifyUser", id]))
+    if(err.getIn(["croinformRequest", id]) && err.getIn(["croinformRequest", id]).status) _showMessage(err.getIn(["croinformRequest", id]))
   };
 
   getCroinformIdentifyRequest = e => {
@@ -277,8 +310,21 @@ export class ManagmentItem extends PureComponent {
             <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Адрес" span={1} >
               <label onDoubleClick={e => this.onDoubleClickEvent(e)}>{ 
                 (CityExp || StreetExp || HouseExp || BuildExp || BuildingExp || FlatExp || RegionExpText) ?
-                `${RegionExpText.toUpperCase()} ${StreetExp.toUpperCase()} ${HouseExp.toUpperCase()} ${BuildExp.toUpperCase()} ${BuildingExp.toUpperCase()} ${FlatExp.toUpperCase()}` :
-                address[0]
+                `${
+                  RegionExpText ? RegionExpText.toUpperCase() : ""
+                } ${
+                  CityExp ? CityExp.toUpperCase(): ""
+                } ${
+                  StreetExp ? StreetExp.toUpperCase(): ""
+                } ${
+                  HouseExp ? HouseExp.toUpperCase() : ""
+                } ${
+                  BuildExp ? BuildExp.toUpperCase() : ""
+                } ${
+                  BuildingExp ? BuildingExp.toUpperCase() : ""
+                } ${
+                  FlatExp ? FlatExp.toUpperCase() : ""
+                }` : address[0]
               }</label>
             </DescriptionsItem>
           );
