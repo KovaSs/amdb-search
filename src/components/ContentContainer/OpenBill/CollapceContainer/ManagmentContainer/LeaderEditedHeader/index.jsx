@@ -27,8 +27,14 @@ const styleCss = {
   },
   stopList: {
     title: {
-      color: "red",
+      fontStyle: "italic",
       fontWeight: 500
+    },
+    header: {
+      fontWeight: 500
+    },
+    text: {
+      color: "red"
     }
   }
 }
@@ -94,17 +100,24 @@ const RenderEditedLeader = props => {
         const content = 
           <div style={styleCss.popover}>
             {
-              stopLists.map((item, index) => 
-                <div key={index} >
-                  { item.rows.map((list, i) =>
-                    <div key={i}>
-                      <label style={styleCss.stopList.title}> {`${list.HOW}`} </label>
-                      <label> {`( ${list.comment} )`} </label>
-                    </div>
-                    )
-                  }
-                </div>
-              )
+              stopLists.map((item, index) => {
+                return (
+                  <div key={index}>
+                    <label style={styleCss.stopList.header}> База данных:{` ${item.ID_base ? item.ID_base : ""} Таблица: ${item.ID_table ? item.ID_table : ""}`}</label>
+                    { item.rows.map((list, i) =>
+                      <div key={i}>
+                        { list.HOW && <>
+                          <label style={styleCss.stopList.title}> {`${list.HOW}`} </label>
+                          <label style={styleCss.stopList.text}> {`( ${list.comment} )`} </label> </>
+                        }
+                        { list.field_000 &&  <label style={styleCss.stopList.text}> {`${list.field_000}`} </label> }
+                        { list.text1 &&  <label style={styleCss.stopList.text}> {`${list.text1}`} </label> }
+                      </div>
+                      )
+                    }
+                  </div>
+                )
+              })
             }
           </div>
         arr.push(
