@@ -236,7 +236,7 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
         .setIn(['errors', 'stopLists', action.loading], false)
     case GET_BLACK_STOP_LISTS + SUCCESS:
       return state
-        .setIn(['stopLists', action.loading], payload.stop_list)
+        .set('companyResponse', payload)
         .setIn(['requestLoading', 'stopLists', action.loading], false)
         .setIn(['errors', 'stopLists', action.loading], false) 
     case GET_BLACK_STOP_LISTS + FAIL:
@@ -483,7 +483,8 @@ const loadStopListDataSaga = function * (action) {
 
 /* Поиск пользователя в стоп-листах по Дате рождения */
 const getBlackStopListSaga = function * (user, action) {
-  console.log('getBlackStopListSaga', user, action)
+  const store = state => state[moduleName].get('companyResponse')
+  const storeCR = yield select(store)
   try {
     yield put({
       type: GET_BLACK_STOP_LISTS + START,
@@ -495,11 +496,12 @@ const getBlackStopListSaga = function * (user, action) {
 
     console.log("%cRES | GET BLACK STOP LISTS ", "color:white; background-color: green; padding: 0 5px", res)
 
-    if(JSON.stringify(res) !== '{}') {
-      console.log("%cSTOP-LISTS", "background-color: red", res)
+    if(JSON.stringify(res.Response  !== '[]' || res.Status !== "Error")) {
+      const newStore = trasform._stop_lists(storeCR, res.Response, user.id)
+
       yield put({
         type: GET_BLACK_STOP_LISTS + SUCCESS,
-        payload: {black_stop_list: res},
+        payload: newStore,
         loading: user.id
       })
     }
@@ -736,7 +738,7 @@ const identifyUserInfoSaga = function * (action) {
     const html = res.data.html
     const lists = res.data.lists
     const vector = res.data.parse_ci_request.vektor_fl
-    console.log("%cRES | GET CROINFORM USER INFO |", "color:white; background-color: green; padding: 0 5px", res)
+    console.log("%cRES | GET CROINFORM USER INFO |", cloCss, res)
 
     yield put({
       type: GET_CROINFORM_USER_INFO + SUCCESS,

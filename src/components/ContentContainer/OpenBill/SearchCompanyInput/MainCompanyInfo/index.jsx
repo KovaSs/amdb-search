@@ -38,7 +38,7 @@ class MainCompanyInfo extends Component {
     return (
       <>
         <Col span={1}>
-          <Avatar src={process.env.PUBLIC_URL + '/img/logo.png'} />
+          <Avatar>ЮЛ</Avatar>
         </Col>
         <Col span={11}>
           <small className="lable">Полное наименование</small>
@@ -67,7 +67,7 @@ class MainCompanyInfo extends Component {
     return (
       <>
         <Col span={1}>
-          <Avatar src={process.env.PUBLIC_URL + '/img/logo.png'} />
+          <Avatar>ИП</Avatar>
         </Col>
         <Col span={11} style={{display : "inline-block", marginTop: ".5rem"}}>
           <small className="lable">Полное наименование</small>
@@ -106,14 +106,14 @@ class MainCompanyInfo extends Component {
             { isIp ? this.renderIpInfo() : this.renderNotIpInfo() }
             <Col span={3} style={{textAlign : "center", minHeight: "1rem"}}>
               <div className="show-btn-drawer-count">
-                  <Button 
-                    size="small" 
-                    icon="ie" 
-                    href={`https://www.google.com/search?hl=ru&as_oq=отзывы+криминал+компромат+обыск+уголовное+мошенник+обнал+откат+взятка+жулик+нарушения+претензии+конфликт+подан-иск+преследование+расследование+разбирательство+следствие+прокуратура+МВД+ФСБ+полиция+хищение+отмывание&as_q=${name}`}
-                    target="_blank"
-                    title="Поиск негативной информации в интернетe" 
-                    style={{color: "#52c41a", marginRight: ".5rem"}}
-                  />
+                <Button 
+                  size="small" 
+                  icon="ie" 
+                  href={`https://www.google.com/search?hl=ru&as_oq=отзывы+криминал+компромат+обыск+уголовное+мошенник+обнал+откат+взятка+жулик+нарушения+претензии+конфликт+подан-иск+преследование+расследование+разбирательство+следствие+прокуратура+МВД+ФСБ+полиция+хищение+отмывание&as_q=${name}`}
+                  target="_blank"
+                  title="Поиск негативной информации в интернетe" 
+                  style={{color: "#52c41a", marginRight: ".5rem"}}
+                />
                 <Badge 
                   count={fns.length + sanctions.length + isponlit_proizvodstva.length} 
                   offset={[-10, 0]} 

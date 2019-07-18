@@ -109,7 +109,7 @@ export class ManagmentItem extends PureComponent {
     this.setState(({ edited }) => ({ edited: !edited }));
   };
 
-  showNoEnoughData = (prevProps, prevState) => {
+  showNoEnoughData = prevProps => {
     const { item, item: {identifyInfo : response, id, fio} } = this.props
     if(!response) return
     else if (response === prevProps) return
@@ -225,6 +225,14 @@ export class ManagmentItem extends PureComponent {
 
       return (
         <span className="heads-search" style={{width: showBtn ? 150 : 120}}>
+          <Button
+            title="Проверить все"
+            size="small"
+            style={{color: (croinformDisabled || edited || parseAddress.RegionExp === "") ? "gray" : "#52c41a", marginRight: 5}}
+            disabled={croinformDisabled || edited || parseAddress.RegionExp === ""}
+            icon={croinformRequestloading ? "loading" : "global"}
+            onClick={e => this.getCroinformIdentifyRequest(e)}
+          />
           <Badge dot={croinformRes ? true : false} offset={[-6,1]} status={croinformRes ? "success"  : ""} >
             <Button
               title="Показать результаты проверки"
@@ -239,14 +247,6 @@ export class ManagmentItem extends PureComponent {
               onClick={e => this.showDrawer(e)}
             />
           </Badge>
-          <Button
-            title="Проверить все"
-            size="small"
-            style={{color: (croinformDisabled || edited || parseAddress.RegionExp === "") ? "gray" : "#52c41a", marginRight: 5}}
-            disabled={croinformDisabled || edited || parseAddress.RegionExp === ""}
-            icon={croinformRequestloading ? "loading" : "global"}
-            onClick={e => this.getCroinformIdentifyRequest(e)}
-          />
           <Button
             title="Поиск информации"
             size="small"
@@ -628,7 +628,7 @@ export class ManagmentItem extends PureComponent {
       croinformRequestloading, 
       fsspInfo 
     } = this.props;
-    const {error, showCroinformResponse} = this.state
+    const {error, showCroinformResponse, userSelected, parseAddress} = this.state
     if(error) return <div>В компоненте произошла ошибка</div>
 
     return (
@@ -647,6 +647,7 @@ export class ManagmentItem extends PureComponent {
         </Collapse>
         <CroinformDrawer 
           user={item}
+          userSelected={{...userSelected, ...parseAddress}}
           fsspInfo={fsspInfo}
           fssploading={fssploading}
           loading={croinformRequestloading} 

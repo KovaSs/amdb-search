@@ -7,6 +7,19 @@
     display: block;
     margin-bottom: 16;
   }
+
+  // .ant-tabs-bar {
+  //   margin: 0
+  // }
+
+  .ant-page-header {
+    padding: 0;
+    .ant-page-header-heading-title {
+      font-weight: 600;
+      font-size: 1.3rem;
+    }
+  }
+
   .ant-collapse-header {
     padding: 5px 16px !important;
     background-color: #a3d3ff13;

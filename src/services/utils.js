@@ -155,10 +155,9 @@ export const htmlTransformFssp = str => {
   .replace(/  ,  ,  ,  , /g, '')
   // eslint-disable-next-line
   .replace(/,  ,/g, '')
-  .replace(/<div class="iss"/g, '<div font="1.35em "Segoe UI","Segoe WP","Segoe UI Regular","Segoe UI Cyrillic Regular","Helvetica Neue", Helvetica, Tahoma, Arial Unicode MS, sans-serif"')
   .replace(/<tr class=" "/g, '<tr style="text-align: center;"')
   .replace(/<td class="first"/g, '<td style="text-align: center;padding-bottom: 5px;"')
-  // .replace(/<table/g, '<table style="font-size: 8pt;"')
+  .replace(/<table/g, '<table style="font-size: 9pt;"')
   .replace(/<td class=""/g, '<td style="text-align: center;padding-bottom: 5px;"')
 }
 
@@ -290,6 +289,19 @@ class TransformData {
     if(clonePrevData.arbiter.other.length) {
       clonePrevData.arbiter_other = clonePrevData.arbiter.other
     }
+    return clonePrevData
+  }
+
+  _stop_lists = (prevData, lists, id) => {
+    console.log("%cSTOP-LISTS", "background-color: red", lists)
+    const clonePrevData = cloneDeep(prevData);
+    clonePrevData.heads.map(item => {
+      if(item.id === id) {
+        item.timeRequest = Date.now()
+        item.stop_lists = lists
+      }
+      return item
+    })
     return clonePrevData
   }
 

@@ -18,6 +18,17 @@ const styleCss = {
       backgroundColor: "#fff2e8",
       color: "#fa541c",
       boxShadow: "0 0 0 1px #ffbb96 inset"
+    },
+    red: {
+      backgroundColor: "rgb(255, 241, 240)",
+      color: "#f5222d",
+      boxShadow: "0 0 0 1px #ffa39e inset"
+    }
+  },
+  stopList: {
+    title: {
+      color: "red",
+      fontWeight: 500
     }
   }
 }
@@ -25,9 +36,9 @@ const styleCss = {
 /** Рендеринг header title физического лица */
 const LeaderHeader = props => {
   const { 
-    item: {first_name, last_name, middle_name, position, ActualDate, inn, organisation}, 
+    item: {first_name, last_name, middle_name, position, ActualDate, inn, organisation, stop_lists}, 
     companyName,
-    croinformRes,
+    croinformRes = {},
     userSelected : {FirstName, MiddleName, SurName, inn: INN }
   } = props
 
@@ -40,10 +51,8 @@ const LeaderHeader = props => {
   }
 
   const renderStopListInfo = (arr =[]) => {
-    if(!croinformRes) return 
     const vector = croinformRes.vector ? croinformRes.vector : []
     const lists = croinformRes.lists ? croinformRes.lists : []
-    // const lists = croinformRes.lists ? croinformRes.lists : []
     if(vector.length) {
       const content = <div style={styleCss.popover}>{vector.map((item, index) => <div key={index} >{item}</div>)}</div>
       arr.push(
@@ -64,6 +73,38 @@ const LeaderHeader = props => {
         </Popover>
       )
     }
+
+    try {
+      const stopLists = stop_lists ? stop_lists : []
+      if(stopLists.length) {
+        const content = 
+          <div style={styleCss.popover}>
+            {
+              stopLists.map((item, index) => 
+                <div key={index} >
+                  { item.rows.map((list, i) =>
+                    <div key={i}>
+                      <label style={styleCss.stopList.title}> {`${list.HOW}`} </label>
+                      <label> {`( ${list.comment} )`} </label>
+                    </div>
+                    )
+                  }
+                </div>
+              )
+            }
+          </div>
+        arr.push(
+          <Popover key="stop-lists" title="Найден в стоп-листах" content={content} trigger="hover" >
+            <Badge count={stopLists.length} offset={[-9,1]} style={styleCss.bange.red}>
+              <Tag color="red" > Стоп-листы </Tag> 
+            </Badge>
+          </Popover>
+        )
+      }
+    } catch (error) {
+      console.log('Stop lists', error)
+    }
+
     return arr
   }
 
