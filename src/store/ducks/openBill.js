@@ -1,24 +1,19 @@
 import { Record, Map } from 'immutable'
 import { createSelector } from 'reselect'
 import { all, put, call, select, spawn, takeEvery } from 'redux-saga/effects'
-import { trasform, getShortCompName, getLists } from "../../services/utils"
+import { trasform, getShortCompName } from "../../services/utils"
 import { companyRes } from '../mock'
 import { 
   getLoadCompanyInfo,
-  getStopListFlBirthdate,
   getAffilatesList,
-  getStopListFlInn,
-  // getBlackStopListFlInn,
   getDigestList,
   getAddRiskFactor,
   getIdentifyUser,
   getDeleteRiskFactor,
   getIdentifyUserInfo,
   getRequestAffiliatesUl,
-  getStopListFlPassport,
-  getBlackStopListFlPassport,
   getFsspInfo,
-  getBlackStopListFlBirthdate
+  getBlackStopList
 } from '../../services/api'
 
 /* Mock данные */
@@ -42,7 +37,7 @@ export const ADD_USER_TO_CHECK_LIST = `${prefix}/ADD_USER_TO_CHECK_LIST`
 export const GET_AFFILATES_LIST = `${prefix}/GET_AFFILATES_LIST`
 export const GET_AFFILATES_UL = `${prefix}/GET_AFFILATES_UL`
 export const GET_STOP_LISTS_BIRTHDATE_FL = `${prefix}/GET_STOP_LISTS_BIRTHDATE_FL`
-export const GET_BLACK_STOP_LISTS_BIRTHDATE_FL = `${prefix}/GET_BLACK_STOP_LISTS_BIRTHDATE_FL`
+export const GET_BLACK_STOP_LISTS = `${prefix}/GET_BLACK_STOP_LISTS`
 export const GET_STOP_LISTS_PASSPORT_FL = `${prefix}/GET_STOP_LISTS_PASSPORT_FL`
 export const GET_STOP_LISTS_INN_FL = `${prefix}/GET_STOP_LISTS_INN_FL`
 export const LOAD_DIGEST_LIST = `${prefix}/LOAD_DIGEST_LIST`
@@ -73,6 +68,7 @@ const ReducerRecord = Record({
     digestList: false,
     addRistFactorInDigestList: false,
     deleteRistFactorInDigestList: false,
+    stopLists: new Map({}),
     fsspInfo: new Map({}),
     getAffilatesUl: new Map({}),
     identifyUser: new Map({}),
@@ -85,6 +81,7 @@ const ReducerRecord = Record({
     digestList: false,
     addRistFactorInDigestList: false,
     deleteRistFactorInDigestList: false,
+    stopLists: new Map({}),
     fsspInfo: new Map({}),
     getAffilatesUl: new Map({}),
     identifyUser: new Map({}),
@@ -233,19 +230,19 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
         .setIn(['requestLoading', 'deleteRistFactorInDigestList'], false)
         .setIn(['errors', 'deleteRistFactorInDigestList'], true)
 
-    case GET_BLACK_STOP_LISTS_BIRTHDATE_FL + START:
+    case GET_BLACK_STOP_LISTS + START:
       return state
-        .setIn(['requestLoading', 'blackStopListFlBirthdate', action.loading], true)
-        .setIn(['errors', 'blackStopListFlBirthdate', action.loading], false)
-    case GET_BLACK_STOP_LISTS_BIRTHDATE_FL + SUCCESS:
+        .setIn(['requestLoading', 'stopLists', action.loading], true)
+        .setIn(['errors', 'stopLists', action.loading], false)
+    case GET_BLACK_STOP_LISTS + SUCCESS:
       return state
-        .setIn(['stopLists', action.loading, "black", payload.birthdate], payload.stop_list)
-        .setIn(['requestLoading', 'blackStopListFlBirthdate', action.loading], false)
-        .setIn(['errors', 'blackStopListFlBirthdate', action.loading], false) 
-    case GET_BLACK_STOP_LISTS_BIRTHDATE_FL + FAIL:
+        .setIn(['stopLists', action.loading], payload.stop_list)
+        .setIn(['requestLoading', 'stopLists', action.loading], false)
+        .setIn(['errors', 'stopLists', action.loading], false) 
+    case GET_BLACK_STOP_LISTS + FAIL:
       return state
-        .setIn(['requestLoading', 'blackStopListFlBirthdate'], false)
-        .setIn(['errors', 'blackStopListFlBirthdate', action.loading], true)
+        .setIn(['requestLoading', 'stopLists', action.loading], false)
+        .setIn(['errors', 'stopLists', action.loading], true)
 
     case ADD_USER_TO_CHECK_LIST:
       return state
@@ -481,69 +478,28 @@ const loadStopListDataSaga = function * (action) {
   const user = storeState.heads.filter(item => item.id === action.loading)[0]
   yield spawn(getFsspInfoSaga, yield select(storeReqnum), action, user)
   // Стоп-листы
-  // yield spawn(getStopListFlPassportSaga, action.payload)
-  // yield spawn(getBlackStopListFlPassportSaga, action.payload)
-  // yield spawn(getStopListFlInnSaga, user, action.payload.INN)
-  // if(user.identifyInfo.birthday.length) {
-  //   yield all(user.identifyInfo.birthday.map(birthdate => {
-  //     if(birthdate) return spawn(getStopListFlBirthdateSaga, birthdate, user)
-  //     else return birthdate
-  //   }))
-  //   yield all(user.identifyInfo.birthday.map(birthdate => {
-  //     if(birthdate) return spawn(getBlackStopListFlBirthdateSaga, birthdate, user)
-  //     else return birthdate
-  //   }))
-  // }
+  yield spawn(getBlackStopListSaga, user, action.payload)
 }
 
 /* Поиск пользователя в стоп-листах по Дате рождения */
-const getStopListFlBirthdateSaga = function * (birthdate, user) {
+const getBlackStopListSaga = function * (user, action) {
+  console.log('getBlackStopListSaga', user, action)
   try {
     yield put({
-      type: GET_STOP_LISTS_BIRTHDATE_FL + START,
-      loading: `${user.id}-${birthdate}`
+      type: GET_BLACK_STOP_LISTS + START,
+      loading: user.id
     })
 
     /* Запрос данных о стоп-листах */
-    const res = yield call(getStopListFlBirthdate, user, birthdate)
+    const res = yield call(getBlackStopList, action)
 
-    const data = res.data
-    console.log("%cRES | GET STOP LISTS BIRTHDATE FL", "color:white; background-color: green; padding: 0 5px", res)
+    console.log("%cRES | GET BLACK STOP LISTS ", "color:white; background-color: green; padding: 0 5px", res)
 
-    yield put({
-      type: GET_STOP_LISTS_BIRTHDATE_FL + SUCCESS,
-      payload: {data},
-      loading: `${user.id}-${birthdate}`
-    })
-  } catch (err){
-    console.log('err', err)
-    yield put({
-      type: GET_STOP_LISTS_BIRTHDATE_FL + FAIL,
-      loading: `${user.id}-${birthdate}`
-    })
-  }
-}
-
-/* Поиск пользователя в стоп-листах по Дате рождения */
-const getBlackStopListFlBirthdateSaga = function * (birthdate, user) {
-  try {
-    yield put({
-      type: GET_BLACK_STOP_LISTS_BIRTHDATE_FL + START,
-      loading: `${user.id}-${birthdate}`
-    })
-
-    /* Запрос данных о стоп-листах */
-    const res = yield call(getBlackStopListFlBirthdate, user, birthdate)
-
-    const data = res.response
-    console.log("%cRES | GET BLACK STOP LISTS BIRTHDATE FL", "color:white; background-color: green; padding: 0 5px", res)
-
-    if(JSON.stringify(data) !== '{}') {
-      const stop_list = getLists(res.response)
-      console.log("%cSTOP-LISTS", "background-color: red", stop_list)
+    if(JSON.stringify(res) !== '{}') {
+      console.log("%cSTOP-LISTS", "background-color: red", res)
       yield put({
-        type: GET_BLACK_STOP_LISTS_BIRTHDATE_FL + SUCCESS,
-        payload: {stop_list, birthdate},
+        type: GET_BLACK_STOP_LISTS + SUCCESS,
+        payload: {black_stop_list: res},
         loading: user.id
       })
     }
@@ -551,92 +507,8 @@ const getBlackStopListFlBirthdateSaga = function * (birthdate, user) {
   } catch (err){
     console.log('err', err)
     yield put({
-      type: GET_BLACK_STOP_LISTS_BIRTHDATE_FL + FAIL,
+      type: GET_BLACK_STOP_LISTS + FAIL,
       loading: user.id
-    })
-  }
-}
-
-/* Поиск пользователя в белой БД (стоп-листы) по паспорту */
-const getStopListFlPassportSaga = function * (user) {
-  try {
-    yield put({
-      type: GET_STOP_LISTS_PASSPORT_FL + START,
-      loading: `${user.id}-${user.Seria} ${user.Number}`
-    })
-
-    /* Запрос данных о стоп-листах */
-    const res = yield call(getStopListFlPassport, user)
-    
-    const data = res.data
-    console.log("%cRES | GET STOP LISTS PASSPORT FL", "color:white; background-color: green; padding: 0 5px", res)
-
-    yield put({
-      type: GET_STOP_LISTS_PASSPORT_FL + SUCCESS,
-      payload: {data},
-      loading: `${user.id}-${user.Seria} ${user.Number}`
-    })
-  } catch (err){
-    console.log('err', err)
-    yield put({
-      type: GET_STOP_LISTS_PASSPORT_FL + FAIL,
-      loading: `${user.id}-${user.Seria} ${user.Number}`
-    })
-  }
-}
-
-/* Поиск пользователя в скрытой БД (стоп-листы) по паспорту */
-const getBlackStopListFlPassportSaga = function * (user) {
-  try {
-    yield put({
-      type: GET_STOP_LISTS_PASSPORT_FL + START,
-      loading: `${user.id}-${user.Seria} ${user.Number}`
-    })
-
-    /* Запрос данных в скрытую БД (стоп-листы) */
-    const res = yield call(getBlackStopListFlPassport, user)
-    
-    const data = res.data
-    console.log("%cRES | GET STOP LISTS PASSPORT FL", "color:white; background-color: green; padding: 0 5px", res)
-
-    yield put({
-      type: GET_STOP_LISTS_PASSPORT_FL + SUCCESS,
-      payload: {data},
-      loading: `${user.id}-${user.Seria} ${user.Number}`
-    })
-  } catch (err){
-    console.log('err', err)
-    yield put({
-      type: GET_STOP_LISTS_PASSPORT_FL + FAIL,
-      loading: `${user.id}-${user.Seria} ${user.Number}`
-    })
-  }
-}
-
-/* Поиск пользователя в стоп-листах по паспорту */
-const getStopListFlInnSaga = function * (user, inn) {
-  try {
-    yield put({
-      type: GET_STOP_LISTS_INN_FL + START,
-      loading: `${user.id}-${inn}`
-    })
-
-    /* Запрос данных о стоп-листах */
-    const res = yield call(getStopListFlInn, inn)
-    
-    const data = res.data
-    console.log("%cRES | GET STOP LISTS PASSPORT FL", "color:white; background-color: green; padding: 0 5px", res)
-
-    yield put({
-      type: GET_STOP_LISTS_INN_FL + SUCCESS,
-      payload: {data},
-      loading: `${user.id}-${inn}`
-    })
-  } catch (err){
-    console.log('err', err)
-    yield put({
-      type: GET_STOP_LISTS_INN_FL + FAIL,
-      loading: `${user.id}-${inn}`
     })
   }
 }
@@ -848,10 +720,6 @@ const identifyUserSaga = function * (action) {
 const identifyUserInfoSaga = function * (action) {
   const reqnum = state => state[moduleName].get('reqnum')
   const storeReqnum = yield select(reqnum)
-  const companyState = state => state[moduleName].get('companyResponse')
-  const storeOgrn = yield select(companyState)
-
-  console.log('action', action)
 
   try {
     yield put({
@@ -860,7 +728,7 @@ const identifyUserInfoSaga = function * (action) {
     })
 
     /* Переключение на mock данные */
-    const res = yield call(getIdentifyUserInfo, storeReqnum, action, storeOgrn)
+    const res = yield call(getIdentifyUserInfo, storeReqnum, action)
 
     /** Mock данные о Идентификационных данных */
     // yield delay(2000); const res = {ip: true, data: dataMock.ipCroinformMock.data, reqnum: 666}

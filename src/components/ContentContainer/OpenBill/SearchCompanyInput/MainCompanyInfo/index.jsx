@@ -94,7 +94,7 @@ class MainCompanyInfo extends Component {
       digets, 
       addRiskFactor, 
       deleteRiskFactor, 
-      companyResponse: { fns, sanctions, isponlit_proizvodstva, leaders_list }, 
+      companyResponse: { fns, sanctions, isponlit_proizvodstva, leaders_list, name }, 
       isIp 
     } = this.props;
     const { showRisk, showHistory, error } = this.state
@@ -106,6 +106,14 @@ class MainCompanyInfo extends Component {
             { isIp ? this.renderIpInfo() : this.renderNotIpInfo() }
             <Col span={3} style={{textAlign : "center", minHeight: "1rem"}}>
               <div className="show-btn-drawer-count">
+                  <Button 
+                    size="small" 
+                    icon="ie" 
+                    href={`https://www.google.com/search?hl=ru&as_oq=отзывы+криминал+компромат+обыск+уголовное+мошенник+обнал+откат+взятка+жулик+нарушения+претензии+конфликт+подан-иск+преследование+расследование+разбирательство+следствие+прокуратура+МВД+ФСБ+полиция+хищение+отмывание&as_q=${name}`}
+                    target="_blank"
+                    title="Поиск негативной информации в интернетe" 
+                    style={{color: "#52c41a", marginRight: ".5rem"}}
+                  />
                 <Badge 
                   count={fns.length + sanctions.length + isponlit_proizvodstva.length} 
                   offset={[-10, 0]} 

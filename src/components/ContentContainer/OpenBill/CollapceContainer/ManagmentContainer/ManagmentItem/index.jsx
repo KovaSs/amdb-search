@@ -141,7 +141,7 @@ export class ManagmentItem extends PureComponent {
       const _close = () => console.log( `Notification was closed. Either the close button was clicked or duration time elapsed.`)
       notification['error']({
         key,
-        message: `Ошибка получения данных`,
+        message: `Ресурс не отвечает`,
         description: err.message,
         duration: 4,
         onClose: _close,
@@ -154,7 +154,7 @@ export class ManagmentItem extends PureComponent {
 
   getCroinformIdentifyRequest = e => {
     e.stopPropagation();
-    const { userSelected, parseAddress } = this.state;
+    const { userSelected, parseAddress, user: userState } = this.state;
     const { item, actionGetUserCroinformInfo } = this.props;
     const user = {
       INN: userSelected.inn ? userSelected.inn : item.inn,
@@ -165,14 +165,14 @@ export class ManagmentItem extends PureComponent {
       DateOfBirth: userSelected.birthday, 
       Seria: parsingPassport(userSelected.passport).Seria,
       Number: parsingPassport(userSelected.passport).Number,
-
       RegionExp: parseAddress.RegionExp, 
       CityExp: parseAddress.CityExp, 
       StreetExp: parseAddress.StreetExp, 
       HouseExp: parseAddress.HouseExp, 
       BuildExp: parseAddress.BuildExp, 
       BuildingExp: parseAddress.BuildingExp, 
-      FlatExp: parseAddress.FlatExp, 
+      FlatExp: parseAddress.FlatExp,
+      DateOfBirthArr: userState.birthday
     }
     actionGetUserCroinformInfo(user, item.id)
   }

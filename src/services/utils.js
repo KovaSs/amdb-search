@@ -112,9 +112,12 @@ export const getTimeAndDate = data => {
 return moment(data).format('DD.MM.YYYY h:mm:ss')
 }
 
-export const getUSDate = data => {
-  const dateArr = data.split(".")
-  return `${dateArr[2]}-${dateArr[1]}-${dateArr[0]}`
+export const getUSDate = arr => {
+  const dateArrUs = arr.map(item => {
+    const dateArr = item.split(".")
+    return `${dateArr[2]}-${dateArr[1]}-${dateArr[0]}`
+  })
+  return dateArrUs
 }
 
 /** Преобразование имени кампании к укороченной версии */

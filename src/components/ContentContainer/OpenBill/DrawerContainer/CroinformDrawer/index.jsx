@@ -76,7 +76,7 @@ const CroinformDrawer = props => {
 
     return (
       <Drawer
-        width={"60%"}
+        width={"55%"}
         placement="right"
         closable={false}
         onClose={onClose}
