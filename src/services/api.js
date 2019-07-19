@@ -72,6 +72,33 @@ export const getBlackStopList = action => {
   })
 }
 
+/** Получение данных из белой БД (стоп-листы) */
+export const getWhiteStopList = action => {
+  return fetch(
+    `/cgi-bin/serg/0/6/9/reports/253/STOP_LIST_custom_search.pl`, 
+    { 
+      method: 'POST',
+      mode: 'cors',
+      credentials: 'include',
+      body : JSON.stringify({ 
+        type: 'fl',
+        method: 'bases',
+        surname: action.SurName,
+        firstname: action.FirstName,
+        middlename: action.MiddleName,
+        series: action.Seria,
+        number: action.Number,
+        inn: action.INN,
+        birthdate: getUSDate(action.DateOfBirthArr)
+      }),
+    }
+  )
+  .then(res => {
+    if (res.ok) return res.json()
+    throw new TypeError("Данные о кампании не обновлены!")
+  })
+}
+
 /** Получение  данных  о риск факторах для дайджеста */
 export const getDigestList = reqnum => {
   return fetch(

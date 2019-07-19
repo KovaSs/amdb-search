@@ -1,4 +1,4 @@
-import { cloneDeep, assign, differenceBy, union, intersectionBy } from 'lodash';
+import { cloneDeep, assign, differenceBy, union, intersectionBy, concat } from 'lodash';
 import moment from 'moment'
 import { fieldsArr, fieldsArrIP } from "./fields";
 
@@ -166,6 +166,19 @@ export const htmlTransformFssp = str => {
   .replace(/<td class=""/g, '<td style="text-align: center;padding-bottom: 5px;"')
 }
 
+export const htmlEmpty = str => {
+  return str
+  .indexOf(/<span>Распечатать<\/span>/g, '')
+  // eslint-disable-next-line
+  .replace(/  ,  ,  ,  , /g, '')
+  // eslint-disable-next-line
+  .replace(/,  ,/g, '')
+  .replace(/<tr class=" "/g, '<tr style="text-align: center;"')
+  .replace(/<td class="first"/g, '<td style="text-align: center;padding-bottom: 5px;"')
+  .replace(/<table/g, '<table style="font-size: 9pt;"')
+  .replace(/<td class=""/g, '<td style="text-align: center;padding-bottom: 5px;"')
+}
+
 class TransformData {
   _transformAllData = inputData => {
     const Field = (search, title, data) => ({ search, title, data })
@@ -298,7 +311,7 @@ class TransformData {
         id: uuid(),
         middle_name,
         last_name, 
-        first_name, 
+        first_name,
         position, 
         inn, 
         ActualDate: date,
@@ -321,9 +334,10 @@ class TransformData {
     console.log("%cSTOP-LISTS", "background-color: red", lists)
     const clonePrevData = cloneDeep(prevData);
     clonePrevData.heads.map(item => {
+      console.log('item', item, item.stop_lists)
       if(item.id === id) {
         item.timeRequest = Date.now()
-        item.stop_lists = lists
+        item.stop_lists = item.stop_lists ? concat(item.stop_lists, lists) : concat([], lists)
       }
       return item
     })

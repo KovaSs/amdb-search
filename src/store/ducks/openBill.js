@@ -13,7 +13,8 @@ import {
   getIdentifyUserInfo,
   getRequestAffiliatesUl,
   getFsspInfo,
-  getBlackStopList
+  getBlackStopList,
+  getWhiteStopList
 } from '../../services/api'
 
 /* Mock данные */
@@ -36,10 +37,8 @@ export const GET_CROINFORM_USER_INFO = `${prefix}/GET_CROINFORM_USER_INFO`
 export const ADD_USER_TO_CHECK_LIST = `${prefix}/ADD_USER_TO_CHECK_LIST`
 export const GET_AFFILATES_LIST = `${prefix}/GET_AFFILATES_LIST`
 export const GET_AFFILATES_UL = `${prefix}/GET_AFFILATES_UL`
-export const GET_STOP_LISTS_BIRTHDATE_FL = `${prefix}/GET_STOP_LISTS_BIRTHDATE_FL`
 export const GET_BLACK_STOP_LISTS = `${prefix}/GET_BLACK_STOP_LISTS`
-export const GET_STOP_LISTS_PASSPORT_FL = `${prefix}/GET_STOP_LISTS_PASSPORT_FL`
-export const GET_STOP_LISTS_INN_FL = `${prefix}/GET_STOP_LISTS_INN_FL`
+export const GET_WHITE_STOP_LISTS = `${prefix}/GET_WHITE_STOP_LISTS`
 export const LOAD_DIGEST_LIST = `${prefix}/LOAD_DIGEST_LIST`
 export const ADD_RISK_FACTOR_IN_DIGEST_LIST = `${prefix}/ADD_RISK_FACTOR_IN_DIGEST_LIST`
 export const DELETE_RISK_FACTOR_IN_DIGEST_LIST = `${prefix}/DELETE_RISK_FACTOR_IN_DIGEST_LIST`
@@ -240,6 +239,20 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
         .setIn(['requestLoading', 'stopLists', action.loading], false)
         .setIn(['errors', 'stopLists', action.loading], false) 
     case GET_BLACK_STOP_LISTS + FAIL:
+      return state
+        .setIn(['requestLoading', 'stopLists', action.loading], false)
+        .setIn(['errors', 'stopLists', action.loading], true)
+
+    case GET_WHITE_STOP_LISTS + START:
+      return state
+        .setIn(['requestLoading', 'stopLists', action.loading], true)
+        .setIn(['errors', 'stopLists', action.loading], false)
+    case GET_WHITE_STOP_LISTS + SUCCESS:
+      return state
+        .set('companyResponse', payload)
+        .setIn(['requestLoading', 'stopLists', action.loading], false)
+        .setIn(['errors', 'stopLists', action.loading], false) 
+    case GET_WHITE_STOP_LISTS + FAIL:
       return state
         .setIn(['requestLoading', 'stopLists', action.loading], false)
         .setIn(['errors', 'stopLists', action.loading], true)
@@ -479,12 +492,11 @@ const loadStopListDataSaga = function * (action) {
   yield spawn(getFsspInfoSaga, yield select(storeReqnum), action, user)
   // Стоп-листы
   yield spawn(getBlackStopListSaga, user, action.payload)
+  yield spawn(getWhiteStopListSaga, user, action.payload)
 }
 
 /* Поиск пользователя в стоп-листах по Дате рождения */
 const getBlackStopListSaga = function * (user, action) {
-  const store = state => state[moduleName].get('companyResponse')
-  const storeCR = yield select(store)
   try {
     yield put({
       type: GET_BLACK_STOP_LISTS + START,
@@ -497,7 +509,8 @@ const getBlackStopListSaga = function * (user, action) {
     console.log("%cRES | GET BLACK STOP LISTS ", "color:white; background-color: green; padding: 0 5px", res)
 
     if(JSON.stringify(res.Response  !== '[]' || res.Status !== "Error")) {
-      const newStore = trasform._stop_lists(storeCR, res.Response, user.id)
+      const store = state => state[moduleName].get('companyResponse')
+      const newStore = trasform._stop_lists(yield select(store), res.Response, user.id)
 
       yield put({
         type: GET_BLACK_STOP_LISTS + SUCCESS,
@@ -510,6 +523,40 @@ const getBlackStopListSaga = function * (user, action) {
     console.log('err', err)
     yield put({
       type: GET_BLACK_STOP_LISTS + FAIL,
+      loading: user.id
+    })
+  }
+}
+
+/** Получение данных из белой БД (стоп-листы) */
+const getWhiteStopListSaga = function * (user, action) {
+  
+  try {
+    yield put({
+      type: GET_WHITE_STOP_LISTS + START,
+      loading: user.id
+    })
+
+    /* Запрос данных о стоп-листах */
+    const res = yield call(getWhiteStopList, action)
+
+    console.log("%cRES | GET WHITE STOP LISTS ", "color:white; background-color: green; padding: 0 5px", res)
+
+    if(JSON.stringify(res.Response  !== '[]' || res.Status !== "Error")) {
+      const store = state => state[moduleName].get('companyResponse')
+      const newStore = trasform._stop_lists(yield select(store), res.Response, user.id)
+
+      yield put({
+        type: GET_WHITE_STOP_LISTS + SUCCESS,
+        payload: newStore,
+        loading: user.id
+      })
+    }
+
+  } catch (err){
+    console.log('err', err)
+    yield put({
+      type: GET_WHITE_STOP_LISTS + FAIL,
       loading: user.id
     })
   }

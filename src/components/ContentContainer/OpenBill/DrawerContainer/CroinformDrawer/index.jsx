@@ -16,7 +16,11 @@ const styleCss = {
     text: {
       color: "red"
     }
-  }
+  },
+  internetBtn : {
+    color: "#0e75fdfd",
+    marginRight: ".5rem"
+  },
 }
 
 const CroinformDrawer = props => {
@@ -24,7 +28,6 @@ const CroinformDrawer = props => {
   const { Item: DescriptionsItem } = Descriptions
   const { TabPane } = Tabs
   const { Panel } = Collapse
-  console.log('%cUSER', "background-color: red;", user)
 
   const styledIdentifyRes = user.hasOwnProperty('identifyInfo') ? htmlTransform(user.identifyInfo.html) : ""
   const styledfsspInfo = fsspInfo ? htmlTransformFssp(fsspInfo) : ""
@@ -80,7 +83,6 @@ const CroinformDrawer = props => {
   }
 
   const renderDtSearch = () => {
-    console.log('userSelected', userSelected)
     return (
       <DescriptionsItem key="lists" label="Поисковые запросы" span={1} >
         {[
@@ -88,10 +90,10 @@ const CroinformDrawer = props => {
             {`${userSelected.SurName} w/5 ${userSelected.FirstName} w/5 ${userSelected.MiddleName}`}
           </div>,
           <div key="search-word-2">
-            {`${userSelected.SurName} w/5 ${userSelected.FirstName} w/5 ${userSelected.MiddleName} w/25 ${userSelected.birthday ? userSelected.birthday : ''}`}
+            {`${userSelected.SurName} w/5 ${userSelected.FirstName} w/5 ${userSelected.MiddleName} w/25 ${userSelected.birthday ? userSelected.birthday.split(".")[2] : ''}`}
           </div>,
           <div key="search-word-3">
-            {`${userSelected.SurName} w/25 ${userSelected.birthday ? userSelected.birthday : ''} w/55 ${userSelected.StreetExp}`}
+            {`${userSelected.SurName} w/25 ${userSelected.birthday ? userSelected.birthday.split(".")[2] : ''} w/55 ${userSelected.StreetExp}`}
           </div>,
           <div key="search-word-4" >
             {`${userSelected.SurName} w/55 ${userSelected.StreetExp}`}
@@ -167,8 +169,8 @@ const CroinformDrawer = props => {
               icon="ie" 
               href={`https://www.google.com/search?hl=ru&as_oq=отзывы+криминал+компромат+обыск+уголовное+мошенник+обнал+откат+взятка+жулик+нарушения+претензии+конфликт+подан-иск+преследование+расследование+разбирательство+следствие+прокуратура+МВД+ФСБ+полиция+хищение+отмывание&as_q=${user.fio}`}
               target="_blank"
-              title="Поиск негативной информации в интернетe" 
-              style={{color: "#52c41a", marginRight: ".5rem"}}
+              title="Поиск негативной информации в интернетe"
+              style={styleCss.internetBtn}
             />
           ]}
         >
