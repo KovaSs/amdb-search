@@ -103,7 +103,7 @@ const RenderEditedLeader = props => {
               stopLists.map((item, index) => {
                 return (
                   <div key={index}>
-                    <label style={styleCss.stopList.header}> База данных:{` ${item.ID_base ? item.ID_base : ""} Таблица: ${item.ID_table ? item.ID_table : ""}`}</label>
+                    <label style={styleCss.stopList.header}> {` ${item.thema ? item.thema : ""} ${item.ID_base ? `( ${item.ID_base} ${item.ID_table ? `/ ${item.ID_table} ` : ""})` : ""}`}</label>
                     { item.rows.map((list, i) =>
                       <div key={i}>
                         { list.HOW && <>
@@ -112,6 +112,8 @@ const RenderEditedLeader = props => {
                         }
                         { list.field_000 &&  <label style={styleCss.stopList.text}> {`${list.field_000}`} </label> }
                         { list.text1 &&  <label style={styleCss.stopList.text}> {`${list.text1}`} </label> }
+                        { list.passport &&  <label style={styleCss.stopList.text}> {`Паспорт: ${list.passport}`} </label> }
+                        { list.comment &&  <label style={styleCss.stopList.text}> {`${list.comment}`} </label> }
                       </div>
                       )
                     }
@@ -121,7 +123,7 @@ const RenderEditedLeader = props => {
             }
           </div>
         arr.push(
-          <Popover key="stop-lists" title="Найден в стоп-листах" content={content} trigger="hover" >
+          <Popover key="stop-lists" title={`Найден в ${stopLists.length} базах стоп-листов`} content={content} trigger="hover" >
             <Badge count={stopLists.length} offset={[-9,1]} style={styleCss.bange.red}>
               <Tag color="red" > Стоп-листы </Tag> 
             </Badge>

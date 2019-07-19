@@ -229,7 +229,7 @@ class TransformData {
       }
       return item
     })
-    console.table(clgData)
+    // console.table(clgData)
     return fullOrganistionInfo
   }
 
@@ -331,10 +331,8 @@ class TransformData {
   }
 
   _stop_lists = (prevData, lists, id) => {
-    console.log("%cSTOP-LISTS", "background-color: red", lists)
     const clonePrevData = cloneDeep(prevData);
     clonePrevData.heads.map(item => {
-      console.log('item', item, item.stop_lists)
       if(item.id === id) {
         item.timeRequest = Date.now()
         item.stop_lists = item.stop_lists ? concat(item.stop_lists, lists) : concat([], lists)
@@ -369,7 +367,7 @@ class TransformData {
       }
       return item
     })
-    console.table(clgData)
+    // console.table(clgData)
     const filteredManagementInfo = fullOrganistionInfo.filter(item => (
       item.id === "befenicials" || 
       item.id === "founders_fl" || 
@@ -465,7 +463,7 @@ class TransformData {
       console.log('DIFFERENSE',intersectionBy(clonePrevData.heads, shareHolders_fl, 'fio'))
       clonePrevData.heads = union(clonePrevData.heads, differenceBy(shareHolders_fl, clonePrevData.heads, 'fio'))
     }
-    console.table(clgData)
+    // console.table(clgData)
     return clonePrevData
   }
 
@@ -557,7 +555,7 @@ class TransformData {
       }
       return item
     })
-    console.table(clgRiskData)
+    // console.table(clgRiskData)
     return riskOrganistionInfo
   }
 
