@@ -96,7 +96,7 @@ return {
 }
 }
 
-/** Генерация Id ключей */
+/** Генерация uuId ключей */
 // eslint-disable-next-line
 export const sumTrans = str => str.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1' + '\u200A')
 /** Генерация Id ключей */
@@ -104,14 +104,15 @@ export const sumTrans = str => str.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1' +
 export const uuid = ()=> ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15 >> c/4).toString(16));
 
 /** Преобразование даты к формату DD.MM.YYYY */
-export const getDate = data => {
-return moment(data).format('DD.MM.YYYY')
-}
+export const getDate = data =>  moment(data).format('DD.MM.YYYY')
 
-export const getTimeAndDate = data => {
-return moment(data).format('DD.MM.YYYY h:mm:ss')
-}
+/** Поличение текущей даты в формате DD.MM.YYYY */
+export const getNowDate = () =>  new Date(Date.now()).toLocaleString().split(", ")[0]
 
+/** Преобразование даты к формату DD.MM.YYYY h:mm:ss */
+export const getTimeAndDate = data =>  moment(data).format('DD.MM.YYYY h:mm:ss')
+
+/** Преобразование даты к формату YYYY-MM-DD */
 export const getUSDate = arr => {
   const dateArrUs = arr.map(item => {
     const dateArr = item.split(".")
@@ -264,7 +265,6 @@ class TransformData {
       if(clonePrevData.arbiter.other.length) {
         clonePrevData.arbiter_other = clonePrevData.arbiter.other
       }
-      console.log('%cclonePrevData', "background-color: red;", clonePrevData)
       return clonePrevData
     } catch (error) {
       console.log('Ошибка в преобразовании company_type', error)
@@ -293,7 +293,22 @@ class TransformData {
       const first_name = fioArr.pop()
       const last_name = String(fioArr)
       const position = "Собственник"
-      return {middle_name, last_name, first_name, position, inn, ActualDate: date}
+      return {
+        fio,
+        id: uuid(),
+        middle_name,
+        last_name, 
+        first_name, 
+        position, 
+        inn, 
+        ActualDate: date,
+        timeRequest: Date.now(),
+        organisation: {
+          name: "Индивидуальный предприниматель",
+          inn: clonePrevData.inn ? clonePrevData.inn : "",
+          ogrn: clonePrevData.ogrn ? clonePrevData.ogrn : ""
+        }
+      }
     }
     clonePrevData.heads = [addHeds(clonePrevData.full_name, clonePrevData.inn, clonePrevData.registration_date)]
     if(clonePrevData.arbiter.other.length) {

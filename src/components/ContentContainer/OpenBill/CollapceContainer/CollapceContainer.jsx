@@ -47,8 +47,8 @@ const CollapceContainer = props => {
         <Button
           title="Добавить еще..."
           size="small"
-          icon={"user-add"}
-          style={{color: "rgba(14, 117, 253, 0.992)"}}
+          icon={addCheckUser ? "close-circle" : "user-add"}
+          style={{color: addCheckUser ? "red" : "rgba(14, 117, 253, 0.992)"}}
           onClick={e => addUser(e)}
         />
       </span>

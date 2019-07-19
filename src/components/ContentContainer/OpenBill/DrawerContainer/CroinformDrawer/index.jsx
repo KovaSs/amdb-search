@@ -20,10 +20,11 @@ const styleCss = {
 }
 
 const CroinformDrawer = props => {
-  const {onClose, visible, croinformRes, loading, user, user: { stop_lists =[] }, fsspInfo, fssploading, userSelected} = props
+  const {onClose, visible, croinformRes, loading, user, user: { stop_lists = [] }, fsspInfo, fssploading, userSelected} = props
   const { Item: DescriptionsItem } = Descriptions
   const { TabPane } = Tabs
   const { Panel } = Collapse
+  console.log('%cUSER', "background-color: red;", user)
 
   const styledIdentifyRes = user.hasOwnProperty('identifyInfo') ? htmlTransform(user.identifyInfo.html) : ""
   const styledfsspInfo = fsspInfo ? htmlTransformFssp(fsspInfo) : ""

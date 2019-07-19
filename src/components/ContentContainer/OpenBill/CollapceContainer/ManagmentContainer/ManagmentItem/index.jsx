@@ -645,7 +645,7 @@ export class ManagmentItem extends PureComponent {
           {item.middle_name && this.renderFoulderFlItem(item, id, searchData)}
         </Collapse>
         <CroinformDrawer 
-          user={item.id}
+          user={item}
           userSelected={{...userSelected, ...parseAddress}}
           fsspInfo={fsspInfo}
           fssploading={fssploading}

@@ -13,6 +13,16 @@ import {
 } from "../../../../../store/ducks/openBill";
 import "./main-organisation-info.scss";
 
+const styleCss = {
+  internetBtn : {
+    color: "#0e75fdfd",
+    marginRight: ".5rem"
+  },
+  companyHistory : {
+    backgroundColor : "#52c41a"
+  }
+}
+
 class MainCompanyInfo extends Component {
   state = {
     showRisk: false,
@@ -94,7 +104,7 @@ class MainCompanyInfo extends Component {
       digets, 
       addRiskFactor, 
       deleteRiskFactor, 
-      companyResponse: { fns, sanctions, isponlit_proizvodstva, leaders_list, name }, 
+      companyResponse: { fns, sanctions, isponlit_proizvodstva, leaders_list, name, full_name }, 
       isIp 
     } = this.props;
     const { showRisk, showHistory, error } = this.state
@@ -109,10 +119,13 @@ class MainCompanyInfo extends Component {
                 <Button 
                   size="small" 
                   icon="ie" 
-                  href={`https://www.google.com/search?hl=ru&as_oq=отзывы+криминал+компромат+обыск+уголовное+мошенник+обнал+откат+взятка+жулик+нарушения+претензии+конфликт+подан-иск+преследование+расследование+разбирательство+следствие+прокуратура+МВД+ФСБ+полиция+хищение+отмывание&as_q=${name}`}
+                  href={ isIp ?
+                    `https://www.google.com/search?hl=ru&as_oq=отзывы+криминал+компромат+обыск+уголовное+мошенник+обнал+откат+взятка+жулик+нарушения+претензии+конфликт+подан-иск+преследование+расследование+разбирательство+следствие+прокуратура+МВД+ФСБ+полиция+хищение+отмывание&as_q=${full_name}` :
+                    `https://www.google.com/search?hl=ru&as_oq=отзывы+криминал+компромат+обыск+уголовное+мошенник+обнал+откат+взятка+жулик+нарушения+претензии+конфликт+подан-иск+преследование+расследование+разбирательство+следствие+прокуратура+МВД+ФСБ+полиция+хищение+отмывание&as_q=${name}`
+                  }
                   target="_blank"
                   title="Поиск негативной информации в интернетe" 
-                  style={{color: "#52c41a", marginRight: ".5rem"}}
+                  style={styleCss.internetBtn}
                 />
                 <Badge 
                   count={fns.length + sanctions.length + isponlit_proizvodstva.length} 
@@ -130,7 +143,7 @@ class MainCompanyInfo extends Component {
                 { !isIp &&
                   <Badge 
                     count={leaders_list.length} 
-                    style={{backgroundColor : "#52c41a"}} 
+                    style={styleCss.companyHistory} 
                     overflowCount={99}
                   >
                     <Button 

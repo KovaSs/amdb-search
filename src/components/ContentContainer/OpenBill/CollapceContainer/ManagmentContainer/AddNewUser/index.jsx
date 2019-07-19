@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { Collapse, Icon, Descriptions, Button, Input} from "antd"
-import { getDate } from "../../../../../../services/utils";
+import { uuid, getNowDate } from "../../../../../../services/utils";
 
 class AddNewUser extends Component {
   state = {
@@ -11,7 +11,11 @@ class AddNewUser extends Component {
       last_name: "",
       middle_name: "",
       position: "",
-      organisation: ""
+    },
+    organisation: {
+      org_name: "",
+      org_inn: "",
+      org_ogrn: "",
     }
   };
 
@@ -25,16 +29,28 @@ class AddNewUser extends Component {
   renderFoulderFlItem = () => {
     const { Item: DescriptionsItem } = Descriptions;
     const { onSave, addUser} = this.props
-    const { user } = this.state
+    const { user, organisation } = this.state
     const { Panel } = Collapse;
-    const id = "add-new-descr-items";
-    const key = "add-user";
+    const id = "add-new-descr-items"
+    const key = "add-user"
 
     const BtnExtra = ({user}) => {
-      const isUserTrue = user.first_name && user.inn && user.first_name && user.last_name && user.middle_name && user.position && user.organisation
+      const isUserTrue = user.first_name && user.inn && user.first_name && user.last_name && user.middle_name && user.position && organisation.org_name
       const addUserInCheckList = e => {
+        console.log('date', getNowDate())
         e.stopPropagation();
-        addUser({...user, ActualDate: getDate(Date.now())})
+        addUser({
+          ...user,
+          id: uuid(),
+          fio: `${user.last_name} ${user.first_name} ${user.middle_name}`,
+          ActualDate: Date.now(),
+          timeRequest: Date.now(),
+          organisation: {
+            name: organisation.org_name,
+            inn: organisation.org_inn,
+            ogrn: organisation.org_ogrn
+          }
+        })
         onSave(false)
       };
 
@@ -56,8 +72,10 @@ class AddNewUser extends Component {
     const handleChangeLastName = e => { const value = e.target.value; return this.setState(({ user }) => ({user: { ...user, last_name: value}})) }
     const handleChangeFirstName = e => { const value = e.target.value; return this.setState(({ user }) => ({user: { ...user, first_name: value}})) }
     const handleChangeMiddletName = e => { const value = e.target.value; return this.setState(({ user }) => ({user: { ...user, middle_name: value}})) }
-    const handleChangePosition = e => { const value = e.target.value; return this.setState(({ user }) => ({user: { ...user, position: value}})) }
-    const handleChangeOrganisation = e => { const value = e.target.value; return this.setState(({ user }) => ({user: { ...user, organisation: value}})) }
+    const handleChangePosition = e => { const value = e.target.value; return this.setState(({ user }) => ({user: { ...user, position: [value]}})) }
+    const handleChangeOrgName = e => { const value = e.target.value; return this.setState(({ organisation }) => ({organisation: { ...organisation, org_name: value}})) }
+    const handleChangeOrgInn = e => { const value = e.target.value; return this.setState(({ organisation }) => ({organisation: { ...organisation, org_inn: value}})) }
+    const handleChangeOrgOgrn = e => { const value = e.target.value; return this.setState(({ organisation }) => ({organisation: { ...organisation, org_ogrn: value}})) }
 
     return (
       <Panel
@@ -74,19 +92,21 @@ class AddNewUser extends Component {
         >
           <DescriptionsItem key={`${id}-${key}-1`} id={`${id}-${key}`} label="ФИО" span={1} >
             <>
-              <Input onChange={handleChangeLastName} placeholder="Фамилия" style={{ width: 150 }} size="small"/>
-              <Input onChange={handleChangeFirstName} placeholder="Имя" style={{ width: 150 }} size="small"/>
-              <Input onChange={handleChangeMiddletName} placeholder="Отчество" style={{ width: 150 }} size="small"/>
+              <Input onChange={handleChangeLastName}  placeholder="Фамилия" style={{ width: 150 }} size="small"/>
+              <Input onChange={handleChangeFirstName}  placeholder="Имя" style={{ width: 150 }} size="small"/>
+              <Input onChange={handleChangeMiddletName}  placeholder="Отчество" style={{ width: 150 }} size="small"/>
             </>
           </DescriptionsItem>
           <DescriptionsItem  key={`${id}-${key}-2`} id={`${id}-${key}`} label="ИНН" span={1} >
             <Input onChange={handleChangeInn} placeholder="ИНН" style={{ width: 200 }} size="small"/>
           </DescriptionsItem>
-          <DescriptionsItem key={`${id}-${key}-3`} id={`${id}-${key}`} label="Должность" span={1} >
+          <DescriptionsItem key={`${id}-${key}-3`} id={`${id}-${key}`} label="Должность в организации" span={1} >
             <Input onChange={handleChangePosition} placeholder="Должность" style={{ width: 200 }} size="small"/>
           </DescriptionsItem>
           <DescriptionsItem key={`${id}-${key}-4`} id={`${id}-${key}`} label="Организация" span={1} >
-            <Input onChange={handleChangeOrganisation} placeholder="Название ограцизации" style={{ width: 200 }} size="small"/>
+            <div><Input onChange={handleChangeOrgName} placeholder="Название ограцизации" style={{ width: 300 }} size="small"/></div>
+            <Input onChange={handleChangeOrgInn} placeholder="ИНН организации" style={{ width: 150 }} size="small"/>
+            <Input onChange={handleChangeOrgOgrn} placeholder="ОГРН организации" style={{ width: 150 }} size="small"/>
           </DescriptionsItem>
         </Descriptions>
       </Panel>

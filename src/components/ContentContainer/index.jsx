@@ -34,7 +34,7 @@ export class ContentContainer extends Component {
   }
 
   getTestRequest = () => {
-    const request = () => {
+    const white = () => {
       return fetch(
         `/cgi-bin/serg/0/6/9/reports/253/STOP_LIST_custom_search.pl`, 
         { 
@@ -59,7 +59,39 @@ export class ContentContainer extends Component {
         throw new TypeError("Ошибка получения данных!")
       })
     }
-    return <button onClick={request}> Запрос </button>
+
+    const request = () => {
+      return fetch(
+        `/cgi-bin/ser4/0/6/9/reports/253/STOP_LIST_deb_search_2.pl`, 
+        { 
+          method: 'POST',
+          mode: 'cors',
+          credentials: 'include',
+          body : JSON.stringify({ 
+            type: 'fl',
+            method: 'bases',
+            surname: "Масютина",
+            firstname: "Жанна",
+            middlename: "Ивановна",
+            birthdate: ["1976-12-10", "1971-12-10", "1976-10-01"],
+            series: "6602",
+            number: "604372",
+            inn: "670700894121"
+          }),
+        }
+      )
+      .then(res => {
+        if (res.ok) return res.json()
+        throw new TypeError("Ошибка получения данных!")
+      })
+    }
+
+    return (
+      <>
+        <button onClick={white}> Запрос в белую БД </button>
+        <button onClick={request}> Запрос в черную БД </button>
+      </> 
+    )
   }
 }
 
