@@ -26,11 +26,11 @@ const styleCss = {
     }
   },
   stopList: {
-    title: {
-      fontStyle: "italic",
+    header: {
       fontWeight: 500
     },
-    header: {
+    title: {
+      fontStyle: "italic",
       fontWeight: 500
     },
     text: {

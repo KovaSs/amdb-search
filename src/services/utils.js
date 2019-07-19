@@ -128,6 +128,10 @@ return name
 .replace(/^Закрытое акционерное общество/gi, 'ПАО')
 .replace(/^Открытое акционерное общество/gi, 'ОАО')
 .replace(/^Акционерное общество/gi, 'АО')
+.replace(/^МЕСТНАЯ РЕЛИГИОЗНАЯ ОРГАНИЗАЦИЯ/gi, 'МРО')
+.replace(/ОРТОДОКСАЛЬНОГО ИУДАИЗМА/gi, 'ОИ')
+.replace(/ОДИНЦОВСКОГО РАЙОНА/gi, 'ОР')
+.replace(/МОСКОВСКОЙ ОБЛАСТИ/gi, 'МО')
 .replace(/Финансово-Промышленная корпорация/gi, 'ФПК')
 .replace(/Управляющая компания/gi, 'УК')
 }
@@ -228,7 +232,6 @@ class TransformData {
       }
       return item
     })
-    // console.table(clgData)
     return fullOrganistionInfo
   }
 
@@ -244,17 +247,24 @@ class TransformData {
           }
           return item
         })
-      
+
       const updateHeads = clonePrevData.heads.map(item => ({
         ...item,
         fio: `${item.last_name} ${item.first_name} ${item.middle_name}`,
         id: uuid(),
-        timeRequest: Date.now()
+        timeRequest: Date.now(),
+        organisation: {
+          name: clonePrevData.name ? getShortCompName(clonePrevData.name) : "",
+          inn: clonePrevData.inn ? clonePrevData.inn : "",
+          ogrn: clonePrevData.ogrn ? clonePrevData.ogrn : ""
+        },
       }))
       clonePrevData.heads = updateHeads
+      clonePrevData.name = clonePrevData.name ? getShortCompName(clonePrevData.name) : ""
       if(clonePrevData.arbiter.other.length) {
         clonePrevData.arbiter_other = clonePrevData.arbiter.other
       }
+      console.log('%cclonePrevData', "background-color: red;", clonePrevData)
       return clonePrevData
     } catch (error) {
       console.log('Ошибка в преобразовании company_type', error)
@@ -392,7 +402,12 @@ class TransformData {
           inn: item.innfl ? item.innfl : "Не найден",
           last_name: parsingFio(item.fio).SurName,
           middle_name: parsingFio(item.fio).MiddleName,
-          position: `Учредитель (${item.share.sum})`,
+          organisation: {
+            name: clonePrevData.name ? getShortCompName(clonePrevData.name) : "",
+            inn: clonePrevData.inn ? clonePrevData.inn : "",
+            ogrn: clonePrevData.ogrn ? clonePrevData.ogrn : ""
+          },
+          position: `Учредитель${item.share && JSON.stringify(item.share) !== "{}" ? ` (${item.share.sum})` : ''}`,
           share: item.share
         }
       })
@@ -409,6 +424,11 @@ class TransformData {
           first_name: parsingFio(item.fio).FirstName,
           last_name: parsingFio(item.fio).SurName,
           middle_name: parsingFio(item.fio).MiddleName,
+          organisation: {
+            name: clonePrevData.name ? getShortCompName(clonePrevData.name) : "",
+            inn: clonePrevData.inn ? clonePrevData.inn : "",
+            ogrn: clonePrevData.ogrn ? clonePrevData.ogrn : ""
+          },
           position: `Акционер (${item.capitalSharesPercent ? `${item.capitalSharesPercent}` : ""}${item.votingSharesPercent ? ` / ${item.votingSharesPercent}` : ""}) `,
         }
       })
@@ -434,7 +454,7 @@ class TransformData {
             inn: item.innfl ? item.innfl : "Не найден",
             last_name: parsingFio(item.fio).SurName,
             middle_name: parsingFio(item.fio).MiddleName,
-            position: [`Учредитель${user.share ? ` (${user.share.sum})` : ''}`, item.position ? item.position : ""],
+            position: [`Учредитель${user.share && JSON.stringify(user.share) !== "{}" ? ` (${user.share.sum})` : ''}`, item.position ? item.position : ""],
             organisation: {
               name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name),
               inn: user.inn ? user.inn : "",
@@ -456,7 +476,7 @@ class TransformData {
             inn: item.innfl ? item.innfl : "Не найден",
             last_name: parsingFio(item.fio).SurName,
             middle_name: parsingFio(item.fio).MiddleName,
-            position: [`Учредитель${user.share ? ` (${user.share.sum})` : ""}`, item.position ? item.position : ""],
+            position: [`Учредитель${user.share && JSON.stringify(user.share) !== "{}" ? ` (${user.share.sum})` : ""}`, item.position ? item.position : ""],
             organisation: {
               name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name),
               inn: user.inn ? user.inn : "",

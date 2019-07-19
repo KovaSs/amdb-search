@@ -11,7 +11,7 @@ const styleCss = {
       fontWeight: 500
     },
     header: {
-      fontWeight: 500
+      fontWeight: 600
     },
     text: {
       color: "red"
@@ -79,37 +79,23 @@ const CroinformDrawer = props => {
   }
 
   const renderDtSearch = () => {
+    console.log('userSelected', userSelected)
     return (
       <DescriptionsItem key="lists" label="Поисковые запросы" span={1} >
         {[
-          <div 
-            key="search-word-1"
-            id={`${userSelected.SurName} w/5 ${userSelected.FirstName} w/5 ${userSelected.MiddleName}`}
-          >
+          <div key="search-word-1">
             {`${userSelected.SurName} w/5 ${userSelected.FirstName} w/5 ${userSelected.MiddleName}`}
           </div>,
-          <div
-            key="search-word-2"
-            id={`${userSelected.SurName} w/5 ${userSelected.FirstName} w/5 ${userSelected.MiddleName} w/25 ${userSelected.birthday}`}
-          >
-            {`${userSelected.SurName} w/5 ${userSelected.FirstName} w/5 ${userSelected.MiddleName} w/25 ${userSelected.birthday}`}
+          <div key="search-word-2">
+            {`${userSelected.SurName} w/5 ${userSelected.FirstName} w/5 ${userSelected.MiddleName} w/25 ${userSelected.birthday ? userSelected.birthday : ''}`}
           </div>,
-          <div 
-            key="search-word-3"
-            id={`${userSelected.SurName} w/25 ${userSelected.birthday} w/55 ${userSelected.StreetExp}`}
-          >
-            {`${userSelected.SurName} w/25 ${userSelected.birthday} w/55 ${userSelected.StreetExp}`}
+          <div key="search-word-3">
+            {`${userSelected.SurName} w/25 ${userSelected.birthday ? userSelected.birthday : ''} w/55 ${userSelected.StreetExp}`}
           </div>,
-          <div 
-            key="search-word-4"
-            id={`${userSelected.SurName} w/55 ${userSelected.StreetExp}`}
-          >
+          <div key="search-word-4" >
             {`${userSelected.SurName} w/55 ${userSelected.StreetExp}`}
           </div>,
-          <div 
-            key="search-word-5"
-            id={`${userSelected.CityExp} w/5 ${userSelected.StreetExp} w/5 ${userSelected.HouseExp} w/5 ${userSelected.FlatExp}`}
-          >
+          <div key="search-word-5" >
             {`${userSelected.CityExp} w/5 ${userSelected.StreetExp} w/5 ${userSelected.HouseExp} w/5 ${userSelected.FlatExp}`}
           </div>
         ]}

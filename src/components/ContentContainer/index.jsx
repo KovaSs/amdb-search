@@ -36,7 +36,7 @@ export class ContentContainer extends Component {
   getTestRequest = () => {
     const request = () => {
       return fetch(
-        `/cgi-bin/ser4/0/6/9/reports/253/STOP_LIST_deb_search_2.pl`, 
+        `/cgi-bin/serg/0/6/9/reports/253/STOP_LIST_custom_search.pl`, 
         { 
           method: 'POST',
           mode: 'cors',

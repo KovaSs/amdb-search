@@ -621,7 +621,7 @@ export class ManagmentItem extends PureComponent {
   render() {
     const { 
       item, 
-      item: { inn, id }, 
+      item: { id }, 
       fssploading, 
       searchData, 
       croinformRes, 
@@ -630,11 +630,10 @@ export class ManagmentItem extends PureComponent {
     } = this.props;
     const {error, showCroinformResponse, userSelected, parseAddress} = this.state
     if(error) return <div>В компоненте произошла ошибка</div>
-
     return (
       <>
         <Collapse
-          key={inn}
+          key={item.id}
           className="managment"
           onChange={this.callback}
           bordered={false}
@@ -646,7 +645,7 @@ export class ManagmentItem extends PureComponent {
           {item.middle_name && this.renderFoulderFlItem(item, id, searchData)}
         </Collapse>
         <CroinformDrawer 
-          user={item}
+          user={item.id}
           userSelected={{...userSelected, ...parseAddress}}
           fsspInfo={fsspInfo}
           fssploading={fssploading}
