@@ -422,8 +422,7 @@ class TransformData {
     // Учредители
     if( newData.founders_fl.length ) {
       let notFoundsHeadsFl = []
-      const arrLength = clonePrevData.heads.length
-      const updatedHeads = clonePrevData.heads.map( (heads, i) => {
+      const updatedHeads = clonePrevData.heads.map( heads => {
         if( newData.founders_fl.filter(founders_fl => heads.fio === founders_fl.fio).length) {
           const newHeadInfo = newData.founders_fl.filter(founders_fl => heads.fio === founders_fl.fio)[0]
           return {
@@ -441,93 +440,99 @@ class TransformData {
               }
             )
           }
-        } else if(!newData.founders_fl.filter(founders_fl => heads.fio === founders_fl.fio).length && i === arrLength - 1) {
-          notFoundsHeadsFl = newData.founders_fl
         }
         return heads
       })
-
-      const addNewFoundersFl = notFoundsHeadsFl.map(founders_fl => ({
-        id: uuid(),
-          ActualDate: founders_fl.date ? founders_fl.date : getDate(Date.now()),
-          fio: founders_fl.fio,
-          first_name: parsingFio(founders_fl.fio).FirstName,
-          inn: founders_fl.innfl ? founders_fl.innfl : "Не найден",
-          last_name: parsingFio(founders_fl.fio).SurName,
-          middle_name: parsingFio(founders_fl.fio).MiddleName,
-          organisation: {
-            name: clonePrevData.name ? getShortCompName(clonePrevData.name) : "",
-            inn: clonePrevData.inn ? clonePrevData.inn : "",
-            ogrn: clonePrevData.ogrn ? clonePrevData.ogrn : ""
-          },
-          position: [{
-            tagName: `Учредитель${founders_fl.share && JSON.stringify(founders_fl.share) !== "{}" ? ` (${founders_fl.share.sum})` : ''}`,
+      newData.founders_fl.map(founders_fl => {
+        if(!clonePrevData.heads.filter(head => head.fio === founders_fl.fio).length) {
+          return notFoundsHeadsFl.push({
+            id: uuid(),
+            ActualDate: founders_fl.date ? founders_fl.date : getDate(Date.now()),
+            fio: founders_fl.fio,
+            first_name: parsingFio(founders_fl.fio).FirstName,
+            inn: founders_fl.innfl ? founders_fl.innfl : "Не найден",
+            last_name: parsingFio(founders_fl.fio).SurName,
+            middle_name: parsingFio(founders_fl.fio).MiddleName,
             organisation: {
               name: clonePrevData.name ? getShortCompName(clonePrevData.name) : "",
               inn: clonePrevData.inn ? clonePrevData.inn : "",
               ogrn: clonePrevData.ogrn ? clonePrevData.ogrn : ""
             },
-            share: founders_fl.share
-          }],
-      }))
-      clonePrevData.heads = concat(updatedHeads, addNewFoundersFl)
-      console.log(`%c1-FOULDERS_FL | ${clonePrevData.name ? getShortCompName(clonePrevData.name) : ""}`, cloCss.yellow, clonePrevData.heads)
+            position: [{
+              tagName: `Учредитель${founders_fl.share && JSON.stringify(founders_fl.share) !== "{}" ? ` (${founders_fl.share.sum})` : ''}`,
+              organisation: {
+                name: clonePrevData.name ? getShortCompName(clonePrevData.name) : "",
+                inn: clonePrevData.inn ? clonePrevData.inn : "",
+                ogrn: clonePrevData.ogrn ? clonePrevData.ogrn : ""
+              },
+              share: founders_fl.share
+            }],
+          })
+        }
+        return null
+      })
+      clonePrevData.heads = concat(updatedHeads, notFoundsHeadsFl)
+      console.log(`%c1lvl FOULDERS_FL | ${clonePrevData.name ? getShortCompName(clonePrevData.name) : ""}`, cloCss.yellow, clonePrevData.heads)
     }
+
     // Акционеры
     if(newData.share_holders_fl.length) {
-      const headPerson = newData.share_holders_fl.map( share_holders_fl => {
-        if( clonePrevData.heads.filter(head => head.fio === share_holders_fl.fio).length) {
-          const updatedHead = clonePrevData.heads.filter(head => head.fio === share_holders_fl.fio)[0]
+      let notFoundsShareHoldersFl = []
+      const headPerson = clonePrevData.heads.map( heads => {
+        if(newData.share_holders_fl.filter(share_holders_fl => heads.fio === share_holders_fl.fio).length) {
+          const newInfo = newData.share_holders_fl.filter(share_holders_fl => heads.fio === share_holders_fl.fio)[0]
           return {
-            ...updatedHead,
+            ...heads,
             position: concat(
-              updatedHead.position,
+              heads.position,
               {
-                tagName: `Акционер (${share_holders_fl.capitalSharesPercent ? `${share_holders_fl.capitalSharesPercent}` : ""}${share_holders_fl.votingSharesPercent ? ` / ${share_holders_fl.votingSharesPercent}` : ""})`,
+                tagName: `Акционер (${newInfo.capitalSharesPercent ? `${newInfo.capitalSharesPercent}` : ""}${newInfo.votingSharesPercent ? ` / ${newInfo.votingSharesPercent}` : ""})`,
                 organisation: {
                   name: clonePrevData.name ? getShortCompName(clonePrevData.name) : "",
                   inn: clonePrevData.inn ? clonePrevData.inn : "",
                   ogrn: clonePrevData.ogrn ? clonePrevData.ogrn : "",
-                  address: share_holders_fl.address ? share_holders_fl.address : ""
+                  address: newInfo.address ? newInfo.address : ""
                 },
                 share: {
-                  capitalSharesPercent: share_holders_fl.capitalSharesPercent,
-                  votingSharesPercent: share_holders_fl.votingSharesPercent,
+                  capitalSharesPercent: newInfo.capitalSharesPercent,
+                  votingSharesPercent: newInfo.votingSharesPercent,
                 }
               }
             )
           }
         }
-        return {
-          id: uuid(),
-          ActualDate: share_holders_fl.date ? share_holders_fl.date : getDate(Date.now()),
-          fio: share_holders_fl.fio,
-          first_name: parsingFio(share_holders_fl.fio).FirstName,
-          inn: share_holders_fl.innfl ? share_holders_fl.innfl : "Не найден",
-          last_name: parsingFio(share_holders_fl.fio).SurName,
-          middle_name: parsingFio(share_holders_fl.fio).MiddleName,
-          organisation: {
-            name: clonePrevData.name ? getShortCompName(clonePrevData.name) : "",
-            inn: clonePrevData.inn ? clonePrevData.inn : "",
-            ogrn: clonePrevData.ogrn ? clonePrevData.ogrn : ""
-          },
-          position: [{
-            tagName : `Акционер (${share_holders_fl.capitalSharesPercent ? `${share_holders_fl.capitalSharesPercent}` : ""}${share_holders_fl.votingSharesPercent ? ` / ${share_holders_fl.votingSharesPercent}` : ""})`,
+        return heads
+      })
+      newData.share_holders_fl.map(share_holders_fl => {
+        if(!clonePrevData.heads.filter(head => head.fio === share_holders_fl.fio).length) {
+          return notFoundsShareHoldersFl.push({
+            id: uuid(),
+            ActualDate: share_holders_fl.date ? share_holders_fl.date : getDate(Date.now()),
+            fio: share_holders_fl.fio,
+            first_name: parsingFio(share_holders_fl.fio).FirstName,
+            inn: share_holders_fl.innfl ? share_holders_fl.innfl : "Не найден",
+            last_name: parsingFio(share_holders_fl.fio).SurName,
+            middle_name: parsingFio(share_holders_fl.fio).MiddleName,
             organisation: {
               name: clonePrevData.name ? getShortCompName(clonePrevData.name) : "",
               inn: clonePrevData.inn ? clonePrevData.inn : "",
-              ogrn: clonePrevData.ogrn ? clonePrevData.ogrn : "",
-              address: share_holders_fl.address ? share_holders_fl.address : ""
+              ogrn: clonePrevData.ogrn ? clonePrevData.ogrn : ""
             },
-            share: {
-              capitalSharesPercent: share_holders_fl.capitalSharesPercent,
-              votingSharesPercent: share_holders_fl.votingSharesPercent,
-            }
-          }],
+            position: [{
+              tagName: `Акционер${share_holders_fl.share && JSON.stringify(share_holders_fl.share) !== "{}" ? ` (${share_holders_fl.share.sum})` : ''}`,
+              organisation: {
+                name: clonePrevData.name ? getShortCompName(clonePrevData.name) : "",
+                inn: clonePrevData.inn ? clonePrevData.inn : "",
+                ogrn: clonePrevData.ogrn ? clonePrevData.ogrn : ""
+              },
+              share: share_holders_fl.share
+            }],
+          })
         }
+        return null
       })
-      console.log(`%c1-SHARE_HOLDERS_FL | ${clonePrevData.name ? getShortCompName(clonePrevData.name) : ""}`, cloCss.yellow, headPerson)
-      clonePrevData.heads = headPerson
+      clonePrevData.heads = concat(headPerson, notFoundsShareHoldersFl)
+      console.log(`%c1lvl SHARE_HOLDERS_FL | ${clonePrevData.name ? getShortCompName(clonePrevData.name) : ""}`, cloCss.yellow, clonePrevData.heads)
     }
     return clonePrevData
   }
@@ -537,7 +542,6 @@ class TransformData {
     const clonePrevData = cloneDeep(prevData)
     // Руководство
     if(newData.heads_fl.length) {
-      const arrLength = clonePrevData.heads.length
       let notFoundsHeadsFl = []
       const headPerson = clonePrevData.heads.map( (heads, i) => {
         if( newData.heads_fl.filter(heads_fl => heads.fio === heads_fl.fio).length) {
@@ -561,56 +565,57 @@ class TransformData {
               }
             )
           }
-        } else if(!newData.heads_fl.filter(heads_fl => heads.fio === heads_fl.fio).length && i === arrLength - 1) {
-          notFoundsHeadsFl = newData.heads_fl
         }
         return heads
       })
-
-      const addNewHeadsFl = notFoundsHeadsFl.map(heads_fl => ({
-        id: uuid(),
-          ActualDate: heads_fl.date ? heads_fl.date : getDate(Date.now()),
-          fio: heads_fl.fio,
-          first_name: parsingFio(heads_fl.fio).FirstName,
-          inn: heads_fl.innfl ? heads_fl.innfl : "Не найден",
-          last_name: parsingFio(heads_fl.fio).SurName,
-          middle_name: parsingFio(heads_fl.fio).MiddleName,
-          organisation: {
-            name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name),
-            inn: user.inn ? user.inn : "",
-            ogrn: user.ogrn ? user.ogrn : ""
-          },
-          position: [{
-            tagName: heads_fl.position,
+      newData.heads_fl.map(heads_fl => {
+        if(!clonePrevData.heads.filter( heads => heads.fio === heads_fl.fio).length) {
+          return notFoundsHeadsFl.push({
+            id: uuid(),
+            ActualDate: heads_fl.date ? heads_fl.date : getDate(Date.now()),
+            fio: heads_fl.fio,
+            first_name: parsingFio(heads_fl.fio).FirstName,
+            inn: heads_fl.innfl ? heads_fl.innfl : "Не найден",
+            last_name: parsingFio(heads_fl.fio).SurName,
+            middle_name: parsingFio(heads_fl.fio).MiddleName,
             organisation: {
               name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name),
               inn: user.inn ? user.inn : "",
-              ogrn: user.ogrn ? user.ogrn : "",
-              address: user.address ? user.address : "",
+              ogrn: user.ogrn ? user.ogrn : ""
             },
-            share: {
-              capitalSharesPercent: user.capitalSharesPercent,
-              votingSharesPercent: user.votingSharesPercent,
-            }
-          }],
-      }))
-      clonePrevData.heads = concat(headPerson, addNewHeadsFl)
-      console.log(`%c2 lvl HEADS_FL | ${user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name)}`, cloCss.yellow, clonePrevData.heads)
+            position: [{
+              tagName: heads_fl.position,
+              organisation: {
+                name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name),
+                inn: user.inn ? user.inn : "",
+                ogrn: user.ogrn ? user.ogrn : "",
+                address: user.address ? user.address : "",
+              },
+              share: {
+                capitalSharesPercent: user.capitalSharesPercent,
+                votingSharesPercent: user.votingSharesPercent,
+              }
+            }],
+          })
+        }
+        return null
+      })
+      clonePrevData.heads = concat(headPerson, notFoundsHeadsFl)
+      console.log(`%c2lvl HEADS_FL | ${user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name)}`, cloCss.yellow, clonePrevData.heads)
     }
 
     // Учредители
     if(newData.founders_fl.length) {
-      const arrLength = clonePrevData.heads.length
       let notFoundsFoundersFl = []
-      const updatedHeads = clonePrevData.heads.map( (heads, i) => {
+      const updatedHeads = clonePrevData.heads.map( heads => {
         if( newData.founders_fl.filter(founders_fl => heads.fio === founders_fl.fio).length) {
-          const updatedHead = newData.founders_fl.filter(founders_fl => heads.fio === founders_fl.fio)[0]
+          // const updatedHead = newData.founders_fl.filter(founders_fl => heads.fio === founders_fl.fio)[0]
           return {
             ...heads,
             position: concat(
               heads.position,
               {
-                tagName: updatedHead.position,
+                tagName: `Учредитель`,
                 organisation: {
                   name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name),
                   inn: user.inn ? user.inn : "",
@@ -620,40 +625,102 @@ class TransformData {
               }
             )
           }
-        } else if(!newData.founders_fl.filter(founders_fl => heads.fio === founders_fl.fio).length && i === arrLength - 1) {
-          notFoundsFoundersFl = newData.founders_fl
         }
         return heads
       })
-
-      const addNewFoundersFl = notFoundsFoundersFl.map(founders_fl => ({
-        id: uuid(),
-          ActualDate: founders_fl.date ? founders_fl.date : getDate(Date.now()),
-          fio: founders_fl.fio,
-          first_name: parsingFio(founders_fl.fio).FirstName,
-          inn: founders_fl.innfl ? founders_fl.innfl : "Не найден",
-          last_name: parsingFio(founders_fl.fio).SurName,
-          middle_name: parsingFio(founders_fl.fio).MiddleName,
-          organisation: {
-            name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name),
-            inn: user.inn ? user.inn : "",
-            ogrn: user.ogrn ? user.ogrn : ""
-          },
-          position: [{
-            tagName: founders_fl.position,
+      newData.founders_fl.map(founders_fl => {
+        if(!clonePrevData.heads.map( heads => founders_fl.fio === heads.fio).length) {
+          return notFoundsFoundersFl.push({
+            id: uuid(),
+            ActualDate: founders_fl.date ? founders_fl.date : getDate(Date.now()),
+            fio: founders_fl.fio,
+            first_name: parsingFio(founders_fl.fio).FirstName,
+            inn: founders_fl.innfl ? founders_fl.innfl : "Не найден",
+            last_name: parsingFio(founders_fl.fio).SurName,
+            middle_name: parsingFio(founders_fl.fio).MiddleName,
             organisation: {
               name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name),
               inn: user.inn ? user.inn : "",
               ogrn: user.ogrn ? user.ogrn : ""
             },
-            share: user.share
-          }],
-      }))
-      const test = concat(updatedHeads, addNewFoundersFl)
-      // clonePrevData.heads = concat(updatedHeads, addNewFoundersFl)
-      console.log(`%c2 lvl FOULDERS_FL | ${user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name)}`, cloCss.yellow, test)
+            position: [{
+              tagName: `Учредитель`,
+              organisation: {
+                name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name),
+                inn: user.inn ? user.inn : "",
+                ogrn: user.ogrn ? user.ogrn : ""
+              },
+              share: user.share
+            }],
+          })
+        }
+        return null
+      })
+      clonePrevData.heads = concat(updatedHeads, notFoundsFoundersFl)
+      console.log(`%c2lvl FOULDERS_FL | ${user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name)}`, cloCss.yellow, clonePrevData.heads)
     }
 
+    // Акционеры
+    if(newData.share_holders_fl.length) {
+      let notFoundsShareHoldersFl = []
+      const headPerson = clonePrevData.heads.map( heads => {
+        if(newData.share_holders_fl.filter(share_holders_fl => heads.fio === share_holders_fl.fio).length) {
+          const newInfo = newData.share_holders_fl.filter(share_holders_fl => heads.fio === share_holders_fl.fio)[0]
+          return {
+            ...heads,
+            position: concat(
+              heads.position,
+              {
+                tagName: `Акционер (${newInfo.capitalSharesPercent ? `${newInfo.capitalSharesPercent}` : ""}${newInfo.votingSharesPercent ? ` / ${newInfo.votingSharesPercent}` : ""})`,
+                organisation: {
+                  name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name),
+                  inn: user.inn ? user.inn : "",
+                  ogrn: user.ogrn ? user.ogrn : "",
+                  address: user.address ? user.address : "",
+                },
+                share: {
+                  capitalSharesPercent: newInfo.capitalSharesPercent,
+                  votingSharesPercent: newInfo.votingSharesPercent,
+                }
+              }
+            )
+          }
+        }
+        return heads
+      })
+      newData.share_holders_fl.map(share_holders_fl => {
+        if(!clonePrevData.heads.filter(head => head.fio === share_holders_fl.fio).length) {
+          return notFoundsShareHoldersFl.push({
+            id: uuid(),
+            ActualDate: share_holders_fl.date ? share_holders_fl.date : getDate(Date.now()),
+            fio: share_holders_fl.fio,
+            first_name: parsingFio(share_holders_fl.fio).FirstName,
+            inn: share_holders_fl.innfl ? share_holders_fl.innfl : "Не найден",
+            last_name: parsingFio(share_holders_fl.fio).SurName,
+            middle_name: parsingFio(share_holders_fl.fio).MiddleName,
+            organisation: {
+              name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name),
+              inn: user.inn ? user.inn : "",
+              ogrn: user.ogrn ? user.ogrn : "",
+              address: user.address ? user.address : "",
+            },
+            position: [{
+              tagName: `Акционер${share_holders_fl.share && JSON.stringify(share_holders_fl.share) !== "{}" ? ` (${share_holders_fl.share.sum})` : ''}`,
+              organisation: {
+                name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name),
+                inn: user.inn ? user.inn : "",
+                ogrn: user.ogrn ? user.ogrn : "",
+                address: user.address ? user.address : "",
+              },
+              share: share_holders_fl.share
+            }],
+          })
+        }
+        return null
+      })
+      clonePrevData.heads = concat(headPerson, notFoundsShareHoldersFl)
+      console.log(`%c2lvl SHARE_HOLDERS_FL | ${user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name)}`, cloCss.yellow, clonePrevData.heads)
+    }
     return clonePrevData
   }
 
