@@ -56,7 +56,7 @@ const StopListData = ({riskInfo, arbiter, loading =false}) => {
     } else if (Array.isArray(item.data)) {
       const itemArray = item.data.map((el, key) => <span key={key} style={{color: item.id === "spark_spiski" ? "" : "red"}}>{el} <br /> </span>)
       return (
-        <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={2}>
+        <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={1}>
           <div style={styleCss.autoScroll}>{ itemArray }</div>
         </DescriptionsItem>
       )

@@ -60,10 +60,10 @@ const RenderEditedLeader = props => {
 
   const renderPositionTag = () => {
     if(Array.isArray(position)) return position.map(item => {
-      if(item !== "") return <Tag key={uuid()} color="blue" >{item}</Tag>
+      if(item !== "") return <Tag key={uuid()} color="blue" >{item.tagName}</Tag>
       else return null
     })
-    return <Tag color="blue" >{position}</Tag>
+    return <Tag color="blue" >{position.tagName}</Tag>
   }
 
   // Рендеринг опций выпадающего меню

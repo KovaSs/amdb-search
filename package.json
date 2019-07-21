@@ -1,6 +1,6 @@
 {
   "name": "as-check",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "private": false,
   "proxy": "https://10.96.205.191:443/",
   "homepage": "https://10.96.205.191/AS_CHECK/",
@@ -10,7 +10,7 @@
     "url": "http://gitlab-cos/gpbu7806/AS-Check"
   },
   "dependencies": {
-    "antd": "^3.20.4",
+    "antd": "^3.20.5",
     "clipboard": "^2.0.4",
     "connected-react-router": "6.4.0",
     "history": "^4.9.0",
