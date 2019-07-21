@@ -53,7 +53,7 @@ const MainCompanyData = ({fields, loading}) => {
       const itemArray = item.data.map((el, key) => <span key={key}>{el} <br /> </span>)
       return (
         <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={item.data.length > 3 ? 2 : 1}>
-          { itemArray }
+          <div style={styleCss.autoScroll}>{ itemArray }</div>
         </DescriptionsItem>
       )
     } else if(Array.isArray(item.data)) {
