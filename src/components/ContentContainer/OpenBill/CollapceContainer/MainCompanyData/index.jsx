@@ -28,6 +28,7 @@ const MainCompanyData = ({fields, loading}) => {
       item.id !== "management_companies" && 
       item.id !== "name"  && 
       item.id !== "fns"  && 
+      item.id !== "stop_list"  && 
       item.id !== "sanctions"  && 
       item.id !== "inn"  && 
       item.id !== "spiski"  && 

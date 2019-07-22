@@ -67,7 +67,7 @@ const CollapceContainer = props => {
             >
               <Panel header="Общая информация" key="1" showArrow={false}>
                 <MainCompanyData loading={false} fields={fullOrganistionInfo}/>
-                <StopListData  riskInfo={riskInfo} arbiter={arbiter}/>
+                <StopListData  loading={requestLoading.get("getStopListsUl")} riskInfo={riskInfo} arbiter={arbiter}/>
               </Panel>
               <Panel 
                 key="2" 

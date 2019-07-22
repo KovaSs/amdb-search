@@ -222,11 +222,18 @@ export class ManagmentItem extends PureComponent {
           e.stopPropagation();
         }
         identifyUser({
-          ...user,
-          first_name: userSelected.FirstName ? userSelected.FirstName : user.first_name,
-          middle_name: userSelected.MiddleName ? userSelected.MiddleName : user.middle_name,
-          last_name: userSelected.SurName ? userSelected.SurName : user.last_name,
-          inn: userSelected.inn ? userSelected.inn : user.inn,
+          user: {
+            first_name: userSelected.FirstName ? userSelected.FirstName : user.first_name,
+            middle_name: userSelected.MiddleName ? userSelected.MiddleName : user.middle_name,
+            last_name: userSelected.SurName ? userSelected.SurName : user.last_name,
+            inn: userSelected.inn ? 
+              userSelected.inn !== "Не найден" ? userSelected.inn : "" 
+              : user.inn !== "Не найден" ? user.inn : "",
+            ogrn: user.organisation.ogrn ? user.organisation.ogrn : "",
+            passport: userSelected.passport ? userSelected.passport : "",
+            birthday: userSelected.birthday ? userSelected.birthday : "",
+          },
+          id: user.id
         });
         this.setState({edited: true})
       };

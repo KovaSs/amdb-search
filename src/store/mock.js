@@ -16,6 +16,7 @@ export const companyRes = {
   "capital": "",
   "site": "",
   "full_name": "",
+  "stop_list": "",
   "leaders_list": "",
   "inn": "",
   "name": '',

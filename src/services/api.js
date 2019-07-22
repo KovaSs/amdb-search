@@ -1,4 +1,4 @@
-import { getUSDate } from './utils'
+import { getUSDate, parsingPassport } from './utils'
 
 /** Загрузка данных о кампании */
 export const getLoadCompanyInfo = inn => {
@@ -191,6 +191,7 @@ export const getRequestAffiliatesUl = (reqnum, inn) => {
 
 /** Получение первоначальных идентификационных данных о проверяемом лице */
 export const getIdentifyUser = (ip, reqnum, action, storeOgrn) => {
+  console.log('IDENTYFY', action)
   if(!ip) {
     return fetch(
       `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
@@ -202,11 +203,14 @@ export const getIdentifyUser = (ip, reqnum, action, storeOgrn) => {
           type: 'identify_user',
           reqnum: reqnum,
           data: {
-            FirstName: action.payload.first_name,
-            MiddleName: action.payload.middle_name,
-            SurName: action.payload.last_name,
-            INN: action.payload.inn,
-            OGRN: action.payload.organisation ? action.payload.organisation.ogrn : storeOgrn.ogrn
+            FirstName: action.first_name,
+            MiddleName: action.middle_name,
+            SurName: action.last_name,
+            INN: action.inn,
+            OGRN: action.ogrn ? action.ogrn : storeOgrn.ogrn,
+            DateOfBirth: action.birthday,
+            Seria: action.passport ? parsingPassport(action.passport).Seria : "",
+            Number: action.passport ? parsingPassport(action.passport).Number : "",
           }
         }),
       }
@@ -226,10 +230,13 @@ export const getIdentifyUser = (ip, reqnum, action, storeOgrn) => {
           type: 'identify_user',
           reqnum: reqnum,
           data: {
-            FirstName: action.payload.first_name,
-            MiddleName: action.payload.middle_name,
-            SurName: action.payload.last_name,
-            INNIP: action.payload.inn,
+            FirstName: action.first_name,
+            MiddleName: action.middle_name,
+            SurName: action.last_name,
+            INNIP: action.inn,
+            DateOfBirth: action.birthdate,
+            Seria: action.passport ? parsingPassport(action.passport).Seria : "",
+            Number: action.passport ? parsingPassport(action.passport).Number : "",
           }
         }),
       }
@@ -253,21 +260,21 @@ export const getIdentifyUserInfo = (reqnum, action) => {
         type: 'request_user',
         reqnum: reqnum,
         data: {
-          INNExp: action.payload.INN,
-          FirstName: action.payload.FirstName,
-          FirstNameArch: action.payload.FirstNameArch,
-          MiddleName: action.payload.MiddleName,
-          SurName:action.payload.SurName,
-          DateOfBirth: action.payload.DateOfBirth,
-          Seria: action.payload.Seria,
-          Number: action.payload.Number,
-          RegionExp: action.payload.RegionExp,
-          CityExp: action.payload.CityExp,
-          StreetExp: action.payload.StreetExp,
-          HouseExp: action.payload.HouseExp,
-          BuildExp: action.payload.BuildExp,
-          BuildingExp: action.payload.BuildingExp,
-          FlatExp: action.payload.FlatExp,
+          INNExp: action.INN,
+          FirstName: action.FirstName,
+          FirstNameArch: action.FirstNameArch,
+          MiddleName: action.MiddleName,
+          SurName:action.SurName,
+          DateOfBirth: action.DateOfBirth,
+          Seria: action.Seria,
+          Number: action.Number,
+          RegionExp: action.RegionExp,
+          CityExp: action.CityExp,
+          StreetExp: action.StreetExp,
+          HouseExp: action.HouseExp,
+          BuildExp: action.BuildExp,
+          BuildingExp: action.BuildingExp,
+          FlatExp: action.FlatExp,
           AFF: 1,
           Exp: 1,
           ExpArch: 1
@@ -293,11 +300,32 @@ export const getFsspInfo = (reqnum, action) => {
         type: 'fssp',
         reqnum: reqnum,
         data: {
-          FirstName: action.payload.FirstName,
-          MiddleName: action.payload.MiddleName,
-          SurName:action.payload.SurName,
-          DateOfBirth: action.payload.DateOfBirth,
+          FirstName: action.FirstName,
+          MiddleName: action.MiddleName,
+          SurName:action.SurName,
+          DateOfBirth: action.DateOfBirth,
         }
+      }),
+    }
+  )
+  .then(res => {
+    if (res.ok) return res.json()
+    throw new TypeError("Ошибка получения данных!")
+  })
+}
+
+/** Получение данных ФССП */
+export const getStopListsUlInfo = inn => {
+  return fetch(
+    `/cgi-bin/serg/0/6/9/reports/253/STOP_LIST_custom_search.pl`, 
+    { 
+      method: 'POST',
+      mode: 'cors',
+      credentials: 'include',
+      body : JSON.stringify({ 
+        type: 'ul', 
+        method: 'bases',
+        ulinn: inn
       }),
     }
   )

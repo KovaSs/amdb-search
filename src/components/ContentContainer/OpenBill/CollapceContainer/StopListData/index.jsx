@@ -5,6 +5,7 @@ import { trasform } from "../../../../../services/utils";
 const styleCss = {
   autoScroll : {
     maxHeight: 102,
+    minWidth: 250,
     overflowY: "auto"
   }
 }
@@ -41,19 +42,26 @@ const StopListData = ({riskInfo, arbiter, loading =false}) => {
 
   const renderDescriptionFields = riskInfo.map(item => {
     const { Item : DescriptionsItem } = Descriptions;
-    if ( item.data !== undefined && item.data !== "" && item.id !== "arbiter" && !Array.isArray(item.data)) {
+    if ( item.data !== undefined && item.data !== "" && item.id === "stop_list" && item.data.length) {
+      const itemArray = item.data.map((el, key) => <span key={key} style={{color: "red"}}> {`${el.report_name}`} <br /> </span>)
+      return (
+        <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={1}>
+          <div style={styleCss.autoScroll}>{ itemArray }</div>
+        </DescriptionsItem>
+      )
+    } else if ( item.data !== undefined && item.data !== "" && item.id !== "arbiter" && item.id !== "stop_list" && !Array.isArray(item.data)) {
       return (
         <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={1}>
           <span style={{...styleCss.autoScroll, color: item.id === "spark_spiski" ? "" : "red"}}>{ item.data }</span>
         </DescriptionsItem>
       )
-    } else if(item.id === "arbiter" && item.data !== "") {
+    } else if(item.id === "arbiter" && item.data !== "" && item.id !== "stop_list") {
       return (
         <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={1}>
           <RenderAbiterTable />
         </DescriptionsItem>
       )
-    } else if (Array.isArray(item.data)) {
+    } else if (Array.isArray(item.data) && item.id !== "stop_list") {
       const itemArray = item.data.map((el, key) => <span key={key} style={{color: item.id === "spark_spiski" ? "" : "red"}}>{el} <br /> </span>)
       return (
         <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={1}>
@@ -73,7 +81,7 @@ const StopListData = ({riskInfo, arbiter, loading =false}) => {
       style={{marginTop: "5px"}}
     >
       <Panel header="Стоп-листы / Cписки" key="1" showArrow={false}>
-        <Spin spinning={loading}>
+        <Spin spinning={loading} tip="Запрос данных по стоп-листам">
           <Descriptions size="small" bordered border column={{md:3, sm:2, xs:1}}>
             {renderDescriptionFields}
           </Descriptions>

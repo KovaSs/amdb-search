@@ -127,6 +127,8 @@ export const fieldsArr = [
   
   {search: "sankcii", id: "sanctions", title: "Санкции", data: ""},
 
+  {search: "", id: "stop_list", title: "Стоп-листы", data: ""},
+
   {search: "fns", id: "fns", title: "ФНС", data: "", func: item => {
     try {
       if(!item) return ["Данные отсутствуют"]

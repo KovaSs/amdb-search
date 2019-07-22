@@ -14,7 +14,8 @@ import {
   getRequestAffiliatesUl,
   getFsspInfo,
   getBlackStopList,
-  getWhiteStopList
+  getWhiteStopList,
+  getStopListsUlInfo
 } from '../../services/api'
 
 /* Mock данные */
@@ -43,6 +44,7 @@ export const LOAD_DIGEST_LIST = `${prefix}/LOAD_DIGEST_LIST`
 export const ADD_RISK_FACTOR_IN_DIGEST_LIST = `${prefix}/ADD_RISK_FACTOR_IN_DIGEST_LIST`
 export const DELETE_RISK_FACTOR_IN_DIGEST_LIST = `${prefix}/DELETE_RISK_FACTOR_IN_DIGEST_LIST`
 export const GET_FSSP_INFO = `${prefix}/GET_FSSP_INFO`
+export const GET_STOP_LISTS_UL_INFO = `${prefix}/GET_STOP_LISTS_UL_INFO`
 
 export const START = '_START'
 export const SUCCESS = '_SUCCESS'
@@ -60,8 +62,10 @@ const ReducerRecord = Record({
   stopLists: new Map({}),
   fsspInfo: new Map({}),
   croinformResponse: new Map({}),
+  selectedInfo: new Map({}),
   requestLoading: new Map({
     companyMainInfo: false, 
+    getStopListsUl: false, 
     companyMainInfoUpdate: false, 
     getAffilatesList: false,
     digestList: false,
@@ -75,6 +79,7 @@ const ReducerRecord = Record({
   }),
   errors: new Map({
     companyMainInfo: false, 
+    getStopListsUl: false, 
     companyMainInfoUpdate: false, 
     getAffilatesList: false,
     digestList: false,
@@ -163,6 +168,7 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
       return state
         .setIn(['requestLoading', 'croinformRequest', action.loading], true)
         .setIn(['errors', 'croinformRequest', action.loading], false)
+        .setIn(['selectedInfo', action.loading], action.payload)
     case GET_CROINFORM_USER_INFO + SUCCESS:
       return state
         .setIn(['croinformResponse', action.loading], payload)
@@ -243,6 +249,20 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
         .setIn(['requestLoading', 'stopLists', action.loading], false)
         .setIn(['errors', 'stopLists', action.loading], true)
 
+    case GET_STOP_LISTS_UL_INFO + START:
+      return state
+        .setIn(['requestLoading', 'getStopListsUl'], true)
+        .setIn(['errors', 'getStopListsUl'], false)
+    case GET_STOP_LISTS_UL_INFO + SUCCESS:
+      return state
+        .set('companyResponse', payload)
+        .setIn(['requestLoading', 'getStopListsUl'], false)
+        .setIn(['errors', 'getStopListsUl'], false) 
+    case GET_STOP_LISTS_UL_INFO + FAIL:
+      return state
+        .setIn(['requestLoading', 'getStopListsUl'], false)
+        .setIn(['errors', 'getStopListsUl'], true)
+
     case GET_WHITE_STOP_LISTS + START:
       return state
         .setIn(['requestLoading', 'stopLists', action.loading], true)
@@ -303,7 +323,8 @@ export const clearCompanyInfo = () => {
 export const identifyUser = data => {
   return {
     type: GET_IDENTIFY_USER,
-    payload: data
+    payload: data,
+    id: data.id
   }
 }
 //Идентификация юзера для автозаполнения
@@ -361,8 +382,8 @@ export const decodedMainCompanySource = createSelector(
 )
 export const decodedRiskSource = createSelector(
   companyResSelector, (companyResponse) => {
-    const { arbiter, fns, sanctions, isponlit_proizvodstva, spiski, spark_spiski, arbiter_other } = companyResponse
-    const riskSource = { arbiter, fns, sanctions, isponlit_proizvodstva, spiski, spark_spiski, arbiter_other }
+    const { arbiter, fns, sanctions, isponlit_proizvodstva, spiski, spark_spiski, arbiter_other, stop_list } = companyResponse
+    const riskSource = { arbiter, fns, sanctions, isponlit_proizvodstva, spiski, spark_spiski, arbiter_other, stop_list }
     return riskSource
   }
 )
@@ -402,6 +423,7 @@ const loadCompanyInfoSaga = function * (action) {
         isIp: true,
         payload: {updatedData},
       })
+      yield spawn(getStopListsUlSaga, action.inn)
     } else {
       const updatedData = yield trasform._get_company_info_companySource(companyResponse, data)
       yield put({
@@ -410,6 +432,7 @@ const loadCompanyInfoSaga = function * (action) {
         isIp: false,
         payload: {updatedData},
       })
+      yield spawn(getStopListsUlSaga, action.inn)
     }
 
   } catch (err){
@@ -420,13 +443,48 @@ const loadCompanyInfoSaga = function * (action) {
         status: true,
         id: action.payload.id, 
         time: Date.now(),
-        message: "Ошибка получения данных о кампании, пожалуйста повторите запрос" 
+        message: "Ресурс занят, данные о кампании не получены, пожалуйста повторите запрос" 
       }
     })
   }
 }
 
-/* Получение данных о предшедственнниках и приемниках */
+/* Поиск данных стоп-листов о ЮЛ */
+const getStopListsUlSaga = function * (inn) {
+  try {
+    yield put({
+      type: GET_STOP_LISTS_UL_INFO + START
+    })
+
+    /* Запрос данных о приемниках */
+    const res = yield call(getStopListsUlInfo, inn)
+    
+    /* Получение данных из mock */
+    // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
+    
+    const data = res.Response
+    console.log("%cRES | GET STOP LIST UL", "color:white; background-color: green; padding: 0 5px", res)
+    const store = state => state[moduleName].get('companyResponse')
+    
+    const companyResponse = yield select(store)
+    const updatedData = yield trasform.stopListsUlInfo(companyResponse, data)
+
+    yield put({
+      type: GET_STOP_LISTS_UL_INFO + SUCCESS,
+      // reqnum: res.reqnum,
+      payload: updatedData,
+    })
+  } catch (err){
+    console.log('err', err)
+    yield put({
+      type: GET_STOP_LISTS_UL_INFO + FAIL,
+    })
+  }
+
+
+}
+
+/* Получение данных о связанных лицах */
 const loadAffilatesListSaga = function * (action) {
   const store = state => state[moduleName].get('companyResponse')
   const storeInn = yield select(store)
@@ -447,11 +505,10 @@ const loadAffilatesListSaga = function * (action) {
       const store = state => state[moduleName].get('companyResponse')
       
       const companyResponse = yield select(store)
-      const updatedData = yield trasform._updateManagmentSource(companyResponse, data)
+      const updatedData = yield trasform.updateManagmentSource(companyResponse, data)
 
       yield put({
         type: GET_AFFILATES_LIST + SUCCESS,
-        // reqnum: res.reqnum,
         payload: {updatedData},
       })
     } catch (err){
@@ -573,7 +630,7 @@ const getFsspInfoSaga = function * (reqnum, action, user) {
     })
 
     /* Запрос данных о стоп-листах */
-    const res = yield call(getFsspInfo, reqnum, action)
+    const res = yield call(getFsspInfo, reqnum, action.payload)
     
     const fssp = res.data.html
     console.log("%cRES | GET FSSP INFO", "color:white; background-color: green; padding: 0 5px", res)
@@ -729,11 +786,11 @@ const identifyUserSaga = function * (action) {
   try {
     yield put({
       type: GET_IDENTIFY_USER + START,
-      loading: action.payload.id
+      loading: action.id,
     })
     
     /* Запрос на идентификацию проверяемого объекта */
-    const res = yield call(getIdentifyUser, storeIsIP, storeReqnum, action, storeOgrn)
+    const res = yield call(getIdentifyUser, storeIsIP, storeReqnum, action.payload.user, storeOgrn)
 
     /** Mock данные о Идентификационных данных */
     // yield delay(2000); const res = {ip: true, data: dataMock.identifyInfoMock, reqnum: 666}
@@ -742,11 +799,11 @@ const identifyUserSaga = function * (action) {
     console.log("%cRES | GET USER INFO", "color:white; background-color: green; padding: 0 5px", res)
 
     if(data) {
-      const updatedUserInfo = yield trasform._identifyUserInfo(storeOgrn, data, action.payload.inn)
+      const updatedUserInfo = yield trasform.identifyUserInfo(storeOgrn, data, action.payload.user, action.id)
       yield put({
         type: GET_IDENTIFY_USER + SUCCESS,
         payload: {updatedUserInfo},
-        loading: action.payload.id
+        loading: action.id
       })
     } else {
       throw new TypeError("Ошибка получения данных!")
@@ -758,7 +815,7 @@ const identifyUserSaga = function * (action) {
       type: GET_IDENTIFY_USER + FAIL,
       error: {
         status: true,
-        id: action.payload.id, 
+        id: action.id, 
         time: Date.now(),
         message: "Ошибка идентификации пользователя, попробуйте перевести ФИО в верхний регистр" 
       }
@@ -775,11 +832,12 @@ const identifyUserInfoSaga = function * (action) {
   try {
     yield put({
       type: GET_CROINFORM_USER_INFO + START,
-      loading: action.loading
+      loading: action.loading,
+      payload: action.payload
     })
 
     /* Переключение на mock данные */
-    const res = yield call(getIdentifyUserInfo, storeReqnum, action)
+    const res = yield call(getIdentifyUserInfo, storeReqnum, action.payload)
 
     /** Mock данные о Идентификационных данных */
     // yield delay(2000); const res = {ip: true, data: dataMock.ipCroinformMock.data, reqnum: 666}
@@ -815,8 +873,8 @@ export const saga = function * () {
   yield takeEvery(GET_CROINFORM_USER_INFO, identifyUserInfoSaga)
   yield takeEvery(DELETE_RISK_FACTOR_IN_DIGEST_LIST, deleteRiskFactorSaga)
   yield takeEvery(LOAD_COMPANY_INFO + UPDATE + SUCCESS, loadAffilatesListSaga)
-  yield takeEvery(GET_AFFILATES_LIST + SUCCESS, loadAffilatesUlSaga)
   yield takeEvery(LOAD_COMPANY_INFO + UPDATE + SUCCESS, loadDigestListSaga)
+  yield takeEvery(GET_AFFILATES_LIST + SUCCESS, loadAffilatesUlSaga)
   yield takeEvery(ADD_RISK_FACTOR_IN_DIGEST_LIST, addRiskFactorSaga)
   yield takeEvery(GET_CROINFORM_USER_INFO, loadStopListDataSaga)
 }

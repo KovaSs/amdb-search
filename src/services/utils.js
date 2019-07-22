@@ -349,16 +349,24 @@ class TransformData {
     })
     return clonePrevData
   }
-
-  _identifyUserInfo = (prevData, newData, inn) => {
+  /** Обновление выбранных данных пользователя */
+  identifyUserInfo = (prevData, newData, user, id) => {
     const clonePrevData = cloneDeep(prevData);
     clonePrevData.heads.map( item =>  {
-      if(item.inn === inn) {
+      if(item.id === id) {
         item.timeRequest = Date.now()
         item.identifyInfo = newData
+        item.selectedInfo = user
       }
       return item
     })
+    return clonePrevData
+  }
+
+  /** Обновление выбранных данных пользователя */
+  stopListsUlInfo = (prevData, newData) => {
+    const clonePrevData = cloneDeep(prevData);
+    clonePrevData.stop_list = newData
     return clonePrevData
   }
 
@@ -386,7 +394,7 @@ class TransformData {
     return filteredManagementInfo
   }
 
-  _updateManagmentSource = (prevData, newData) => {
+  updateManagmentSource = (prevData, newData) => {
     const cloneFieldsArr = cloneDeep(fieldsArr);
     const clonePrevData = cloneDeep(prevData);
 
