@@ -58,12 +58,32 @@ const RenderEditedLeader = props => {
     }
   } = props
 
-  const renderPositionTag = () => {
-    if(Array.isArray(position)) return position.map(item => {
-      if(item !== "") return <Tag key={uuid()} color="blue" >{item.tagName}</Tag>
+  const renderPositionTag = (tagTitle = "") => {
+    if(Array.isArray(position)) return position.map((tag, index )=> {
+      switch (tag.tagName) {
+        case "Акционер":
+          tagTitle = `${tag.tagName}${tag.share.hasOwnProperty('capitalSharesPercent') ? ` (${tag.share.capitalSharesPercent} / ${tag.share.capitalSharesPercent})` : ""}`
+          break;
+        case "Учредитель":
+          tagTitle = `${tag.tagName}${tag.share.hasOwnProperty('sum') ? ` (${tag.share.sum})` : ""}`
+          break;
+        default:
+          tagTitle = tag.tagName
+      }
+      const content = (
+        <div style={styleCss.popover}> 
+          <div>Организация: {tag.organisation.name}</div>
+          <div>ИНН: {tag.organisation.inn}</div>
+          <div>ОГРН: {tag.organisation.ogrn}</div>
+        </div>
+      )
+      if(tag !== "") return (
+      <Popover key={index} title={tagTitle} content={content} trigger="hover" style={styleCss.popover}>
+        <Tag key={uuid()} color="blue" >{tagTitle}</Tag>
+      </Popover>
+      )
       else return null
     })
-    return <Tag color="blue" >{position.tagName}</Tag>
   }
 
   // Рендеринг опций выпадающего меню

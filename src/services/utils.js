@@ -404,9 +404,9 @@ class TransformData {
           return assign(clonePrevData, { [item.id] : item.func(newData[item.search])})
         } else if( item.search === el && 
           ( 
-            item.search === "founders_fl" || 
-            item.search === "founders_ul" || 
-            item.search === "ul" || 
+            item.search === "founders_fl" ||
+            item.search === "founders_ul" ||
+            item.search === "ul" ||
             item.search === "fl" ||
             item.search === "heads_ul" ||
             item.search === "heads_fl" ||
@@ -430,7 +430,7 @@ class TransformData {
             position: concat(
               heads.position,
               {
-                tagName: `Учредитель${newHeadInfo.share && JSON.stringify(newHeadInfo.share) !== "{}" ? ` (${newHeadInfo.share.sum})` : ''}`,
+                tagName: `Учредитель`,
                 organisation: {
                   name: clonePrevData.name ? getShortCompName(clonePrevData.name) : "",
                   inn: clonePrevData.inn ? clonePrevData.inn : "",
@@ -459,7 +459,7 @@ class TransformData {
               ogrn: clonePrevData.ogrn ? clonePrevData.ogrn : ""
             },
             position: [{
-              tagName: `Учредитель${founders_fl.share && JSON.stringify(founders_fl.share) !== "{}" ? ` (${founders_fl.share.sum})` : ''}`,
+              tagName: `Учредитель`,
               organisation: {
                 name: clonePrevData.name ? getShortCompName(clonePrevData.name) : "",
                 inn: clonePrevData.inn ? clonePrevData.inn : "",
@@ -486,7 +486,7 @@ class TransformData {
             position: concat(
               heads.position,
               {
-                tagName: `Акционер (${newInfo.capitalSharesPercent ? `${newInfo.capitalSharesPercent}` : ""}${newInfo.votingSharesPercent ? ` / ${newInfo.votingSharesPercent}` : ""})`,
+                tagName: `Акционер`,
                 organisation: {
                   name: clonePrevData.name ? getShortCompName(clonePrevData.name) : "",
                   inn: clonePrevData.inn ? clonePrevData.inn : "",
@@ -519,13 +519,16 @@ class TransformData {
               ogrn: clonePrevData.ogrn ? clonePrevData.ogrn : ""
             },
             position: [{
-              tagName: `Акционер${share_holders_fl.share && JSON.stringify(share_holders_fl.share) !== "{}" ? ` (${share_holders_fl.share.sum})` : ''}`,
+              tagName: `Акционер`,
               organisation: {
                 name: clonePrevData.name ? getShortCompName(clonePrevData.name) : "",
                 inn: clonePrevData.inn ? clonePrevData.inn : "",
                 ogrn: clonePrevData.ogrn ? clonePrevData.ogrn : ""
               },
-              share: share_holders_fl.share
+              share: {
+                capitalSharesPercent: share_holders_fl.capitalSharesPercent,
+                votingSharesPercent: share_holders_fl.votingSharesPercent,
+              }
             }],
           })
         }
@@ -538,7 +541,7 @@ class TransformData {
   }
 
   /** Обновление информации по Связанным лицам, если это ЮЛ */
-  _updateManagmentULSource = (prevData, newData, user) => {
+  updateManagmentULSource = (prevData, newData, user) => {
     const clonePrevData = cloneDeep(prevData)
     // Руководство
     if(newData.heads_fl.length) {
@@ -629,7 +632,7 @@ class TransformData {
         return heads
       })
       newData.founders_fl.map(founders_fl => {
-        if(!clonePrevData.heads.map( heads => founders_fl.fio === heads.fio).length) {
+        if(!clonePrevData.heads.filter( heads => founders_fl.fio === heads.fio).length) {
           return notFoundsFoundersFl.push({
             id: uuid(),
             ActualDate: founders_fl.date ? founders_fl.date : getDate(Date.now()),
@@ -705,14 +708,17 @@ class TransformData {
               address: user.address ? user.address : "",
             },
             position: [{
-              tagName: `Акционер${share_holders_fl.share && JSON.stringify(share_holders_fl.share) !== "{}" ? ` (${share_holders_fl.share.sum})` : ''}`,
+              tagName: `Акционер`,
               organisation: {
                 name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name),
                 inn: user.inn ? user.inn : "",
                 ogrn: user.ogrn ? user.ogrn : "",
                 address: user.address ? user.address : "",
               },
-              share: share_holders_fl.share
+              share: {
+                capitalSharesPercent: share_holders_fl.capitalSharesPercent,
+                votingSharesPercent: share_holders_fl.votingSharesPercent,
+              }
             }],
           })
         }
@@ -723,57 +729,6 @@ class TransformData {
     }
     return clonePrevData
   }
-
-    /*
-    const newStore = cloneDeep(prevData);
-    for (const key in newData) {
-      if (key === "founders_fl" && newData.founders_fl.length) {
-        const addNewFoundersFl = newData.founders_fl.map(item => {
-          return {
-            id: uuid(),
-            ActualDate: item.date ? item.date : getDate(Date.now()),
-            fio: item.fio,
-            first_name: parsingFio(item.fio).FirstName,
-            inn: item.innfl ? item.innfl : "Не найден",
-            last_name: parsingFio(item.fio).SurName,
-            middle_name: parsingFio(item.fio).MiddleName,
-            position: [`Учредитель${user.share && JSON.stringify(user.share) !== "{}" ? ` (${user.share.sum})` : ""}`, item.position ? item.position : ""],
-            organisation: {
-              name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name),
-              inn: user.inn ? user.inn : "",
-              ogrn: user.ogrn ? user.ogrn : ""
-            },
-            share: user.share ? user.share : ""
-          }
-        })
-        newStore.heads = union(newStore.heads, differenceBy(addNewFoundersFl, newStore.heads, 'fio'))
-        console.log('%c2-FOUNDERS_FL', cloCss.yellow, newStore.heads, addNewFoundersFl)
-        console.log('FoundersFl', differenceBy(addNewFoundersFl, newStore.heads, 'fio') )
-      } else if (key === "shared_holders_fl" && newData.shared_holders_fl.length) {
-        const addNewSharedHoldersFl = newData.shared_holders_fl.map(item => {
-          return {
-            id: uuid(),
-            ActualDate: item.date ? item.date : getDate(Date.now()),
-            fio: item.fio,
-            first_name: parsingFio(item.fio).FirstName,
-            inn: item.innfl ? item.innfl : "Не найден",
-            last_name: parsingFio(item.fio).SurName,
-            middle_name: parsingFio(item.fio).MiddleName,
-            position: ["Акционер", item.position ? item.position : ""],
-            organisation: {
-              name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name),
-              inn: user.inn ? user.inn : "",
-              ogrn: user.ogrn ? user.ogrn : ""
-            },
-            share: user.share ? user.share : ""
-          }
-        })
-        newStore.heads = union(newStore.heads, differenceBy(addNewSharedHoldersFl, newStore.heads, 'inn'))
-        console.log('%c2-SHARE_HOLDERS_FL', cloCss.yellow, newStore.heads, addNewSharedHoldersFl)
-        console.log('SharedHoldersFl', intersectionBy( newStore.heads, addNewSharedHoldersFl, 'inn') )
-      }
-    }
-    */
 
   _riskSource = inputData => {
     const Risk = (search, title, data) => ({ search, title, data })

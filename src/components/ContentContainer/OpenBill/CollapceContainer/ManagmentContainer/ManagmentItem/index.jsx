@@ -224,7 +224,7 @@ export class ManagmentItem extends PureComponent {
       };
 
       return (
-        <span className="heads-search" style={{width: showBtn ? 150 : 120}}>
+        <span className="heads-search-panel" style={{width: showBtn ? 158 : 120}}>
           <Button
             title="Проверить все"
             size="small"

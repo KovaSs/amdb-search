@@ -54,7 +54,7 @@ export const fieldsArr = [
     }
   }},
 
-  {search: "LegalAddresses", id: "address", title: "Юридический адресс", data: "", func: item => {
+  {search: "LegalAddresses", id: "address", title: "Юридический адрес", data: "", func: item => {
     try {
       if(!item) return 'Данные отсутствуют'
       const { Address } = item
@@ -109,7 +109,7 @@ export const fieldsArr = [
     }
   }},
 
-  {search: "IndexOfDueDiligenceStr", id: "index_of_due_diligence", title: "Индекс должносной осмотрительности", data: ""},
+  {search: "IndexOfDueDiligenceStr", id: "index_of_due_diligence", title: "Индекс должной осмотрительности", data: ""},
 
   {search: "PaymentIndexStr", id: "payment_index", title: "Индекс платежной дисциплины", data: "", func: item => {
     try {
@@ -162,7 +162,7 @@ export const fieldsArr = [
 
   {search: "", id: "arbiter_other", title: "Арбитраж прочее", data: ""},
 
-  {search: "spiski", id: "spiski", title: "Найденов списках", data: ""},
+  {search: "spiski", id: "spiski", title: "Найдено в списках", data: ""},
 
   {search: "IncludeInList", id: "spark_spiski", title: "Спарк. Списки", data: "", func: item => {
     try {
@@ -196,7 +196,7 @@ export const fieldsArr = [
     }
   }}, 
 
-  {search: "Successor", id: "successors", title: "Приемники", data: "", func: item => {
+  {search: "Successor", id: "successors", title: "Приеемники", data: "", func: item => {
     try {
       if(!item) return ''
       if(Array.isArray(item.Successor)) {
@@ -326,7 +326,7 @@ export const fieldsArrIP = [
     return `${item.GroupName} ${"/ " + getDate(item.Date)}`
   }},
 
-  {search: "FederalTaxRegistrationCurrent", id: "address", title: "Юридический адресс", data: "", func: item => {
+  {search: "FederalTaxRegistrationCurrent", id: "address", title: "Юридический адрес", data: "", func: item => {
     if(!item.RegAuthorityAddress) return 'Данные отсутствуют'
     return item.RegAuthorityAddress
   }},
@@ -356,7 +356,7 @@ export const fieldsArrIP = [
 
   {search: "", id: "fns", title: "ФНС", data: ""},
 
-  {search: "spiski", id: "spiski", title: "Найденов списках", data: ""},
+  {search: "spiski", id: "spiski", title: "Найдено в списках", data: ""},
 
   {search: "sankcii", id: "sanctions", title: "Санкции", data: ""},
 

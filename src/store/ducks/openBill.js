@@ -700,7 +700,7 @@ const getRequestAffiliatesUlSaga = function * (inn, user) {
     console.log("%cRES | GET CHECK AFFILATES UL", "color:white; background-color: green; padding: 0 5px", res)
     
     const companyRes = yield select(store)
-    const updatedData = yield trasform._updateManagmentULSource(companyRes.get("companyResponse"), data, user)
+    const updatedData = yield trasform.updateManagmentULSource(companyRes.get("companyResponse"), data, user)
 
     yield put({
       type: GET_AFFILATES_UL + SUCCESS,

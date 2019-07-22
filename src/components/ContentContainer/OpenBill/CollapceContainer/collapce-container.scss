@@ -108,6 +108,35 @@
     }
   }
 
+  .heads-search-panel {
+    position: absolute;
+    display: inline-block;
+    width: 150px;
+    right: 0px;
+    top: 4px;
+    &-btn, &-btn-green{
+      margin-right: 0.5rem;
+      background-color: #fff;
+      padding: 4px 8px;
+      border: 1px solid #d9d9d9;
+      border-radius: 2px;
+      color: rgba(14, 117, 253, 0.992);
+      cursor: pointer;
+      transition: 0.5 ease;
+  
+      &:hover {
+        border: 1px solid rgba(14, 117, 253, 0.992);
+      }
+    }
+    &-btn-green {
+      color: #52c41a;
+    }
+    button {
+      font-size: 15px;
+      height: 30px;
+    }
+  }
+
   /* Отлючение бордера внизу элементов collapce menu*/
   .managment {
     .ant-collapse-item {

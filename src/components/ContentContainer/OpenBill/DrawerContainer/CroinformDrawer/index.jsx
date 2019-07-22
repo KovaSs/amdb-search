@@ -29,9 +29,9 @@ const CroinformDrawer = props => {
   const { TabPane } = Tabs
   const { Panel } = Collapse
 
-  const styledIdentifyRes = user.hasOwnProperty('identifyInfo') ? htmlTransform(user.identifyInfo.html) : ""
+  const styledIdentifyRes = (user.hasOwnProperty('identifyInfo') && user.identifyInfo.html !== null) ? htmlTransform(user.identifyInfo.html) : ""
   const styledfsspInfo = fsspInfo ? htmlTransformFssp(fsspInfo) : ""
-  const styledCroinformHtmlRes = (croinformRes && croinformRes.html)? htmlTransform(croinformRes.html) : ""
+  const styledCroinformHtmlRes = (croinformRes && croinformRes.html !== null) ? htmlTransform(croinformRes.html) : ""
   const croinformVectorRes = (croinformRes && croinformRes.hasOwnProperty('vector')) ? croinformRes.vector : []
   const croinformListsRes = (croinformRes && croinformRes.lists.length) ? croinformRes.lists : []
   const stopLists = stop_lists ? stop_lists : []
