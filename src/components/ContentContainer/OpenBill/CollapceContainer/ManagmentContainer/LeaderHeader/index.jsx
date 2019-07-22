@@ -1,6 +1,6 @@
 import React from 'react'
 import { Tag, Popover, Badge } from 'antd'
-import { getDate, uuid } from '../../../../../../services/utils'
+import { getDate, uuid, sumTrans } from '../../../../../../services/utils'
 
 const styleCss = {
   popover: {
@@ -36,6 +36,9 @@ const styleCss = {
     text: {
       color: "red"
     }
+  },
+  tagInfo: {
+    borderTop: "1px #d9d9d9 solid"
   }
 }
 
@@ -55,7 +58,7 @@ const LeaderHeader = props => {
           tagTitle = `${tag.tagName}${tag.share.hasOwnProperty('capitalSharesPercent') ? ` (${tag.share.capitalSharesPercent} / ${tag.share.capitalSharesPercent})` : ""}`
           break;
         case "Учредитель":
-          tagTitle = `${tag.tagName}${tag.share.hasOwnProperty('sum') ? ` (${tag.share.sum})` : ""}`
+          tagTitle = `${tag.tagName}${tag.share.hasOwnProperty('sum') ? ` (${sumTrans(tag.share.sum)})` : ""}`
           break;
         default:
           tagTitle = tag.tagName
@@ -65,6 +68,10 @@ const LeaderHeader = props => {
           <div>Организация: {tag.organisation.name}</div>
           <div>ИНН: {tag.organisation.inn}</div>
           <div>ОГРН: {tag.organisation.ogrn}</div>
+          {
+            tag.organisation.hasOwnProperty('share') && tag.organisation.share.hasOwnProperty('sum') && tag.organisation.share.sum ?
+            <div style={styleCss.tagInfo}> {`Учредитель владеет: ${sumTrans(tag.organisation.share.sum)}`} </div> : null
+          }
         </div>
       )
       if(tag !== "") return (

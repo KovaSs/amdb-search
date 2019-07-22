@@ -470,12 +470,14 @@ const loadAffilatesUlSaga = function * (action) {
       if(item.inn) return spawn(getRequestAffiliatesUlSaga, item.inn, item)
       else return item
     }))
-  }else if(action.payload.updatedData.heads_ul.length) {
+  }
+  if(action.payload.updatedData.heads_ul.length) {
     yield all(action.payload.updatedData.heads_ul.map(item => {
       if(item.inn) return spawn(getRequestAffiliatesUlSaga, item.inn, item)
       else return item
     }))
-  }else if(action.payload.updatedData.share_holders_ul.length) {
+  }
+  if(action.payload.updatedData.share_holders_ul.length) {
     yield all(action.payload.updatedData.share_holders_ul.map(item => {
       if(item.inn) return spawn(getRequestAffiliatesUlSaga, item.inn, item)
       else return item

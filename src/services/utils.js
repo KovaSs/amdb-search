@@ -87,9 +87,10 @@ return {
 }
 }
 
-/** Генерация uuId ключей */
+/** Преобразование сумм */
 // eslint-disable-next-line
-export const sumTrans = str => str.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1' + '\u200A')
+export const sumTrans = str => String(str).replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1' + '\u200A')
+
 /** Генерация Id ключей */
 // eslint-disable-next-line
 export const uuid = ()=> ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15 >> c/4).toString(16));
@@ -123,8 +124,10 @@ return name
 .replace(/^МЕСТНАЯ РЕЛИГИОЗНАЯ ОРГАНИЗАЦИЯ/gi, 'МРО')
 .replace(/ОРТОДОКСАЛЬНОГО ИУДАИЗМА/gi, 'ОИ')
 .replace(/ОДИНЦОВСКОГО РАЙОНА/gi, 'ОР')
+.replace(/КОММЕРЧЕСКАЯ НЕДВИЖИМОСТЬ/gi, 'КН')
 .replace(/МОСКОВСКОЙ ОБЛАСТИ/gi, 'МО')
 .replace(/Финансово-Промышленная корпорация/gi, 'ФПК')
+.replace(/Финансово-промышленной корпорации/gi, 'ФПК')
 .replace(/Управляющая компания/gi, 'УК')
 }
 
@@ -424,7 +427,7 @@ class TransformData {
       let notFoundsHeadsFl = []
       const updatedHeads = clonePrevData.heads.map( heads => {
         if( newData.founders_fl.filter(founders_fl => heads.fio === founders_fl.fio).length) {
-          const newHeadInfo = newData.founders_fl.filter(founders_fl => heads.fio === founders_fl.fio)[0]
+          const founders_fl = newData.founders_fl.filter(founders_fl => heads.fio === founders_fl.fio)[0]
           return {
             ...heads,
             position: concat(
@@ -436,7 +439,7 @@ class TransformData {
                   inn: clonePrevData.inn ? clonePrevData.inn : "",
                   ogrn: clonePrevData.ogrn ? clonePrevData.ogrn : ""
                 },
-                share: newHeadInfo.share
+                share: founders_fl.share
               }
             )
           }
@@ -472,7 +475,7 @@ class TransformData {
         return null
       })
       clonePrevData.heads = concat(updatedHeads, notFoundsHeadsFl)
-      console.log(`%c1lvl FOULDERS_FL | ${clonePrevData.name ? getShortCompName(clonePrevData.name) : ""}`, cloCss.yellow, clonePrevData.heads)
+      console.log(`%c1 lvl FOULDERS_FL | ${clonePrevData.name ? getShortCompName(clonePrevData.name) : ""}`, cloCss.yellow, clonePrevData.heads)
     }
 
     // Акционеры
@@ -535,13 +538,14 @@ class TransformData {
         return null
       })
       clonePrevData.heads = concat(headPerson, notFoundsShareHoldersFl)
-      console.log(`%c1lvl SHARE_HOLDERS_FL | ${clonePrevData.name ? getShortCompName(clonePrevData.name) : ""}`, cloCss.yellow, clonePrevData.heads)
+      console.log(`%c1 lvl SHARE_HOLDERS_FL | ${clonePrevData.name ? getShortCompName(clonePrevData.name) : ""}`, cloCss.yellow, clonePrevData.heads)
     }
     return clonePrevData
   }
 
   /** Обновление информации по Связанным лицам, если это ЮЛ */
   updateManagmentULSource = (prevData, newData, user) => {
+    console.log(`${user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name)}`, user)
     const clonePrevData = cloneDeep(prevData)
     // Руководство
     if(newData.heads_fl.length) {
@@ -560,10 +564,11 @@ class TransformData {
                   inn: user.inn ? user.inn : "",
                   ogrn: user.ogrn ? user.ogrn : "",
                   address: user.address ? user.address : "",
-                },
-                share: {
-                  capitalSharesPercent: user.capitalSharesPercent,
-                  votingSharesPercent: user.votingSharesPercent,
+                  share: {
+                    sum: user.founder ? user.share.sum : "",
+                    capitalSharesPercent: user.shareholder ? user.capitalSharesPercent : "",
+                    votingSharesPercent: user.shareholder ? user.votingSharesPercent : "",
+                  }
                 }
               }
             )
@@ -593,10 +598,11 @@ class TransformData {
                 inn: user.inn ? user.inn : "",
                 ogrn: user.ogrn ? user.ogrn : "",
                 address: user.address ? user.address : "",
-              },
-              share: {
-                capitalSharesPercent: user.capitalSharesPercent,
-                votingSharesPercent: user.votingSharesPercent,
+                share: {
+                  sum: user.founder ? user.share.sum : "",
+                  capitalSharesPercent: user.shareholder ? user.capitalSharesPercent : "",
+                  votingSharesPercent: user.shareholder ? user.votingSharesPercent : "",
+                }
               }
             }],
           })
@@ -604,7 +610,7 @@ class TransformData {
         return null
       })
       clonePrevData.heads = concat(headPerson, notFoundsHeadsFl)
-      console.log(`%c2lvl HEADS_FL | ${user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name)}`, cloCss.yellow, clonePrevData.heads)
+      console.log(`%c2 lvl HEADS_FL | ${user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name)}`, cloCss.yellow, clonePrevData.heads)
     }
 
     // Учредители
@@ -612,7 +618,7 @@ class TransformData {
       let notFoundsFoundersFl = []
       const updatedHeads = clonePrevData.heads.map( heads => {
         if( newData.founders_fl.filter(founders_fl => heads.fio === founders_fl.fio).length) {
-          // const updatedHead = newData.founders_fl.filter(founders_fl => heads.fio === founders_fl.fio)[0]
+          const founders_fl = newData.founders_fl.filter(founders_fl => heads.fio === founders_fl.fio)[0]
           return {
             ...heads,
             position: concat(
@@ -622,9 +628,14 @@ class TransformData {
                 organisation: {
                   name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name),
                   inn: user.inn ? user.inn : "",
-                  ogrn: user.ogrn ? user.ogrn : ""
+                  ogrn: user.ogrn ? user.ogrn : "",
+                  share: {
+                    sum: user.founder ? user.share.sum : "",
+                    capitalSharesPercent: user.shareholder ? user.capitalSharesPercent : "",
+                    votingSharesPercent: user.shareholder ? user.votingSharesPercent : "",
+                  }
                 },
-                share: user.share
+                share: founders_fl.share
               }
             )
           }
@@ -651,16 +662,21 @@ class TransformData {
               organisation: {
                 name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name),
                 inn: user.inn ? user.inn : "",
-                ogrn: user.ogrn ? user.ogrn : ""
+                ogrn: user.ogrn ? user.ogrn : "",
+                share: {
+                  sum: user.founder ? user.share.sum : "",
+                  capitalSharesPercent: user.shareholder ? user.capitalSharesPercent : "",
+                  votingSharesPercent: user.shareholder ? user.votingSharesPercent : "",
+                }
               },
-              share: user.share
+              share: founders_fl.share
             }],
           })
         }
         return null
       })
       clonePrevData.heads = concat(updatedHeads, notFoundsFoundersFl)
-      console.log(`%c2lvl FOULDERS_FL | ${user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name)}`, cloCss.yellow, clonePrevData.heads)
+      console.log(`%c2 lvl FOULDERS_FL | ${user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name)}`, cloCss.yellow, clonePrevData.heads)
     }
 
     // Акционеры
@@ -668,22 +684,27 @@ class TransformData {
       let notFoundsShareHoldersFl = []
       const headPerson = clonePrevData.heads.map( heads => {
         if(newData.share_holders_fl.filter(share_holders_fl => heads.fio === share_holders_fl.fio).length) {
-          const newInfo = newData.share_holders_fl.filter(share_holders_fl => heads.fio === share_holders_fl.fio)[0]
+          const share_holders_fl = newData.share_holders_fl.filter(share_holders_fl => heads.fio === share_holders_fl.fio)[0]
           return {
             ...heads,
             position: concat(
               heads.position,
               {
-                tagName: `Акционер (${newInfo.capitalSharesPercent ? `${newInfo.capitalSharesPercent}` : ""}${newInfo.votingSharesPercent ? ` / ${newInfo.votingSharesPercent}` : ""})`,
+                tagName: `Акционер`,
                 organisation: {
                   name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name),
                   inn: user.inn ? user.inn : "",
                   ogrn: user.ogrn ? user.ogrn : "",
                   address: user.address ? user.address : "",
+                  share: {
+                    sum: user.founder ? user.share.sum : "",
+                    capitalSharesPercent: user.shareholder ? user.capitalSharesPercent : "",
+                    votingSharesPercent: user.shareholder ? user.votingSharesPercent : "",
+                  }
                 },
                 share: {
-                  capitalSharesPercent: newInfo.capitalSharesPercent,
-                  votingSharesPercent: newInfo.votingSharesPercent,
+                  capitalSharesPercent: share_holders_fl.capitalSharesPercent,
+                  votingSharesPercent: share_holders_fl.votingSharesPercent,
                 }
               }
             )
@@ -714,6 +735,11 @@ class TransformData {
                 inn: user.inn ? user.inn : "",
                 ogrn: user.ogrn ? user.ogrn : "",
                 address: user.address ? user.address : "",
+                share: {
+                  sum: user.founder ? user.share.sum : "",
+                  capitalSharesPercent: user.shareholder ? user.capitalSharesPercent : "",
+                  votingSharesPercent: user.shareholder ? user.votingSharesPercent : "",
+                }
               },
               share: {
                 capitalSharesPercent: share_holders_fl.capitalSharesPercent,

@@ -47,14 +47,18 @@ export class ManagmentItem extends PureComponent {
     const { item: { inn, last_name, first_name,  middle_name, identifyInfo = { inn: "", fio: "", passport: "", birthday: "", address: ""}}} = this.props;
     this.setState({
       user: {
-        inn: union([inn], identifyInfo.inn), 
+        inn: union([inn], identifyInfo.inn).length >= 1 ?
+          union([inn], identifyInfo.inn).filter(item => item !== "Не найден") :
+          union([inn], identifyInfo.inn), 
         fio: union( [`${last_name} ${first_name} ${middle_name}`], identifyInfo.fio ), 
         passport: identifyInfo.passport,
         birthday: identifyInfo.birthday,
         address: identifyInfo.address
       },
       userSelected: {
-        inn: inn,
+        inn: union([inn], identifyInfo.inn).length >= 1 ?
+          union([inn], identifyInfo.inn).filter(item => item !== "Не найден")[0] :
+          union([inn], identifyInfo.inn)[0],
         FirstName: first_name,
         MiddleName: middle_name,
         SurName: last_name,
@@ -72,14 +76,18 @@ export class ManagmentItem extends PureComponent {
     if (item !== prevProps.item) {
       this.setState({
         user: {
-          inn: union([inn], identifyInfo.inn), 
+          inn: union([inn], identifyInfo.inn).length >= 1 ?
+            union([inn], identifyInfo.inn).filter(item => item !== "Не найден") :
+            union([inn], identifyInfo.inn), 
           fio: union( [`${last_name} ${first_name} ${middle_name}`], identifyInfo.fio ), 
           passport: identifyInfo.passport,
           birthday: identifyInfo.birthday,
           address: identifyInfo.address
         },
         userSelected: {
-          inn: inn,
+          inn: union([inn], identifyInfo.inn).length >= 1 ?
+            union([inn], identifyInfo.inn).filter(item => item !== "Не найден")[0] :
+            union([inn], identifyInfo.inn)[0],
           FirstName: first_name,
           MiddleName: middle_name,
           SurName: last_name,

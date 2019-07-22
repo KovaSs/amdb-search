@@ -42,15 +42,9 @@ export class ContentContainer extends Component {
           mode: 'cors',
           credentials: 'include',
           body : JSON.stringify({ 
-            type: 'fl',
+            type: 'ul', 
             method: 'bases',
-            surname: "Масютина",
-            firstname: "Жанна",
-            middlename: "Ивановна",
-            birthdate: ["1976-12-10", "1971-12-10", "1976-10-01"],
-            series: "6602",
-            number: "604372",
-            inn: "670700894121"
+            ulinn: "3435116895"
           }),
         }
       )
