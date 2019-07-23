@@ -1,7 +1,7 @@
 import { Record, Map } from 'immutable'
 import { createSelector } from 'reselect'
 import { all, put, call, select, spawn, takeEvery } from 'redux-saga/effects'
-import { trasform, getShortCompName } from "../../services/utils"
+import { trasform, getShortCompName, cloCss} from "../../services/utils"
 import { companyRes } from '../mock'
 import { 
   getLoadCompanyInfo,
@@ -24,7 +24,6 @@ import {
 // const dataMock = { companyRes, identifyInfoMock, bicompactResMock, ipResMock, ipCroinformMock }
 
 const dataMock = { companyRes }
-const cloCss = "color:white; background-color: green; padding: 0 5px"
 
 /** Constants */
 export const moduleName = 'openBill'
@@ -411,7 +410,7 @@ const loadCompanyInfoSaga = function * (action) {
     // const res = {ip: true, data: dataMock.ipResMock.data, reqnum: 666}
 
     const data = res.data.company_info
-    console.log("%cRES | FIRST UPDATE", cloCss, res)
+    console.log("%cRES | FIRST UPDATE", cloCss.green, res)
     const store = state => state[moduleName].get('companyResponse')
     const companyResponse = yield select(store)
 
@@ -436,7 +435,7 @@ const loadCompanyInfoSaga = function * (action) {
     }
 
   } catch (err){
-    console.log('loadCompanyInfoSaga', err)
+    console.log('%cloadCompanyInfoSagaErr', cloCss.red, err)
     yield put({
       type: LOAD_COMPANY_INFO + UPDATE + FAIL,
       error: {
@@ -463,7 +462,7 @@ const getStopListsUlSaga = function * (inn) {
     // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
     
     const data = res.Response
-    console.log("%cRES | GET STOP LIST UL", "color:white; background-color: green; padding: 0 5px", res)
+    console.log("%cRES | GET STOP LIST UL",  cloCss.green, res)
     const store = state => state[moduleName].get('companyResponse')
     
     const companyResponse = yield select(store)
@@ -475,7 +474,7 @@ const getStopListsUlSaga = function * (inn) {
       payload: updatedData,
     })
   } catch (err){
-    console.log('err', err)
+    console.log('%cgetStopListsUlSagaErr', cloCss.red, err)
     yield put({
       type: GET_STOP_LISTS_UL_INFO + FAIL,
     })
@@ -501,7 +500,7 @@ const loadAffilatesListSaga = function * (action) {
       // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
       
       const data = res.data
-      console.log("%cRES | GET AFFILATES LIST", "color:white; background-color: green; padding: 0 5px", res)
+      console.log("%cRES | GET AFFILATES LIST",  cloCss.green, res)
       const store = state => state[moduleName].get('companyResponse')
       
       const companyResponse = yield select(store)
@@ -512,7 +511,7 @@ const loadAffilatesListSaga = function * (action) {
         payload: {updatedData},
       })
     } catch (err){
-      console.log('err', err)
+      console.log('%cloadAffilatesListSagaErr', cloCss.red, err)
       yield put({
         type: GET_AFFILATES_LIST + FAIL,
       })
@@ -565,21 +564,27 @@ const getBlackStopListSaga = function * (user, action) {
     /* Запрос данных о стоп-листах */
     const res = yield call(getBlackStopList, action)
 
-    console.log("%cRES | GET BLACK STOP LISTS ", "color:white; background-color: green; padding: 0 5px", res)
+    console.log("%cRES | GET BLACK STOP LISTS ",  cloCss.green, res)
 
-    if(JSON.stringify(res.Response  !== '[]' || res.Status !== "Error")) {
+    if(JSON.stringify(res.Response  !== '[]') && res.Status !== "Error") {
       const store = state => state[moduleName].get('companyResponse')
-      const newStore = trasform._stop_lists(yield select(store), res.Response, user.id)
+      const newStore = trasform.stop_lists(yield select(store), res.Response, user.id)
 
       yield put({
         type: GET_BLACK_STOP_LISTS + SUCCESS,
         payload: newStore,
         loading: user.id
       })
+    } else if(res.Status === "Error") {
+      console.log('%cgetBlackStopListSagaErr', cloCss.red, res.Description)
+      yield put({
+        type: GET_BLACK_STOP_LISTS + FAIL,
+        loading: user.id
+      })
     }
 
   } catch (err){
-    console.log('err', err)
+    console.log('%cgetBlackStopListSagaErr', cloCss.red, err)
     yield put({
       type: GET_BLACK_STOP_LISTS + FAIL,
       loading: user.id
@@ -599,21 +604,26 @@ const getWhiteStopListSaga = function * (user, action) {
     /* Запрос данных о стоп-листах */
     const res = yield call(getWhiteStopList, action)
 
-    console.log("%cRES | GET WHITE STOP LISTS ", "color:white; background-color: green; padding: 0 5px", res)
-
-    if(JSON.stringify(res.Response  !== '[]' || res.Status !== "Error")) {
+    console.log("%cRES | GET WHITE STOP LISTS ",  cloCss.green, res)
+    if(JSON.stringify(res.Response  !== '[]' ) && res.Status !== "Error") {
       const store = state => state[moduleName].get('companyResponse')
-      const newStore = trasform._stop_lists(yield select(store), res.Response, user.id)
+      const newStore = trasform.stop_lists(yield select(store), res.Response, user.id)
 
       yield put({
         type: GET_WHITE_STOP_LISTS + SUCCESS,
         payload: newStore,
         loading: user.id
       })
+    } else if(res.Status === "Error") {
+      console.log('%cgetWhiteStopListSagaErr', cloCss.red, res.Description)
+      yield put({
+        type: GET_WHITE_STOP_LISTS + FAIL,
+        loading: user.id
+      })
     }
 
   } catch (err){
-    console.log('err', err)
+    console.log('%cgetWhiteStopListSagaErr', cloCss.red, err)
     yield put({
       type: GET_WHITE_STOP_LISTS + FAIL,
       loading: user.id
@@ -633,7 +643,7 @@ const getFsspInfoSaga = function * (reqnum, action, user) {
     const res = yield call(getFsspInfo, reqnum, action.payload)
     
     const fssp = res.data.html
-    console.log("%cRES | GET FSSP INFO", "color:white; background-color: green; padding: 0 5px", res)
+    console.log("%cRES | GET FSSP INFO",  cloCss.green, res)
 
     yield put({
       type: GET_FSSP_INFO + SUCCESS,
@@ -641,7 +651,7 @@ const getFsspInfoSaga = function * (reqnum, action, user) {
       loading: user.id
     })
   } catch (err){
-    console.log('err', err)
+    console.log('%cgetFsspInfoSagaErr', cloCss.red, err)
     yield put({
       type: GET_FSSP_INFO + FAIL,
       loading: user.id
@@ -665,14 +675,14 @@ const loadDigestListSaga = function * () {
     // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
     
     const digest = res.data
-    console.log("%cRES | LOAD DIGEST LIST", "color:white; background-color: green; padding: 0 5px", res)
+    console.log("%cRES | LOAD DIGEST LIST",  cloCss.green, res)
 
     yield put({
       type: LOAD_DIGEST_LIST + SUCCESS,
       payload: {digest},
     })
   } catch (err){
-    console.log('err', err)
+    console.log('%cloadDigestListSagaErr', cloCss.red, err)
     yield put({
       type: LOAD_DIGEST_LIST + FAIL,
     })
@@ -695,14 +705,14 @@ const addRiskFactorSaga = function * (action) {
     // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
     
     const digest = res.data
-    console.log("%cRES | ADD RISK FACTOR IN DIGEST LIST", "color:white; background-color: green; padding: 0 5px", res)
+    console.log("%cRES | ADD RISK FACTOR IN DIGEST LIST",  cloCss.green, res)
 
     yield put({
       type: ADD_RISK_FACTOR_IN_DIGEST_LIST + SUCCESS,
       payload: {digest},
     })
   } catch (err){
-    console.log('err', err)
+    console.log('%caddRiskFactorSagaErr', cloCss.red, err)
     yield put({
       type: ADD_RISK_FACTOR_IN_DIGEST_LIST + FAIL,
     })
@@ -725,14 +735,14 @@ const deleteRiskFactorSaga = function * (action) {
     // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
     
     const digest = res.data
-    console.log("%cRES | ADD RISK FACTOR IN DIGEST LIST", "color:white; background-color: green; padding: 0 5px", res)
+    console.log("%cRES | ADD RISK FACTOR IN DIGEST LIST",  cloCss.green, res)
 
     yield put({
       type: DELETE_RISK_FACTOR_IN_DIGEST_LIST + SUCCESS,
       payload: {digest},
     })
   } catch (err){
-    console.log('err', err)
+    console.log('%cdeleteRiskFactorSagaErr', cloCss.red, err)
     yield put({
       type: DELETE_RISK_FACTOR_IN_DIGEST_LIST + FAIL,
     })
@@ -756,7 +766,7 @@ const getRequestAffiliatesUlSaga = function * (inn, user) {
     // yield delay(2000); const res = {...dataMock.bicompactPCResMock}
     
     const data = res.data
-    console.log("%cRES | GET CHECK AFFILATES UL", "color:white; background-color: green; padding: 0 5px", res)
+    console.log("%cRES | GET CHECK AFFILATES UL",  cloCss.green, res)
     
     const companyRes = yield select(store)
     const updatedData = yield trasform.updateManagmentULSource(companyRes.get("companyResponse"), data, user)
@@ -767,7 +777,7 @@ const getRequestAffiliatesUlSaga = function * (inn, user) {
       loading: {inn, name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name)}
     })
   } catch (err){
-    console.log('err', err)
+    console.log('%cgetRequestAffiliatesUlSagaErr', cloCss.red, err)
     yield put({
       type: GET_AFFILATES_UL + FAIL,
       loading: {inn, name: user.fullName ? getShortCompName(user.fullName) : getShortCompName(user.name)}
@@ -796,7 +806,7 @@ const identifyUserSaga = function * (action) {
     // yield delay(2000); const res = {ip: true, data: dataMock.identifyInfoMock, reqnum: 666}
 
     const data = res.data
-    console.log("%cRES | GET USER INFO", "color:white; background-color: green; padding: 0 5px", res)
+    console.log("%cRES | GET USER INFO",  cloCss.green, res)
 
     if(data) {
       const updatedUserInfo = yield trasform.identifyUserInfo(storeOgrn, data, action.payload.user, action.id)
@@ -810,7 +820,7 @@ const identifyUserSaga = function * (action) {
     }
 
   } catch (err){
-    console.log('identifyUserSaga', err)
+    console.log('%cidentifyUserSagaErr', cloCss.red, err)
     yield put({
       type: GET_IDENTIFY_USER + FAIL,
       error: {
@@ -845,7 +855,7 @@ const identifyUserInfoSaga = function * (action) {
     const html = res.data.html
     const lists = res.data.lists
     const vector = res.data.parse_ci_request.vektor_fl
-    console.log("%cRES | GET CROINFORM USER INFO |", cloCss, res)
+    console.log("%cRES | GET CROINFORM USER INFO |", cloCss.green, res)
 
     yield put({
       type: GET_CROINFORM_USER_INFO + SUCCESS,
@@ -853,6 +863,7 @@ const identifyUserInfoSaga = function * (action) {
       loading: action.loading
     })
   } catch (err){
+    console.log('%cidentifyUserInfoSagaErr', cloCss.red, err)
     const { FirstName, MiddleName, SurName } = action.payload
     yield put({
       type: GET_CROINFORM_USER_INFO + FAIL,

@@ -338,7 +338,7 @@ class TransformData {
     return clonePrevData
   }
 
-  _stop_lists = (prevData, lists, id) => {
+  stop_lists = (prevData, lists = [], id) => {
     const clonePrevData = cloneDeep(prevData);
     clonePrevData.heads.map(item => {
       if(item.id === id) {
