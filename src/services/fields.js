@@ -26,7 +26,7 @@ export const fieldsArr = [
       if(!item) return 'Данные отсутствуют'
       return `${item.Code} / ${getDate(item.Date)} / ${item.GroupName}`
     } catch {
-      console.log('Ошибка в преобразовании company_type', item)
+      console.log('Ошибка в преобразовании status', item)
     }
   }},
 
@@ -49,7 +49,7 @@ export const fieldsArr = [
       else if(item === " / ") return ""
       else return item
     } catch {
-      console.log('Ошибка в преобразовании company_type', item)
+      console.log('Ошибка в преобразовании company_size', item)
     }
   }},
 
@@ -60,7 +60,7 @@ export const fieldsArr = [
       if(Array.isArray(item.Address)) return Address[0].Address
       else return Address.Address
     } catch {
-      console.log('Ошибка в преобразовании company_type', item)
+      console.log('Ошибка в преобразовании address', item)
     }
   }},
 
@@ -124,7 +124,7 @@ export const fieldsArr = [
         return `${Name} / ${INN} ${Status.Text ? `/ ${Status.Text}` : ''}`
       }
     } catch (error) {
-      console.log('Ошибка в преобразовании arbiter', item, error)
+      console.log('Ошибка в преобразовании precessors', item, error)
     }
   }}, 
 
@@ -145,9 +145,9 @@ export const fieldsArr = [
   {search: "PhoneList", id: "phone_list", title: "Список телефонов", data: "", func: item => {
     try {
       if(!item) return 'Данные отсутствуют'
-        return item.Phone
+      return item.Phone
     } catch (error) {
-      console.log('Ошибка в преобразовании previous_address', item, error)
+      console.log('Ошибка в преобразовании phone_list', item, error)
     }
   }},
 

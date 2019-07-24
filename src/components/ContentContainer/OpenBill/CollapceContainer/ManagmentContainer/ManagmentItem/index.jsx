@@ -267,6 +267,8 @@ export class ManagmentItem extends PureComponent {
       BuildExp: parseAddress.BuildExp, 
       BuildingExp: parseAddress.BuildingExp, 
       FlatExp: parseAddress.FlatExp,
+      INNArr: userState.inn.filter(item => item === userSelected.inn).length ? 
+        userState.inn : concat(userState.inn, userSelected.inn),
       DateOfBirthArr: userState.birthday.filter(item => item === userSelected.birthday).length ? 
         userState.birthday : concat(userState.birthday, userSelected.birthday)
     }

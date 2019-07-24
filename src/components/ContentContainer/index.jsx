@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Route, Switch } from 'react-router-dom';
 import MainPage from "./MainPage";
 import OpenBill from "./OpenBill";
+import TestRequest from "./OpenBill/TestRequest";
 import CreditConveyor from "./CreditConveyor";
 import EarlyWarningSystem from "./EarlyWarningSystem";
 import ElectronicBankGarantees from "./ElectronicBankGarantees";
@@ -27,6 +28,7 @@ export class ContentContainer extends Component {
             <Route path='/electronic-bank-garantees' exact component={ElectronicBankGarantees}/>
             <Route path='/electronic-bank-garantees/:id' render={this.getSearchObject}/>
             <Route path='/early-warning-system' exact component={EarlyWarningSystem}/>
+            <Route path='/test' exact component={TestRequest}/>
           </Switch>
         </div>
       </Content>
@@ -39,4 +41,4 @@ export class ContentContainer extends Component {
   }
 }
 
-export default ContentContainer;
+export default ContentContainer

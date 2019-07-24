@@ -61,7 +61,7 @@ export const getBlackStopList = action => {
         middlename: action.MiddleName,
         series: action.Seria,
         number: action.Number,
-        inn: action.INN,
+        inn: action.INNArr,
         birthdate: getUSDate(action.DateOfBirthArr)
       }),
     }
@@ -88,7 +88,7 @@ export const getWhiteStopList = action => {
         middlename: action.MiddleName,
         series: action.Seria,
         number: action.Number,
-        inn: action.INN,
+        inn: action.INNArr,
         birthdate: getUSDate(action.DateOfBirthArr)
       }),
     }
