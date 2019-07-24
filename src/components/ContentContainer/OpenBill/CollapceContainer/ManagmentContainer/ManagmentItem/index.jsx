@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { Collapse, Icon, Spin, Descriptions, AutoComplete, Input, Button, Badge, notification } from "antd";
 import PropTypes from "prop-types";
-import { union } from "lodash";
+import { union, concat } from "lodash";
 import LeaderHeader from "../LeaderHeader";
 import LeaderEditedHeader from "../LeaderEditedHeader";
 import {region, parsingFio, parsingPassport} from "../../../../../../services/utils";
@@ -250,6 +250,7 @@ export class ManagmentItem extends PureComponent {
     e.stopPropagation();
     const { userSelected, parseAddress, user: userState } = this.state;
     const { item, actionGetUserCroinformInfo } = this.props;
+
     const user = {
       INN: userSelected.inn ? userSelected.inn : item.inn,
       FirstName: userSelected.fio ? parsingFio(userSelected.fio).FirstName : item.first_name, 
@@ -266,7 +267,8 @@ export class ManagmentItem extends PureComponent {
       BuildExp: parseAddress.BuildExp, 
       BuildingExp: parseAddress.BuildingExp, 
       FlatExp: parseAddress.FlatExp,
-      DateOfBirthArr: userState.birthday
+      DateOfBirthArr: userState.birthday.filter(item => item === userSelected.birthday).length ? 
+        userState.birthday : concat(userState.birthday, userSelected.birthday)
     }
     actionGetUserCroinformInfo(user, item.id)
   }
