@@ -1,4 +1,4 @@
-import { cloneDeep, assign, concat } from 'lodash';
+import { cloneDeep, assign, concat, compact } from 'lodash';
 import moment from 'moment'
 import { fieldsArr, fieldsArrIP } from "./fields";
 
@@ -340,15 +340,23 @@ class TransformData {
 
   stop_lists = (prevData, lists = [], id) => {
     const clonePrevData = cloneDeep(prevData);
-    clonePrevData.heads.map(item => {
-      if(item.id === id) {
-        item.timeRequest = Date.now()
-        item.stop_lists = item.stop_lists ? concat(item.stop_lists, lists) : concat([], lists)
+    clonePrevData.heads.map(head => {
+      if(head.id === id) {
+        head.timeRequest = Date.now()
+        const arr = lists.map(list => {
+          if(head.stop_lists && head.stop_lists.filter(item => item.ID_columns === list.ID_columns).length) {
+            return null
+          } else {
+            return list
+          }
+        })
+        head.stop_lists = head.stop_lists ? concat(head.stop_lists, compact(arr)) : concat([], lists)
       }
-      return item
+      return head
     })
     return clonePrevData
   }
+
   /** Обновление выбранных данных пользователя */
   identifyUserInfo = (prevData, newData, user, id) => {
     const clonePrevData = cloneDeep(prevData);

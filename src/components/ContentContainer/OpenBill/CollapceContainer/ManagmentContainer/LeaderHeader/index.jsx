@@ -31,7 +31,9 @@ const styleCss = {
       fontWeight: 500
     },
     rowTitle: {
-      fontWeight: 600
+      fontWeight: 600,
+      color: "red",
+      marginTop: 5
     },
     text: {
       color: "red"

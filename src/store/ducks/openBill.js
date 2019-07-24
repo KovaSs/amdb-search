@@ -402,7 +402,7 @@ const loadCompanyInfoSaga = function * (action) {
     yield put({
       type: LOAD_COMPANY_INFO + UPDATE + START
     })
-
+    // Запрос на получение основных данных о кампании
     const res = yield call(getLoadCompanyInfo, action.inn)
 
     /* Mock данные о ЮЛ */
@@ -853,10 +853,10 @@ const identifyUserInfoSaga = function * (action) {
     /** Mock данные о Идентификационных данных */
     // yield delay(2000); const res = {ip: true, data: dataMock.ipCroinformMock.data, reqnum: 666}
 
+    console.log("%cRES | GET CROINFORM USER INFO |", cloCss.green, res)
     const html = res.data.html
     const lists = res.data.lists
     const vector = res.data.parse_ci_request.vektor_fl
-    console.log("%cRES | GET CROINFORM USER INFO |", cloCss.green, res)
     const companyState = state => state[moduleName].get('companyResponse')
     const storeCR = yield select(companyState)
     const updatedInfo = yield trasform.updateSelectedUserInfo(storeCR, action.payload, action.loading)

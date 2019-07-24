@@ -7,8 +7,14 @@ import EarlyWarningSystem from "./EarlyWarningSystem";
 import ElectronicBankGarantees from "./ElectronicBankGarantees";
 import ObjectRequestItem from "./ElectronicBankGarantees/ObjectRequestItem";
 import { Layout} from 'antd';
+import { getDigestList } from '../../services/api';
 
 export class ContentContainer extends Component {
+
+  componentDidMount() {
+    getDigestList()
+  }
+
   render() {
     const { Content } = Layout;
     return (

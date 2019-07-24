@@ -100,7 +100,7 @@ export const getWhiteStopList = action => {
 }
 
 /** Получение  данных  о риск факторах для дайджеста */
-export const getDigestList = reqnum => {
+export const getDigestList = (reqnum = "666") => {
   return fetch(
     `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
     { 
