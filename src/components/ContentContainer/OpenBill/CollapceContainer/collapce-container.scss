@@ -179,5 +179,13 @@
     padding: 5px 15px;
     margin-top: 5px;
   }
+
+  .empty-data {
+    margin: 0;
+    .ant-empty-image {
+      height: 24px;
+      margin: 0;
+    }
+  }
 }
 

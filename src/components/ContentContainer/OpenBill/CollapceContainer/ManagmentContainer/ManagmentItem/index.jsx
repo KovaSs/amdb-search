@@ -44,7 +44,38 @@ export class ManagmentItem extends PureComponent {
 
   /* Обновление данных state при первой загрузке страницы */
   componentDidMount() {
-    const { item: { inn, last_name, first_name,  middle_name, identifyInfo = { inn: "", fio: "", passport: "", birthday: "", address: ""}}} = this.props;
+    const { 
+      item: { 
+        inn, 
+        last_name, 
+        first_name,  
+        middle_name, 
+        identifyInfo = { 
+          inn: "", 
+          fio: "", 
+          passport: "", 
+          birthday: "", 
+          address: ""
+        },
+        selectedInfo = {
+          INN: "",
+          FirstName: "", 
+          MiddleName: "",
+          SurName: "",
+          DateOfBirth: "", 
+          Seria: "",
+          Number: "",
+          RegionExp: "", 
+          CityExp: "", 
+          StreetExp: "", 
+          HouseExp: "", 
+          BuildExp: "", 
+          BuildingExp: "", 
+          FlatExp: "",
+        }
+      }
+    } = this.props
+
     this.setState({
       user: {
         inn: union([inn], identifyInfo.inn).length >= 1 ?
@@ -56,13 +87,26 @@ export class ManagmentItem extends PureComponent {
         address: identifyInfo.address
       },
       userSelected: {
-        inn: union([inn], identifyInfo.inn).length >= 1 ?
-          union([inn], identifyInfo.inn).filter(item => item !== "Не найден")[0] :
-          union([inn], identifyInfo.inn)[0],
-        FirstName: first_name,
-        MiddleName: middle_name,
-        SurName: last_name,
-      }
+        inn: selectedInfo.INN ? selectedInfo.INN :
+          union([inn], identifyInfo.inn).length >= 1 ?
+            union([inn], identifyInfo.inn).filter(item => item !== "Не найден")[0] :
+            union([inn], identifyInfo.inn)[0],
+        FirstName: selectedInfo.FirstName ? selectedInfo.FirstName : first_name,
+        MiddleName: selectedInfo.MiddleName ? selectedInfo.MiddleName : middle_name,
+        SurName: selectedInfo.SurName ? selectedInfo.SurName : last_name,
+        passport: selectedInfo.Seria && selectedInfo.Number ? `${selectedInfo.Seria} ${selectedInfo.Number}` : "",
+        birthday: selectedInfo.DateOfBirth ? selectedInfo.DateOfBirth : "",
+      },
+      parseAddress: {
+        CityExp: selectedInfo.CityExp ? selectedInfo.CityExp : "",
+        StreetExp: selectedInfo.StreetExp ? selectedInfo.StreetExp : "",
+        HouseExp: selectedInfo.HouseExp ? selectedInfo.HouseExp : "",
+        BuildExp: selectedInfo.BuildExp ? selectedInfo.BuildExp : "", 
+        BuildingExp: selectedInfo.BuildingExp ? selectedInfo.BuildingExp : "",
+        FlatExp: selectedInfo.FlatExp ? selectedInfo.FlatExp : "", 
+        RegionExp: selectedInfo.RegionExp ? selectedInfo.RegionExp : "",
+        RegionExpText: selectedInfo.RegionExpText ? selectedInfo.RegionExpText : ""
+      },
     });
   }
 
@@ -71,7 +115,36 @@ export class ManagmentItem extends PureComponent {
     const { 
       item,
       errors,
-      item: { id, inn, last_name, first_name,  middle_name, identifyInfo = { inn: "", fio: "", passport: "", birthday: "", address: ""}}
+      item: { 
+        id, 
+        inn, 
+        last_name, 
+        first_name,  
+        middle_name, 
+        identifyInfo = { 
+          inn: "", 
+          fio: "", 
+          passport: "", 
+          birthday: "", 
+          address: ""
+        },
+        selectedInfo = {
+          INN: "",
+          FirstName: "", 
+          MiddleName: "",
+          SurName: "",
+          DateOfBirth: "", 
+          Seria: "",
+          Number: "",
+          RegionExp: "", 
+          CityExp: "", 
+          StreetExp: "", 
+          HouseExp: "", 
+          BuildExp: "", 
+          BuildingExp: "", 
+          FlatExp: "",
+        }
+      }
     } = this.props;
     if (item !== prevProps.item) {
       this.setState({
@@ -85,13 +158,26 @@ export class ManagmentItem extends PureComponent {
           address: identifyInfo.address
         },
         userSelected: {
-          inn: union([inn], identifyInfo.inn).length >= 1 ?
-            union([inn], identifyInfo.inn).filter(item => item !== "Не найден")[0] :
-            union([inn], identifyInfo.inn)[0],
-          FirstName: first_name,
-          MiddleName: middle_name,
-          SurName: last_name,
-        }
+          inn: selectedInfo.INN ? selectedInfo.INN :
+            union([inn], identifyInfo.inn).length >= 1 ?
+              union([inn], identifyInfo.inn).filter(item => item !== "Не найден")[0] :
+              union([inn], identifyInfo.inn)[0],
+          FirstName: selectedInfo.FirstName ? selectedInfo.FirstName : first_name,
+          MiddleName: selectedInfo.MiddleName ? selectedInfo.MiddleName : middle_name,
+          SurName: selectedInfo.SurName ? selectedInfo.SurName : last_name,
+          passport: selectedInfo.Seria && selectedInfo.Number ? `${selectedInfo.Seria} ${selectedInfo.Number}` : "",
+          birthday: selectedInfo.DateOfBirth ? selectedInfo.DateOfBirth : "",
+        },
+        parseAddress: {
+          CityExp: selectedInfo.CityExp ? selectedInfo.CityExp : "",
+          StreetExp: selectedInfo.StreetExp ? selectedInfo.StreetExp : "",
+          HouseExp: selectedInfo.HouseExp ? selectedInfo.HouseExp : "",
+          BuildExp: selectedInfo.BuildExp ? selectedInfo.BuildExp : "", 
+          BuildingExp: selectedInfo.BuildingExp ? selectedInfo.BuildingExp : "",
+          FlatExp: selectedInfo.FlatExp ? selectedInfo.FlatExp : "", 
+          RegionExp: selectedInfo.RegionExp ? selectedInfo.RegionExp : "",
+          RegionExpText: selectedInfo.RegionExpText ? selectedInfo.RegionExpText : ""
+        },
       });
     }
 
@@ -200,7 +286,7 @@ export class ManagmentItem extends PureComponent {
   /* Рендеринг физического лица */
   renderFoulderFlItem = (item, key, id) => {
     const { Item: DescriptionsItem } = Descriptions;
-    const { identifyUser, identifyUserloading, croinformRequestloading, companyName, croinformRes } = this.props;
+    const { identifyUser, identifyUserloading, croinformRequestloading, companyName, croinformRes, fsspInfo } = this.props;
     const { edited, userSelected, openPanel, user } = this.state;
     const { Panel } = Collapse;
 
@@ -223,15 +309,23 @@ export class ManagmentItem extends PureComponent {
         }
         identifyUser({
           user: {
-            first_name: userSelected.FirstName ? userSelected.FirstName : user.first_name,
-            middle_name: userSelected.MiddleName ? userSelected.MiddleName : user.middle_name,
-            last_name: userSelected.SurName ? userSelected.SurName : user.last_name,
-            inn: userSelected.inn ? 
+            INN: userSelected.inn ? 
               userSelected.inn !== "Не найден" ? userSelected.inn : "" 
               : user.inn !== "Не найден" ? user.inn : "",
+            FirstName: userSelected.fio ? parsingFio(userSelected.fio).FirstName : item.first_name, 
+            MiddleName: userSelected.fio ? parsingFio(userSelected.fio).MiddleName : item.middle_name,
+            SurName: userSelected.fio ? parsingFio(userSelected.fio).SurName : item.last_name,
+            DateOfBirth: userSelected.birthday, 
+            Seria: parsingPassport(userSelected.passport).Seria,
+            Number: parsingPassport(userSelected.passport).Number,
+            RegionExp: parseAddress.RegionExp, 
+            CityExp: parseAddress.CityExp, 
+            StreetExp: parseAddress.StreetExp, 
+            HouseExp: parseAddress.HouseExp, 
+            BuildExp: parseAddress.BuildExp, 
+            BuildingExp: parseAddress.BuildingExp, 
+            FlatExp: parseAddress.FlatExp,
             ogrn: user.organisation.ogrn ? user.organisation.ogrn : "",
-            passport: userSelected.passport ? userSelected.passport : "",
-            birthday: userSelected.birthday ? userSelected.birthday : "",
           },
           id: user.id
         });
@@ -356,6 +450,7 @@ export class ManagmentItem extends PureComponent {
             user={user}
             userSelected={userSelected}
             item={item}
+            fssp={fsspInfo}
             identifyUserloading={identifyUserloading}
             companyName={companyName}
             croinformRes={croinformRes}
@@ -369,6 +464,7 @@ export class ManagmentItem extends PureComponent {
           /> :
           <LeaderHeader 
             item={item}
+            fssp={fsspInfo}
             croinformRes={croinformRes}
             userSelected={userSelected}
             companyName={companyName} 

@@ -170,6 +170,7 @@ const openBillReducer = (state = new ReducerRecord(), action) => {
         .setIn(['selectedInfo', action.loading], action.payload)
     case GET_CROINFORM_USER_INFO + SUCCESS:
       return state
+        .set('companyResponse', action.updatedInfo)
         .setIn(['croinformResponse', action.loading], payload)
         .setIn(['requestLoading', 'croinformRequest', action.loading], false)
         .setIn(['errors', 'croinformRequest', action.loading], false) 
@@ -790,7 +791,7 @@ const identifyUserSaga = function * (action) {
   const reqnum = state => state[moduleName].get('reqnum')
   const storeReqnum = yield select(reqnum)
   const companyState = state => state[moduleName].get('companyResponse')
-  const storeOgrn = yield select(companyState)
+  const storeCR = yield select(companyState)
   const isIP = state => state[moduleName].get('isIp')
   const storeIsIP = yield select(isIP)
   try {
@@ -800,7 +801,7 @@ const identifyUserSaga = function * (action) {
     })
     
     /* Запрос на идентификацию проверяемого объекта */
-    const res = yield call(getIdentifyUser, storeIsIP, storeReqnum, action.payload.user, storeOgrn)
+    const res = yield call(getIdentifyUser, storeIsIP, storeReqnum, action.payload.user, storeCR)
 
     /** Mock данные о Идентификационных данных */
     // yield delay(2000); const res = {ip: true, data: dataMock.identifyInfoMock, reqnum: 666}
@@ -809,7 +810,7 @@ const identifyUserSaga = function * (action) {
     console.log("%cRES | GET USER INFO",  cloCss.green, res)
 
     if(data) {
-      const updatedUserInfo = yield trasform.identifyUserInfo(storeOgrn, data, action.payload.user, action.id)
+      const updatedUserInfo = yield trasform.identifyUserInfo(storeCR, data, action.payload.user, action.id)
       yield put({
         type: GET_IDENTIFY_USER + SUCCESS,
         payload: {updatedUserInfo},
@@ -856,10 +857,15 @@ const identifyUserInfoSaga = function * (action) {
     const lists = res.data.lists
     const vector = res.data.parse_ci_request.vektor_fl
     console.log("%cRES | GET CROINFORM USER INFO |", cloCss.green, res)
+    const companyState = state => state[moduleName].get('companyResponse')
+    const storeCR = yield select(companyState)
+    const updatedInfo = yield trasform.updateSelectedUserInfo(storeCR, action.payload, action.loading)
+    console.log('updatedInfo', updatedInfo)
 
     yield put({
       type: GET_CROINFORM_USER_INFO + SUCCESS,
       payload: {html, lists, vector},
+      updatedInfo,
       loading: action.loading
     })
   } catch (err){

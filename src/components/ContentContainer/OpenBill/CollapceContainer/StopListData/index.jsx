@@ -1,13 +1,31 @@
 import React from 'react'
 import { Table,  Descriptions, Collapse, Icon, Spin, Row, Col } from 'antd'
-import { trasform } from "../../../../../services/utils";
+import { trasform, uuid } from "../../../../../services/utils";
 
 const styleCss = {
   autoScroll : {
     maxHeight: 102,
-    minWidth: 250,
+    minWidth: 300,
     overflowY: "auto"
-  }
+  },
+  stopList: {
+    title: {
+      color: "red",
+      fontWeight: 500
+    },
+    rowTitle: {
+      fontWeight: 600,
+      color: "red",
+      marginTop: 5
+    },
+    text: {
+      color: "red"
+    },
+    rowKey: {
+      fontWeight: 600,
+      marginTop: 5
+    }
+  },
 }
 
 const StopListData = ({riskInfo, arbiter, loading =false}) => {
@@ -43,10 +61,37 @@ const StopListData = ({riskInfo, arbiter, loading =false}) => {
   const renderDescriptionFields = riskInfo.map(item => {
     const { Item : DescriptionsItem } = Descriptions;
     if ( item.data !== undefined && item.data !== "" && item.id === "stop_list" && item.data.length) {
-      const itemArray = item.data.map((el, key) => <span key={key} style={{color: "red"}}> {`${el.report_name}`} <br /> </span>)
+      const renderStopLists =  item.data.map((item, index) => {
+        const renderRowsItem = (list, i, arr = []) => {
+          arr.push(<label key={uuid()} style={styleCss.stopList.rowKey}>{`${i+1}: `}</label>)
+          for (const key in list) {
+            if (list.hasOwnProperty(key) && list[key] !== "-" && list[key] !== "" && list[key] !== null && list[key] !== "!^!  \r") {
+              arr.push(
+                <label key={uuid()} style={{marginRight: 5}}>
+                  <label>{`${key} : `}</label>
+                  <label style={{color: "red"}}>{list[key]}</label>
+                </label>
+              )
+            }
+          }
+          return arr
+        }
+        return (
+          <div key={index} >
+            <label style={styleCss.stopList.rowTitle}> {`${item.report_name ? item.report_name : ""} ${item.ID_base ? `( ${item.ID_base} ${item.ID_table ? `/ ${item.ID_table} ` : ""})` : ""}`}</label>
+            { item.rows.map((list, i) =>
+              <div key={i}>
+                { renderRowsItem(list, i) }
+              </div>
+              )
+            }
+          </div>
+        )
+      })
+
       return (
         <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={1}>
-          <div style={styleCss.autoScroll}>{ itemArray }</div>
+          <div style={styleCss.autoScroll}>{ renderStopLists }</div>
         </DescriptionsItem>
       )
     } else if ( item.data !== undefined && item.data !== "" && item.id !== "arbiter" && item.id !== "stop_list" && !Array.isArray(item.data)) {
@@ -82,7 +127,7 @@ const StopListData = ({riskInfo, arbiter, loading =false}) => {
     >
       <Panel header="Стоп-листы / Cписки" key="1" showArrow={false}>
         <Spin spinning={loading} tip="Запрос данных по стоп-листам">
-          <Descriptions size="small" bordered border column={{md:3, sm:2, xs:1}}>
+          <Descriptions size="small" bordered border column={{md:3, sm:1, xs:1}}>
             {renderDescriptionFields}
           </Descriptions>
         </Spin>

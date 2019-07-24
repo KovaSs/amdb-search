@@ -26,15 +26,19 @@ const styleCss = {
     }
   },
   stopList: {
-    header: {
+    title: {
+      color: "red",
       fontWeight: 500
     },
-    title: {
-      fontStyle: "italic",
-      fontWeight: 500
+    rowTitle: {
+      fontWeight: 600
     },
     text: {
       color: "red"
+    },
+    rowKey: {
+      fontWeight: 600,
+      marginTop: 5
     }
   },
   tagInfo: {
@@ -47,6 +51,7 @@ const LeaderHeader = props => {
   const { 
     item: {first_name, last_name, middle_name, position, ActualDate, inn, organisation, stop_lists}, 
     companyName,
+    fssp,
     croinformRes = {},
     userSelected : {FirstName, MiddleName, SurName, inn: INN }
   } = props
@@ -96,6 +101,7 @@ const LeaderHeader = props => {
         </Popover>
       )
     }
+
     if(lists.length) {
       const content = <div style={styleCss.popover}>{lists.map((item, index) => <div key={index} >{item}</div>)}</div>
       arr.push(
@@ -110,23 +116,30 @@ const LeaderHeader = props => {
     try {
       const stopLists = stop_lists ? stop_lists : []
       if(stopLists.length) {
+        const renderRowsItem = (list, i, arr = []) => {
+          arr.push(<div key={uuid()} style={styleCss.stopList.rowKey}>{`Запись №${i+1}: `}</div>)
+          for (const key in list) {
+            if (list.hasOwnProperty(key) && list[key] !== "-" && list[key] !== "" && list[key] !== null && list[key] !== "!^!  \r") {
+              arr.push(
+                <div key={uuid()} >
+                  <label>{`${key} : `}</label>
+                  <label style={{color: "red"}}>{list[key]}</label>
+                </div>
+              )
+            }
+          }
+          return arr
+        }
         const content = 
           <div style={styleCss.popover}>
             {
               stopLists.map((item, index) => {
                 return (
                   <div key={index}>
-                    <label style={styleCss.stopList.header}> {` ${item.thema ? item.thema : ""} ${item.ID_base ? `( ${item.ID_base} ${item.ID_table ? `/ ${item.ID_table} ` : ""})` : ""}`}</label>
+                    <label style={styleCss.stopList.rowTitle}> {`${item.report_name ? item.report_name : ""} ${item.ID_base ? `( ${item.ID_base} ${item.ID_table ? `/ ${item.ID_table} ` : ""})` : ""}`}</label>
                     { item.rows.map((list, i) =>
                       <div key={i}>
-                        { list.HOW && <>
-                          <label style={styleCss.stopList.title}> {`${list.HOW}`} </label>
-                          <label style={styleCss.stopList.text}> {`( ${list.comment} )`} </label> </>
-                        }
-                        { list.field_000 &&  <label style={styleCss.stopList.text}> {`${list.field_000}`} </label> }
-                        { list.text1 &&  <label style={styleCss.stopList.text}> {`${list.text1}`} </label> }
-                        { list.passport &&  <label style={styleCss.stopList.text}> {`Паспорт: ${list.passport}`} </label> }
-                        { list.comment &&  <label style={styleCss.stopList.text}> {`${list.comment}`} </label> }
+                        { renderRowsItem(list, i) }
                       </div>
                       )
                     }
@@ -145,6 +158,20 @@ const LeaderHeader = props => {
       }
     } catch (error) {
       console.log('Stop lists', error)
+    }
+    if(fssp && fssp.length) {
+      const content = (
+        <div style={styleCss.popover}>
+          {
+            fssp.indexOf("По вашему запросу ничего не найдено") === -1 ?
+            <div>Данные из ФССП получены</div> : <div>Данные в ФССП отсутствуют</div>
+          }
+        </div>)
+      arr.push(
+        <Popover key="fssp" title="Данные из ФССП" content={content} trigger="hover" style={styleCss.popover}>
+          <Tag color="purple" > ФССП </Tag> 
+        </Popover>
+      )
     }
 
     return arr

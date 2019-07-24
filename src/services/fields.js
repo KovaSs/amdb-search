@@ -21,6 +21,28 @@ export const fieldsArr = [
 
   {search: "DateFirstReg", id: "registration_date", title: "Дата регистрации", data: "", func: (item = 'Данные отсутствуют') => getDate(item)},
 
+  {search: "Status", id: "status", title: "Статус", data: "", func: item => {
+    try {
+      if(!item) return 'Данные отсутствуют'
+      return `${item.Code} / ${getDate(item.Date)} / ${item.GroupName}`
+    } catch {
+      console.log('Ошибка в преобразовании company_type', item)
+    }
+  }},
+
+  {search: "OKVED2List", id: "okved", title: "Основной ОКВЭД", data: "",func: item => {
+    try {
+      if(!item) return 'Данные отсутствуют'
+      if(Array.isArray(item.OKVED)) {
+        const okved = item.OKVED.filter(el =>  el.IsMain === 'true')
+        const { Code, Name } = okved[0]
+        return `${Code} / ${Name}`
+      }
+    } catch (error) {
+      console.log('Ошибка в преобразовании okved', item, error)
+    }
+  }},
+
   {search: "CompanySizeStr", id: "company_size", title: "Размер компании", data: "", func: item => {
     try {
       if(!item) return 'Данные отсутствуют'
@@ -31,10 +53,12 @@ export const fieldsArr = [
     }
   }},
 
-  {search: "Status", id: "status", title: "Статус", data: "", func: item => {
+  {search: "LegalAddresses", id: "address", title: "Юридический адрес", data: "", func: item => {
     try {
       if(!item) return 'Данные отсутствуют'
-      return `${item.Code} / ${getDate(item.Date)} / ${item.GroupName}`
+      const { Address } = item
+      if(Array.isArray(item.Address)) return Address[0].Address
+      else return Address.Address
     } catch {
       console.log('Ошибка в преобразовании company_type', item)
     }
@@ -54,36 +78,12 @@ export const fieldsArr = [
     }
   }},
 
-  {search: "LegalAddresses", id: "address", title: "Юридический адрес", data: "", func: item => {
-    try {
-      if(!item) return 'Данные отсутствуют'
-      const { Address } = item
-      if(Array.isArray(item.Address)) return Address[0].Address
-      else return Address.Address
-    } catch {
-      console.log('Ошибка в преобразовании company_type', item)
-    }
-  }},
-
   {search: "PhoneList", id: "phone_list", title: "Список телефонов", data: "", func: item => {
     try {
       if(!item) return 'Данные отсутствуют'
         return item.Phone
     } catch (error) {
       console.log('Ошибка в преобразовании previous_address', item, error)
-    }
-  }},
-  
-  {search: "OKVED2List", id: "okved", title: "Основной ОКВЭД", data: "",func: item => {
-    try {
-      if(!item) return 'Данные отсутствуют'
-      if(Array.isArray(item.OKVED)) {
-        const okved = item.OKVED.filter(el =>  el.IsMain === 'true')
-        const { Code, Name } = okved[0]
-        return `${Code} / ${Name}`
-      }
-    } catch (error) {
-      console.log('Ошибка в преобразовании okved', item, error)
     }
   }},
 
@@ -122,19 +122,40 @@ export const fieldsArr = [
   }},
 
   {search: "FailureScoreStr", id: "failure_score", title: "Индекс финансового риска", data: ""},
-  
-  {search: "ispolnitelnye_proizvodstva", id: "isponlit_proizvodstva", title: "Исполнительные производства", data: ""},
-  
-  {search: "sankcii", id: "sanctions", title: "Санкции", data: ""},
 
-  {search: "", id: "stop_list", title: "Стоп-листы", data: ""},
-
-  {search: "fns", id: "fns", title: "ФНС", data: "", func: item => {
+  {search: "Predecessor", id: "precessors", title: "Предшедственники", data: "", func: item => {
     try {
-      if(!item) return ["Данные отсутствуют"]
-      return item
+      if(!item) return ''
+      if(Array.isArray(item)) {
+        const predecessor = []
+        item.map(el =>  {
+          return predecessor.push(`${el.Name} / ${el.INN} ${el.Status.Text ? `/ ${el.Status.Text}` : ''}`)
+        })
+        return predecessor
+      } else {
+        const { INN, Name, Status } = item
+        return `${Name} / ${INN} ${Status.Text ? `/ ${Status.Text}` : ''}`
+      }
     } catch (error) {
-      console.log('Ошибка в преобразовании fns', item, error)
+      console.log('Ошибка в преобразовании arbiter', item, error)
+    }
+  }}, 
+
+  {search: "Successor", id: "successors", title: "Преемники", data: "", func: item => {
+    try {
+      if(!item) return ''
+      if(Array.isArray(item.Successor)) {
+        const successor = []
+        item.map(el =>  {
+          return successor.push(`${el.Name} / ${el.INN} ${el.Status.Text ? `/ ${el.Status.Text}` : ''}`)
+        })
+        return successor
+      } else {
+        const { INN, Name, Status } = item
+        return `${Name} / ${INN} ${Status.Text ? `/ ${Status.Text}` : ''}`
+      }
+    } catch (error) {
+      console.log('Ошибка в преобразовании arbiter', item, error)
     }
   }},
 
@@ -164,6 +185,21 @@ export const fieldsArr = [
 
   {search: "", id: "arbiter_other", title: "Арбитраж прочее", data: ""},
 
+  {search: "ispolnitelnye_proizvodstva", id: "isponlit_proizvodstva", title: "Исполнительные производства", data: ""},
+  
+  {search: "sankcii", id: "sanctions", title: "Санкции", data: ""},
+
+  {search: "", id: "stop_list", title: "Стоп-листы", data: ""},
+
+  {search: "fns", id: "fns", title: "ФНС", data: "", func: item => {
+    try {
+      if(!item) return ["Данные отсутствуют"]
+      return item
+    } catch (error) {
+      console.log('Ошибка в преобразовании fns', item, error)
+    }
+  }},
+
   {search: "spiski", id: "spiski", title: "Найдено в списках", data: ""},
 
   {search: "IncludeInList", id: "spark_spiski", title: "Спарк. Списки", data: "", func: item => {
@@ -177,42 +213,6 @@ export const fieldsArr = [
       }
     } catch (error) {
       console.log('Ошибка в преобразовании spark_spiski', item, error)
-    }
-  }},
-
-  {search: "Predecessor", id: "precessors", title: "Предшедственники", data: "", func: item => {
-    try {
-      if(!item) return ''
-      if(Array.isArray(item)) {
-        const predecessor = []
-        item.map(el =>  {
-          return predecessor.push(`${el.Name} / ${el.INN} ${el.Status.Text ? `/ ${el.Status.Text}` : ''}`)
-        })
-        return predecessor
-      } else {
-        const { INN, Name, Status } = item
-        return `${Name} / ${INN} ${Status.Text ? `/ ${Status.Text}` : ''}`
-      }
-    } catch (error) {
-      console.log('Ошибка в преобразовании arbiter', item, error)
-    }
-  }}, 
-
-  {search: "Successor", id: "successors", title: "Приеемники", data: "", func: item => {
-    try {
-      if(!item) return ''
-      if(Array.isArray(item.Successor)) {
-        const successor = []
-        item.map(el =>  {
-          return successor.push(`${el.Name} / ${el.INN} ${el.Status.Text ? `/ ${el.Status.Text}` : ''}`)
-        })
-        return successor
-      } else {
-        const { INN, Name, Status } = item
-        return `${Name} / ${INN} ${Status.Text ? `/ ${Status.Text}` : ''}`
-      }
-    } catch (error) {
-      console.log('Ошибка в преобразовании arbiter', item, error)
     }
   }},
 
@@ -352,18 +352,6 @@ export const fieldsArrIP = [
 
   {search: "", id: "heads", title: "Руководители", data: ""},
 
-  {search: "", id: "isponlit_proizvodstva", title: "Исполнительные производства", data: ""},
-  
-  {search: "", id: "sanctions", title: "Санкции", data: ""},
-
-  {search: "", id: "fns", title: "ФНС", data: ""},
-
-  {search: "spiski", id: "spiski", title: "Найдено в списках", data: ""},
-
-  {search: "sankcii", id: "sanctions", title: "Санкции", data: ""},
-
-  {search: "", id: "arbiter_other", title: "Арбитраж прочее", data: ""},
-
   {search: "arbitrazh", id: "arbiter", title: "Арбитраж", data: "", func: item => {
     try {
       if(!item) return ''
@@ -385,4 +373,12 @@ export const fieldsArrIP = [
   }},
 
   {search: "", id: "arbiter_other", title: "Арбитраж прочее", data: ""},
+
+  {search: "", id: "isponlit_proizvodstva", title: "Исполнительные производства", data: ""},
+  
+  {search: "", id: "fns", title: "ФНС", data: ""},
+
+  {search: "spiski", id: "spiski", title: "Найдено в списках", data: ""},
+
+  {search: "sankcii", id: "sanctions", title: "Санкции", data: ""},
 ]

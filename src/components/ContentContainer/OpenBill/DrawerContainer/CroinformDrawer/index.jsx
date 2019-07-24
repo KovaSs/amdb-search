@@ -1,26 +1,34 @@
 import React from 'react';
 import { Drawer, Spin, Descriptions, Tabs, Collapse, Empty, PageHeader, Button} from "antd";
-import { htmlTransform, htmlTransformFssp } from '../../../../../services/utils'
+import { htmlTransform, htmlTransformFssp, uuid } from '../../../../../services/utils'
 import toggleDrawer from '../index'
 
 /** Инлайновые стили */
 const styleCss = {
   stopList: {
     title: {
-      fontStyle: "italic",
+      color: "red",
       fontWeight: 500
     },
-    header: {
+    rowTitle: {
       fontWeight: 600
     },
     text: {
       color: "red"
+    },
+    rowKey: {
+      fontWeight: 600,
+      marginTop: 5
     }
   },
   internetBtn : {
     color: "#0e75fdfd",
     marginRight: ".5rem"
   },
+  autoScroll : {
+    maxHeight: 250,
+    overflowY: "auto"
+  }
 }
 
 const CroinformDrawer = props => {
@@ -40,26 +48,32 @@ const CroinformDrawer = props => {
     const renderVector = croinformVectorRes.map((item, index) =>  <div key={index}>{item}</div> )
     const renderLists = croinformListsRes.map((item, index) =>  <div key={index}>{item}</div> )
     const renderStopLists =  stopLists.map((item, index) => {
+      const renderRowsItem = (list, i, arr = []) => {
+        arr.push(<div key={uuid()} style={styleCss.stopList.rowKey}>{`Запись №${i+1}: `}</div>)
+        for (const key in list) {
+          if (list.hasOwnProperty(key) && list[key] !== "-" && list[key] !== "" && list[key] !== null && list[key] !== "!^!  \r") {
+            arr.push(
+              <div key={uuid()} >
+                <label>{`${key} : `}</label>
+                <label style={{color: "red"}}>{list[key]}</label>
+              </div>
+            )
+          }
+        }
+        return arr
+      }
       return (
-        <div key={index}>
-          <label style={styleCss.stopList.header}> {` ${item.thema ? item.thema : ""} ${item.ID_base ? `( ${item.ID_base} ${item.ID_table ? `/ ${item.ID_table} ` : ""})` : ""}`}</label>
+        <div key={index} >
+          <label style={styleCss.stopList.rowTitle}> {`${item.report_name ? item.report_name : ""} ${item.ID_base ? `( ${item.ID_base} ${item.ID_table ? `/ ${item.ID_table} ` : ""})` : ""}`}</label>
           { item.rows.map((list, i) =>
             <div key={i}>
-              { list.HOW && <>
-                <label style={styleCss.stopList.title}> {`${list.HOW}`} </label>
-                <label style={styleCss.stopList.text}> {`( ${list.comment} )`} </label> </>
-              }
-              { list.field_000 &&  <label style={styleCss.stopList.text}> {`${list.field_000}`} </label> }
-              { list.text1 &&  <label style={styleCss.stopList.text}> {`${list.text1}`} </label> }
-              { list.passport &&  <label style={styleCss.stopList.text}> {`Паспорт: ${list.passport}`} </label> }
-              { list.comment &&  <label style={styleCss.stopList.text}> {`${list.comment}`} </label> }
+              { renderRowsItem(list, i) }
             </div>
             )
           }
         </div>
       )
-    }
-    )
+    })
     if (croinformRes.vector.length) {
       arr.push(
         <DescriptionsItem key="vector" label="Вектор заемщика" span={1} >
@@ -77,7 +91,7 @@ const CroinformDrawer = props => {
     if(stop_lists.length) {
       arr.push(
         <DescriptionsItem key="lists" label="Стоп-листы" span={1} >
-          { renderStopLists }
+          <div style={styleCss.autoScroll}>{ renderStopLists }</div>
         </DescriptionsItem>
       )
     }
@@ -178,7 +192,12 @@ const CroinformDrawer = props => {
           ]}
         >
           <Tabs >
-            { (croinformRes && (croinformRes.vector.length || croinformRes.lists.length || fsspInfo.length)) && renderList() }
+            { (croinformRes && 
+                (croinformRes.vector.length || 
+                  croinformRes.lists.length || 
+                (fsspInfo && fsspInfo.length) || 
+                (stop_lists && stop_lists.length))
+              ) ? renderList() : null }
             { (croinformRes && croinformRes.html) &&
               <TabPane tab="Croinform" key="2">
                 <Tabs>

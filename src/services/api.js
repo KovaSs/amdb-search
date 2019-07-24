@@ -203,14 +203,14 @@ export const getIdentifyUser = (ip, reqnum, action, storeOgrn) => {
           type: 'identify_user',
           reqnum: reqnum,
           data: {
-            FirstName: action.first_name,
-            MiddleName: action.middle_name,
-            SurName: action.last_name,
-            INN: action.inn,
+            FirstName: action.FirstName,
+            MiddleName: action.MiddleName,
+            SurName: action.SurName,
+            INN: action.INN,
             OGRN: action.ogrn ? action.ogrn : storeOgrn.ogrn,
-            DateOfBirth: action.birthday,
-            Seria: action.passport ? parsingPassport(action.passport).Seria : "",
-            Number: action.passport ? parsingPassport(action.passport).Number : "",
+            DateOfBirth: action.DateOfBirth,
+            Seria: action.Seria,
+            Number: action.Number,
           }
         }),
       }

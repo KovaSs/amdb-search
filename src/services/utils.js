@@ -364,6 +364,19 @@ class TransformData {
   }
 
   /** Обновление выбранных данных пользователя */
+  updateSelectedUserInfo = (prevData, user, id) => {
+    const clonePrevData = cloneDeep(prevData);
+    clonePrevData.heads.map( item =>  {
+      if(item.id === id) {
+        item.timeRequest = Date.now()
+        item.selectedInfo = user
+      }
+      return item
+    })
+    return clonePrevData
+  }
+
+  /** Обновление выбранных данных пользователя */
   stopListsUlInfo = (prevData, newData) => {
     const clonePrevData = cloneDeep(prevData);
     clonePrevData.stop_list = newData

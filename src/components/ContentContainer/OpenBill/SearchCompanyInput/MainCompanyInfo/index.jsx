@@ -73,24 +73,43 @@ class MainCompanyInfo extends Component {
   }
 
   renderIpInfo = () => {
-    const { companyResponse: { full_name, inn, ogrn } } = this.props;
+    const { companyResponse: { full_name, inn, ogrn, sex, birthdate, birth_place } } = this.props;
     return (
       <>
         <Col span={1}>
           <Avatar>ИП</Avatar>
         </Col>
-        <Col span={11} style={{display : "inline-block", marginTop: ".5rem"}}>
-          <small className="lable">Полное наименование</small>
-          <label className='descr'>{ full_name }</label>
+        <Col span={11}>
+          <div>
+            <small className="lable">Полное наименование</small>
+            <label className='descr'>{ full_name }</label>
+          </div>
+          { sex &&
+            <div>
+              <small className="lable">Пол</small>
+              <label className='descr'>{ sex ? sex : "—" }</label>
+            </div>
+          }
+          
         </Col>
-        <Col span={9}>
-          <div style={{display : "inline-block", marginTop: ".5rem"}}>
-            <small className="lable" style={{padding: ".5rem"}}>ИНН</small>
-            <label style={{display : "inline-block"}} className='descr'>{ inn }</label>
+        <Col span={5}>
+          <div>
+            <small className="lable">Дата рождения</small>
+            <label className='descr'>{ birthdate ? birthdate : "—" }</label>
+          </div>
+          <div>
+            <small className="lable">Место рождения</small>
+            <label className='descr'>{ birth_place ? birth_place :  "—" }</label>
+          </div>
+        </Col>
+        <Col span={4}>
+        <div style={{display : "inline-block"}}>
+            <small className="lable">ИНН</small>
+            <div style={{display : "inline-block"}} className='descr'>{ inn }</div>
           </div>
           <div style={{display : "inline-block"}}>
-            <small className="lable" style={{padding: ".5rem"}}>ОГРН</small>
-            <label style={{display : "inline-block"}} className='descr'>{ ogrn }</label>
+            <small className="lable">ОГРН</small>
+            <div style={{display : "inline-block"}} className='descr'>{ ogrn }</div>
           </div>
         </Col>
       </>
