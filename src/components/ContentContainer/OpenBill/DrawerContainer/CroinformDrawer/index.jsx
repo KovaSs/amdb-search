@@ -1,5 +1,5 @@
 import React from 'react';
-import { Drawer, Spin, Descriptions, Tabs, Collapse, Empty, PageHeader, Button} from "antd";
+import { Drawer, Spin, Descriptions, Tabs, Collapse, Empty, PageHeader, Button } from "antd";
 import { htmlTransform, htmlTransformFssp, uuid } from '../../../../../services/utils'
 import toggleDrawer from '../index'
 
@@ -192,12 +192,10 @@ const CroinformDrawer = props => {
           ]}
         >
           <Tabs >
-            { (croinformRes && 
-                (croinformRes.vector.length || 
-                  croinformRes.lists.length || 
-                (fsspInfo && fsspInfo.length) || 
-                (stop_lists && stop_lists.length))
-              ) ? renderList() : null }
+            {
+              (croinformRes && (croinformRes.vector.length || croinformRes.lists.length || (fsspInfo && fsspInfo.length) || (stop_lists && stop_lists.length))) ? 
+                renderList() : null 
+            }
             { (croinformRes && croinformRes.html) &&
               <TabPane tab="Croinform" key="2">
                 <Tabs>

@@ -1,17 +1,9 @@
-import React, { Component } from 'react';
-import { Drawer, AutoComplete, Input, Button, Row, Col, Table, Collapse, Icon, ConfigProvider, Empty } from "antd";
+import React, { Component } from 'react'
+import {  Row, Col, AutoComplete, Button, Icon, Collapse, ConfigProvider, Table, Empty, Input, Tabs } from 'react'
 import { differenceBy } from 'lodash'
-import toggleDrawer from '../index'
-import "./risk-info-digest.scss"
-import { uuid, getTimeAndDate } from '../../../../../services/utils';
+import { uuid, getTimeAndDate } from '../../../../../services/utils'
 
-const styleCss = {
-  h2 : {
-    marginLeft: 10
-  }
-}
-
-class RiskInfoDrawer extends Component {
+class RiskFactorsDigets extends Component {
   state = {
     riskFactors: [],
     digestSourse: [],
@@ -52,11 +44,13 @@ class RiskInfoDrawer extends Component {
   render() {
     const { Option } = AutoComplete
     const { Panel } = Collapse
-    const { onClose, visible, deleteRiskFactor, requestLoading} = this.props
+    const { TabPane } = Tabs
+
+    const { deleteRiskFactor, requestLoading} = this.props
     const { riskFactors, selectedText, selectedComment, digestSourse, historySourse } = this.state
     const loadingDigetsStatus = requestLoading.get("digestList") || requestLoading.get("addRistFactorInDigestList") || requestLoading.get("deleteRistFactorInDigestList")
     const loadingHistoryStatus = requestLoading.get("digestList") || requestLoading.get("deleteRistFactorInDigestList")
-
+  
     const renderOption = item => {
       return (
         <Option 
@@ -69,7 +63,7 @@ class RiskInfoDrawer extends Component {
         </Option>
       )
     }
-
+  
     const RiskInfoComponent = () => {
       return <Row className="add-risk-digest">
           <Col span={6}>
@@ -104,14 +98,14 @@ class RiskInfoDrawer extends Component {
           </Col>
         </Row>
     }
-
+  
     const Btn = props => {
       const deleteFactor = () => {
         deleteRiskFactor({ delete: props.factor.id })
       }
       return <Button  onClick={deleteFactor} > Удалить </Button>
     }
-
+  
     const showFactorsMask = item => ({
       key: uuid(),
       id: item.rowid,
@@ -120,7 +114,7 @@ class RiskInfoDrawer extends Component {
       user: item.user_name ? item.user_name : "Имя пользователя отсутствует",
       comment: item.comment
     })
-
+  
      /** Табилица Вывода риск факторов */
     const renderRisksTable = () => {
       const digestData = digestSourse ? digestSourse.map(showFactorsMask) : []
@@ -147,7 +141,7 @@ class RiskInfoDrawer extends Component {
         </ConfigProvider>
       )
     }
-
+  
      /** Табилица Вывода Истории по риск факторам */
     const renderRisksTableHistoryRequest = () => {
       const historyData = historySourse ? differenceBy(historySourse, digestSourse, "rowid").map(showFactorsMask) : []
@@ -173,21 +167,13 @@ class RiskInfoDrawer extends Component {
         </ConfigProvider>
       )
     }
-
+  
     const handleSelectOption = value =>  this.setState({ selectedKod: value })
     const handleChangeOntion = value =>  this.setState({ selectedText: value })
     const handleChangeComment = e =>  {const value = e.target.value; this.setState({ selectedComment: value })}
-
+  
     return (
-      <Drawer
-        width={"50%"}
-        placement="right"
-        closable={false}
-        onClose={onClose}
-        visible={visible}
-        className="add-risk-digest"
-      >
-        <h2 style={styleCss.h2}>Результаты проверки</h2>
+      <TabPane tab="Риск-факторы" key="1">
         <Collapse 
           size="small"
           defaultActiveKey={['1', '2', '3', '4']} 
@@ -200,10 +186,10 @@ class RiskInfoDrawer extends Component {
             {renderRisksTableHistoryRequest()}
           </Panel>
         </Collapse>
-      </Drawer>
-    );
+      </TabPane>
+    )
+
   }
 }
 
-
-export default toggleDrawer(RiskInfoDrawer)
+export default RiskFactorsDigets

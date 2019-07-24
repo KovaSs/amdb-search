@@ -28,7 +28,7 @@ class AddNewUser extends Component {
 
   renderFoulderFlItem = () => {
     const { Item: DescriptionsItem } = Descriptions
-    const{ Option, OptGroup }= Select
+    const{ Option }= Select
     const { onSave, addUser} = this.props
     const { user, organisation } = this.state
     const { Panel } = Collapse;
@@ -36,12 +36,15 @@ class AddNewUser extends Component {
     const key = "add-user"
 
     const BtnExtra = ({user}) => {
-      const isUserTrue = user.first_name && user.inn && user.first_name && user.last_name && user.middle_name && user.position
+      const isUserTrue = user.first_name && user.first_name && user.last_name && user.middle_name && user.position
       const addUserInCheckList = e => {
         console.log('date', getNowDate())
         e.stopPropagation();
         addUser({
-          ...user,
+          inn: user.inn ? user.inn : "Не найден",
+          first_name: user.first_name,
+          last_name: user.last_name,
+          middle_name: user.middle_name,
           id: uuid(),
           fio: `${user.last_name} ${user.first_name} ${user.middle_name}`,
           ActualDate: Date.now(),
@@ -50,7 +53,15 @@ class AddNewUser extends Component {
             name: "",
             inn: organisation.org_inn,
             ogrn: organisation.org_ogrn
-          }
+          },
+          position: [{
+            tagName : user.position,
+            organisation: {
+              name: "",
+              inn: organisation.org_inn,
+              ogrn: organisation.org_ogrn
+            }
+          }]
         })
         onSave(false)
       };
@@ -73,7 +84,7 @@ class AddNewUser extends Component {
     const handleChangeLastName = e => { const value = e.target.value; return this.setState(({ user }) => ({user: { ...user, last_name: value}})) }
     const handleChangeFirstName = e => { const value = e.target.value; return this.setState(({ user }) => ({user: { ...user, first_name: value}})) }
     const handleChangeMiddletName = e => { const value = e.target.value; return this.setState(({ user }) => ({user: { ...user, middle_name: value}})) }
-    const handleChangePosition = value => this.setState(({ user }) => ({user: { ...user, position: [value]}}))
+    const handleChangePosition = value => this.setState(({ user }) => ({user: { ...user, position: value}}))
     // const handleChangeOrgName = e => { const value = e.target.value; return this.setState(({ organisation }) => ({organisation: { ...organisation, org_name: value}})) }
     const handleChangeOrgInn = e => { const value = e.target.value; return this.setState(({ organisation }) => ({organisation: { ...organisation, org_inn: value}})) }
     const handleChangeOrgOgrn = e => { const value = e.target.value; return this.setState(({ organisation }) => ({organisation: { ...organisation, org_ogrn: value}})) }
@@ -103,17 +114,10 @@ class AddNewUser extends Component {
           </DescriptionsItem>
           <DescriptionsItem key={`${id}-${key}-3`} id={`${id}-${key}`} label="Должность в организации" span={1} >
             <Select onChange={handleChangePosition} placeholder="Должность" style={{ width: 200 }} size="small">
-              <OptGroup label="Руководящий состав">
-                <Option value="Генеральный директор"> Генеральный директор </Option>
-                <Option value="Руководитель"> Руководитель </Option>
-                <Option value="Собственник"> Собственник </Option>
-              </OptGroup>
-              <OptGroup label="Связанные лица">
-                <Option value="Учредитель"> Учредитель </Option>
-                <Option value="Совладелец"> Совладелец </Option>
-                <Option value="Бенефициар"> Бенефициар </Option>
-                <Option value="Другое"> Другое </Option>
-              </OptGroup>
+              <Option value="Руководитель"> Руководитель </Option>
+              <Option value="Совладелец"> Совладелец </Option>
+              <Option value="Бенефициар"> Бенефициар </Option>
+              <Option value="Другое"> Другое </Option>
             </Select>
           </DescriptionsItem>
           <DescriptionsItem key={`${id}-${key}-4`} id={`${id}-${key}`} label="Организация" span={1} >
