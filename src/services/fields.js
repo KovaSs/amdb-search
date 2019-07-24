@@ -78,15 +78,6 @@ export const fieldsArr = [
     }
   }},
 
-  {search: "PhoneList", id: "phone_list", title: "Список телефонов", data: "", func: item => {
-    try {
-      if(!item) return 'Данные отсутствуют'
-        return item.Phone
-    } catch (error) {
-      console.log('Ошибка в преобразовании previous_address', item, error)
-    }
-  }},
-
   {search: "WorkersRange", id: "workers_range", title: "Численность персонала", data: ""},
 
   {search: "StaffNumberFTS", id: "workers_range_fns", title: "Численность персонала по данным ФНС", data: "", func: item => {
@@ -127,11 +118,7 @@ export const fieldsArr = [
     try {
       if(!item) return ''
       if(Array.isArray(item)) {
-        const predecessor = []
-        item.map(el =>  {
-          return predecessor.push(`${el.Name} / ${el.INN} ${el.Status.Text ? `/ ${el.Status.Text}` : ''}`)
-        })
-        return predecessor
+        return item.map(el => `${el.Name} / ${el.INN} ${el.Status.Text ? `/ ${el.Status.Text}` : ''}`)
       } else {
         const { INN, Name, Status } = item
         return `${Name} / ${INN} ${Status.Text ? `/ ${Status.Text}` : ''}`
@@ -144,18 +131,23 @@ export const fieldsArr = [
   {search: "Successor", id: "successors", title: "Преемники", data: "", func: item => {
     try {
       if(!item) return ''
-      if(Array.isArray(item.Successor)) {
-        const successor = []
-        item.map(el =>  {
-          return successor.push(`${el.Name} / ${el.INN} ${el.Status.Text ? `/ ${el.Status.Text}` : ''}`)
-        })
-        return successor
+      if(Array.isArray(item)) {
+        return item.map(element => `${element.Name} / ${element.INN} ${element.Status.Text ? `/ ${element.Status.Text}` : ''}`)
       } else {
         const { INN, Name, Status } = item
         return `${Name} / ${INN} ${Status.Text ? `/ ${Status.Text}` : ''}`
       }
     } catch (error) {
-      console.log('Ошибка в преобразовании arbiter', item, error)
+      console.log('Ошибка в преобразовании successors', item, error)
+    }
+  }},
+
+  {search: "PhoneList", id: "phone_list", title: "Список телефонов", data: "", func: item => {
+    try {
+      if(!item) return 'Данные отсутствуют'
+        return item.Phone
+    } catch (error) {
+      console.log('Ошибка в преобразовании previous_address', item, error)
     }
   }},
 
