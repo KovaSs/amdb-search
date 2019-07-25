@@ -10,10 +10,10 @@ import {
   decodedRenderData, 
   decodedErrors, 
   decodedReqnum 
-} from "../../../store/ducks/openBill";
+} from "../../../store/ducks/electronicBankGarantees";
 import "./open-bill.scss"
 
-class OpenBill extends Component {
+class EBG extends Component {
   state = {
     showTable : false,
     loading : false,
@@ -80,7 +80,7 @@ class OpenBill extends Component {
             <CollapceContainer /> : 
             <Spin spinning={loading} size="large" tip="Идет поиск данных" >
               <div className="search-result-table">
-                <div>Открытие счета:</div>
+                <div>Электронные банковские гарантии:</div>
                 <div>Для поиска информации об организации введите ИНН в поисковую строку</div>
               </div>
             </Spin>
@@ -111,13 +111,13 @@ const putStateToProps = state => {
   }
 }
 
-OpenBill.propTypes = {
+EBG.propTypes = {
   companyResponse: PropTypes.object,
   requestLoading: PropTypes.object,
   renderData: PropTypes.bool,
   errors: PropTypes.object
 }
 
-export default connect(putStateToProps)(OpenBill);
+export default connect(putStateToProps)(EBG);
 
 

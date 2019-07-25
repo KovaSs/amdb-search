@@ -2,98 +2,8 @@ import React, { Component } from 'react'
 import { Table, Input, Button, Icon, ConfigProvider, Empty, Progress } from 'antd';
 import { withRouter } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
-import { getDate, getTimeAndDate, getTime } from '../../../../services/utils'
-
-const data = [
-  {
-    key: '1',
-    number: '1',
-    date: getTimeAndDate(Date.now()),
-    time: Date.now()-(19*60000),
-    info: {
-      name: 'ШАМКОВ МАКСИМ АНАТОЛЬЕВИЧ',
-      inn: '552801899036',
-      birthday: '1969-04-22',
-    }
-  },
-  {
-    key: '2',
-    number: '2',
-    date: getTimeAndDate(Date.now()-300000),
-    time: Date.now()-(17*60000),
-    info: {
-      name: "ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ \"БЕЛЫЙ ДОМ\"",
-      inn: '2901178314',
-      ogrn: '1082901005263',
-    }
-  },
-  {
-    key: '3',
-    number: '3',
-    date: getTimeAndDate(Date.now()),
-    time: Date.now()-(15*60000),
-    info: {
-      name: "ООО \"БИКОМПАКТ 2.0\"",
-      inn: '7725735213',
-      ogrn: '1117746763672',
-    }
-  },
-  {
-    key: '4',
-    number: '4',
-    date: getTimeAndDate(Date.now()),
-    time: Date.now()-(14*60000),
-    info: {
-      name: "ООО \"КУРОРТНЫЙ МАГАЗИН\"",
-      inn: '7702419476',
-      ogrn: '1177746635153',
-    }
-  },
-  {
-    key: '5',
-    number: '5',
-    date: getTimeAndDate(Date.now()),
-    time: Date.now()-(11*60000),
-    info: {
-      name: "АО \"КН ФПК \"ГАРАНТ-ИНВЕСТ\"",
-      inn: '7726637843',
-      ogrn: '1097746603680',
-    }
-  },
-  {
-    key: '6',
-    number: '6',
-    date: getTimeAndDate(Date.now()),
-    time: Date.now()-(7*60000),
-    info: {
-      name: "АО \"КН ФПК \"ГАРАНТ-ИНВЕСТ\"",
-      inn: '7726637843',
-      ogrn: '1097746603680',
-    }
-  },
-  {
-    key: '7',
-    number: '7',
-    date: getTimeAndDate(Date.now()),
-    time: Date.now()-(4*60000),
-    info: {
-      name: "АО \"АВАНТЕЛ\"",
-      inn: '5408185212',
-      ogrn: '1025403651195',
-    }
-  },
-  {
-    key: '8',
-    number: '8',
-    date: getTimeAndDate(Date.now()),
-    time: Date.now()-(2*60000),
-    info: {
-      name: "ООО \"ГАЗПРОМ ТРАНСГАЗ МОСКВА\"",
-      inn: '5003028028',
-      ogrn: '1025000653920',
-    }
-  },
-];
+import { getDate, getTime } from '../../../../services/utils'
+import { ebgData as data } from '../../../../store/mock'
 
 class TableContainer extends Component {
   state = {
@@ -108,9 +18,11 @@ class TableContainer extends Component {
     setTimeout(() => {
       this.setState({loading : false, dataTable : data})
     }, 1000);
-    setInterval(() => {
-      this.setState({dateNow: Date.now()})
-    }, 1000);
+    this.interval = setInterval(() =>  this.setState({dateNow: Date.now()}), 1000)
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval)
   }
 
   takeInWork = inn => {
@@ -228,7 +140,7 @@ class TableContainer extends Component {
                 highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }} 
                 searchWords={this.state.searchText} 
                 autoEscape 
-                textToHighlight={record.info.name.toString()}
+                textToHighlight={record.info.name.toString().toUpperCase()}
               /> 
             </div>
             <small><b>ИНН: </b>

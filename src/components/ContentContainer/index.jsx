@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Route, Switch } from 'react-router-dom';
 import MainPage from "./MainPage";
 import OpenBill from "./OpenBill";
+import EBG from "./EBG";
 import TestRequest from "./OpenBill/TestRequest";
 import CreditConveyor from "./CreditConveyor";
 import EarlyWarningSystem from "./EarlyWarningSystem";
@@ -37,7 +38,7 @@ export class ContentContainer extends Component {
 
   getSearchObject = ({match}) => {
     const { id } = match.params
-    return <OpenBill ebgInn={id} />
+    return <EBG ebgInn={id} />
   }
 }
 

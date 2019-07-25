@@ -10,7 +10,7 @@ import {
   addRiskFactor, 
   deleteRiskFactor, 
   decodedRequestLoading 
-} from "../../../../../store/ducks/openBill";
+} from "../../../../../store/ducks/electronicBankGarantees";
 import "./main-organisation-info.scss";
 
 const styleCss = {

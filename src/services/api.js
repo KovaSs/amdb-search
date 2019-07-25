@@ -1,4 +1,4 @@
-import { getUSDate, parsingPassport } from './utils'
+import { getUSDate } from './utils'
 
 /** Загрузка данных о кампании */
 export const getLoadCompanyInfo = inn => {
@@ -230,13 +230,13 @@ export const getIdentifyUser = (ip, reqnum, action, storeOgrn) => {
           type: 'identify_user',
           reqnum: reqnum,
           data: {
-            FirstName: action.first_name,
-            MiddleName: action.middle_name,
-            SurName: action.last_name,
-            INNIP: action.inn,
-            DateOfBirth: action.birthdate,
-            Seria: action.passport ? parsingPassport(action.passport).Seria : "",
-            Number: action.passport ? parsingPassport(action.passport).Number : "",
+            FirstName: action.FirstName,
+            MiddleName: action.MiddleName,
+            SurName: action.SurName,
+            INNIP: action.INN,
+            DateOfBirth: action.DateOfBirth,
+            Seria: action.Seria,
+            Number: action.Number
           }
         }),
       }

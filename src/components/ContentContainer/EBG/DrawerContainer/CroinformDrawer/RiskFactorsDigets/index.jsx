@@ -8,7 +8,7 @@ import {
   decodedDigetsList, 
   addRiskFactor, 
   deleteRiskFactor 
-} from "../../../../../../store/ducks/openBill";
+} from "../../../../../../store/ducks/electronicBankGarantees";
 
 class RiskFactorsDigets extends Component {
   state = {

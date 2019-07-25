@@ -1,16 +1,17 @@
-import React, { Component } from 'react'
-import {  Row, Col, AutoComplete, Button, Icon, Collapse, ConfigProvider, Table, Empty, Input } from 'antd'
+import React, { Component } from 'react';
+import { Drawer, AutoComplete, Input, Button, Row, Col, Table, Collapse, Icon, ConfigProvider, Empty } from "antd";
 import { differenceBy } from 'lodash'
-import { connect } from "react-redux"
-import { uuid, getTimeAndDate } from '../../../../../../services/utils'
-import { 
-  decodedRequestLoading, 
-  decodedDigetsList, 
-  addRiskFactor, 
-  deleteRiskFactor 
-} from "../../../../../../store/ducks/openBill";
+import toggleDrawer from '../index'
+import "./risk-info-digest.scss"
+import { uuid, getTimeAndDate } from '../../../../../services/utils';
 
-class RiskFactorsDigets extends Component {
+const styleCss = {
+  h2 : {
+    marginLeft: 10
+  }
+}
+
+class RiskInfoDrawer extends Component {
   state = {
     riskFactors: [],
     digestSourse: [],
@@ -23,21 +24,12 @@ class RiskFactorsDigets extends Component {
   componentDidUpdate(prevProps) {
     const { digets } = this.props
     if(prevProps.digets !== digets) {
-      this.setState(() => ({
+      this.setState(() =>({
         riskFactors: digets.risks,
         digestSourse: digets.digest,
         historySourse: digets.history,
       }))
     }
-  }
-
-  componentDidMount(prevProps) {
-    const { digets } = this.props
-    this.setState(() => ({
-      riskFactors: digets.risks,
-      digestSourse: digets.digest,
-      historySourse: digets.history,
-    }))
   }
 
   submitRiskFactor = () => {
@@ -60,12 +52,11 @@ class RiskFactorsDigets extends Component {
   render() {
     const { Option } = AutoComplete
     const { Panel } = Collapse
-
-    const { deleteRiskFactor, requestLoading} = this.props
+    const { onClose, visible, deleteRiskFactor, requestLoading} = this.props
     const { riskFactors, selectedText, selectedComment, digestSourse, historySourse } = this.state
     const loadingDigetsStatus = requestLoading.get("digestList") || requestLoading.get("addRistFactorInDigestList") || requestLoading.get("deleteRistFactorInDigestList")
     const loadingHistoryStatus = requestLoading.get("digestList") || requestLoading.get("deleteRistFactorInDigestList")
-  
+
     const renderOption = item => {
       return (
         <Option 
@@ -78,7 +69,7 @@ class RiskFactorsDigets extends Component {
         </Option>
       )
     }
-  
+
     const RiskInfoComponent = () => {
       return <Row className="add-risk-digest">
           <Col span={6}>
@@ -113,14 +104,14 @@ class RiskFactorsDigets extends Component {
           </Col>
         </Row>
     }
-  
+
     const Btn = props => {
       const deleteFactor = () => {
         deleteRiskFactor({ delete: props.factor.id })
       }
       return <Button  onClick={deleteFactor} > Удалить </Button>
     }
-  
+
     const showFactorsMask = item => ({
       key: uuid(),
       id: item.rowid,
@@ -129,7 +120,7 @@ class RiskFactorsDigets extends Component {
       user: item.user_name ? item.user_name : "Имя пользователя отсутствует",
       comment: item.comment
     })
-  
+
      /** Табилица Вывода риск факторов */
     const renderRisksTable = () => {
       const digestData = digestSourse ? digestSourse.map(showFactorsMask) : []
@@ -156,7 +147,7 @@ class RiskFactorsDigets extends Component {
         </ConfigProvider>
       )
     }
-  
+
      /** Табилица Вывода Истории по риск факторам */
     const renderRisksTableHistoryRequest = () => {
       const historyData = historySourse ? differenceBy(historySourse, digestSourse, "rowid").map(showFactorsMask) : []
@@ -182,38 +173,37 @@ class RiskFactorsDigets extends Component {
         </ConfigProvider>
       )
     }
-  
+
     const handleSelectOption = value =>  this.setState({ selectedKod: value })
     const handleChangeOntion = value =>  this.setState({ selectedText: value })
     const handleChangeComment = e =>  {const value = e.target.value; this.setState({ selectedComment: value })}
-  
+
     return (
-      <Collapse 
-        size="small"
-        defaultActiveKey={['1', '2', '3', '4']} 
-        expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"}/> }
+      <Drawer
+        width={"50%"}
+        placement="right"
+        closable={false}
+        onClose={onClose}
+        visible={visible}
+        className="add-risk-digest"
       >
-        <Panel header="Ручной ввод риск факторов" key="1" showArrow={false}>
-          {renderRisksTable()}
-        </Panel>
-        <Panel header="История результатов проверки" key="2" showArrow={false}>
-          {renderRisksTableHistoryRequest()}
-        </Panel>
-      </Collapse>
-    )
+        <h2 style={styleCss.h2}>Результаты проверки</h2>
+        <Collapse 
+          size="small"
+          defaultActiveKey={['1', '2', '3', '4']} 
+          expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"}/> }
+        >
+          <Panel header="Ручной ввод риск факторов" key="1" showArrow={false}>
+            {renderRisksTable()}
+          </Panel>
+          <Panel header="История результатов проверки" key="2" showArrow={false}>
+            {renderRisksTableHistoryRequest()}
+          </Panel>
+        </Collapse>
+      </Drawer>
+    );
   }
 }
 
-const putStateToProps = state => {
-  return {
-    requestLoading: decodedRequestLoading(state),
-    digets: decodedDigetsList(state),
-  }
-}
 
-const putActionsToProps = {
-  addRiskFactor,
-  deleteRiskFactor
-}
-
-export default connect(putStateToProps, putActionsToProps)(RiskFactorsDigets)
+export default toggleDrawer(RiskInfoDrawer)

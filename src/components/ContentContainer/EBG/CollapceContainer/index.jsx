@@ -6,7 +6,7 @@ import {
   decodedMainCompanySource, 
   decodedRiskSource, 
   decodedCompanyResponse 
-} from "../../../../store/ducks/openBill";
+} from "../../../../store/ducks/electronicBankGarantees";
 
 const Container = props => <CollapceContainer {...props}/>
 

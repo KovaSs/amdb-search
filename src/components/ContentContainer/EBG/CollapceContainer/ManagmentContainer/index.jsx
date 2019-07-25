@@ -14,7 +14,7 @@ import {
   addNewUserToCheackList,
   decodedErrors,
   decodedFsspInfo
-} from "../../../../../store/ducks/openBill";
+} from "../../../../../store/ducks/electronicBankGarantees";
 
 /** Вывод данных об руководстве */
 const ManagmentContainer = props => {
