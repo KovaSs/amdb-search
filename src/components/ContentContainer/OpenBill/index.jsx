@@ -1,6 +1,6 @@
 import React, { Suspense, lazy } from "react";
 const OpenBill = lazy(() => import("./OpenBill"))
 
-const OpenBillContainer = () =>  <Suspense fallback={<div></div>}> <OpenBill /> </Suspense>
+const OpenBillContainer = props =>  <Suspense fallback={<div></div>}> <OpenBill {...props}/> </Suspense>
 
 export default OpenBillContainer

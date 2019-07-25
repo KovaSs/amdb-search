@@ -1,37 +1,16 @@
 import React, { Component } from 'react'
-import { Table, Input, Button, Icon, ConfigProvider, Empty } from 'antd';
+import { Table, Input, Button, Icon, ConfigProvider, Empty, Progress } from 'antd';
 import { withRouter } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
-import { getDate } from '../../../../services/utils'
-
-const data = [
-  {
-    key: '1',
-    number: '1',
-    date: getDate('2010-12-08'),
-    info: {
-      name: 'ШАМКОВ МАКСИМ АНАТОЛЬЕВИЧ',
-      inn: '552801899036',
-      birthday: '1969-04-22',
-    }
-  },
-  {
-    key: '2',
-    number: '2',
-    date: getDate('2010-12-09'),
-    info: {
-      name: "ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ \"БЕЛЫЙ ДОМ\"",
-      inn: '2901178314',
-      ogrn: '1082901005263',
-    }
-  },
-];
+import { getDate, getTime } from '../../../../services/utils'
+import { ebgData as data } from '../../../../store/mock'
 
 class TableContainer extends Component {
   state = {
     searchText: [],
     loading: false,
-    dataTable: null
+    dataTable: null,
+    dateNow: ""
   };
 
   componentDidMount() {
@@ -39,6 +18,11 @@ class TableContainer extends Component {
     setTimeout(() => {
       this.setState({loading : false, dataTable : data})
     }, 1000);
+    this.interval = setInterval(() =>  this.setState({dateNow: Date.now()}), 1000)
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval)
   }
 
   takeInWork = inn => {
@@ -115,6 +99,19 @@ class TableContainer extends Component {
     this.setState({ searchText:  newSearchText})
   };
 
+  getLeftCheckTime = recTime => {
+    const { dateNow } = this.state
+    const leftTime = (recTime + (20*60000))-dateNow
+    if(leftTime <= 0) return <Icon style={{fontSize: 16}} type="close-circle" />
+    return getTime(leftTime)
+  }
+
+  getLeftCheckPercentTime = recTime => {
+    const { dateNow } = this.state
+    const leftTimePercent = ((recTime + (20*60000))-dateNow ) * 100 / (20 * 60000)
+    return leftTimePercent
+  }
+
   render() {
     const columns = [
       {
@@ -143,7 +140,7 @@ class TableContainer extends Component {
                 highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }} 
                 searchWords={this.state.searchText} 
                 autoEscape 
-                textToHighlight={record.info.name.toString()}
+                textToHighlight={record.info.name.toString().toUpperCase()}
               /> 
             </div>
             <small><b>ИНН: </b>
@@ -174,6 +171,21 @@ class TableContainer extends Component {
             }
           </>
         ),
+      },
+      {
+        title: 'Времени осталось',
+        key: 'time',
+        render: (text, record) => {
+          return (
+            <Progress
+              size="small"
+              style={{width: "80%"}}
+              format={() => this.getLeftCheckTime(record.time)}
+              percent={this.getLeftCheckPercentTime(record.time)}
+              status={this.getLeftCheckPercentTime(record.time) < 25 ? "exception" : "active"}
+            />
+          )
+        }
       },
       {
         title: '',

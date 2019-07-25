@@ -30,19 +30,19 @@ export class SiderContainer extends Component {
             activePage: "0"
           });
           break;
-        case "/credit-conveyor":
+        // case "/credit-conveyor":
+        //   this.setState({
+        //     activePage: "1"
+        //   });
+        //   break;
+        case "/electronic-bank-garantees":
           this.setState({
             activePage: "1"
           });
           break;
-        case "/electronic-bank-garantees":
-          this.setState({
-            activePage: "2"
-          });
-          break;
         case "/early-warning-system":
           this.setState({
-            activePage: "3"
+            activePage: "2"
           });
           break;
         default:

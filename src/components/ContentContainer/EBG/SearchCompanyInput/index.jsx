@@ -9,7 +9,7 @@ import {
   decodedRenderData, 
   decodedInn,
   decodedErrors
-} from "../../../../store/ducks/openBill"
+} from "../../../../store/ducks/electronicBankGarantees"
 
 const Container = props => <SearchCompanyInput {...props}/>
 

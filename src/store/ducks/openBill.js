@@ -828,7 +828,7 @@ const identifyUserSaga = function * (action) {
         status: true,
         id: action.id, 
         time: Date.now(),
-        message: "Ошибка идентификации пользователя, попробуйте перевести ФИО в верхний регистр" 
+        message: "Ошибка идентификации пользователя, данные не получены" 
       }
     })
   }

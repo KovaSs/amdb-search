@@ -104,6 +104,9 @@ export const getNowDate = () =>  new Date(Date.now()).toLocaleString().split(", 
 /** Преобразование даты к формату DD.MM.YYYY h:mm:ss */
 export const getTimeAndDate = data =>  moment(data).format('DD.MM.YYYY h:mm:ss')
 
+/** Преобразование даты к формату DD.MM.YYYY h:mm:ss */
+export const getTime = data =>  moment(+data).format('mm:ss')
+
 /** Преобразование даты к формату YYYY-MM-DD */
 export const getUSDate = arr => {
   const dateArrUs = arr.map(item => {
