@@ -1,6 +1,7 @@
 import React from 'react';
 import { Drawer, Spin, Descriptions, Tabs, Collapse, Empty, PageHeader, Button } from "antd";
 import { htmlTransform, htmlTransformFssp, uuid } from '../../../../../services/utils'
+import RiskFactorsDigets from './RiskFactorsDigets'
 import toggleDrawer from '../index'
 
 /** Инлайновые стили */
@@ -192,10 +193,12 @@ const CroinformDrawer = props => {
           ]}
         >
           <Tabs >
-            {
-              (croinformRes && (croinformRes.vector.length || croinformRes.lists.length || (fsspInfo && fsspInfo.length) || (stop_lists && stop_lists.length))) ? 
-                renderList() : null 
-            }
+            { (croinformRes && 
+                (croinformRes.vector.length || 
+                  croinformRes.lists.length || 
+                (fsspInfo && fsspInfo.length) || 
+                (stop_lists && stop_lists.length))
+              ) ? renderList() : null }
             { (croinformRes && croinformRes.html) &&
               <TabPane tab="Croinform" key="2">
                 <Tabs>
@@ -218,6 +221,11 @@ const CroinformDrawer = props => {
                   <iframe srcDoc={styledIdentifyRes} frameBorder="0" title="identify-data" width="100%" height={`${window.innerHeight*0.84}px`}/>
                 </Spin>
               </TabPane> : null
+            }
+            {
+              <TabPane tab="Риск-факторы" key="3">
+                <RiskFactorsDigets />
+              </TabPane>
             }
           </Tabs>
         </PageHeader>

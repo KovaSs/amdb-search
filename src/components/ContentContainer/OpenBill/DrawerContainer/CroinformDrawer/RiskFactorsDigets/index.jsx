@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import {  Row, Col, AutoComplete, Button, Icon, Collapse, ConfigProvider, Table, Empty, Input, Tabs } from 'react'
+import {  Row, Col, AutoComplete, Button, Icon, Collapse, ConfigProvider, Table, Empty, Input } from 'antd'
 import { differenceBy } from 'lodash'
-import { uuid, getTimeAndDate } from '../../../../../services/utils'
+import { connect } from "react-redux"
+import { uuid, getTimeAndDate } from '../../../../../../services/utils'
+import { decodedRequestLoading, decodedDigetsList, addRiskFactor, deleteRiskFactor } from "../../../../../../store/ducks/openBill";
 
 class RiskFactorsDigets extends Component {
   state = {
@@ -16,12 +18,21 @@ class RiskFactorsDigets extends Component {
   componentDidUpdate(prevProps) {
     const { digets } = this.props
     if(prevProps.digets !== digets) {
-      this.setState(() =>({
+      this.setState(() => ({
         riskFactors: digets.risks,
         digestSourse: digets.digest,
         historySourse: digets.history,
       }))
     }
+  }
+
+  componentDidMount(prevProps) {
+    const { digets } = this.props
+    this.setState(() => ({
+      riskFactors: digets.risks,
+      digestSourse: digets.digest,
+      historySourse: digets.history,
+    }))
   }
 
   submitRiskFactor = () => {
@@ -44,7 +55,6 @@ class RiskFactorsDigets extends Component {
   render() {
     const { Option } = AutoComplete
     const { Panel } = Collapse
-    const { TabPane } = Tabs
 
     const { deleteRiskFactor, requestLoading} = this.props
     const { riskFactors, selectedText, selectedComment, digestSourse, historySourse } = this.state
@@ -173,23 +183,32 @@ class RiskFactorsDigets extends Component {
     const handleChangeComment = e =>  {const value = e.target.value; this.setState({ selectedComment: value })}
   
     return (
-      <TabPane tab="Риск-факторы" key="1">
-        <Collapse 
-          size="small"
-          defaultActiveKey={['1', '2', '3', '4']} 
-          expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"}/> }
-        >
-          <Panel header="Ручной ввод риск факторов" key="1" showArrow={false}>
-            {renderRisksTable()}
-          </Panel>
-          <Panel header="История результатов проверки" key="2" showArrow={false}>
-            {renderRisksTableHistoryRequest()}
-          </Panel>
-        </Collapse>
-      </TabPane>
+      <Collapse 
+        size="small"
+        defaultActiveKey={['1', '2', '3', '4']} 
+        expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"}/> }
+      >
+        <Panel header="Ручной ввод риск факторов" key="1" showArrow={false}>
+          {renderRisksTable()}
+        </Panel>
+        <Panel header="История результатов проверки" key="2" showArrow={false}>
+          {renderRisksTableHistoryRequest()}
+        </Panel>
+      </Collapse>
     )
-
   }
 }
 
-export default RiskFactorsDigets
+const putStateToProps = state => {
+  return {
+    requestLoading: decodedRequestLoading(state),
+    digets: decodedDigetsList(state),
+  }
+}
+
+const putActionsToProps = {
+  addRiskFactor,
+  deleteRiskFactor
+}
+
+export default connect(putStateToProps, putActionsToProps)(RiskFactorsDigets)

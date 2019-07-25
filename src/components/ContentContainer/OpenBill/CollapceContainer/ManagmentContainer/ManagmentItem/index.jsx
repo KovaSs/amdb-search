@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { Collapse, Icon, Spin, Descriptions, AutoComplete, Input, Button, Badge, notification } from "antd";
 import PropTypes from "prop-types";
-import { union, concat } from "lodash";
+import { union, concat, compact } from "lodash";
 import LeaderHeader from "../LeaderHeader";
 import LeaderEditedHeader from "../LeaderEditedHeader";
 import {region, parsingFio, parsingPassport} from "../../../../../../services/utils";
@@ -51,10 +51,10 @@ export class ManagmentItem extends PureComponent {
         first_name,  
         middle_name, 
         identifyInfo = { 
-          inn: "", 
-          fio: "", 
+          inn: [], 
+          fio: [], 
           passport: "", 
-          birthday: "", 
+          birthday: [], 
           address: ""
         },
         selectedInfo = {
@@ -78,7 +78,7 @@ export class ManagmentItem extends PureComponent {
 
     this.setState({
       user: {
-        inn: union([inn], identifyInfo.inn).length >= 1 ?
+        inn: union([inn], identifyInfo.inn).length >= 1  && identifyInfo.inn ?
           union([inn], identifyInfo.inn).filter(item => item !== "Не найден") :
           union([inn], identifyInfo.inn), 
         fio: union( [`${last_name} ${first_name} ${middle_name}`], identifyInfo.fio ), 
@@ -88,7 +88,7 @@ export class ManagmentItem extends PureComponent {
       },
       userSelected: {
         inn: selectedInfo.INN ? selectedInfo.INN :
-          union([inn], identifyInfo.inn).length >= 1 ?
+          union([inn], identifyInfo.inn).length >= 1 && identifyInfo.inn ?
             union([inn], identifyInfo.inn).filter(item => item !== "Не найден")[0] :
             union([inn], identifyInfo.inn)[0],
         FirstName: selectedInfo.FirstName ? selectedInfo.FirstName : first_name,
@@ -149,7 +149,7 @@ export class ManagmentItem extends PureComponent {
     if (item !== prevProps.item) {
       this.setState({
         user: {
-          inn: union([inn], identifyInfo.inn).length >= 1 ?
+          inn: union([inn], identifyInfo.inn).length >= 1 && identifyInfo.inn ?
             union([inn], identifyInfo.inn).filter(item => item !== "Не найден") :
             union([inn], identifyInfo.inn), 
           fio: union( [`${last_name} ${first_name} ${middle_name}`], identifyInfo.fio ), 
@@ -158,8 +158,8 @@ export class ManagmentItem extends PureComponent {
           address: identifyInfo.address
         },
         userSelected: {
-          inn: selectedInfo.INN ? selectedInfo.INN :
-            union([inn], identifyInfo.inn).length >= 1 ?
+          inn: selectedInfo.INN ? selectedInfo.INN : 
+            union([inn], identifyInfo.inn).length >= 1 && identifyInfo.inn ?
               union([inn], identifyInfo.inn).filter(item => item !== "Не найден")[0] :
               union([inn], identifyInfo.inn)[0],
           FirstName: selectedInfo.FirstName ? selectedInfo.FirstName : first_name,
@@ -252,7 +252,9 @@ export class ManagmentItem extends PureComponent {
     const { item, actionGetUserCroinformInfo } = this.props;
 
     const user = {
-      INN: userSelected.inn ? userSelected.inn : item.inn,
+      INN: userSelected.inn ? 
+        (userSelected.inn !== "Не найден" ? userSelected.inn : "") : 
+        (item.inn !== "Не найден" ? item.inn : ""),
       FirstName: userSelected.fio ? parsingFio(userSelected.fio).FirstName : item.first_name, 
       FirstNameArch: userSelected.fio ? parsingFio(userSelected.fio).FirstName : item.first_name,
       MiddleName: userSelected.fio ? parsingFio(userSelected.fio).MiddleName : item.middle_name,
@@ -268,10 +270,11 @@ export class ManagmentItem extends PureComponent {
       BuildingExp: parseAddress.BuildingExp, 
       FlatExp: parseAddress.FlatExp,
       INNArr: userState.inn.filter(item => item === userSelected.inn).length ? 
-        userState.inn : concat(userState.inn, userSelected.inn),
+          userState.inn : compact(concat(userState.inn, userSelected.inn)),
       DateOfBirthArr: userState.birthday.filter(item => item === userSelected.birthday).length ? 
-        userState.birthday : concat(userState.birthday, userSelected.birthday)
+        userState.birthday : compact(concat(userState.birthday, userSelected.birthday))
     }
+    console.log('INNArr',  userState.inn, userSelected.inn, user)
     actionGetUserCroinformInfo(user, item.id)
   }
 
@@ -298,7 +301,7 @@ export class ManagmentItem extends PureComponent {
       const { identifyUser, croinformRes, item: propsItem } = this.props;
       const { userSelected, parseAddress, edited } = this.state;
       const croinformDisabled = !userSelected.inn && !userSelected.fio && !userSelected.passport && !parseAddress.RegionExp && !parseAddress.CityExp && !parseAddress.StreetExp &&!parseAddress.HouseExp
-      const showBtn = propsItem.hasOwnProperty('identifyInfo')
+      const showBtn = propsItem.hasOwnProperty('identifyInfo') || croinformRes
 
       const editUserInfo = e => {
         if(openPanel) {

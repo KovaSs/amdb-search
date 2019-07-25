@@ -29,7 +29,7 @@ class AddNewUser extends Component {
   renderFoulderFlItem = () => {
     const { Item: DescriptionsItem } = Descriptions
     const{ Option }= Select
-    const { onSave, addUser} = this.props
+    const { onSave, addUser } = this.props
     const { user, organisation } = this.state
     const { Panel } = Collapse;
     const id = "add-new-descr-items"
