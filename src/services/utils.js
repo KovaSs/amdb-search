@@ -1,12 +1,19 @@
 import { cloneDeep, assign, concat, compact } from 'lodash';
 import moment from 'moment'
 import { fieldsArr, fieldsArrIP } from "./fields";
+import store from "../store";
 
 /** Стили для консольных команд */
 export const cloCss = { 
   red: "color: white; background-color: red; padding: 0 5px",
   green: "color: white; background-color: green; padding: 0 5px",
   yellow: "color: black; background-color: yellow; padding: 0 5px",
+}
+
+/** Проверка на EBG */
+export const ebg = () =>  {
+  console.log('ROUTER', store.getState().router.location.pathname, store.getState().router.location.pathname.indexOf("electronic-bank-garantees/") !== -1 )
+  return store.getState().router.location.pathname.indexOf("electronic-bank-garantees/") !== -1 ? true : false
 }
 
 /* Парсинг ФИО */

@@ -58,6 +58,7 @@ class SearchCompanyInput extends PureComponent {
 
     !showInfo && this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
+        console.log('values.data', loadCompanyInfo)
         loadCompanyInfo(values.data)
         this.changeValue(values.data)
       }

@@ -4,7 +4,7 @@ import { Spin, Col, Row, Switch } from "antd";
 import PropTypes from "prop-types";
 import CollapceContainer from "./CollapceContainer";
 import SearchCompanyInput from "./SearchCompanyInput";
-import store from "../../../store"
+import { ebg } from "../../../services/utils"
 import { 
   decodedCompanyResponse, 
   decodedRequestLoading, 
@@ -47,14 +47,11 @@ class OpenBill extends Component {
   }
 
   componentDidMount() {
-    const { companyResponse, ebgInn } = this.props
+    const { companyResponse } = this.props
     companyResponse &&
     this.setState({
       showTable: true
     })
-    if(ebgInn) {
-      
-    }
     document.title = "AC - Проверка | Открытие счета"
   }
 
@@ -113,21 +110,12 @@ class OpenBill extends Component {
 }
 
 const putStateToProps = state => {
-  if(store.getState().router.location.pathname.indexOf("electronic-bank-garantees/") !== -1) {
-    return {
-      companyResponse : ebgCompanyResponse(state),
-      requestLoading: ebgRequestLoading(state) ,
-      renderData: ebgRenderData(state),
-      errors: ebgErrors(state),
-      reqnum: ebgReqnum(state)
-    }
-  }
   return {
-    companyResponse : decodedCompanyResponse(state),
-    requestLoading: decodedRequestLoading(state) ,
-    renderData: decodedRenderData(state),
-    errors: decodedErrors(state),
-    reqnum: decodedReqnum(state)
+    companyResponse: ebg() ? ebgCompanyResponse(state) : decodedCompanyResponse(state),
+    requestLoading: ebg() ? ebgRequestLoading(state) : decodedRequestLoading(state) ,
+    renderData: ebg() ? ebgRenderData(state) : decodedRenderData(state),
+    errors: ebg() ? ebgErrors(state) : decodedErrors(state),
+    reqnum: ebg() ? ebgReqnum(state) : decodedReqnum(state)
   }
 }
 

@@ -4,7 +4,7 @@ import ManagmentItem from './ManagmentItem'
 import PropTypes from 'prop-types'
 import { trasform } from "../../../../../services/utils";
 import AddNewUser from "./AddNewUser";
-import store from "../../../../../store"
+import { ebg } from "../../../../../services/utils"
 import { 
   decodedRequestLoading, 
   decodedManagementSource, 
@@ -86,39 +86,20 @@ const ManagmentContainer = props => {
 }
 
 const putStateToProps = state => {
-  if(store.getState().router.location.pathname.indexOf("electronic-bank-garantees/") !== -1) {
-    return {
-      requestLoading: ebgRequestLoading(state),
-      managementSource: ebgManagementSource(state),
-      companyName: ebgCompanyName(state),
-      croinformResponse: ebgСroinformResponse(state),
-      errors: ebgErrors(state),
-      fsspInfo: ebgFsspInfo(state)
-    }
-  }
   return {
-    requestLoading: decodedRequestLoading(state),
-    managementSource: decodedManagementSource(state),
-    companyName: decodedCompanyName(state),
-    croinformResponse: decodedСroinformResponse(state),
-    errors: decodedErrors(state),
-    fsspInfo: decodedFsspInfo(state)
+    requestLoading: ebg() ? ebgRequestLoading(state) : decodedRequestLoading(state),
+    managementSource: ebg() ?   ebgManagementSource(state) : decodedManagementSource(state),
+    companyName: ebg() ?  ebgCompanyName(state) : decodedCompanyName(state),
+    croinformResponse: ebg() ?  ebgСroinformResponse(state) : decodedСroinformResponse(state),
+    errors: ebg() ?  ebgErrors(state) : decodedErrors(state),
+    fsspInfo: ebg() ?  ebgFsspInfo(state) : decodedFsspInfo(state)
   }
 }
 
-const putActionsToProps = () => {
-  if(store.getState().router.location.pathname.indexOf("electronic-bank-garantees/") !== -1) {
-    return {
-      identifyUser: ebgIdentifyUser,
-      actionGetUserCroinformInfo: ebgActionGetUserCroinformInfo,
-      addNewUserToCheackList: ebgAddNewUserToCheackList
-    }
-  }
-  return {
-    identifyUser,
-    actionGetUserCroinformInfo,
-    addNewUserToCheackList
-  }
+const putActionsToProps = {
+  identifyUser: ebg() ? ebgIdentifyUser : identifyUser,
+  actionGetUserCroinformInfo: ebg() ? ebgActionGetUserCroinformInfo : actionGetUserCroinformInfo,
+  addNewUserToCheackList: ebg() ? ebgAddNewUserToCheackList : addNewUserToCheackList
 }
 
 export default connect(putStateToProps, putActionsToProps)(ManagmentContainer)

@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from "react-redux";
 import { CollapceContainer } from "./CollapceContainer";
-import store from "../../../../store";
+import { ebg } from "../../../../services/utils";
 import { 
   decodedRequestLoading, 
   decodedMainCompanySource, 
@@ -18,19 +18,11 @@ import {
 const Container = props => <CollapceContainer {...props}/>
 
 const putStateToProps = state => {
-  if(store.getState().router.location.pathname.indexOf("electronic-bank-garantees/") !== -1) {
-    return {
-      company: ebgCompanyResponse(state),
-      requestLoading: ebgRequestLoading(state),
-      companySource: ebgMainCompanySource(state),
-      riskSource: ebgRiskSource(state),
-    }
-  }
   return {
-    company: decodedCompanyResponse(state),
-    requestLoading: decodedRequestLoading(state),
-    companySource: decodedMainCompanySource(state),
-    riskSource: decodedRiskSource(state),
+    company: ebg() ? ebgCompanyResponse(state) : decodedCompanyResponse(state),
+    requestLoading: ebg() ? ebgRequestLoading(state) : decodedRequestLoading(state),
+    companySource: ebg() ? ebgMainCompanySource(state) : decodedMainCompanySource(state),
+    riskSource: ebg() ? ebgRiskSource(state) : decodedRiskSource(state),
   }
 }
 

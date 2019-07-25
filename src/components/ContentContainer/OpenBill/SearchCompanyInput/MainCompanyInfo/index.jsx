@@ -3,7 +3,7 @@ import { Col, Row, Badge, Avatar, Button } from "antd";
 import { connect } from "react-redux";
 import RiskInfoDrawer from "../../DrawerContainer/RiskInfoDrawer";
 import CompanyHistoryInfoDrawer from "../../DrawerContainer/CompanyHistoryInfoDrawer";
-import store from "../../../../../store"
+import { ebg } from "../../../../../services/utils"
 import { 
   decodedCompanyResponse, 
   decodedisIp, 
@@ -202,32 +202,16 @@ class MainCompanyInfo extends Component {
 }
 
 const putStateToProps = state => {
-  if(store.getState().router.location.pathname.indexOf("electronic-bank-garantees/") !== -1) {
-    return {
-      isIp: ebgIsIp(state),
-      requestLoading: ebgRequestLoading(state),
-      companyResponse: ebgCompanyResponse(state),
-      digets: ebgDigetsList(state)
-    }
-  }
   return {
-    isIp: decodedisIp(state),
-    requestLoading: decodedRequestLoading(state),
-    companyResponse: decodedCompanyResponse(state),
-    digets: decodedDigetsList(state)
+    isIp: ebg() ? ebgIsIp(state) : decodedisIp(state),
+    requestLoading: ebg() ? ebgRequestLoading(state) : decodedRequestLoading(state),
+    companyResponse: ebg() ? ebgCompanyResponse(state) : decodedCompanyResponse(state),
+    digets: ebg() ? ebgDigetsList(state) : decodedDigetsList(state)
   }
 }
-const putActionToProps = () => {
-  if(store.getState().router.location.pathname.indexOf("electronic-bank-garantees/") !== -1) {
-    return {
-      addRiskFactor: ebgAddRiskFactor,
-      deleteRiskFactor: ebgDeleteRiskFactor
-    }
-  }
-  return {
-    addRiskFactor,
-    deleteRiskFactor
-  }
+const putActionToProps = {
+  addRiskFactor: ebg() ? ebgAddRiskFactor : addRiskFactor,
+  deleteRiskFactor: ebg() ? ebgDeleteRiskFactor : deleteRiskFactor
 }
 
 export default connect(putStateToProps, putActionToProps)(MainCompanyInfo)

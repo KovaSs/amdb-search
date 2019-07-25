@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from "react-redux"
 import SearchCompanyInput from "./SearchCompanyInput"
-import store from "../../../../store"
+import { ebg } from "../../../../services/utils"
 import { 
   actionChangeInn, 
   loadCompanyInfo, 
@@ -24,35 +24,18 @@ import {
 const Container = props => <SearchCompanyInput {...props}/>
 
 const putStateToProps = state => {
-  if(store.getState().router.location.pathname.indexOf("electronic-bank-garantees/") !== -1) {
-    return {
-      companyResponse: ebgCompanyResponse(state),
-      renderData: ebgRenderData(state),
-      inn: ebgInn(state), 
-      errors: ebgErrors(state).get("companyMainInfoUpdate")
-    }
-  }
   return {
-    companyResponse: decodedCompanyResponse(state),
-    renderData: decodedRenderData(state),
-    inn: decodedInn(state), 
-    errors: decodedErrors(state).get("companyMainInfoUpdate")
+    companyResponse: ebg() ? ebgCompanyResponse(state) : decodedCompanyResponse(state),
+    renderData: ebg() ? ebgRenderData(state) : decodedRenderData(state),
+    inn: ebg() ? ebgInn(state) : decodedInn(state), 
+    errors: ebg() ? ebgErrors(state).get("companyMainInfoUpdate") : decodedErrors(state).get("companyMainInfoUpdate")
   }
 }
 
-const putActionsToProps = () => {
-  if(store.getState().router.location.pathname.indexOf("electronic-bank-garantees/") !== -1) {
-    return {
-      actionChangeInn: ebgActionChangeInn,
-      loadCompanyInfo: ebgLoadCompanyInfo,
-      clearCompanyInfo: ebgClearCompanyInfo
-    }
-  }
-  return {
-    actionChangeInn,
-    loadCompanyInfo,
-    clearCompanyInfo
-  }
+const putActionsToProps = {
+  actionChangeInn: ebg() ? ebgActionChangeInn : actionChangeInn,
+  loadCompanyInfo: ebg() ? ebgLoadCompanyInfo : loadCompanyInfo,
+  clearCompanyInfo: ebg() ? ebgClearCompanyInfo : clearCompanyInfo
 }
 
 export default connect(putStateToProps, putActionsToProps)(Container)
