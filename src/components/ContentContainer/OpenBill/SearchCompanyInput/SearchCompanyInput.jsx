@@ -11,11 +11,23 @@ class SearchCompanyInput extends PureComponent {
 
   componentDidMount() {
     const { clearField } = this.state
-    const { renderData } = this.props
+    const { resetFields } = this.props.form
+    const { renderData, ebgInn, loadCompanyInfo, toHideTableInfo, clearCompanyInfo } = this.props
     if(!clearField && renderData) {
       this.setState({
         showInfo: true
       })
+    }
+    if(ebgInn) {
+      toHideTableInfo()
+      clearCompanyInfo()
+      resetFields()
+      this.setState({
+        showInfo: false,
+        clearField : true
+      })
+      loadCompanyInfo(ebgInn)
+      this.changeValue(ebgInn)
     }
   }
 
@@ -60,7 +72,10 @@ class SearchCompanyInput extends PureComponent {
 
   clearSearchField = () => {
     const { resetFields } = this.props.form
-    const { toHideTableInfo, clearCompanyInfo } = this.props
+    const { toHideTableInfo, clearCompanyInfo, ebgInn } = this.props
+    if(ebgInn) {
+      
+    }
     toHideTableInfo()
     clearCompanyInfo()
     resetFields()

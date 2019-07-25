@@ -2,8 +2,20 @@ import React, { Component } from 'react'
 import {  Row, Col, AutoComplete, Button, Icon, Collapse, ConfigProvider, Table, Empty, Input } from 'antd'
 import { differenceBy } from 'lodash'
 import { connect } from "react-redux"
+import store from "../../../../../../store"
 import { uuid, getTimeAndDate } from '../../../../../../services/utils'
-import { decodedRequestLoading, decodedDigetsList, addRiskFactor, deleteRiskFactor } from "../../../../../../store/ducks/openBill";
+import { 
+  decodedRequestLoading, 
+  decodedDigetsList, 
+  addRiskFactor, 
+  deleteRiskFactor 
+} from "../../../../../../store/ducks/openBill";
+import { 
+  decodedRequestLoading as ebgRequestLoading, 
+  decodedDigetsList as ebgDigetsList, 
+  addRiskFactor as ebgAddRiskFactor, 
+  deleteRiskFactor as  ebgDeleteRiskFactor
+} from "../../../../../../store/ducks/electronicBankGarantees";
 
 class RiskFactorsDigets extends Component {
   state = {
@@ -200,15 +212,29 @@ class RiskFactorsDigets extends Component {
 }
 
 const putStateToProps = state => {
+  if(store.getState().router.location.pathname.indexOf("electronic-bank-garantees/") !== -1) {
+    return {
+      requestLoading: ebgRequestLoading(state),
+      digets: ebgDigetsList(state),
+    }
+  }
   return {
     requestLoading: decodedRequestLoading(state),
     digets: decodedDigetsList(state),
   }
 }
 
-const putActionsToProps = {
-  addRiskFactor,
-  deleteRiskFactor
+const putActionsToProps = () => {
+  if(store.getState().router.location.pathname.indexOf("electronic-bank-garantees/") !== -1) {
+    return {
+      addRiskFactor: ebgAddRiskFactor,
+      deleteRiskFactor: ebgDeleteRiskFactor
+    }
+  }
+  return {
+    addRiskFactor,
+    deleteRiskFactor
+  }
 }
 
 export default connect(putStateToProps, putActionsToProps)(RiskFactorsDigets)

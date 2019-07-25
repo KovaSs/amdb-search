@@ -3,6 +3,7 @@ import { Col, Row, Badge, Avatar, Button } from "antd";
 import { connect } from "react-redux";
 import RiskInfoDrawer from "../../DrawerContainer/RiskInfoDrawer";
 import CompanyHistoryInfoDrawer from "../../DrawerContainer/CompanyHistoryInfoDrawer";
+import store from "../../../../../store"
 import { 
   decodedCompanyResponse, 
   decodedisIp, 
@@ -11,6 +12,14 @@ import {
   deleteRiskFactor, 
   decodedRequestLoading 
 } from "../../../../../store/ducks/openBill";
+import { 
+  decodedCompanyResponse as ebgCompanyResponse, 
+  decodedisIp as ebgIsIp, 
+  decodedDigetsList as ebgDigetsList, 
+  addRiskFactor as ebgAddRiskFactor, 
+  deleteRiskFactor as ebgDeleteRiskFactor, 
+  decodedRequestLoading  as ebgRequestLoading
+} from "../../../../../store/ducks/electronicBankGarantees";
 import "./main-organisation-info.scss";
 
 const styleCss = {
@@ -193,6 +202,14 @@ class MainCompanyInfo extends Component {
 }
 
 const putStateToProps = state => {
+  if(store.getState().router.location.pathname.indexOf("electronic-bank-garantees/") !== -1) {
+    return {
+      isIp: ebgIsIp(state),
+      requestLoading: ebgRequestLoading(state),
+      companyResponse: ebgCompanyResponse(state),
+      digets: ebgDigetsList(state)
+    }
+  }
   return {
     isIp: decodedisIp(state),
     requestLoading: decodedRequestLoading(state),
@@ -200,9 +217,17 @@ const putStateToProps = state => {
     digets: decodedDigetsList(state)
   }
 }
-const putActionToProps = {
-  addRiskFactor,
-  deleteRiskFactor
+const putActionToProps = () => {
+  if(store.getState().router.location.pathname.indexOf("electronic-bank-garantees/") !== -1) {
+    return {
+      addRiskFactor: ebgAddRiskFactor,
+      deleteRiskFactor: ebgDeleteRiskFactor
+    }
+  }
+  return {
+    addRiskFactor,
+    deleteRiskFactor
+  }
 }
 
 export default connect(putStateToProps, putActionToProps)(MainCompanyInfo)

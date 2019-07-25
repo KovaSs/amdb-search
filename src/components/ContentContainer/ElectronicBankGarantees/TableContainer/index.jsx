@@ -1,14 +1,15 @@
 import React, { Component } from 'react'
-import { Table, Input, Button, Icon, ConfigProvider, Empty } from 'antd';
+import { Table, Input, Button, Icon, ConfigProvider, Empty, Progress } from 'antd';
 import { withRouter } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
-import { getDate } from '../../../../services/utils'
+import { getDate, getTimeAndDate, getTime } from '../../../../services/utils'
 
 const data = [
   {
     key: '1',
     number: '1',
-    date: getDate('2010-12-08'),
+    date: getTimeAndDate(Date.now()),
+    time: Date.now()-(19*60000),
     info: {
       name: 'ШАМКОВ МАКСИМ АНАТОЛЬЕВИЧ',
       inn: '552801899036',
@@ -18,11 +19,78 @@ const data = [
   {
     key: '2',
     number: '2',
-    date: getDate('2010-12-09'),
+    date: getTimeAndDate(Date.now()-300000),
+    time: Date.now()-(17*60000),
     info: {
       name: "ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ \"БЕЛЫЙ ДОМ\"",
       inn: '2901178314',
       ogrn: '1082901005263',
+    }
+  },
+  {
+    key: '3',
+    number: '3',
+    date: getTimeAndDate(Date.now()),
+    time: Date.now()-(15*60000),
+    info: {
+      name: "ООО \"БИКОМПАКТ 2.0\"",
+      inn: '7725735213',
+      ogrn: '1117746763672',
+    }
+  },
+  {
+    key: '4',
+    number: '4',
+    date: getTimeAndDate(Date.now()),
+    time: Date.now()-(14*60000),
+    info: {
+      name: "ООО \"КУРОРТНЫЙ МАГАЗИН\"",
+      inn: '7702419476',
+      ogrn: '1177746635153',
+    }
+  },
+  {
+    key: '5',
+    number: '5',
+    date: getTimeAndDate(Date.now()),
+    time: Date.now()-(11*60000),
+    info: {
+      name: "АО \"КН ФПК \"ГАРАНТ-ИНВЕСТ\"",
+      inn: '7726637843',
+      ogrn: '1097746603680',
+    }
+  },
+  {
+    key: '6',
+    number: '6',
+    date: getTimeAndDate(Date.now()),
+    time: Date.now()-(7*60000),
+    info: {
+      name: "АО \"КН ФПК \"ГАРАНТ-ИНВЕСТ\"",
+      inn: '7726637843',
+      ogrn: '1097746603680',
+    }
+  },
+  {
+    key: '7',
+    number: '7',
+    date: getTimeAndDate(Date.now()),
+    time: Date.now()-(4*60000),
+    info: {
+      name: "АО \"АВАНТЕЛ\"",
+      inn: '5408185212',
+      ogrn: '1025403651195',
+    }
+  },
+  {
+    key: '8',
+    number: '8',
+    date: getTimeAndDate(Date.now()),
+    time: Date.now()-(2*60000),
+    info: {
+      name: "ООО \"ГАЗПРОМ ТРАНСГАЗ МОСКВА\"",
+      inn: '5003028028',
+      ogrn: '1025000653920',
     }
   },
 ];
@@ -31,13 +99,17 @@ class TableContainer extends Component {
   state = {
     searchText: [],
     loading: false,
-    dataTable: null
+    dataTable: null,
+    dateNow: ""
   };
 
   componentDidMount() {
     this.setState({loading : true})
     setTimeout(() => {
       this.setState({loading : false, dataTable : data})
+    }, 1000);
+    setInterval(() => {
+      this.setState({dateNow: Date.now()})
     }, 1000);
   }
 
@@ -115,6 +187,19 @@ class TableContainer extends Component {
     this.setState({ searchText:  newSearchText})
   };
 
+  getLeftCheckTime = recTime => {
+    const { dateNow } = this.state
+    const leftTime = (recTime + (20*60000))-dateNow
+    if(leftTime <= 0) return <Icon style={{fontSize: 16}} type="close-circle" />
+    return getTime(leftTime)
+  }
+
+  getLeftCheckPercentTime = recTime => {
+    const { dateNow } = this.state
+    const leftTimePercent = ((recTime + (20*60000))-dateNow ) * 100 / (20 * 60000)
+    return leftTimePercent
+  }
+
   render() {
     const columns = [
       {
@@ -174,6 +259,21 @@ class TableContainer extends Component {
             }
           </>
         ),
+      },
+      {
+        title: 'Времени осталось',
+        key: 'time',
+        render: (text, record) => {
+          return (
+            <Progress
+              size="small"
+              style={{width: "80%"}}
+              format={() => this.getLeftCheckTime(record.time)}
+              percent={this.getLeftCheckPercentTime(record.time)}
+              status={this.getLeftCheckPercentTime(record.time) < 25 ? "exception" : "active"}
+            />
+          )
+        }
       },
       {
         title: '',
