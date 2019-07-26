@@ -13,6 +13,16 @@ import {
 } from "../../../../../store/ducks/openBill";
 import "./main-organisation-info.scss";
 
+const styleCss = {
+  internetBtn : {
+    color: "#0e75fdfd",
+    marginRight: ".5rem"
+  },
+  companyHistory : {
+    backgroundColor : "#52c41a"
+  }
+}
+
 class MainCompanyInfo extends Component {
   state = {
     showRisk: false,
@@ -38,7 +48,7 @@ class MainCompanyInfo extends Component {
     return (
       <>
         <Col span={1}>
-          <Avatar src={process.env.PUBLIC_URL + '/img/logo.png'} />
+          <Avatar>ЮЛ</Avatar>
         </Col>
         <Col span={11}>
           <small className="lable">Полное наименование</small>
@@ -63,24 +73,43 @@ class MainCompanyInfo extends Component {
   }
 
   renderIpInfo = () => {
-    const { companyResponse: { full_name, inn, ogrn } } = this.props;
+    const { companyResponse: { full_name, inn, ogrn, sex, birthdate, birth_place } } = this.props;
     return (
       <>
         <Col span={1}>
-          <Avatar src={process.env.PUBLIC_URL + '/img/logo.png'} />
+          <Avatar>ИП</Avatar>
         </Col>
-        <Col span={11} style={{display : "inline-block", marginTop: ".5rem"}}>
-          <small className="lable">Полное наименование</small>
-          <label className='descr'>{ full_name }</label>
+        <Col span={11}>
+          <div>
+            <small className="lable">Полное наименование</small>
+            <label className='descr'>{ full_name }</label>
+          </div>
+          { sex &&
+            <div>
+              <small className="lable">Пол</small>
+              <label className='descr'>{ sex ? sex : "—" }</label>
+            </div>
+          }
+          
         </Col>
-        <Col span={9}>
-          <div style={{display : "inline-block", marginTop: ".5rem"}}>
-            <small className="lable" style={{padding: ".5rem"}}>ИНН</small>
-            <label style={{display : "inline-block"}} className='descr'>{ inn }</label>
+        <Col span={5}>
+          <div>
+            <small className="lable">Дата рождения</small>
+            <label className='descr'>{ birthdate ? birthdate : "—" }</label>
+          </div>
+          <div>
+            <small className="lable">Место рождения</small>
+            <label className='descr'>{ birth_place ? birth_place :  "—" }</label>
+          </div>
+        </Col>
+        <Col span={4}>
+        <div style={{display : "inline-block"}}>
+            <small className="lable">ИНН</small>
+            <div style={{display : "inline-block"}} className='descr'>{ inn }</div>
           </div>
           <div style={{display : "inline-block"}}>
-            <small className="lable" style={{padding: ".5rem"}}>ОГРН</small>
-            <label style={{display : "inline-block"}} className='descr'>{ ogrn }</label>
+            <small className="lable">ОГРН</small>
+            <div style={{display : "inline-block"}} className='descr'>{ ogrn }</div>
           </div>
         </Col>
       </>
@@ -94,7 +123,7 @@ class MainCompanyInfo extends Component {
       digets, 
       addRiskFactor, 
       deleteRiskFactor, 
-      companyResponse: { fns, sanctions, isponlit_proizvodstva, leaders_list }, 
+      companyResponse: { fns, sanctions, isponlit_proizvodstva, leaders_list, name, full_name }, 
       isIp 
     } = this.props;
     const { showRisk, showHistory, error } = this.state
@@ -106,6 +135,17 @@ class MainCompanyInfo extends Component {
             { isIp ? this.renderIpInfo() : this.renderNotIpInfo() }
             <Col span={3} style={{textAlign : "center", minHeight: "1rem"}}>
               <div className="show-btn-drawer-count">
+                <Button 
+                  size="small" 
+                  icon="ie" 
+                  href={ isIp ?
+                    `https://www.google.com/search?hl=ru&as_oq=отзывы+криминал+компромат+обыск+уголовное+мошенник+обнал+откат+взятка+жулик+нарушения+претензии+конфликт+подан-иск+преследование+расследование+разбирательство+следствие+прокуратура+МВД+ФСБ+полиция+хищение+отмывание&as_q=${full_name}` :
+                    `https://www.google.com/search?hl=ru&as_oq=отзывы+криминал+компромат+обыск+уголовное+мошенник+обнал+откат+взятка+жулик+нарушения+претензии+конфликт+подан-иск+преследование+расследование+разбирательство+следствие+прокуратура+МВД+ФСБ+полиция+хищение+отмывание&as_q=${name}`
+                  }
+                  target="_blank"
+                  title="Поиск негативной информации в интернетe" 
+                  style={styleCss.internetBtn}
+                />
                 <Badge 
                   count={fns.length + sanctions.length + isponlit_proizvodstva.length} 
                   offset={[-10, 0]} 
@@ -122,7 +162,7 @@ class MainCompanyInfo extends Component {
                 { !isIp &&
                   <Badge 
                     count={leaders_list.length} 
-                    style={{backgroundColor : "#52c41a"}} 
+                    style={styleCss.companyHistory} 
                     overflowCount={99}
                   >
                     <Button 

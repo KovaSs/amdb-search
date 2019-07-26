@@ -130,7 +130,7 @@ class SearchCompanyInput extends Component {
         Повторить запрос
       </Button>
     );
-    notification['error']({
+    notification.error({
       message: `Ошибка получения данных`,
       description: `Произошла ошибка при выполнении запроса ${err}`,
       confirmBtn,

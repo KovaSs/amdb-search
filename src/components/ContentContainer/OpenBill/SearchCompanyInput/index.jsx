@@ -1,5 +1,6 @@
 import React from 'react'
-import { connect } from "react-redux";
+import { connect } from "react-redux"
+import SearchCompanyInput from "./SearchCompanyInput"
 import { 
   actionChangeInn, 
   loadCompanyInfo, 
@@ -8,8 +9,7 @@ import {
   decodedRenderData, 
   decodedInn,
   decodedErrors
-} from "../../../../store/ducks/openBill";
-import SearchCompanyInput from "./SearchCompanyInput";
+} from "../../../../store/ducks/openBill"
 
 const Container = props => <SearchCompanyInput {...props}/>
 
@@ -18,7 +18,7 @@ const putStateToProps = state => {
     companyResponse: decodedCompanyResponse(state),
     renderData: decodedRenderData(state),
     inn: decodedInn(state), 
-    errors: decodedErrors(state)
+    errors: decodedErrors(state).get("companyMainInfoUpdate")
   }
 }
 

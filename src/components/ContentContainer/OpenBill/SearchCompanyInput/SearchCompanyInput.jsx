@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import { Row, Col, Form, Input, notification, Button } from "antd"
 import MainCompanyInfo from "./MainCompanyInfo"
-import "./search-company.scss"
 
 class SearchCompanyInput extends PureComponent {
   state = {
@@ -12,11 +11,23 @@ class SearchCompanyInput extends PureComponent {
 
   componentDidMount() {
     const { clearField } = this.state
-    const { renderData } = this.props
+    const { resetFields } = this.props.form
+    const { renderData, ebgInn, loadCompanyInfo, toHideTableInfo, clearCompanyInfo } = this.props
     if(!clearField && renderData) {
       this.setState({
         showInfo: true
       })
+    }
+    if(ebgInn) {
+      toHideTableInfo()
+      clearCompanyInfo()
+      resetFields()
+      this.setState({
+        showInfo: false,
+        clearField : true
+      })
+      loadCompanyInfo(ebgInn)
+      this.changeValue(ebgInn)
     }
   }
 
@@ -28,7 +39,7 @@ class SearchCompanyInput extends PureComponent {
         clearField : false
       })
     }
-    this.openNotification(errors)
+    if(errors && errors !== prevProps.errors && errors.status) this.openNotification(errors)
   }
 
   componentDidCatch(err) {
@@ -61,7 +72,10 @@ class SearchCompanyInput extends PureComponent {
 
   clearSearchField = () => {
     const { resetFields } = this.props.form
-    const { toHideTableInfo, clearCompanyInfo } = this.props
+    const { toHideTableInfo, clearCompanyInfo, ebgInn } = this.props
+    if(ebgInn) {
+      
+    }
     toHideTableInfo()
     clearCompanyInfo()
     resetFields()
@@ -109,18 +123,18 @@ class SearchCompanyInput extends PureComponent {
   }
 
   openNotification = err => {
-    const _errMessage = (err, message) => {
-      const key = err;
-      const confirmBtn = (
-        <Button type="primary" size="small" onClick={() => notification.close(key)}>
-          Повторить запрос
-        </Button>
-      );
-      const _close = () => console.log( `Notification ${err} was closed. Either the close button was clicked or duration time elapsed.`)
-      notification['error']({
+    const _errMessage = err => {
+      const key = err.time;
+      // const confirmBtn = (
+      //   <Button type="primary" size="small" onClick={() => notification.close(key)}>
+      //     Повторить запрос
+      //   </Button>
+      // );
+      const _close = () => console.log( `Notification was closed. Either the close button was clicked or duration time elapsed.`)
+      notification.error({
         message: `Ошибка получения данных`,
-        description: `Произошла ошибка при выполнении запроса ${message}`,
-        confirmBtn,
+        description: err.message,
+        // confirmBtn,
         duration: 4,
         // btn: confirmBtn,
         key,
@@ -128,8 +142,7 @@ class SearchCompanyInput extends PureComponent {
       });
     }
 
-    if(err.companyMainInfoUpdate) return _errMessage("companyMainInfoUpdate","основных данных о кампании")
-    err.companyPCUpdate && _errMessage("companyPCUpdate","данных о приемниках / предшедственниках")
+    if(err.status) return _errMessage(err)
 
   };
 

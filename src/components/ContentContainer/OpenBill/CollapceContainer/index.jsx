@@ -1,7 +1,12 @@
 import React from 'react'
 import { connect } from "react-redux";
-import { decodedRequestLoading, decodedMainCompanySource, decodedRiskSource, decodedCompanyResponse } from "../../../../store/ducks/openBill";
 import { CollapceContainer } from "./CollapceContainer";
+import { 
+  decodedRequestLoading, 
+  decodedMainCompanySource, 
+  decodedRiskSource, 
+  decodedCompanyResponse 
+} from "../../../../store/ducks/openBill";
 
 const Container = props => <CollapceContainer {...props}/>
 

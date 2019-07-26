@@ -1,9 +1,10 @@
 import React, { PureComponent } from "react";
-import { Collapse, Icon, Spin, Descriptions, AutoComplete, Input, Button, Badge } from "antd";
+import { Collapse, Icon, Spin, Descriptions, AutoComplete, Input, Button, Badge, notification } from "antd";
 import PropTypes from "prop-types";
-import { union } from "lodash";
+import { union, concat, compact } from "lodash";
 import LeaderHeader from "../LeaderHeader";
-import {region} from "../../../../../../store/mock";
+import LeaderEditedHeader from "../LeaderEditedHeader";
+import {region, parsingFio, parsingPassport} from "../../../../../../services/utils";
 import CroinformDrawer from "../../../DrawerContainer/CroinformDrawer";
 
 export class ManagmentItem extends PureComponent {
@@ -43,34 +44,152 @@ export class ManagmentItem extends PureComponent {
 
   /* Обновление данных state при первой загрузке страницы */
   componentDidMount() {
-    const { item: { inn, last_name, first_name,  middle_name, identifyInfo = { inn: "", fio: "", passport: "", birthday: "", address: ""}}} = this.props;
+    const { 
+      item: { 
+        inn, 
+        last_name, 
+        first_name,  
+        middle_name, 
+        identifyInfo = { 
+          inn: [], 
+          fio: [], 
+          passport: "", 
+          birthday: [], 
+          address: ""
+        },
+        selectedInfo = {
+          INN: "",
+          FirstName: "", 
+          MiddleName: "",
+          SurName: "",
+          DateOfBirth: "", 
+          Seria: "",
+          Number: "",
+          RegionExp: "", 
+          CityExp: "", 
+          StreetExp: "", 
+          HouseExp: "", 
+          BuildExp: "", 
+          BuildingExp: "", 
+          FlatExp: "",
+        }
+      }
+    } = this.props
+
     this.setState({
-      selectKey: inn,
       user: {
-        inn: union([inn], identifyInfo.inn), 
+        inn: union([inn], identifyInfo.inn).length >= 1  && identifyInfo.inn ?
+          union([inn], identifyInfo.inn).filter(item => item !== "Не найден") :
+          union([inn], identifyInfo.inn), 
         fio: union( [`${last_name} ${first_name} ${middle_name}`], identifyInfo.fio ), 
         passport: identifyInfo.passport,
         birthday: identifyInfo.birthday,
         address: identifyInfo.address
-      }
+      },
+      userSelected: {
+        inn: selectedInfo.INN ? selectedInfo.INN :
+          union([inn], identifyInfo.inn).length >= 1 && identifyInfo.inn ?
+            union([inn], identifyInfo.inn).filter(item => item !== "Не найден")[0] :
+            union([inn], identifyInfo.inn)[0],
+        FirstName: selectedInfo.FirstName ? selectedInfo.FirstName : first_name,
+        MiddleName: selectedInfo.MiddleName ? selectedInfo.MiddleName : middle_name,
+        SurName: selectedInfo.SurName ? selectedInfo.SurName : last_name,
+        passport: selectedInfo.Seria && selectedInfo.Number ? `${selectedInfo.Seria} ${selectedInfo.Number}` : "",
+        birthday: selectedInfo.DateOfBirth ? selectedInfo.DateOfBirth : "",
+      },
+      parseAddress: {
+        CityExp: selectedInfo.CityExp ? selectedInfo.CityExp : "",
+        StreetExp: selectedInfo.StreetExp ? selectedInfo.StreetExp : "",
+        HouseExp: selectedInfo.HouseExp ? selectedInfo.HouseExp : "",
+        BuildExp: selectedInfo.BuildExp ? selectedInfo.BuildExp : "", 
+        BuildingExp: selectedInfo.BuildingExp ? selectedInfo.BuildingExp : "",
+        FlatExp: selectedInfo.FlatExp ? selectedInfo.FlatExp : "", 
+        RegionExp: selectedInfo.RegionExp ? selectedInfo.RegionExp : "",
+        RegionExpText: selectedInfo.RegionExpText ? selectedInfo.RegionExpText : ""
+      },
     });
   }
 
   /* Обновление данных state при идентификации физического лица */
   componentDidUpdate(prevProps) {
-    const { item, item: { inn, last_name, first_name,  middle_name, identifyInfo = { inn: "", fio: "", passport: "", birthday: "", address: ""}}} = this.props;
+    const { 
+      item,
+      errors,
+      item: { 
+        id, 
+        inn, 
+        last_name, 
+        first_name,  
+        middle_name, 
+        identifyInfo = { 
+          inn: "", 
+          fio: "", 
+          passport: "", 
+          birthday: "", 
+          address: ""
+        },
+        selectedInfo = {
+          INN: "",
+          FirstName: "", 
+          MiddleName: "",
+          SurName: "",
+          DateOfBirth: "", 
+          Seria: "",
+          Number: "",
+          RegionExp: "", 
+          CityExp: "", 
+          StreetExp: "", 
+          HouseExp: "", 
+          BuildExp: "", 
+          BuildingExp: "", 
+          FlatExp: "",
+        }
+      }
+    } = this.props;
     if (item !== prevProps.item) {
       this.setState({
-        selectKey: inn,
         user: {
-          inn: union([inn], identifyInfo.inn), 
+          inn: union([inn], identifyInfo.inn).length >= 1 && identifyInfo.inn ?
+            union([inn], identifyInfo.inn).filter(item => item !== "Не найден") :
+            union([inn], identifyInfo.inn), 
           fio: union( [`${last_name} ${first_name} ${middle_name}`], identifyInfo.fio ), 
           passport: identifyInfo.passport,
           birthday: identifyInfo.birthday,
           address: identifyInfo.address
-        }
+        },
+        userSelected: {
+          inn: selectedInfo.INN ? selectedInfo.INN : 
+            union([inn], identifyInfo.inn).length >= 1 && identifyInfo.inn ?
+              union([inn], identifyInfo.inn).filter(item => item !== "Не найден")[0] :
+              union([inn], identifyInfo.inn)[0],
+          FirstName: selectedInfo.FirstName ? selectedInfo.FirstName : first_name,
+          MiddleName: selectedInfo.MiddleName ? selectedInfo.MiddleName : middle_name,
+          SurName: selectedInfo.SurName ? selectedInfo.SurName : last_name,
+          passport: selectedInfo.Seria && selectedInfo.Number ? `${selectedInfo.Seria} ${selectedInfo.Number}` : "",
+          birthday: selectedInfo.DateOfBirth ? selectedInfo.DateOfBirth : "",
+        },
+        parseAddress: {
+          CityExp: selectedInfo.CityExp ? selectedInfo.CityExp : "",
+          StreetExp: selectedInfo.StreetExp ? selectedInfo.StreetExp : "",
+          HouseExp: selectedInfo.HouseExp ? selectedInfo.HouseExp : "",
+          BuildExp: selectedInfo.BuildExp ? selectedInfo.BuildExp : "", 
+          BuildingExp: selectedInfo.BuildingExp ? selectedInfo.BuildingExp : "",
+          FlatExp: selectedInfo.FlatExp ? selectedInfo.FlatExp : "", 
+          RegionExp: selectedInfo.RegionExp ? selectedInfo.RegionExp : "",
+          RegionExpText: selectedInfo.RegionExpText ? selectedInfo.RegionExpText : ""
+        },
       });
     }
+
+    if(
+      (identifyInfo && !identifyInfo.passport.length)  ||
+      (identifyInfo && !identifyInfo.birthday.length) ||
+      (identifyInfo && !identifyInfo.address.length) ||
+      (identifyInfo && !identifyInfo.inn.length)    
+    ) { this.showNoEnoughData(prevProps) }
+
+    if(errors.getIn(["identifyUser", id]) && errors.getIn(["identifyUser", id]).time !== prevProps.errors.getIn(["identifyUser", id]).time) this.openNotification(errors)
+    if(errors.getIn(["croinformRequest", id]) && errors.getIn(["croinformRequest", id]).time !== prevProps.errors.getIn(["croinformRequest", id]).time) this.openNotification(errors)
   }
 
   componentDidCatch(err) {
@@ -84,29 +203,80 @@ export class ManagmentItem extends PureComponent {
     this.setState(({ edited }) => ({ edited: !edited }));
   };
 
+  showNoEnoughData = prevProps => {
+    const { item, item: {identifyInfo : response, id, fio} } = this.props
+    if(!response) return
+    else if (response === prevProps) return
+    else if (item.timeRequest === prevProps.item.timeRequest) return
+
+    const errMessage = `Данные ${!response.passport.length ? "паспорта, " : ""}${!response.birthday.length ? 'даты рождения, ' : ""}${!response.address.length ? 'адреса ' : ""} отсутствуют`
+
+    const showMessage = () => {
+      const key = id;
+      const errStatus = !response.passport.length || !response.birthday.length || !response.address.length
+      const _close = () => console.log( `Notification was closed. Either the close button was clicked or duration time elapsed.`)
+      errStatus && 
+      notification.warning({
+        key,
+        message: `${fio} недостаточно данных для проверки`,
+        description: errMessage,
+        duration: 4,
+        onClose: _close,
+      });
+    }
+
+    showMessage()
+  }
+
+  openNotification = err => {
+    const { item: { id } } = this.props
+    const _showMessage = err => {
+      const key = err ? err.time : Date.now();
+      const _close = () => console.log( `Notification was closed. Either the close button was clicked or duration time elapsed.`)
+      notification.error({
+        key,
+        message: `Нет ответа от ресурса`,
+        description: err.message,
+        duration: 4,
+        onClose: _close,
+      });
+    }
+
+    if(err.getIn(["identifyUser", id]) && err.getIn(["identifyUser", id]).status) _showMessage(err.getIn(["identifyUser", id]))
+    if(err.getIn(["croinformRequest", id]) && err.getIn(["croinformRequest", id]).status) _showMessage(err.getIn(["croinformRequest", id]))
+  };
+
   getCroinformIdentifyRequest = e => {
     e.stopPropagation();
-    const { userSelected, parseAddress } = this.state;
+    const { userSelected, parseAddress, user: userState } = this.state;
     const { item, actionGetUserCroinformInfo } = this.props;
-    const user = {
-      INN: userSelected.inn ? userSelected.inn : item.inn,
-      FirstName: userSelected.fio ? this.parsingSelectFio(userSelected.fio).FirstName : item.first_name, 
-      FirstNameArch: userSelected.fio ? this.parsingSelectFio(userSelected.fio).FirstName : item.first_name,
-      MiddleName: userSelected.fio ? this.parsingSelectFio(userSelected.fio).MiddleName : item.middle_name,
-      SurName: userSelected.fio ? this.parsingSelectFio(userSelected.fio).SurName : item.last_name,
-      DateOfBirth: userSelected.birthday, 
-      Seria: this.parsingSelectPassport(userSelected.passport).Seria,
-      Number: this.parsingSelectPassport(userSelected.passport).Number,
 
+    const user = {
+      INN: userSelected.inn ? 
+        (userSelected.inn !== "Не найден" ? userSelected.inn : "") : 
+        (item.inn !== "Не найден" ? item.inn : ""),
+      FirstName: userSelected.FirstName ? userSelected.FirstName : item.first_name, 
+      FirstNameArch: userSelected.FirstName ? userSelected.FirstName : item.first_name,
+      MiddleName: userSelected.MiddleName ? 
+        userSelected.MiddleName !== " " ? userSelected.MiddleName : "" 
+        : item.middle_name !== " " ? item.middle_name : "",
+      SurName: userSelected.SurName ? userSelected.SurName : item.last_name,
+      DateOfBirth: userSelected.birthday, 
+      Seria: parsingPassport(userSelected.passport).Seria,
+      Number: parsingPassport(userSelected.passport).Number,
       RegionExp: parseAddress.RegionExp, 
       CityExp: parseAddress.CityExp, 
       StreetExp: parseAddress.StreetExp, 
       HouseExp: parseAddress.HouseExp, 
       BuildExp: parseAddress.BuildExp, 
       BuildingExp: parseAddress.BuildingExp, 
-      FlatExp: parseAddress.FlatExp, 
+      FlatExp: parseAddress.FlatExp,
+      INNArr: userState.inn.filter(item => item === userSelected.inn).length ? 
+          userState.inn : compact(concat(userState.inn, userSelected.inn)),
+      DateOfBirthArr: userState.birthday.filter(item => item === userSelected.birthday).length ? 
+        userState.birthday : compact(concat(userState.birthday, userSelected.birthday))
     }
-    console.log('user', user)
+    console.log('INNArr',  userState.inn, userSelected.inn, user)
     actionGetUserCroinformInfo(user, item.id)
   }
 
@@ -119,22 +289,21 @@ export class ManagmentItem extends PureComponent {
   };
 
   onDoubleClickEvent = e => {
-    console.log('onDoubleClickEvent', e)
     this.toggleEdited()
   }
 
   /* Рендеринг физического лица */
   renderFoulderFlItem = (item, key, id) => {
     const { Item: DescriptionsItem } = Descriptions;
-    const { identifyUser, identifyUserloading, croinformRequestloading, companyName } = this.props;
-    const { edited, userSelected, openPanel } = this.state;
+    const { identifyUser, identifyUserloading, croinformRequestloading, companyName, croinformRes, fsspInfo } = this.props;
+    const { edited, userSelected, openPanel, user } = this.state;
     const { Panel } = Collapse;
 
     const BtnExtra = ({ user }) => {
       const { identifyUser, croinformRes, item: propsItem } = this.props;
       const { userSelected, parseAddress, edited } = this.state;
       const croinformDisabled = !userSelected.inn && !userSelected.fio && !userSelected.passport && !parseAddress.RegionExp && !parseAddress.CityExp && !parseAddress.StreetExp &&!parseAddress.HouseExp
-      const showBtn = propsItem.hasOwnProperty('identifyInfo')
+      const showBtn = propsItem.hasOwnProperty('identifyInfo') || croinformRes
 
       const editUserInfo = e => {
         if(openPanel) {
@@ -147,12 +316,43 @@ export class ManagmentItem extends PureComponent {
         if(openPanel) {
           e.stopPropagation();
         }
-        identifyUser(user);
+        identifyUser({
+          user: {
+            INN: userSelected.inn ? 
+              userSelected.inn !== "Не найден" ? userSelected.inn : "" 
+              : user.inn !== "Не найден" ? user.inn : "",
+            FirstName: userSelected.FirstName ? userSelected.FirstName : item.first_name, 
+            SurName: userSelected.SurName ? userSelected.SurName : item.last_name,
+            MiddleName: userSelected.MiddleName ? 
+              userSelected.MiddleName !== " " ? userSelected.MiddleName : "" 
+              : item.middle_name !== " " ? item.middle_name : "",
+            DateOfBirth: userSelected.birthday, 
+            Seria: parsingPassport(userSelected.passport).Seria,
+            Number: parsingPassport(userSelected.passport).Number,
+            RegionExp: parseAddress.RegionExp, 
+            CityExp: parseAddress.CityExp, 
+            StreetExp: parseAddress.StreetExp, 
+            HouseExp: parseAddress.HouseExp, 
+            BuildExp: parseAddress.BuildExp, 
+            BuildingExp: parseAddress.BuildingExp, 
+            FlatExp: parseAddress.FlatExp,
+            ogrn: user.organisation.ogrn ? user.organisation.ogrn : "",
+          },
+          id: user.id
+        });
         this.setState({edited: true})
       };
 
       return (
-        <span className="heads-search" style={{width: showBtn ? 150 : 120}}>
+        <span className="heads-search-panel" style={{width: showBtn ? 158 : 120}}>
+          <Button
+            title="Проверить все"
+            size="small"
+            style={{color: (croinformDisabled || edited || parseAddress.RegionExp === "") ? "gray" : "#52c41a", marginRight: 5}}
+            disabled={croinformDisabled || edited || parseAddress.RegionExp === ""}
+            icon={croinformRequestloading ? "loading" : "global"}
+            onClick={e => this.getCroinformIdentifyRequest(e)}
+          />
           <Badge dot={croinformRes ? true : false} offset={[-6,1]} status={croinformRes ? "success"  : ""} >
             <Button
               title="Показать результаты проверки"
@@ -167,14 +367,6 @@ export class ManagmentItem extends PureComponent {
               onClick={e => this.showDrawer(e)}
             />
           </Badge>
-          <Button
-            title="Проверить все"
-            size="small"
-            style={{color: (croinformDisabled || edited || parseAddress.RegionExp === "") ? "gray" : "#52c41a", marginRight: 5}}
-            disabled={croinformDisabled || edited || parseAddress.RegionExp === ""}
-            icon={croinformRequestloading ? "loading" : "global"}
-            onClick={e => this.getCroinformIdentifyRequest(e)}
-          />
           <Button
             title="Поиск информации"
             size="small"
@@ -238,8 +430,21 @@ export class ManagmentItem extends PureComponent {
             <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Адрес" span={1} >
               <label onDoubleClick={e => this.onDoubleClickEvent(e)}>{ 
                 (CityExp || StreetExp || HouseExp || BuildExp || BuildingExp || FlatExp || RegionExpText) ?
-                `${RegionExpText.toUpperCase()} ${StreetExp.toUpperCase()} ${HouseExp.toUpperCase()} ${BuildExp.toUpperCase()} ${BuildingExp.toUpperCase()} ${FlatExp.toUpperCase()}` :
-                address[0]
+                `${
+                  RegionExpText ? RegionExpText.toUpperCase() : ""
+                } ${
+                  CityExp ? CityExp.toUpperCase(): ""
+                } ${
+                  StreetExp ? StreetExp.toUpperCase(): ""
+                } ${
+                  HouseExp ? HouseExp.toUpperCase() : ""
+                } ${
+                  BuildExp ? BuildExp.toUpperCase() : ""
+                } ${
+                  BuildingExp ? BuildingExp.toUpperCase() : ""
+                } ${
+                  FlatExp ? FlatExp.toUpperCase() : ""
+                }` : address[0]
               }</label>
             </DescriptionsItem>
           );
@@ -251,7 +456,31 @@ export class ManagmentItem extends PureComponent {
     return (
       <Panel
         key={String(key)}
-        header={<LeaderHeader item={item} companyName={companyName} edited={edited} id={id} editedInfo={this.renderChangeLeaderInfo}/>}
+        header={ edited ? 
+          <LeaderEditedHeader 
+            user={user}
+            userSelected={userSelected}
+            item={item}
+            fssp={fsspInfo}
+            identifyUserloading={identifyUserloading}
+            companyName={companyName}
+            croinformRes={croinformRes}
+            onAction = {{
+              handleSelectOption: this._handleSelectOption,
+              handleChangeInn: this._handleChangeInn,
+              handleChangeSurName: this._handleChangeSurName,
+              handleChangeMiddleName: this._handleChangeMiddleName,
+              handleChangeFirstName: this._handleChangeFirstName,
+            }}
+          /> :
+          <LeaderHeader 
+            item={item}
+            fssp={fsspInfo}
+            croinformRes={croinformRes}
+            userSelected={userSelected}
+            companyName={companyName} 
+          />
+        }
         extra={<BtnExtra user={item} identifyUser={identifyUser} />}
       >
         <Spin spinning={identifyUserloading || croinformRequestloading ? true : false}>
@@ -300,29 +529,28 @@ export class ManagmentItem extends PureComponent {
     );
   };
 
-  /* Парсинг Паспорта */
-  parsingSelectPassport = passport => {
-    const passArr = passport.split(" ")
-    const Number = passArr.pop()
-    const Seria = passArr.pop()
-    // console.log('Серия', Seria)
-    // console.log('Номер', Number)
-    // console.log('----------------------')
-    return { Seria, Number }
-  }
+  // Измененение данных в RenderEditedHeader на onChange
+  _handleChangeInn = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, inn: value } }))
+  _handleChangeFirstName = ({target: {value}}) => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, FirstName: value } }))
+  _handleChangeMiddleName = ({target: {value}}) => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, MiddleName: value } }))
+  _handleChangeSurName = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, SurName: value } }))
 
-  /* Парсинг ФИО */
-  parsingSelectFio = fio => {
-    const fioArr = fio.split(" ")
-    const MiddleName = fioArr.pop()
-    const FirstName = fioArr.pop()
-    const SurName = String(fioArr)
-    // console.log('Имя', FirstName)
-    // console.log('Отчество', MiddleName)
-    // console.log('Фамилия', SurName)
-    // console.log('----------------------')
-    return { FirstName, MiddleName, SurName }
-  }
+  // Измененение данных в RenderEditedHeader по onSelect
+  _handleSelectOption = (value, option) =>  this.setState(({ userSelected }) => {
+    if(option.props.text === "SurName") {
+      const FIO = parsingFio(option.props.title)
+      return { 
+        userSelected: 
+        { ...userSelected, 
+          FirstName: FIO.FirstName,
+          MiddleName: FIO.MiddleName,
+          SurName: FIO.SurName,
+        } 
+      }
+    } else {
+      return { userSelected: { ...userSelected, inn: value } }
+    }
+  })
 
   /* Парсинг адреса */
   parsingSelectAddress = address => {
@@ -367,15 +595,6 @@ export class ManagmentItem extends PureComponent {
     if (p.length) CityExp = p.pop();
     if (p.length) RegionExp = region.filter(item => item.title.toUpperCase().indexOf(p[0].toUpperCase()) !== -1)[0]
     if(!RegionExp) RegionExp = {value: "", title: ""}
-    // console.log('Искодный адрес', address) // Регион
-    // console.log('RegionExp', RegionExp ? RegionExp.value : RegionExp) // Регион
-    // console.log('CityExp', CityExp) // Нас. пункт
-    // console.log('StreetExp', StreetExp) // Улица
-    // console.log('HouseExp', HouseExp) // Дом
-    // console.log('BuildExp', BuildExp) // Корп
-    // console.log('BuildingExp', BuildingExp) // Стр
-    // console.log('FlatExp', FlatExp) // Квартира
-    // console.log('----------------------')
     this.setState(({parseAddress}) => ({
       parseAddress: {
         CityExp, // Нас. пункт
@@ -390,92 +609,6 @@ export class ManagmentItem extends PureComponent {
     })) 
   }
 
-  /** Рендеринг компонента изменения LeaderHeader при редактировании записи */
-  renderChangeLeaderInfo = () => {
-    const { user, userSelected } = this.state
-    const { Option } = AutoComplete;
-
-    // Рендеринг опций выпадающего меню
-    const renderFioOption = item =>  <Option key={item} text="SurName" title={item} value={item}> {item} </Option>
-    const renderInnOption = item =>  <Option key={`header-list-inn-${item}`} text="inn" title={item} value={item}> {item} </Option>
-
-    // Измененение данных по onChange
-    // const handleChangeInn = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, inn: value } }))
-    const handleChangeSurName = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, SurName: this.parsingSelectFio(value).SurName } }))
-
-    // Измененение данных по onSelect
-    const handleSelectOption = (value, option) =>  this.setState(({ userSelected }) => {
-      console.log('value', value)
-      console.log('option', option)
-      if(option.props.text === "SurName") {
-        const FIO = this.parsingSelectFio(value)
-        return { 
-          userSelected: 
-          { ...userSelected, 
-            FirstName: FIO.FirstName,
-            MiddleName: FIO.MiddleName,
-            SurName: FIO.SurName,
-          } 
-        }
-      } else {
-        return { userSelected: { ...userSelected, inn: value } }
-      }
-    })
-    return (
-      <>
-        <label className="leader-name-header_fio" onClick={e => e.stopPropagation()}>
-          <Badge count={user.fio.length > 1 ? user.fio.length : null }>
-            <AutoComplete
-              size="small"
-              key="last_name"
-              style={{ width: 150 }}
-              value={userSelected.SurName}
-              optionLabelProp={""}
-              dataSource={user.fio ? user.fio.map(renderFioOption) : false}
-              onSelect={handleSelectOption}
-              onChange={handleChangeSurName}
-              placeholder="Фамилия"
-              // filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
-              allowClear
-            />
-          </Badge>
-          <Input 
-            size="small"
-            placeholder="Имя" 
-            style={{ width: 150 }} 
-            value={userSelected.FirstName} 
-            // onChange={handleChangeAddressCityExp} 
-          />
-          <Input 
-            size="small"
-            placeholder="Отчество" 
-            style={{ width: 150 }} 
-            value={userSelected.MiddleName} 
-            // onChange={handleChangeAddressCityExp} 
-          />
-        </label>
-        <label className="leader-name-header_position" onClick={e => e.stopPropagation()}>
-          <Badge count={user.inn.length > 1 ? user.fio.length : null }>
-            <AutoComplete
-              size="small"
-              key="header-list-inn"
-              style={{ width: 150 }}
-              // value={userSelected.inn}
-              dataSource={user.inn ? user.inn.map(renderInnOption) : false}
-              onSelect={handleSelectOption}
-              optionLabelProp={""}
-              // onChange={handleChangeInn}
-              placeholder="ИНН"
-              // filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
-              allowClear
-            />
-          </Badge>
-        </label>
-      </>
-    )
-  }
-
-
   /* Рендеринг редактируемых инпутов  */
   _renderInut = (data, keyId) => {
     const { Option } = AutoComplete;
@@ -485,7 +618,7 @@ export class ManagmentItem extends PureComponent {
 
     // Изменение state через onChange
     const handleChangeBirthday = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, birthday: value } }))
-    const handleChangePassport = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, passport: passportMask(value) } }))
+    const handleChangePassport = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, passport: value ? passportMask(value) : value } }))
     // Изменение распарсенного адреса
     const handleChangeAddressRegionExp = value =>  this.setState(({ parseAddress }) => ( { parseAddress: { ...parseAddress, RegionExpText: value } }))
     const handleChangeAddressCityExp = e => { const value = e.target.value; return this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, CityExp: value} })) }
@@ -496,14 +629,11 @@ export class ManagmentItem extends PureComponent {
     const handleChangeAddressFlatExp = e => { const value = e.target.value; return this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, FlatExp: value} })) }
     // Изменение state через onSelect
     const handleSelectOption = (value, option) =>  this.setState(({ userSelected }) => {
-      if(option.props.text === "address") this.parsingSelectAddress(value)
-      if(option.props.text === "passport") this.parsingSelectPassport(value)
-      if(option.props.text === "fio") this.parsingSelectFio(value)
       return { userSelected: { ...userSelected, [option.props.text]: value } }
     })
-    const handleSelectAddressOption = value =>  {
-      this.parsingSelectAddress(value)
-    }
+
+    const handleSelectAddressOption = value =>  this.parsingSelectAddress(value)
+
     // Изменение региона на onChange
     const handleSelectRegionOption = value => this.setState(({parseAddress}) => {
       return {
@@ -611,26 +741,40 @@ export class ManagmentItem extends PureComponent {
   }
 
   render() {
-    const { item, item: { inn }, activeKey, searchData, croinformRes, croinformRequestloading } = this.props;
-    const {error, showCroinformResponse} = this.state
+    const { 
+      item, 
+      item: { id }, 
+      fssploading, 
+      searchData, 
+      croinformRes, 
+      croinformRequestloading, 
+      fsspInfo 
+    } = this.props;
+    const {error, showCroinformResponse, userSelected, parseAddress} = this.state
     if(error) return <div>В компоненте произошла ошибка</div>
-
     return (
       <>
         <Collapse
-          key={inn}
+          key={item.id}
           className="managment"
-          // defaultActiveKey={inn}
           onChange={this.callback}
           bordered={false}
           expandIcon={({ isActive }) => (
             <Icon type={!isActive ? "plus-square" : "minus-square"} />
           )}
         >
-          {item.name && this.renderFoulderUlItem(item, activeKey)}
-          {item.middle_name && this.renderFoulderFlItem(item, activeKey, searchData)}
+          {item.name && this.renderFoulderUlItem(item, id)}
+          {item.middle_name && this.renderFoulderFlItem(item, id, searchData)}
         </Collapse>
-        <CroinformDrawer loading={croinformRequestloading} toggleDrawer={showCroinformResponse} croinformRes={croinformRes} user={item}/>
+        <CroinformDrawer 
+          user={item}
+          userSelected={{...userSelected, ...parseAddress}}
+          fsspInfo={fsspInfo}
+          fssploading={fssploading}
+          loading={croinformRequestloading} 
+          toggleDrawer={showCroinformResponse} 
+          croinformRes={croinformRes} 
+        />
       </>
     );
   }
@@ -640,6 +784,5 @@ export default ManagmentItem;
 
 ManagmentItem.propTypes = {
   /** Данные о состоянии loaders */
-  activeKey: PropTypes.string.isRequired,
   identifyUser: PropTypes.func.isRequired,
 };

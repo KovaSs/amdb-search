@@ -1,20 +1,6 @@
-import React, { Component } from 'react';
-import TableContainer from './TableContainer';
-import "./elsecronic-bank-garantees.scss";
+import React, { Suspense, lazy } from "react";
+const ElectronicBankGarantees = lazy(() => import("./ElectronicBankGarantees"))
 
-class ElectronicBankGarantees extends Component {
+const ElectronicBankGaranteesContainer = () =>  <Suspense fallback={<div></div>}> <ElectronicBankGarantees /> </Suspense>
 
-  componentDidMount() {
-    document.title = "AC - Проверка | Электронные банковские гарантии"
-  }
-
-  render() {
-    return(
-      <div className="bank-garanties-container">
-        <TableContainer />
-      </div>
-    )
-  }
-}
-
-export default ElectronicBankGarantees
+export default ElectronicBankGaranteesContainer
