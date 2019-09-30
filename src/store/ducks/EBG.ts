@@ -1,15 +1,976 @@
-import { Map, OrderedMap } from 'immutable'
-import { put, call, takeEvery, select, spawn, all, fork } from 'redux-saga/effects'
-import C from './constants'
-import { trasform, cloCss } from "../../../services/utils"
-import { API } from '../../../services/api'
-import { companyRes } from '../../mock'
+import { createSelector } from 'reselect'
+import { Record, Map, OrderedMap } from 'immutable'
+import { all, put, call, fork, select, spawn, takeEvery, delay} from 'redux-saga/effects'
+import { 
+  trasform, 
+  clearStopListsArr, 
+  cloCss, 
+  uuid,
+  dowloadHtmlFile
+} from "../../services/utils"
+import { companyRes } from '../mock'
+import { API } from '../../services/api'
+import { jsonUl } from '../../services/fields'
+import config from '../../config'
+
+/** Constants */
+export const moduleName = 'EBG'
+export const prefix = `${config.appName}/${moduleName}`
+
+export const ACTION_CHANGE_INN = `${prefix}/ACTION_CHANGE_INN`
+export const LOAD_COMPANY_INFO = `${prefix}/LOAD_COMPANY_INFO`
+export const LOAD_COMPANY_INFO_UL = `${prefix}/LOAD_COMPANY_INFO_UL`
+export const CLEAR_COMPANY_INFO = `${prefix}/CLEAR_COMPANY_INFO`
+export const GET_IDENTIFY_USER = `${prefix}/GET_IDENTIFY_USER`
+export const DOWNLOAD_REPORT_FILE = `${prefix}/DOWNLOAD_REPORT_FILE`
+export const UPDATE_SELECTED_USER_INFO = `${prefix}/UPDATE_SELECTED_USER_INFO`
+export const GET_CROINFORM_USER_INFO = `${prefix}/GET_CROINFORM_USER_INFO`
+export const ADD_USER_TO_CHECK_LIST = `${prefix}/ADD_USER_TO_CHECK_LIST`
+export const GET_AFFILATES_LIST = `${prefix}/GET_AFFILATES_LIST`
+export const GET_AFFILATES_UL = `${prefix}/GET_AFFILATES_UL`
+export const GET_BLACK_STOP_LISTS = `${prefix}/GET_BLACK_STOP_LISTS`
+export const GET_WHITE_STOP_LISTS = `${prefix}/GET_WHITE_STOP_LISTS`
+export const LOAD_DIGEST_LIST = `${prefix}/LOAD_DIGEST_LIST`
+export const LOAD_DIGEST_LIST_UL = `${prefix}/LOAD_DIGEST_LIST_UL`
+export const ADD_RISK_FACTOR_IN_DIGEST_LIST = `${prefix}/ADD_RISK_FACTOR_IN_DIGEST_LIST`
+export const ADD_RISK_FACTOR_UL_IN_DIGEST_LIST = `${prefix}/ADD_RISK_FACTOR_UL_IN_DIGEST_LIST`
+export const EDIT_RISK_FACTOR_IN_DIGEST_LIST = `${prefix}/EDIT_RISK_FACTOR_IN_DIGEST_LIST`
+export const EDIT_RISK_FACTOR_UL_IN_DIGEST_LIST = `${prefix}/EDIT_RISK_FACTOR_UL_IN_DIGEST_LIST`
+export const DELETE_RISK_FACTOR_IN_DIGEST_LIST = `${prefix}/DELETE_RISK_FACTOR_IN_DIGEST_LIST`
+export const DELETE_RISK_FACTOR_UL_IN_DIGEST_LIST = `${prefix}/DELETE_RISK_FACTOR_UL_IN_DIGEST_LIST`
+export const ADD_RISK_FACTOR_FL_IN_DIGEST_LIST = `${prefix}/ADD_RISK_FACTOR_FL_IN_DIGEST_LIST`
+export const EDIT_RISK_FACTOR_FL_IN_DIGEST_LIST = `${prefix}/EDIT_RISK_FACTOR_FL_IN_DIGEST_LIST`
+export const DELETE_RISK_FACTOR_FL_IN_DIGEST_LIST = `${prefix}/DELETE_RISK_FACTOR_FL_IN_DIGEST_LIST`
+export const GET_FSSP_INFO = `${prefix}/GET_FSSP_INFO`
+export const GET_STOP_LISTS_UL_INFO = `${prefix}/GET_STOP_LISTS_UL_INFO`
+export const GET_RISK_FACTORS_FL_INFO = `${prefix}/GET_RISK_FACTORS_FL_INFO`
+export const GET_DOCUMENTS = `${prefix}/GET_DOCUMENTS`
+export const GET_DOCUMENT_ITEM = `${prefix}/GET_DOCUMENT_ITEM`
+export const UPDATE_EBG_SYNC_DATA = `${prefix}/UPDATE_EBG_SYNC_DATA`
+export const TAKE_EBG_ITEM = `${prefix}/TAKE_EBG_ITEM`
+export const RETURN_EBG_ITEM = `${prefix}/RETURN_EBG_ITEM`
+export const ACCEPT_EBG_ITEM = `${prefix}/ACCEPT_EBG_ITEM`
+export const UPDATE_HEADS = `${prefix}/UPDATE_HEADS`
+export const LOCATION_CHANGE = `@@router/LOCATION_CHANGE`
+
+export const START = '_START'
+export const SUCCESS = '_SUCCESS'
+export const UPDATE = '_UPDATE'
+export const FAIL = '_FAIL'
+
+/** Reducer */
+const ReducerRecord = Record({
+  inn: "",
+  mainObjectKey: null,
+  isIp: false,
+  reqnum: '',
+  renderData: false,
+  ebgData: null,
+  risksSrc: [],
+  croinformInfoFl: Map({}),
+  identifyInfoFl: Map({}),
+  selectedInfoFl: Map({}),
+  fsspInfo: Map({}),
+  stopLists: Map({}),
+  riskFactors: Map({}),
+  timeRequest: Map({}),
+  ebgMainResponse: null,
+  companyResponse: OrderedMap({ ...companyRes, key: uuid()}),
+  companyResponseUl: OrderedMap({}),
+  requestLoading: Map({
+    acceptEbgItemRequest: false,
+    returnEbgItemRequest: false,
+    ebgMainDataRequest: false,
+    ebgSyncTableData: false,
+    companyMainInfo: false,
+    getDocuments: false,
+    companyMainInfoUpdate: false, 
+    getAffilatesList: false,
+    digestList: false,
+    deleteRistFactorInDigestList: false,
+    updateSelectedUserInfo: false,
+    deleteRistFactorInDigestListUl: Map({}),
+    addRistFactorInDigestListFl: Map({}),
+    addRistFactorInDigestListUl: Map({}),
+    getStopListsUl: Map({}),
+    digestListUl: Map({}),
+    loadCompanyInfoUl: Map({}),
+    getDocumentItem: Map({}),
+    getRiskFactorsFl: Map({}),
+    stopLists: Map({}),
+    fsspInfo: Map({}),
+    getAffilatesUl: Map({}),
+    identifyUser: Map({}),
+    croinformRequest: Map({})
+  }),
+  errors: Map({
+    acceptEbgItemRequest: false,
+    returnEbgItemRequest: false,
+    ebgMainDataRequest: false,
+    ebgSyncTableData: false,
+    companyMainInfo: false, 
+    getDocuments: false,
+    companyMainInfoUpdate: false, 
+    getAffilatesList: false,
+    digestList: false,
+    addRistFactorInDigestListFl:  Map({}),
+    deleteRistFactorInDigestList: false,
+    updateSelectedUserInfo: false,
+    deleteRistFactorInDigestListUl: Map({}),
+    addRistFactorInDigestListUl: Map({}),
+    getStopListsUl: Map({}),
+    digestListUl: Map({}),
+    loadCompanyInfoUl: Map({}),
+    getDocumentItem: Map({}),
+    getRiskFactorsFl: Map({}),
+    stopLists: Map({}),
+    fsspInfo: Map({}),
+    getAffilatesUl: Map({}),
+    identifyUser: Map({}),
+    croinformRequest: Map({})
+  })
+})
+
+const EbgReducer = (state = new ReducerRecord(), action) => {
+  const { type, payload, id } = action
+  switch (type) {
+    // Сохранение данных поискового запроса
+    case ACTION_CHANGE_INN:
+      return state.set('inn', payload.inn)
+
+    // Обновление данных о руководителях и связанных лицах
+    case UPDATE_HEADS:
+      return state
+        .set('selectedInfoFl', action.updatedStore.selected)
+        .setIn(['companyResponse', 'heads'], action.updatedStore.heads)
+
+    // Взятие выбранного из EBG таблицы объекта на проверку
+    case TAKE_EBG_ITEM + START:
+      return state
+        .setIn(['requestLoading', 'ebgMainDataRequest'], true)
+        .setIn(['requestLoading', 'companyMainInfoUpdate'], true)
+        .setIn(['errors', 'ebgMainDataRequest'], false)
+    case TAKE_EBG_ITEM + SUCCESS:
+      return state
+        .set('ebgMainResponse', payload.json)
+        .setIn(['companyResponse', 'founders_ul'],  payload.foundersUl)
+        .setIn(['errors', 'ebgMainDataRequest'], false)
+    case TAKE_EBG_ITEM + FAIL:
+      return state
+        .setIn(['requestLoading', 'ebgMainDataRequest'], false)
+        .setIn(['errors', 'ebgMainDataRequest'], true)
+
+    // Возврат в очередь EBG проверки
+    case RETURN_EBG_ITEM + START:
+      return state
+        .setIn(['requestLoading', 'returnEbgItemRequest'], true) 
+        .setIn(['errors', 'returnEbgItemRequest'], false)
+    case RETURN_EBG_ITEM + SUCCESS:
+      return state
+        .setIn(['requestLoading', 'returnEbgItemRequest'], false)
+        .setIn(['errors', 'returnEbgItemRequest'], false)
+    case RETURN_EBG_ITEM + FAIL:
+      return state
+        .setIn(['requestLoading', 'returnEbgItemRequest'], false)
+        .setIn(['errors', 'returnEbgItemRequest'], true)
+
+    // Завершение Ebg проверки по проверяемому объекту
+    case ACCEPT_EBG_ITEM + START:
+      return state
+        .setIn(['requestLoading', 'acceptEbgItemRequest'], true) 
+        .setIn(['errors', 'acceptEbgItemRequest'], false)
+    case ACCEPT_EBG_ITEM + SUCCESS:
+      return state
+        .setIn(['requestLoading', 'acceptEbgItemRequest'], false)
+        .setIn(['errors', 'acceptEbgItemRequest'], false)
+    case ACCEPT_EBG_ITEM + FAIL:
+      return state
+        .setIn(['requestLoading', 'acceptEbgItemRequest'], false)
+        .setIn(['errors', 'acceptEbgItemRequest'], true)
+
+    // Обновление основных данных по кампании
+    case LOAD_COMPANY_INFO + UPDATE + START:
+      return state
+        .set('reqnum', id)
+        .setIn(['requestLoading', 'companyMainInfoUpdate'], true)
+        .setIn(['errors', 'companyMainInfoUpdate'], false)      
+    case LOAD_COMPANY_INFO + UPDATE + SUCCESS:
+      return state
+        .set('companyResponse', payload.updatedData)
+        .set('mainObjectKey', action.key)
+        .setIn(['companyResponseUl', action.key], payload.updatedData)
+        .setIn(['requestLoading', 'companyMainInfoUpdate'], false)
+        .setIn(['requestLoading', 'ebgMainDataRequest'], false)
+        .setIn(['errors', 'companyMainInfoUpdate'], false) 
+        .set('renderData', true)
+        .set('reqnum', id)
+        .set('isIp', action.isIp)
+    case LOAD_COMPANY_INFO + UPDATE + FAIL:
+      return state
+        .setIn(['requestLoading', 'companyMainInfoUpdate'], false)
+        .setIn(['errors', 'companyMainInfoUpdate'], { status: action.error.status, message: action.error.message, time: action.error.time })
+        .set('renderData', false)
+
+    // Обновление основных данных по связанным UL кампаниям
+    case LOAD_COMPANY_INFO_UL + UPDATE + START:
+      return state
+        .setIn(['requestLoading', 'loadCompanyInfoUl', action.id], true)
+        .setIn(['errors', 'loadCompanyInfoUl', action.id], false)     
+    case LOAD_COMPANY_INFO_UL + UPDATE + SUCCESS:
+      return state
+        .setIn(['companyResponseUl', action.id], payload.updatedData)
+        .setIn(['requestLoading', 'loadCompanyInfoUl', action.id], false)
+        .setIn(['errors', 'loadCompanyInfoUl', action.id], false) 
+    case LOAD_COMPANY_INFO_UL + UPDATE + FAIL:
+      return state
+        .setIn(['requestLoading', 'loadCompanyInfoUl', action.id], false)
+        .setIn(['errors', 'loadCompanyInfoUl', action.id], { status: action.error.status, message: action.error.message, time: action.error.time })
+
+    // Сохранение данных об аффилированных лицах
+    case GET_AFFILATES_LIST + START:
+      return state
+        .setIn(['requestLoading', 'getAffilatesList'], true)
+        .setIn(['errors', 'getAffilatesList'], false)      
+    case GET_AFFILATES_LIST + SUCCESS:
+      return state
+        .set('companyResponse', payload.updatedData)
+        .setIn(['requestLoading', 'getAffilatesList'], false)
+        .setIn(['errors', 'getAffilatesList'], false) 
+    case GET_AFFILATES_LIST + FAIL:
+      return state
+        .setIn(['requestLoading', 'getAffilatesList'], false)
+        .setIn(['errors', 'getAffilatesList'], true)
+
+    // Сохранение данных об аффилированных лицах связанных ЮЛ
+    case GET_AFFILATES_UL + START:
+      return state
+      .setIn(['requestLoading', 'getAffilatesUl', action.loading.inn], {loading: true, name: action.loading.name})
+      .setIn(['errors', 'getAffilatesUl', action.loading.inn], {error: false, name: action.loading.name})      
+    case GET_AFFILATES_UL + SUCCESS:
+      return state
+        .setIn(['companyResponse', 'heads'], payload.updatedData)
+        .setIn(['requestLoading', 'getAffilatesUl', action.loading.inn], {loading: false, name: action.loading.name})
+        .setIn(['errors', 'getAffilatesUl', action.loading.inn], {error: false, name: action.loading.name}) 
+    case GET_AFFILATES_UL + FAIL:
+      return state
+        .setIn(['requestLoading', 'getAffilatesUl', action.loading.inn], {loading: false, name: action.loading.name})
+        .setIn(['errors', 'getAffilatesUl', action.loading.inn], {error: true, name: action.loading.name})
+
+    // Получение идентификационных данных на выбранное ФЛ
+    case GET_IDENTIFY_USER + START:
+      return state
+        .setIn(['selectedInfoFl', action.loading], action.selected)
+        .setIn(['requestLoading', 'identifyUser', action.loading], true)
+        .setIn(['errors', 'identifyUser', action.loading], false)
+    case GET_IDENTIFY_USER + SUCCESS:
+      return state
+        .setIn(['identifyInfoFl', action.loading], action.info)
+        .setIn(['timeRequest', action.loading], action.timeRequest)
+        .setIn(['requestLoading', 'identifyUser', action.loading], false)
+        .setIn(['errors', 'identifyUser', action.loading], false) 
+    case GET_IDENTIFY_USER + FAIL:
+      return state
+        .setIn(['requestLoading', 'identifyUser', action.error.id], false)
+        .setIn(['errors', 'identifyUser', action.error.id], { status: action.error.status, message: action.error.message, time: action.error.time })
+
+    // Сохранение данных введеных пользователем
+    case UPDATE_SELECTED_USER_INFO + SUCCESS:
+      return state
+        .setIn(['selectedInfoFl', action.loading], action.selected)
+        .setIn(['errors', 'updateSelectedUserInfo'], false) 
+    case UPDATE_SELECTED_USER_INFO + FAIL:
+      return state
+        .setIn(['errors', 'updateSelectedUserInfo'], action.error.status)
+
+    // Финальная проверка выбранного ФЛ
+    case GET_CROINFORM_USER_INFO + START:
+      return state
+        .setIn(['selectedInfoFl', action.loading], action.selected)
+        .setIn(['requestLoading', 'croinformRequest', action.loading], true)
+        .setIn(['errors', 'croinformRequest', action.loading], false)
+    case GET_CROINFORM_USER_INFO + SUCCESS:
+      return state
+        .setIn(['timeRequest', action.loading], action.timeRequest)
+        .setIn(['croinformInfoFl', action.loading], action.croinform)
+        .setIn(['requestLoading', 'croinformRequest', action.loading], false)
+        .setIn(['errors', 'croinformRequest', action.loading], false) 
+    case GET_CROINFORM_USER_INFO + FAIL:
+      return state
+        .setIn(['requestLoading', 'croinformRequest', action.loading], false)
+        .setIn(['errors', 'croinformRequest', action.loading], { status: action.error.status, message: action.error.message, time: action.error.time })
+
+    // Получение ФССП данных
+    case GET_FSSP_INFO + START:
+      return state
+        .setIn(['requestLoading', 'fsspInfo', action.loading], true)
+        .setIn(['errors', 'fsspInfo', action.loading], false)
+    case GET_FSSP_INFO + SUCCESS:
+      return state
+        .setIn(['fsspInfo', action.loading], action.fsspInfo)
+        .setIn(['requestLoading', 'fsspInfo', action.loading], false)
+        .setIn(['errors', 'fsspInfo', action.loading], false) 
+    case GET_FSSP_INFO + FAIL:
+      return state
+        .setIn(['requestLoading', 'fsspInfo', action.loading], false)
+        .setIn(['errors', 'fsspInfo', action.loading], true)
+
+    // Получение исторических и актуальных риск-факторов
+    case LOAD_DIGEST_LIST + START:
+      return state
+        .setIn(['requestLoading', 'digestList'], true)
+        .setIn(['errors', 'digestList'], false)
+    case LOAD_DIGEST_LIST + SUCCESS:
+      return state
+        .set('risksSrc', action.risksSrc)
+        .setIn(['riskFactors', action.loading], action.riskFactors)
+        .setIn(['requestLoading', 'digestList'], false)
+        .setIn(['errors', 'digestList'], false) 
+    case LOAD_DIGEST_LIST + FAIL:
+      return state
+        .setIn(['requestLoading', 'digestList'], false)
+        .setIn(['errors', 'digestList'], true)
+
+    // Загрузка данных по риск факторам ЮЛ
+    case LOAD_DIGEST_LIST_UL + START:
+      return state
+        .setIn(['requestLoading', 'digestListUl', action.id], true)
+        .setIn(['errors', 'digestListUl', action.id], false)
+    case LOAD_DIGEST_LIST_UL + SUCCESS:
+      return state
+        .set('risksSrc', action.risksSrc)
+        .setIn(['riskFactors', action.id], action.riskFactors)
+        .setIn(['requestLoading', 'digestListUl', action.id], false)
+        .setIn(['errors', 'digestListUl', action.id], false) 
+    case LOAD_DIGEST_LIST_UL + FAIL:
+      return state
+        .setIn(['requestLoading', 'digestListUl', action.id], false)
+        .setIn(['errors', 'digestListUl', action.id], true)
+
+    // Добавление риск фактора в дайджест лист UL
+    case ADD_RISK_FACTOR_UL_IN_DIGEST_LIST + START:
+      return state
+        .setIn(['requestLoading', 'deleteRistFactorInDigestList'], true)
+        .setIn(['errors', 'deleteRistFactorInDigestList'], false)
+    case ADD_RISK_FACTOR_UL_IN_DIGEST_LIST + SUCCESS:
+      return state
+        .setIn(['riskFactors', action.id], action.riskFactors)
+        .setIn(['requestLoading', 'deleteRistFactorInDigestList'], false)
+        .setIn(['errors', 'deleteRistFactorInDigestList'], false) 
+    case ADD_RISK_FACTOR_UL_IN_DIGEST_LIST + FAIL:
+      return state
+        .setIn(['requestLoading', 'deleteRistFactorInDigestList'], false)
+        .setIn(['errors', 'deleteRistFactorInDigestList'], true)
+
+    // Редактирование риск фактора в дайджест лист UL
+    case EDIT_RISK_FACTOR_UL_IN_DIGEST_LIST + START:
+      return state
+        .setIn(['requestLoading', 'deleteRistFactorInDigestList'], true)
+        .setIn(['errors', 'deleteRistFactorInDigestList'], false)
+    case EDIT_RISK_FACTOR_UL_IN_DIGEST_LIST + SUCCESS:
+      return state
+        .setIn(['riskFactors', action.id], action.riskFactors)
+        .setIn(['requestLoading', 'deleteRistFactorInDigestList'], false)
+        .setIn(['errors', 'deleteRistFactorInDigestList'], false) 
+    case EDIT_RISK_FACTOR_UL_IN_DIGEST_LIST + FAIL:
+      return state
+        .setIn(['requestLoading', 'deleteRistFactorInDigestList'], false)
+        .setIn(['errors', 'deleteRistFactorInDigestList'], true)
+
+    // Удаление риск фактора в дайджест лист UL
+    case DELETE_RISK_FACTOR_UL_IN_DIGEST_LIST + START:
+      return state
+        .setIn(['requestLoading', 'deleteRistFactorInDigestList'], true)
+        .setIn(['errors', 'deleteRistFactorInDigestList'], false)
+    case DELETE_RISK_FACTOR_UL_IN_DIGEST_LIST + SUCCESS:
+      return state
+        .setIn(['riskFactors', action.id], action.riskFactors)
+        .setIn(['requestLoading', 'deleteRistFactorInDigestList'], false)
+        .setIn(['errors', 'deleteRistFactorInDigestList'], false) 
+    case DELETE_RISK_FACTOR_UL_IN_DIGEST_LIST + FAIL:
+      return state
+        .setIn(['requestLoading', 'deleteRistFactorInDigestList'], false)
+        .setIn(['errors', 'deleteRistFactorInDigestList'], true)
+
+    // Редактирование риск-фактора из дайджест листа ФЛ
+    case ADD_RISK_FACTOR_FL_IN_DIGEST_LIST + START:
+      return state
+        .setIn(['requestLoading', 'addRistFactorInDigestListFl', action.loading], true)
+        .setIn(['errors', 'addRistFactorInDigestListFl', action.loading], false)
+    case ADD_RISK_FACTOR_FL_IN_DIGEST_LIST + SUCCESS:
+      return state
+        .setIn(['riskFactors', action.loading], action.riskFactors)
+        .setIn(['requestLoading', 'addRistFactorInDigestListFl', action.loading], false)
+        .setIn(['errors', 'addRistFactorInDigestListFl', action.loading], false) 
+    case ADD_RISK_FACTOR_FL_IN_DIGEST_LIST + FAIL:
+      return state
+        .setIn(['requestLoading', 'addRistFactorInDigestListFl', action.loading], false)
+        .setIn(['errors', 'addRistFactorInDigestListFl', action.loading], true)
+
+    // Редактирование риск-фактора из дайджест листа ФЛ
+    case EDIT_RISK_FACTOR_FL_IN_DIGEST_LIST + START:
+      return state
+        .setIn(['requestLoading', 'deleteRistFactorInDigestList'], true)
+        .setIn(['errors', 'deleteRistFactorInDigestList'], false)
+    case EDIT_RISK_FACTOR_FL_IN_DIGEST_LIST + SUCCESS:
+      return state
+        .setIn(['riskFactors', action.loading], action.riskFactors)
+        .setIn(['requestLoading', 'deleteRistFactorInDigestList'], false)
+        .setIn(['errors', 'deleteRistFactorInDigestList'], false) 
+    case EDIT_RISK_FACTOR_FL_IN_DIGEST_LIST + FAIL:
+      return state
+        .setIn(['requestLoading', 'deleteRistFactorInDigestList'], false)
+        .setIn(['errors', 'deleteRistFactorInDigestList'], true)
+    
+    // Удвление риск-фактора из дайджест листа ФЛ   
+    case DELETE_RISK_FACTOR_FL_IN_DIGEST_LIST + START:
+      return state
+        .setIn(['requestLoading', 'deleteRistFactorInDigestList'], true)
+        .setIn(['errors', 'deleteRistFactorInDigestList'], false)
+    case DELETE_RISK_FACTOR_FL_IN_DIGEST_LIST + SUCCESS:
+      return state
+        .setIn(['riskFactors', action.loading], action.riskFactors)
+        .setIn(['requestLoading', 'deleteRistFactorInDigestList'], false)
+        .setIn(['errors', 'deleteRistFactorInDigestList'], false) 
+    case DELETE_RISK_FACTOR_FL_IN_DIGEST_LIST + FAIL:
+      return state
+        .setIn(['requestLoading', 'deleteRistFactorInDigestList'], false)
+        .setIn(['errors', 'deleteRistFactorInDigestList'], true)
+
+    // Получение данных по стоп-листам ЮЛ
+    case GET_STOP_LISTS_UL_INFO + START:
+      return state
+        .setIn(['requestLoading', 'getStopListsUl', action.keyId], true)
+        .setIn(['errors', 'getStopListsUl', action.keyId], false)
+    case GET_STOP_LISTS_UL_INFO + SUCCESS:
+      return state
+        .setIn(['stopLists', action.keyId], payload)
+        .setIn(['requestLoading', 'getStopListsUl', action.keyId], false)
+        .setIn(['errors', 'getStopListsUl', action.keyId], false) 
+    case GET_STOP_LISTS_UL_INFO + FAIL:
+      return state
+        .setIn(['requestLoading', 'getStopListsUl', action.keyId], false)
+        .setIn(['errors', 'getStopListsUl', action.keyId], true)
+
+    // Загрузка списка приложенных документов
+    case GET_DOCUMENTS + START:
+      return state
+        .setIn(['requestLoading', 'getDocuments'], true)
+        .setIn(['errors', 'getDocuments'], false)
+    case GET_DOCUMENTS + SUCCESS:
+      return state
+        .setIn(['companyResponse', 'documents'], payload)
+        .setIn(['requestLoading', 'getDocuments'], false)
+        .setIn(['errors', 'getDocuments'], false) 
+    case GET_DOCUMENTS + FAIL:
+      return state
+        .setIn(['requestLoading', 'getDocuments'], false)
+        .setIn(['errors', 'getDocuments'], true)
+
+    // Загрузка документа с сервера
+    case GET_DOCUMENT_ITEM + START:
+      return state
+        .setIn(['requestLoading', 'getDocumentItem', action.loading], true)
+        .setIn(['errors', 'getDocumentItem', action.loading], false)
+    case GET_DOCUMENT_ITEM + SUCCESS:
+      return state
+        .setIn(['companyResponse', 'documents'], payload)
+        .setIn(['requestLoading', 'getDocumentItem', action.loading], false)
+        .setIn(['errors', 'getDocumentItem', action.loading], false) 
+    case GET_DOCUMENT_ITEM + FAIL:
+      return state
+        .setIn(['requestLoading', 'getDocumentItem', action.loading], false)
+        .setIn(['errors', 'getDocumentItem', action.loading], true)
+    
+     // Получение данных по стоп-листам ФЛ
+    case GET_BLACK_STOP_LISTS + START:
+      return state
+        .setIn(['requestLoading', 'stopLists', action.loading], true)
+        .setIn(['errors', 'stopLists', action.loading], false)
+    case GET_BLACK_STOP_LISTS + SUCCESS:
+      return state
+        .setIn(['stopLists', action.loading], action.stopLists)
+        .setIn(['timeRequest', action.loading], action.timeRequest)
+        .setIn(['requestLoading', 'stopLists', action.loading], false)
+        .setIn(['errors', 'stopLists', action.loading], false) 
+    case GET_BLACK_STOP_LISTS + FAIL:
+      return state
+        .setIn(['requestLoading', 'stopLists', action.loading], false)
+        .setIn(['errors', 'stopLists', action.loading], true)
+
+     // Получение данных по актуальным и историческим риск-факторам ФЛ
+    case GET_RISK_FACTORS_FL_INFO + START:
+      return state
+        .setIn(['requestLoading', 'getRiskFactorsFl', action.loading], true)
+        .setIn(['errors', 'getRiskFactorsFl', action.loading], false)
+    case GET_RISK_FACTORS_FL_INFO + SUCCESS:
+      return state
+        .setIn(['riskFactors', action.loading], action.riskFactors)
+        .setIn(['requestLoading', 'getRiskFactorsFl', action.loading], false)
+        .setIn(['errors', 'getRiskFactorsFl', action.loading], false) 
+    case GET_RISK_FACTORS_FL_INFO + FAIL:
+      return state
+        .setIn(['requestLoading', 'getRiskFactorsFl', action.loading], false)
+        .setIn(['errors', 'getRiskFactorsFl', action.loading], true)
+
+    // Синхранизация данных по ЭБГ
+    case UPDATE_EBG_SYNC_DATA + START:
+      return state
+        .setIn(['requestLoading', 'ebgSyncTableData'], true)
+        .setIn(['errors', 'ebgSyncTableData'], false)
+    case UPDATE_EBG_SYNC_DATA + SUCCESS:
+      return state
+        .set('ebgData', payload)
+        .setIn(['requestLoading', 'ebgSyncTableData'], false)
+        .setIn(['errors', 'ebgSyncTableData'], false) 
+    case UPDATE_EBG_SYNC_DATA + FAIL:
+      return state
+        .setIn(['requestLoading', 'ebgSyncTableData'], false)
+        .setIn(['errors', 'ebgSyncTableData'], true)
+
+    // Добавление нового лица в перечень связанных с кампанией лиц для проверки
+    case ADD_USER_TO_CHECK_LIST:
+      return state
+        .mergeDeepIn(['companyResponse', 'heads'], [payload.newUser])
+
+    // Чистка store приложения
+    case CLEAR_COMPANY_INFO:
+      return new ReducerRecord()
+
+    default:
+      return state
+  }
+}
+
+/** Actions */
+// Установка ИНН проверяемой организации
+export const actionChangeInn = inn => {
+  return {
+    type: ACTION_CHANGE_INN,
+    payload: {inn}
+  }
+}
+// Загрузка основных перевоначальных данных о кампании
+export const loadCompanyInfo = inn => {
+  return {
+    type: LOAD_COMPANY_INFO,
+    inn
+  }
+}
+// Очистка всех данных перед следующим запросом
+export const clearCompanyInfo = () => {
+  return {
+    type: CLEAR_COMPANY_INFO
+  }
+}
+//Идентификация юзера для автозаполнения
+export const addNewUserToCheackList = newUser => {
+  return {
+    type: ADD_USER_TO_CHECK_LIST,
+    payload: {newUser},
+  }
+}
+// Добавление нового риск-фактора
+export const addRiskFactorFl = (factor, id) => {
+  return {
+    type: ADD_RISK_FACTOR_FL_IN_DIGEST_LIST,
+    payload: factor,
+    loading: id
+  }
+}
+// Добавление нового риск-фактора
+export const editRiskFactorFl = (factor, id) => {
+  return {
+    type: EDIT_RISK_FACTOR_FL_IN_DIGEST_LIST,
+    payload: factor,
+    loading: id
+  }
+}
+// Добавление нового риск-фактора
+export const deleteRiskFactorFl = (factor, id) => {
+  return {
+    type: DELETE_RISK_FACTOR_FL_IN_DIGEST_LIST,
+    payload: factor,
+    loading: id
+  }
+}
+// Добавление нового риск-фактора UL
+export const addRiskFactorUl = (factor, info) => {
+  return {
+    type: ADD_RISK_FACTOR_UL_IN_DIGEST_LIST,
+    payload: factor,
+    info
+  }
+}
+// Редактирование риск-фактора UL
+export const editRiskFactorUl = (factor, info) => {
+  return {
+    type: EDIT_RISK_FACTOR_UL_IN_DIGEST_LIST,
+    payload: factor,
+    info
+  }
+}
+// Добавление нового риск-фактора
+export const deleteRiskUlFactor = (factor, info) => {
+  return {
+    type: DELETE_RISK_FACTOR_UL_IN_DIGEST_LIST,
+    payload: factor,
+    info
+  }
+}
+// Обновление введенных идентификационных данных проверяемого лица
+export const updateUserSelectedInfo = data => {
+  return {
+    type: UPDATE_SELECTED_USER_INFO,
+    payload: data,
+    id: data.id
+  }
+}
+//Идентификация юзера для автозаполнения
+export const identifyUser = data => {
+  return {
+    type: GET_IDENTIFY_USER,
+    payload: data,
+    id: data.id
+  }
+}
+// Проверка юзера через Croinform
+export const actionGetUserCroinformInfo = (user, id) => {
+  return {
+    type: GET_CROINFORM_USER_INFO,
+    payload: user,
+    loading: id
+  }
+}
+// Проверка юзера через Croinform
+export const getDocument = doc => {
+  return {
+    type: GET_DOCUMENT_ITEM,
+    payload: doc
+  }
+}
+// Проверка юзера через Croinform
+export const takeEbgItem = data => {
+  return {
+    type: TAKE_EBG_ITEM,
+    payload: data
+  }
+}
+// Проверка юзера через Croinform
+export const returnEbgItem = data => {
+  return {
+    type: RETURN_EBG_ITEM,
+    payload: data
+  }
+}
+// Проверка юзера через Croinform
+export const acceptEbgItem = data => {
+  return {
+    type: ACCEPT_EBG_ITEM,
+    payload: data
+  }
+}
+// Ручное обновление списка риск-факторов
+export const updateDigets = () => {
+  return {
+    type: LOAD_DIGEST_LIST
+  }
+}
+// Ручное обновление списка риск-факторов foundersUl
+export const updateDigetsUl = ({ inn,  id, storeCompName, reqnum }) => {
+  return {
+    type: LOAD_DIGEST_LIST_UL,
+    inn, 
+    id,
+    storeCompName,
+    reqnum
+  }
+}
+// Проверка юзера через Croinform
+export const updateDigetsFl = (user, reqnum) => {
+  return {
+    type: GET_RISK_FACTORS_FL_INFO,
+    user,
+    reqnum
+  }
+}
+// Формирование и загрузка отчета по проверке
+export const downloadReport = ({checkType, key}) => {
+  return {
+    type: DOWNLOAD_REPORT_FILE,
+    checkType,
+    key
+  }
+}
+
+/** Selectors */
+const storeRouter = state => state.router
+const storeRouterLocation = state => state.router.location.pathname
+const storeLoading = state => state[moduleName].get("requestLoading")
+
+export const companyResSelector = state => state[moduleName].get('companyResponse').toJS()
+export const mainObjectKeySelector = state => state[moduleName].get('mainObjectKey')
+export const companyUlResSelector = state => state[moduleName].get('companyResponseUl')
+export const companyImmutableResSelector = state => state[moduleName].get('companyResponse')
+export const ebgMainResponseSelector = state => state[moduleName].get('ebgMainResponse')
+export const ebgDataSelector = state => state[moduleName].get('ebgData')
+export const documentsSelector = state => state[moduleName].getIn(['companyResponse', 'documents'])
+export const headsSelector = state => state[moduleName].getIn(['companyResponse', 'heads'])
+export const foundersUlSelector = state => state[moduleName].getIn(['companyResponse', 'founders_ul'])
+export const digetsListSelector = state => state[moduleName].get('digestList')
+export const renderDataSelector = state => state[moduleName].get('renderData')
+export const fsspSelector = state => state[moduleName].get('fsspInfo')
+export const isIpSelector = state => state[moduleName].get('isIp')
+export const reqnumSelector = state => state[moduleName].get('reqnum')
+export const innSelector = state => state[moduleName].get('inn')
+export const nameCompanySelector = state => state[moduleName].getIn(['companyResponse', 'name'])
+export const сroinformResSelector = state => state[moduleName].get('croinformResponse')
+export const errorsSelector = state => state[moduleName].get('errors')
+export const companySrcSelector = state => state[moduleName].get('companyResponse')
+export const risksListSelector = state => state[moduleName].get('risksList')
+export const requestLoadingSelector = state => state[moduleName].get('requestLoading')
+export const risksSrcSelector = state => state[moduleName].get('risksSrc')
+export const mainDigetsSelector = state => state[moduleName].get('riskFactors')
+export const identifyInfoFlSelector = state => state[moduleName].get('identifyInfoFl')
+export const selectedInfoFlSelector = state => state[moduleName].get('selectedInfoFl')
+export const croinformInfoFlSelector = state => state[moduleName].get('croinformInfoFl')
+export const fsspInfoSelector = state => state[moduleName].get('fsspInfo')
+export const stopListsSelector = state => state[moduleName].get('stopLists')
+export const timeRequestSelector = state => state[moduleName].get('timeRequest')
+export const riskFactorsSelector = state => state[moduleName].get('riskFactors')
+export const companyUlSrcSelector = state => state[moduleName].get('companyResponseUl')
+// With key props
+export const companyUlImmutableResSelector = (state, key) => state[moduleName].getIn(['companyResponseUl', key])
+export const nameUlSelector = (state, key) => state[moduleName].getIn(['companyResponseUl', key, 'name'], null)
+export const loadingFoundersUlSelector = (state, key) => state[moduleName].getIn(['requestLoading',"loadCompanyInfoUl", key], true)
+export const digetsListUlSelector = (state, key) => state[moduleName].getIn(['digestListUl', key], [])
+export const stopListSelector = (state, key) => state[moduleName].getIn(['stopLists', key], [])
+export const riskFactorsItemSelector = (state, keyId) => state[moduleName].getIn(['riskFactors', keyId], {digets: [], history: []})
+export const headItemKeySelector = (state, key) => key
+
+
+export const storeTimeRequest = createSelector( timeRequestSelector, timeRequest =>  timeRequest )
+export const storeIdentifyInfoFl = createSelector( identifyInfoFlSelector, identifyInfo =>  identifyInfo )
+export const storeFsspInfo = createSelector( fsspInfoSelector, fsspInfo =>  fsspInfo )
+export const storeStopLists = createSelector( stopListsSelector, stopLists =>  stopLists )
+export const storeSelectedInfoFl = createSelector( selectedInfoFlSelector, selectedInfo =>  selectedInfo )
+export const storeCroinformInfoFl = createSelector( croinformInfoFlSelector, croinformInfo =>  croinformInfo )
+export const storeRiskFactors = createSelector( riskFactorsSelector, risks =>  risks )
+
+export const decodedCompanyResponse = createSelector( companyResSelector, companyResponse =>  companyResponse )
+export const ebgHeads = createSelector( headsSelector, heads =>  heads )
+export const ebgFoundersUl = createSelector( foundersUlSelector, foundersUl =>  foundersUl )
+export const decodedRisksList = createSelector( risksListSelector, risksList =>  risksList )
+export const decodedEbgMainResponse = createSelector( ebgMainResponseSelector, ebgMainResponse =>  ebgMainResponse )
+export const decodedEbgData = createSelector( ebgDataSelector, ebgData =>  ebgData )
+export const decodedDocuments = createSelector( documentsSelector, documents =>  documents )
+export const decodedFsspInfo = createSelector( fsspSelector, fssp =>  fssp )
+export const decodedDigetsList = createSelector( digetsListSelector, digets =>  digets )
+export const decodedisIp = createSelector( isIpSelector, isIp =>  isIp )
+export const decodedСroinformResponse = createSelector( сroinformResSelector, сroinformRes =>  сroinformRes )
+export const decodedCompanyName = createSelector( nameCompanySelector, companyName =>  companyName )
+export const decodedReqnum = createSelector( reqnumSelector, reqnum => reqnum )
+export const decodedInn = createSelector( innSelector, inn => inn )
+export const decodedRenderData = createSelector( renderDataSelector, renderData => renderData )
+export const decodedRequestLoading = createSelector( requestLoadingSelector, requestLoading => requestLoading )
+export const decodedErrors = createSelector( errorsSelector, errors => errors )
+export const storeRisksSrc = createSelector( risksSrcSelector, (risksSrc) =>  risksSrc )
+
+// With key props
+export const storeRiskFactorsItem = createSelector( riskFactorsItemSelector, riskItem =>  riskItem )
+export const storeMainDigest = createSelector( mainDigetsSelector, riskFactors =>  trasform.getMainDigest(riskFactors) )
+export const loadingFoundersUl = createSelector( loadingFoundersUlSelector, requestLoading => requestLoading !== undefined ? requestLoading : true )
+export const nameFoundersUl = createSelector( nameUlSelector, name => name !== undefined ? name : null )
+export const ebgCompanyResponseUl = createSelector( companyUlImmutableResSelector, companyResponse =>  companyResponse !== undefined ? companyResponse.toJS() : {} )
+export const ebgDigetsListUl = createSelector( digetsListUlSelector, digets =>  digets !== undefined ? digets : [] )
+export const ebgHeadItem = createSelector( headsSelector, headItemKeySelector, (heads, keyId) => heads.find(item => item.id === keyId) )
+export const ebgCheckingItem = createSelector( ebgDataSelector, innSelector, (ebgData, inn) => ebgData.find(item => item.info.inn === inn) )
+
+export const ebgHeadItemRiskFactors = createSelector( headsSelector, headItemKeySelector, (heads, keyId) => {
+  const headItem = heads.find(item => item.id === keyId)
+  if(headItem && headItem.risk_factors && headItem.risk_factors.history.length) {
+    return headItem.risk_factors.history.length
+  } else return 0
+})
+
+export const ebgMainCompanyRes = createSelector( companyUlResSelector, mainObjectKeySelector,
+  (companyResponseUl, mainObjectKey) =>  mainObjectKey && companyResponseUl.filter((item, index) => index === mainObjectKey).get(mainObjectKey).toJS() )
+
+export const ebgCompanyRes = createSelector( companyUlResSelector, headItemKeySelector,
+  (companyResponseUl, objectKey) =>  companyResponseUl.has(objectKey) && companyResponseUl.get(objectKey).toJS() )
+
+export const decodedMainCompanySource = createSelector(
+  companyImmutableResSelector, companyResponse => {
+    const  companySource = companyResponse.filterNot((value, key) => 
+      key === "heads" ||
+      key === "management_companies" ||
+      key === "founders_fl" ||
+      key === "founders_ul" ||
+      key === "befenicials" ||
+      key === "arbiter" ||
+      key === "fns" ||
+      key === "inn" ||
+      key === "ogrn" ||
+      key === "name" ||
+      key === "full_name" ||
+      key === "sanctions" ||
+      key === "fl" ||
+      key === "ul" ||
+      key === "heads_ul" ||
+      key === "heads_fl" ||
+      key === "share_holders_fl" ||
+      key === "share_holders_ul" ||
+      key === "leaders_list" ||
+      key === "stop_list" ||
+      key === "spiski" ||
+      key === "spark_spiski" ||
+      key === "arbiter_other" ||
+      key === "birthdate" ||
+      key === "birth_place" ||
+      key === "sex" ||
+      key === "isponlit_proizvodstva"
+    ).toJS()
+    return trasform.companySource(companySource)
+  }
+)
+
+export const ebgMainSourceUl = createSelector(
+  companyUlImmutableResSelector, companyResponse => {
+    const  companySource = companyResponse !== undefined ? companyResponse.filterNot((value, key) => 
+      key === "heads" ||
+      key === "management_companies" ||
+      key === "founders_fl" ||
+      key === "founders_ul" ||
+      key === "befenicials" ||
+      key === "arbiter" ||
+      key === "fns" ||
+      key === "inn" ||
+      key === "ogrn" ||
+      key === "name" ||
+      key === "full_name" ||
+      key === "sanctions" ||
+      key === "fl" ||
+      key === "ul" ||
+      key === "heads_ul" ||
+      key === "heads_fl" ||
+      key === "share_holders_fl" ||
+      key === "share_holders_ul" ||
+      key === "leaders_list" ||
+      key === "stop_list" ||
+      key === "spiski" ||
+      key === "spark_spiski" ||
+      key === "arbiter_other" ||
+      key === "birthdate" ||
+      key === "birth_place" ||
+      key === "sex" ||
+      key === "isponlit_proizvodstva"
+    ).toJS() : {}
+    return trasform.companySource(companySource)
+  }
+)
+
+export const decodedCompanySrc = createSelector(
+  companySrcSelector, companyResponse => {
+    const companySrc = companyResponse.filter((value, key) => 
+    key === "inn" ||
+    key === "ogrn" ||
+    key === "name" ||
+    key === "full_name"
+  ).toJS()
+    return companySrc
+  }
+)
+
+export const digetsSrc = createSelector(
+  companySrcSelector, companyResponse => {
+    const companySrc = companyResponse.filter((value, key) => 
+    key === "inn" ||
+    key === "ogrn" ||
+    key === "name" ||
+    key === "heads" ||
+    key === "full_name"
+  ).toJS()
+    return companySrc
+  }
+)
+export const decodedRiskSource = createSelector(
+  companyImmutableResSelector, stopListSelector, (companyResponse, stopLists) => {
+    const riskSource = companyResponse.filter((value, key) => 
+      key === "arbiter" ||
+      key === "fns" ||
+      key === "sanctions" ||
+      key === "isponlit_proizvodstva" ||
+      key === "spiski" ||
+      key === "spark_spiski" ||
+      key === "arbiter_other" ||
+      key === "stop_list"
+    ).toJS()
+    return trasform.riskSource({...riskSource, stop_list: stopLists})
+  }
+)
+
+export const mainRiskSource = createSelector(
+  companyImmutableResSelector, stopListsSelector, mainObjectKeySelector, (companyResponse, stopLists, mainKey) => {
+    const riskSource = companyResponse.filter((value, key) => 
+      key === "arbiter" ||
+      key === "fns" ||
+      key === "sanctions" ||
+      key === "isponlit_proizvodstva" ||
+      key === "spiski" ||
+      key === "spark_spiski" ||
+      key === "arbiter_other" ||
+      key === "stop_list"
+    ).toJS()
+    const mainSL = stopLists.get(mainKey)
+    return trasform.riskSource({...riskSource, stop_list: mainSL})
+  }
+)
+
+export const ebgRiskSource = createSelector(
+  companyUlImmutableResSelector, stopListSelector, (companyResponse, stopLists) => {
+    if(!companyResponse) return []
+    const riskSource = companyResponse.filter((value, key) => 
+      key === "arbiter" ||
+      key === "fns" ||
+      key === "sanctions" ||
+      key === "isponlit_proizvodstva" ||
+      key === "spiski" ||
+      key === "spark_spiski" ||
+      key === "arbiter_other"
+    ).toJS()
+    return trasform.riskSource({...riskSource, stop_list: stopLists})
+  }
+)
+
+export const decodedManagementSource = createSelector(
+  companyImmutableResSelector, companyResponse => {
+    const managementSource = companyResponse.filter((value, key) => key === "heads").toJS()
+    return trasform.getHeadsSrc(managementSource)
+  }
+)
+
+export const storeUlSource = createSelector( companyUlSrcSelector, ulSrc => ulSrc)
+
+export const storeEbgJsonInfo = createSelector( ebgMainResponseSelector, ebgSrc =>  {
+  if(ebgSrc && ebgSrc.client.clientType === "COMPANY") {
+    let JsonSrc = new Map({...jsonUl})
+    const blank = ebgSrc.client.blank
+    for (const key in blank) {
+      JsonSrc = JsonSrc.setIn(["blank", key, "data"], blank[key])
+    }
+    // const bankRequisites = ebgSrc.client.bankRequisites
+    console.log('%cJsonSrc', cloCss.red, JsonSrc.toJS())
+    console.log('%cEbgRes', cloCss.red, ebgSrc)
+    return ebgSrc
+  } else return ebgSrc
+})
+
+/** Sagas */
 
 /* Получение основных данных о кампании */
 const loadCompanyInfoSaga = function * (action) {
   try {
     yield put({
-      type: C.LOAD_COMPANY_INFO_START
+      type: LOAD_COMPANY_INFO + UPDATE + START
     })
     // Запрос на получение основных данных о кампании
     const res = yield call(API.getLoadCompanyInfo, action.inn, 4)
@@ -21,7 +982,7 @@ const loadCompanyInfoSaga = function * (action) {
     if(res.data.ip && res.status.success) {
       const updatedData = yield call(trasform.updateIPComSrc, yield select(companyImmutableResSelector), data, res.reqnum)
       yield put({
-        type: C.LOAD_COMPANY_INFO_SUCCESS,
+        type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,
         id: res.reqnum,
         isIp: true,
         payload: {updatedData},
@@ -42,7 +1003,7 @@ const loadCompanyInfoSaga = function * (action) {
       yield spawn(getStopListsUlSaga, yield updatedData.get("inn"), res.reqnum, yield updatedData.get("key") )
 
       yield put({
-        type: C.LOAD_COMPANY_INFO_SUCCESS,
+        type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,
         id: res.reqnum,
         isIp: false,
         payload: {updatedData},
@@ -59,7 +1020,7 @@ const loadCompanyInfoSaga = function * (action) {
 
     } else if(!res.status.success) {
       yield put({
-        type: C.LOAD_COMPANY_INFO_FAIL,
+        type: LOAD_COMPANY_INFO + UPDATE + FAIL,
         error: {
           status: true,
           time: Date.now(),
@@ -71,7 +1032,7 @@ const loadCompanyInfoSaga = function * (action) {
   } catch (err){
     console.log('%cloadCompanyInfoSagaErr', cloCss.red, err)
     yield put({
-      type: C.LOAD_COMPANY_INFO_FAIL,
+      type: LOAD_COMPANY_INFO + UPDATE + FAIL,
       error: {
         status: true,
         time: Date.now(),
@@ -84,7 +1045,7 @@ const loadCompanyInfoSaga = function * (action) {
 const loadCompanyInfoUlSaga = function * (action) {
   try {
     yield put({
-      type: C.LOAD_COMPANY_INFO_UL_START,
+      type: LOAD_COMPANY_INFO_UL + UPDATE + START,
       id: action.id
     })
     // Запрос на получение основных данных о кампании
@@ -98,7 +1059,7 @@ const loadCompanyInfoUlSaga = function * (action) {
       yield spawn(getStopListsUlSaga, yield updatedData.get("inn"), res.reqnum, yield updatedData.get("key") )
 
       yield put({
-        type: C.LOAD_COMPANY_INFO_UL_SUCCESS,
+        type: LOAD_COMPANY_INFO_UL + UPDATE + SUCCESS,
         id: action.id,
         payload: {updatedData},
       })
@@ -112,7 +1073,7 @@ const loadCompanyInfoUlSaga = function * (action) {
 
     } else if (!res.status.success) {
       yield put({
-        type: C.LOAD_COMPANY_INFO_UL_FAIL,
+        type: LOAD_COMPANY_INFO_UL + UPDATE + FAIL,
         id: action.id,
         error: {
           status: true,
@@ -125,7 +1086,7 @@ const loadCompanyInfoUlSaga = function * (action) {
   } catch (err){
     console.log('%cloadCompanyInfoUlSaga@Err', cloCss.red, err)
     yield put({
-      type: C.LOAD_COMPANY_INFO_UL_FAIL,
+      type: LOAD_COMPANY_INFO_UL + UPDATE + FAIL,
       id: action.id,
       error: {
         status: true,
@@ -145,13 +1106,13 @@ const updateEbgJsonInfoSaga = function * () {
     // Обогащение найденных руководителей информацией полученной из Ebg
     const updatedStore = yield call(trasform.updateEbgHeads, {
       prevStore: yield select(),
-      prevSelected: Map({}),
+      prevSelected: new Map({}),
       managment: param
     })
     console.log('%cSTORE', cloCss.info, updatedStore)
 
     yield put({
-      type: C.UPDATE_HEADS,
+      type: UPDATE_HEADS,
       updatedStore
     })
 
@@ -208,7 +1169,7 @@ const updateEbgJsonInfoSaga = function * () {
 const getStopListsUlSaga = function * (ulinn, reqnum, key) {
   try {
     yield put({
-      type: C.GET_STOP_LISTS_UL_INFO_START,
+      type: GET_STOP_LISTS_UL_INFO + START,
       keyId: key
     })
 
@@ -218,14 +1179,14 @@ const getStopListsUlSaga = function * (ulinn, reqnum, key) {
     const clearedData = res.data && res.data.length ? clearStopListsArr(res.data) : []
 
     yield put({
-      type: C.GET_STOP_LISTS_UL_INFO_SUCCESS,
+      type: GET_STOP_LISTS_UL_INFO + SUCCESS,
       payload: clearedData,
       keyId: key
     })
   } catch (err){
     console.log('%cgetStopListsUlSagaErr', cloCss.red, err)
     yield put({
-      type: C.GET_STOP_LISTS_UL_INFO_FAIL,
+      type: GET_STOP_LISTS_UL_INFO + FAIL,
       keyId: key
     })
   }
@@ -244,7 +1205,7 @@ const loadStopListDataSaga = function * (action) {
 const getStopListSaga = function * (user, action) {
   try {
     yield put({
-      type: C.GET_BLACK_STOP_LISTS_START,
+      type: GET_BLACK_STOP_LISTS + START,
       loading: user.id
     })
 
@@ -256,7 +1217,7 @@ const getStopListSaga = function * (user, action) {
       const stopLists = yield call(trasform.updateStopListArr, res.data)
 
       yield put({
-        type: C.GET_BLACK_STOP_LISTS_SUCCESS,
+        type: GET_BLACK_STOP_LISTS + SUCCESS,
         timeRequest: Date.now(),
         stopLists,
         loading: user.id
@@ -264,7 +1225,7 @@ const getStopListSaga = function * (user, action) {
     } else if(res.Status === "Error") {
       console.log('%cgetBlackStopListSaga@Err', cloCss.red, res.Description)
       yield put({
-        type: C.GET_BLACK_STOP_LISTS_FAIL,
+        type: GET_BLACK_STOP_LISTS + FAIL,
         loading: user.id
       })
     }
@@ -272,7 +1233,7 @@ const getStopListSaga = function * (user, action) {
   } catch (err){
     console.log('%cgetBlackStopListSagaErr', cloCss.red, err)
     yield put({
-      type: C.GET_BLACK_STOP_LISTS_FAIL,
+      type: GET_BLACK_STOP_LISTS + FAIL,
       loading: user.id
     })
   }
@@ -282,7 +1243,7 @@ const getStopListSaga = function * (user, action) {
 const loadDigestListUlSaga = function * (action) {
   try {
     yield put({
-      type: C.LOAD_DIGEST_LIST_UL_START,
+      type: LOAD_DIGEST_LIST_UL + START,
       id: action.id
     })
 
@@ -300,7 +1261,7 @@ const loadDigestListUlSaga = function * (action) {
     })
 
     yield put({
-      type: C.LOAD_DIGEST_LIST_UL_SUCCESS,
+      type: LOAD_DIGEST_LIST_UL + SUCCESS,
       risksSrc: res.data.risks,
       riskFactors: riskFactors,
       id: action.id
@@ -992,3 +1953,5 @@ export const saga = function * () {
   yield takeEvery(DOWNLOAD_REPORT_FILE, downloadReportFileSaga)
   yield call(backgroundSyncSaga)
 }
+
+export default EbgReducer
