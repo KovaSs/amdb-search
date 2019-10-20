@@ -1,6 +1,6 @@
 import React, { Suspense, lazy } from "react";
-const ElectronicBankGarantees = lazy(() => import("./ElectronicBankGarantees"))
+const TableContainer = lazy(() => import("./TableContainer"))
 
-const ElectronicBankGaranteesContainer = () =>  <Suspense fallback={<div></div>}> <ElectronicBankGarantees /> </Suspense>
+const ElectronicBankGaranteesContainer = () =>  <Suspense fallback={<div></div>}> <TableContainer /> </Suspense>
 
 export default ElectronicBankGaranteesContainer

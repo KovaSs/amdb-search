@@ -1,10 +1,11 @@
 import React, {Component} from 'react'
-import { Collapse, Icon, Descriptions, Button, Input, Select } from "antd"
-import { uuid, getNowDate } from "../../../../../../services/utils";
+import { Collapse, Icon, Descriptions, Button, Input, Select, Checkbox } from "antd"
+import { uuid } from "../../../../../../services/utils";
 
 class AddNewUser extends Component {
   state = {
     error: false,
+    checkbox: false,
     user: {
       inn: "",
       first_name: "",
@@ -29,35 +30,35 @@ class AddNewUser extends Component {
   renderFoulderFlItem = () => {
     const { Item: DescriptionsItem } = Descriptions
     const{ Option }= Select
-    const { onSave, addUser } = this.props
+    const { onSave, addUser, companySrc } = this.props
     const { user, organisation } = this.state
     const { Panel } = Collapse;
     const id = "add-new-descr-items"
     const key = "add-user"
 
     const BtnExtra = ({user}) => {
-      const isUserTrue = user.first_name && user.first_name && user.last_name && user.middle_name && user.position
+      const isUserTrue = user.first_name && user.first_name && user.last_name && user.middle_name && user.position && organisation.org_inn && organisation.org_ogrn
       const addUserInCheckList = e => {
-        console.log('date', getNowDate())
         e.stopPropagation();
         addUser({
           inn: user.inn ? user.inn : "Не найден",
           first_name: user.first_name,
           last_name: user.last_name,
           middle_name: user.middle_name,
+          newUser: true,
           id: uuid(),
           fio: `${user.last_name} ${user.first_name} ${user.middle_name}`,
           ActualDate: Date.now(),
           timeRequest: Date.now(),
           organisation: {
-            name: "",
+            name: organisation.org_name ? organisation.org_name : "",
             inn: organisation.org_inn,
             ogrn: organisation.org_ogrn
           },
           position: [{
             tagName : user.position,
             organisation: {
-              name: "",
+              name: organisation.org_name ? organisation.org_name : "",
               inn: organisation.org_inn,
               ogrn: organisation.org_ogrn
             }
@@ -88,6 +89,34 @@ class AddNewUser extends Component {
     // const handleChangeOrgName = e => { const value = e.target.value; return this.setState(({ organisation }) => ({organisation: { ...organisation, org_name: value}})) }
     const handleChangeOrgInn = e => { const value = e.target.value; return this.setState(({ organisation }) => ({organisation: { ...organisation, org_inn: value}})) }
     const handleChangeOrgOgrn = e => { const value = e.target.value; return this.setState(({ organisation }) => ({organisation: { ...organisation, org_ogrn: value}})) }
+    
+    const changeCheckbox = ({target: {checked}}) => {
+      this.setState((checkbox) => {
+        if(checked) return {
+          checkbox: checked,
+          organisation: {
+            org_name: companySrc.name,
+            org_inn: companySrc.inn,
+            org_ogrn: companySrc.ogrn
+          }
+        } 
+        else return {
+          checkbox: checked,
+          organisation: {
+            org_name: '',
+            org_inn: '',
+            org_ogrn: ''
+          }
+        }
+      })
+    }
+
+    const RenderOrgDescr = (
+      <>
+        <div> Организация </div>
+        <Checkbox onChange={changeCheckbox} >Текущая</Checkbox>
+      </>
+    )
 
     return (
       <Panel
@@ -120,9 +149,9 @@ class AddNewUser extends Component {
               <Option value="Другое"> Другое </Option>
             </Select>
           </DescriptionsItem>
-          <DescriptionsItem key={`${id}-${key}-4`} id={`${id}-${key}`} label="Организация" span={1} >
-            <Input onChange={handleChangeOrgInn} placeholder="ИНН организации" style={{ width: 150 }} size="small"/>
-            <Input onChange={handleChangeOrgOgrn} placeholder="ОГРН организации" style={{ width: 150 }} size="small"/>
+          <DescriptionsItem key={`${id}-${key}-4`} id={`${id}-${key}`} label={RenderOrgDescr} span={1} >
+            <Input onChange={handleChangeOrgInn} value={this.state.organisation.org_inn} placeholder="ИНН организации" style={{ width: 150 }} size="small"/>
+            <Input onChange={handleChangeOrgOgrn} value={this.state.organisation.org_ogrn} placeholder="ОГРН организации" style={{ width: 150 }} size="small"/>
           </DescriptionsItem>
         </Descriptions>
       </Panel>

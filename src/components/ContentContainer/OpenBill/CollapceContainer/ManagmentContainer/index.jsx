@@ -2,71 +2,91 @@ import React from 'react'
 import { connect } from "react-redux"
 import ManagmentItem from './ManagmentItem'
 import PropTypes from 'prop-types'
-import { trasform } from "../../../../../services/utils";
 import AddNewUser from "./AddNewUser";
 import { 
   decodedRequestLoading, 
-  decodedManagementSource, 
-  identifyUser, 
-  decodedCompanyName, 
-  actionGetUserCroinformInfo,
-  decodedСroinformResponse,
-  addNewUserToCheackList,
+  ebgHeads as storeHeads, 
   decodedErrors,
-  decodedFsspInfo
+  decodedCompanyName,
+  decodedCompanySrc,
+  identifyUser,
+  storeRiskFactors,
+  storeTimeRequest,
+  storeStopLists,
+  storeIdentifyInfoFl,
+  storeSelectedInfoFl,
+  storeCroinformInfoFl,
+  storeFsspInfo,
+  updateUserSelectedInfo,
+  actionGetUserCroinformInfo,
+  addNewUserToCheackList,
+  downloadReport
 } from "../../../../../store/ducks/openBill";
 
 /** Вывод данных об руководстве */
 const ManagmentContainer = props => {
-  const { 
-    managementSource, 
-    identifyUser, 
+  const {
+    heads,
+    digets,
+    companySrc,
+    identifyUser,
+    updateUserSelectedInfo,
     requestLoading, 
     companyName, 
     actionGetUserCroinformInfo, 
-    croinformResponse, 
-    addUser, 
-    onSave,
+    addUser,
     fsspInfo,
+    onSave,
+    timeRequest,
+    stopLists,
+    croinformInfo,
+    selectedInfo,
+    identifyInfo,
     addNewUserToCheackList,
+    downloadReport,
     errors
   } = props
   if(addUser) {
     const user = {
       ActualDate: Date.now(),
-      first_name: "Имя",
-      inn: "ИНН",
-      last_name: "Фамилия",
-      middle_name: "Отчество",
-      position: "Должность"
+      first_name: "",
+      inn: "",
+      last_name: "",
+      middle_name: "",
+      position: ""
     }
     return (
       <AddNewUser 
         key={Date.now()}
         user={user}
         onSave={onSave}
+        companySrc={companySrc}
         addUser={addNewUserToCheackList}
       />
     )
   }
 
-  const managementInfo = trasform._managementSource(managementSource)
-  const heads = managementInfo.find( item => item.id === 'heads');
-
-  const renderHeads = heads.data.map( item => (
+  const renderHeads = heads.map( item => (
     <ManagmentItem 
-      key={item.id} 
-      item={item} 
+      item={item}
+      key={item.id}
+      timeRequest={timeRequest.get(item.id, "")}
+      fsspInfo={fsspInfo.get(item.id, "")}
       searchData={'heads'}
-      errors={errors}
-      actionGetUserCroinformInfo={actionGetUserCroinformInfo}
-      identifyUser={identifyUser}
-      companyName={companyName}
-      fsspInfo={fsspInfo.get(item.id)}
+      digets={digets.get(item.id, {digets: [], history: []})}
+      stopLists={stopLists.get(item.id)}
+      identifyInfo={identifyInfo.get(item.id)}
+      selectedInfo={selectedInfo.get(item.id)}
+      croinformInfo={croinformInfo.get(item.id)}
       identifyUserloading={requestLoading.getIn(["identifyUser",item.id])}
       croinformRequestloading={requestLoading.getIn(["croinformRequest",item.id])}
       fssploading={requestLoading.getIn(["fsspInfo",item.id])}
-      croinformRes={croinformResponse.get(item.id)}
+      companyName={companyName}
+      errors={errors}
+      downloadReport={downloadReport}
+      actionGetUserCroinformInfo={actionGetUserCroinformInfo}
+      updateUserSelectedInfo={updateUserSelectedInfo}
+      identifyUser={identifyUser}
     />
   ))
 
@@ -75,26 +95,34 @@ const ManagmentContainer = props => {
 
 const putStateToProps = state => {
   return {
+    heads: storeHeads(state),
+    digets: storeRiskFactors(state),
+    timeRequest: storeTimeRequest(state),
+    identifyInfo: storeIdentifyInfoFl(state),
+    fsspInfo: storeFsspInfo(state),
+    stopLists: storeStopLists(state),
+    croinformInfo: storeCroinformInfoFl(state),
+    selectedInfo: storeSelectedInfoFl(state),
     requestLoading: decodedRequestLoading(state),
-    managementSource: decodedManagementSource(state),
+    companySrc: decodedCompanySrc(state),
     companyName: decodedCompanyName(state),
-    croinformResponse: decodedСroinformResponse(state),
-    errors: decodedErrors(state),
-    fsspInfo: decodedFsspInfo(state)
+    errors: decodedErrors(state)
   }
 }
 
 const putActionsToProps = {
   identifyUser,
+  updateUserSelectedInfo,
   actionGetUserCroinformInfo,
-  addNewUserToCheackList
+  addNewUserToCheackList,
+  downloadReport
 }
 
 export default connect(putStateToProps, putActionsToProps)(ManagmentContainer)
 
 /** Передаваемые в компонент props */
 ManagmentItem.propTypes = {
-  /** Данные о руководящем составе */
+  // Данные о руководящем составе
   managementSource: PropTypes.shape({
     heads: PropTypes.array,
     management_companies: PropTypes.array,
@@ -102,10 +130,10 @@ ManagmentItem.propTypes = {
     founders_ul: PropTypes.array,
     befenicials: PropTypes.array
   }),
-  /** Action для первичной идентификации проверяемого лица */
+  // Action для первичной идентификации проверяемого лица
   identifyUser: PropTypes.func.isRequired,
-  /** Action для проверки проверяемого лица с помощью Croinform */
+  // Action для проверки проверяемого лица с помощью Croinform
   actionGetUserCroinformInfo: PropTypes.func.isRequired,
-  /** Информация для отображения Loader cocтояния */
+  // Информация для отображения Loader cocтояния
   requestLoading: PropTypes.object
 }

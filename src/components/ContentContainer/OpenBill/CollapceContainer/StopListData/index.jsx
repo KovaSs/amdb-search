@@ -1,12 +1,22 @@
 import React from 'react'
-import { Table,  Descriptions, Collapse, Icon, Spin, Row, Col } from 'antd'
+import { 
+  Table,  
+  Descriptions, 
+  Collapse, 
+  Icon, 
+  Spin, 
+  Row, 
+  Col, 
+  Empty 
+} from 'antd'
 import { trasform, uuid } from "../../../../../services/utils";
 
 const styleCss = {
   autoScroll : {
     maxHeight: 102,
     minWidth: 300,
-    overflowY: "auto"
+    overflowY: "auto",
+    overflowX: "hidden"
   },
   stopList: {
     title: {
@@ -60,7 +70,7 @@ const StopListData = ({riskInfo, arbiter, loading =false}) => {
 
   const renderDescriptionFields = riskInfo.map(item => {
     const { Item : DescriptionsItem } = Descriptions;
-    if ( item.data !== undefined && item.data !== "" && item.id === "stop_list" && item.data.length) {
+    if ( item.data !== undefined && item.data !== "" && item.id === "stop_list") {
       const renderStopLists =  item.data.map((item, index) => {
         const renderRowsItem = (list, i, arr = []) => {
           arr.push(<label key={uuid()} style={styleCss.stopList.rowKey}>{`${i+1}: `}</label>)
@@ -76,6 +86,7 @@ const StopListData = ({riskInfo, arbiter, loading =false}) => {
           }
           return arr
         }
+
         return (
           <div key={index} >
             <label style={styleCss.stopList.rowTitle}> {`${item.report_name ? item.report_name : ""} ${item.ID_base ? `( ${item.ID_base} ${item.ID_table ? `/ ${item.ID_table} ` : ""})` : ""}`}</label>
@@ -89,9 +100,14 @@ const StopListData = ({riskInfo, arbiter, loading =false}) => {
         )
       })
 
-      return (
+      if(item.data.length) return (
         <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={1}>
           <div style={styleCss.autoScroll}>{ renderStopLists }</div>
+        </DescriptionsItem>
+      )
+      else return (
+        <DescriptionsItem id={ item.id } key={ item.id } label={ item.title } span={1}>
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} className="empty-data" description={ <span> Упонинаний в списках стоп-листов не найдено </span> } /> 
         </DescriptionsItem>
       )
     } else if ( item.data !== undefined && item.data !== "" && item.id !== "arbiter" && item.id !== "stop_list" && !Array.isArray(item.data)) {
@@ -120,14 +136,14 @@ const StopListData = ({riskInfo, arbiter, loading =false}) => {
 
   return (
     <Collapse 
-      defaultActiveKey={['1', '2']} Раскоментировать при реализации стоп-листов
+      defaultActiveKey={['1', '2']} //Раскоментировать при реализации стоп-листов
       onChange={callback}
       expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"} />}
       style={{marginTop: "5px"}}
     >
       <Panel header="Стоп-листы / Cписки" key="1" showArrow={false}>
         <Spin spinning={loading} tip="Запрос данных по стоп-листам">
-          <Descriptions size="small" bordered border column={{md:3, sm:1, xs:1}}>
+          <Descriptions size="small" bordered border column={{md:2, sm:1, xs:1}}>
             {renderDescriptionFields}
           </Descriptions>
         </Spin>

@@ -4,6 +4,7 @@ import { Spin, Col, Row, Switch } from "antd";
 import { decodedCompanyResponse, decodedRequestLoading, decodedRenderData, decodedErrors } from "../../../store/ducks/creditConveyor";
 import CollapceContainer from "./CollapceContainer";
 import SearchCompanyInput from "./SearchCompanyInput";
+import config from "../../../config";
 import "./сredit-сonveyor.scss"
 
 class CreditConveyor extends Component {
@@ -81,7 +82,7 @@ class CreditConveyor extends Component {
         <div className="conveyor-version"><Switch onChange={this.toggleVersion} checkedChildren="new" unCheckedChildren="old" /></div>
         { newConveyor ?
           this.renderCreditConveyor :
-          <iframe src="https://10.96.205.191/cgi-bin/serg/0/6/9/reports/276/konttur_focus_viewer_new4.pl" title="credit-conveyor" width="100%" height="100%"></iframe>
+          <iframe src={`${config.api()}/cgi-bin/serg/0/6/9/reports/276/konttur_focus_viewer_new4.pl`} title="credit-conveyor" width="100%" height="100%"></iframe>
         }
       </>
     )

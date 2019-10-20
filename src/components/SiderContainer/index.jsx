@@ -12,6 +12,7 @@ export class SiderContainer extends Component {
       // {short: "Кредитный конвеер", full: "Кредитный конвейер", link: "/credit-conveyor", icon: "info-circle"},
       {short: "Электронные банковские гарантии", full: "Электронные банковские гарантии", link: "/electronic-bank-garantees", icon: "line-chart"},
       {short: "Система раннего предупреждения", full: "Система раннего предупреждения", link: "/early-warning-system", icon: "desktop"},
+      {short: "Поиск по стоп-листам", full: "Поиск по стоп-листам", link: "/stop-lists-search", icon: "alert"},
     ]
   };
 
@@ -43,6 +44,11 @@ export class SiderContainer extends Component {
         case "/early-warning-system":
           this.setState({
             activePage: "2"
+          });
+          break;
+        case "/stop-lists-search":
+          this.setState({
+            activePage: "3"
           });
           break;
         default:
@@ -93,8 +99,9 @@ export class SiderContainer extends Component {
       >
         <NavLink to="/" onClick={this.changeActivePage}>
           <div className={"logo"  + hidden}>
-            <img className="logo-img" src={process.env.PUBLIC_URL + '/img/logo.png'} alt={"logo"} />
-            <label className={"logo-label" + hidden }>Газпромбанк</label>
+            <img className="logo-img" src={process.env.PUBLIC_URL + '/img/logo_small.png'} alt={"logo"} />
+            <label className={"logo-label title" + hidden }> Газпромбанк </label>
+            <label className={"logo-label sub-title" + hidden }> Безопасность </label>
           </div>
         </NavLink>
         <Menu selectedKeys={[`${activePage}`]} mode="inline" theme="dark">

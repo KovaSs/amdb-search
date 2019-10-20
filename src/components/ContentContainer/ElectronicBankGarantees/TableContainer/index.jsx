@@ -1,9 +1,35 @@
 import React, { Component } from 'react'
-import { Table, Input, Button, Icon, ConfigProvider, Empty, Progress } from 'antd';
 import { withRouter } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
-import { getDate, getTime } from '../../../../services/utils'
-import { ebgData as data } from '../../../../store/mock'
+import { connect } from "react-redux"
+import { Table, Input, Button, Icon, ConfigProvider, Empty, Progress, Popconfirm, Tag } from 'antd';
+import { getDate, getTimeDev, uuid } from '../../../../services/utils'
+import { 
+  decodedRequestLoading,
+  decodedEbgData,
+  decodedErrors,
+  takeEbgItem
+} from "../../../../store/ducks/EBG";
+import "./elsecronic-bank-garantees.scss";
+
+const styleCss = {
+  loadData: {
+    position: "absolute",
+    width: 50,
+    right: 0,
+    top: 6,
+    fontSize: 24,
+    color: "#1890ff"
+  },
+  errorLoading: {
+    position: "absolute",
+    right: 0,
+    top: 8
+  },
+  grayDescr: {
+    color: "#808080bf"
+  }
+}
 
 class TableContainer extends Component {
   state = {
@@ -11,13 +37,10 @@ class TableContainer extends Component {
     loading: false,
     dataTable: null,
     dateNow: ""
-  };
+  }
 
   componentDidMount() {
-    this.setState({loading : true})
-    setTimeout(() => {
-      this.setState({loading : false, dataTable : data})
-    }, 1000);
+    document.title = "AC - Проверка | Электронные банковские гарантии"
     this.interval = setInterval(() =>  this.setState({dateNow: Date.now()}), 1000)
   }
 
@@ -25,8 +48,11 @@ class TableContainer extends Component {
     clearInterval(this.interval)
   }
 
-  takeInWork = inn => {
-    this.props.history.push(`/electronic-bank-garantees/${inn}`)
+  takeInWork = record => {
+    const {takeEbgItem} = this.props
+    takeEbgItem({
+      inn: record.info.inn
+    })
   }
 
   getColumnSearchProps = dataIndex => ({
@@ -64,7 +90,7 @@ class TableContainer extends Component {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
       } else {
         for (const key in record['info']) {
-          if (record[dataIndex][key].toString().toLowerCase().includes(value.toLowerCase())) {
+          if (record[dataIndex][key] && record[dataIndex][key].toString().toLowerCase().includes(value.toLowerCase())) {
             return record[dataIndex][key].toString().toLowerCase().includes(value.toLowerCase())
           }
         }
@@ -101,73 +127,81 @@ class TableContainer extends Component {
 
   getLeftCheckTime = recTime => {
     const { dateNow } = this.state
-    const leftTime = (recTime + (20*60000))-dateNow
-    if(leftTime <= 0) return <Icon style={{fontSize: 16}} type="close-circle" />
-    return getTime(leftTime)
+    const leftTime = getTimeDev(recTime, dateNow)
+    if(Number.isNaN(leftTime.diff)) return <Icon style={{fontSize: 16}} type="loading" />
+    else if(!leftTime.status) return <Icon style={{fontSize: 16}} type="close-circle" />
+    return leftTime.text
   }
 
   getLeftCheckPercentTime = recTime => {
     const { dateNow } = this.state
-    const leftTimePercent = ((recTime + (20*60000))-dateNow ) * 100 / (20 * 60000)
-    return leftTimePercent
+    const leftTimePercent = getTimeDev(recTime, dateNow)
+    return leftTimePercent.hasOwnProperty("percent") ? leftTimePercent.percent : 0
   }
 
   render() {
     const columns = [
       {
-        title: '№ запроса',
+        title: '№ п/п',
         dataIndex: 'number',
         key: 'number',
-        width: '10%',
-        ...this.getColumnSearchProps('number'),
+        width: '5%',
+        // ...this.getColumnSearchProps('number'),
       },
       {
         title: 'Дата поступления',
         dataIndex: 'date',
         key: 'date',
-        width: '20%',
+        width: '10%',
         ...this.getColumnSearchProps('date'),
+      },
+      {
+        title: 'Инициатор запроса',
+        dataIndex: 'owner_detail',
+        key: 'owner_detail',
+        width: '10%',
+        // ...this.getColumnSearchProps('owner_detail'),
+      },
+      {
+        title: 'Статус',
+        dataIndex: 'status',
+        key: 'status',
+        width: '10%',
+        // ...this.getColumnSearchProps('owner_detail'),
+        render: (text, record) => record.status === "0" ? <Tag key={uuid()} color="green"> Готово к проверке </Tag> : <Tag key={uuid()} color="blue"> Объект в работе </Tag>
+      },
+      {
+        title: 'Оператор',
+        dataIndex: 'user',
+        key: 'user',
+        width: '10%',
+        // ...this.getColumnSearchProps('owner_detail'),
       },
       {
         title: 'Объект запроса',
         key: 'info',
         dataIndex: 'info',
-        ...this.getColumnSearchProps('info'),
+        width: '25%',
+        // ...this.getColumnSearchProps('info'),
         render: (text, record) => (
           <>
-            <div>
-              <Highlighter
-                highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }} 
-                searchWords={this.state.searchText} 
-                autoEscape 
-                textToHighlight={record.info.name.toString().toUpperCase()}
-              /> 
+            <div> 
+              {
+                record.info.name ? 
+                record.info.name.toString().toUpperCase() : 
+                <label style={styleCss.grayDescr}>
+                  {("Название организации отсутствует").toUpperCase()}
+                </label> 
+              } 
             </div>
-            <small><b>ИНН: </b>
-              <Highlighter
-                highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }} 
-                searchWords={this.state.searchText} 
-                autoEscape 
-                textToHighlight={record.info.inn.toString()}
-              />
-            </small>{"  "}
+            { record.info.inn ?
+              <><small style={{marginRight: 10}}><b>ИНН: </b> {record.info.inn ? record.info.inn : "Не указан"} </small></> : null
+            }
             { record.info.ogrn ?
-              <small><b>ОГРН: </b>
-                <Highlighter
-                  highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }} 
-                  searchWords={this.state.searchText} 
-                  autoEscape 
-                  textToHighlight={ record.info.ogrn.toString()}
-                />
-              </small> :
-              <small><b>Дата рождения: </b> 
-                <Highlighter
-                  highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }} 
-                  searchWords={this.state.searchText} 
-                  autoEscape 
-                  textToHighlight={ (`${getDate(record.info.birthday)}г.`).toString()}
-                />
-              </small> 
+              <small style={{marginRight: 10}}><b>ОГРН: </b> {record.info.ogrn ? record.info.ogrn : "Не указан"} </small> : null
+            }
+            { record.info.birthday ?
+              <small><b>Дата рождения: </b> { record.info.birthday ? `${getDate(record.info.birthday)}г.` : "Не указана"} </small> : null
             }
           </>
         ),
@@ -175,14 +209,17 @@ class TableContainer extends Component {
       {
         title: 'Времени осталось',
         key: 'time',
+        width: '20%',
         render: (text, record) => {
+          const leftCheckPercentTime = this.getLeftCheckPercentTime(record.time)
+          if(leftCheckPercentTime === 0) return <Tag key={uuid()} color="red"> Заявка просрочена </Tag>
           return (
             <Progress
               size="small"
               style={{width: "80%"}}
               format={() => this.getLeftCheckTime(record.time)}
-              percent={this.getLeftCheckPercentTime(record.time)}
-              className={this.getLeftCheckPercentTime(record.time) >= 75 ? "success-time" : this.getLeftCheckPercentTime(record.time) < 25 ? "danger-time" : ""}
+              percent={leftCheckPercentTime}
+              className={leftCheckPercentTime >= 50 ? "success-time" : leftCheckPercentTime < 25 ? "danger-time" : ""}
               status="active"
             />
           )
@@ -191,30 +228,93 @@ class TableContainer extends Component {
       {
         title: '',
         key: 'action',
+        width: '10%',
         render: (text, record) => {
-          return <Button onClick={ () => this.takeInWork(record.info.inn) }> Взять в работу </Button>
+          const disabledBtn = record.user && record.user.indexOf(document.cookie.split("=")[1]) !== -1
+          return (
+            <>
+              { record.status === "0" ?
+                <Popconfirm
+                  title={
+                    <div style={{width: 230}}>
+                      <div style={{fontWeight: 500}}> Взять в работу? </div>
+                      <div> 
+                        После подтверждения, проверка данного объекта будет закреплена за Вами и должна быть осуществлена в течении указанного времени - {this.getLeftCheckTime(record.time)}
+                      </div>
+                    </div>
+                  }
+                  onConfirm={ () => this.takeInWork(record) }
+                  icon={<Icon type="question-circle-o" style={{color: "#28a745"}}/>}
+                  placement="left"
+                  okText="Да"
+                  cancelText="Нет" 
+                >
+                  <Button type="primary"> Взять в работу </Button>
+                </Popconfirm> : 
+                <Button disabled={!disabledBtn} onClick={ () => this.takeInWork(record) } > Взято в работу </Button>
+              }
+            </>
+            
+          )
         }
       },
     ];
 
-    const { dataTable, loading } = this.state
+    const { requestLoading, ebgData, errors } = this.props
     return (
-      <ConfigProvider renderEmpty = { () => <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={<span>Данные отсутствуют</span>} /> } >
-        <Table
-          bordered
-          columns={columns}
-          dataSource={dataTable}
-          loading = {{
-            spinning: loading,
-            size:"large",
-            tip:"Идет запрос данных"
-          }}
-          title={() => 'Электронные банковские гарантии'}
-          size="small"
-        />
-      </ConfigProvider>
+      <div className="bank-garanties-container">
+        <ConfigProvider renderEmpty = { () => <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={<span>Очередь проверки пуста</span>} /> } >
+          <Table
+            bordered
+            size="small"
+            columns={columns}
+            dataSource={ebgData}
+            loading = {{
+              spinning: ebgData === null || requestLoading.get('ebgMainDataRequest'),
+              size:"large",
+              tip: requestLoading.get('ebgMainDataRequest') ? "Получение данных об выбранном объекте" : "Получение текущего списка объектов"
+            }}
+            title={() => (
+              <>
+                <label>Электронные банковские гарантии</label>
+                { 
+                  requestLoading.get('ebgSyncTableData') && 
+                  <Icon 
+                    style={ styleCss.loadData } 
+                    type="loading" 
+                  />
+                }
+                {
+                  errors.get('ebgSyncTableData') && 
+                  <Tag 
+                  color="red"
+                    style={ styleCss.errorLoading }
+                  > Нет соединения с сервером </Tag>
+                }
+              </>
+            )}
+            pagination={{
+              defaultPageSize: 12,
+              hideOnSinglePage: true,
+              showTotal: (total) => `Всего элементов: ${total}`
+            }}
+          />
+        </ConfigProvider>
+      </div>
     )
   }
 }
 
-export default withRouter(TableContainer)
+const putStateToProps = state => {
+  return {
+    ebgData: decodedEbgData(state),
+    requestLoading: decodedRequestLoading(state),
+    errors: decodedErrors(state),
+  }
+}
+
+const putActionToProps = {
+  takeEbgItem
+}
+
+export default connect(putStateToProps, putActionToProps)(withRouter(TableContainer))

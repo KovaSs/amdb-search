@@ -14,3 +14,274 @@
 .ant-layout-content__data {
   height: 100%;
 }
+
+/// Mixin to customize scrollbars
+/// Beware, this does not work in all browsers
+/// @author Hugo Giraudel
+/// @param {Length} $size - Horizontal scrollbar's height and vertical scrollbar's width
+/// @param {Color} $foreground-color - Scrollbar's color
+/// @param {Color} $background-color [mix($primary, white, 75%)] - Scrollbar's color
+/// @example scss - Scrollbar styling
+/// @include scrollbars(.5em, slategray);
+@mixin scrollbars($size, $foreground-color, $background-color: mix($foreground-color, white, 50%)) {
+  ::-webkit-scrollbar {
+    width: $size;
+    height: $size;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: $foreground-color;
+  }
+  ::-webkit-scrollbar-track {
+    background: $background-color;
+  }
+  // For Internet Explorer
+  body {
+    scrollbar-face-color: $foreground-color;
+    scrollbar-track-color: $background-color;
+  }
+}
+@include scrollbars(.4em, #30639682);
+
+// OpenBill
+.credit-conveyor{
+  color: rgba(0, 255, 242, 0.24);
+
+  .ant-badge-count {
+    z-index: 9;
+    height: 17px;
+    padding: 0px 5px;
+    font-size: 11px;
+    line-height: 16px;
+    min-width: 10px;
+  }
+
+  &__risk-factor {
+    margin: 1rem;
+    &-meta {
+      font-size: 0.85rem;
+      line-height: 15px;
+      margin-left: 4px;
+    }
+    .ant-list-item-meta-title {
+      margin-bottom: 0;
+    }
+  }
+
+  .ant-collapse-header {
+    line-height: 10px !important;
+    -moz-user-select: none; /* Mozilla Firefox */
+    -ms-user-select: none; /* Internet Explorer (не поддерживается) */
+    -o-user-select: none; /* Opera Presto (не поддерживается) */
+    -webkit-user-select: none; /* Google Chrome, Opera Next, Safari */
+  }
+
+  .ant-advanced-search-form,
+  .search-result-table {
+    background-color: #fff;
+    padding: 0 1rem;
+    // margin: 0;
+    height: 80px;
+    -webkit-transition: all 0.3s ease; 
+    -moz-transition: all 0.3s ease; 
+    -o-transition: all 0.3s ease; 
+    transition: all 0.3s ease;
+    .ant-input-group-addon {
+      background: #a3d3ff13;
+    }
+    .ant-form-item {
+      display: flex;
+    }
+    .ant-form-item-control-wrapper {
+      flex: 1;
+    }
+  }
+
+  .search-btn {
+    margin-top: 4px;
+  }
+
+  .search-result-table {
+    // display: flex;
+    // flex-direction: column;
+    // align-items: center;
+    width: 100%;
+    justify-content: center;
+    color: rgba(0, 0, 0, 0.85);
+    min-height: 500px;
+    margin: 1rem;
+    text-align: center;
+    background: #a3d3ff13;
+    border: 1px solid #d9d9d9;
+    border-radius: 5px;
+  }
+
+  .tabs-info {
+    margin: 2rem 4rem;
+    &__organisation {
+      &-info {
+        border-bottom: 1px solid #e8e8e8;
+        &:last-child {
+          border-bottom: none;
+        }
+        .lable {
+          text-align: left;
+          font-weight: bold;
+          padding-right: 2rem;
+          -moz-user-select: none; /* Mozilla Firefox */
+          -ms-user-select: none; /* Internet Explorer (не поддерживается) */
+          -o-user-select: none; /* Opera Presto (не поддерживается) */
+          -webkit-user-select: none; /* Google Chrome, Opera Next, Safari */
+          &:after {
+            content: ':';
+            font-weight: normal;
+            margin-left: 5px;
+          }
+        }
+        .descr {
+          &.red {
+            color: red;
+          }
+        }
+      }
+      .lable-table {
+        text-align: center;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        -moz-user-select: none; /* Mozilla Firefox */
+        -ms-user-select: none; /* Internet Explorer (не поддерживается) */
+        -o-user-select: none; /* Opera Presto (не поддерживается) */
+        -webkit-user-select: none; /* Google Chrome, Opera Next, Safari */
+      }
+    }
+    &__lable-table {
+      margin: 2rem 0 2rem 1rem;
+      font-weight: bold;
+      -moz-user-select: none; /* Mozilla Firefox */
+      -ms-user-select: none; /* Internet Explorer (не поддерживается) */
+      -o-user-select: none; /* Opera Presto (не поддерживается) */
+      -webkit-user-select: none; /* Google Chrome, Opera Next, Safari */
+    }
+  }
+
+  .main-info{
+    margin: 2rem 4rem;
+    &__organisation {
+      &-info {
+        height: 55px;
+        background-color: #fff;
+        border: 1px solid #d9d9d9;
+        border-radius: 4px;
+        padding: 5px;
+        margin-bottom: 5px;
+        -webkit-transition: all 0.3s ease; 
+        -moz-transition: all 0.3s ease; 
+        -o-transition: all 0.3s ease; 
+        transition: all 0.3s ease;
+        .ant-avatar-circle {
+          margin: 5px;
+          background-color:#1890ffd4;
+          -webkit-transition: all 0.3s ease; 
+          -moz-transition: all 0.3s ease; 
+          -o-transition: all 0.3s ease; 
+          transition: all 0.3s ease;
+        }
+        .show-btn-drawer-count{
+          margin-top: .5rem;
+        }
+        .collapced-main-info{
+          height: 100%;
+          opacity: 1;
+          -webkit-transition: all 0.3s ease; 
+          -moz-transition: all 0.3s ease; 
+          -o-transition: all 0.3s ease;
+          transition: all 0.3s ease;
+        }
+        .alarm-left-time-icon {
+          -webkit-transition: all 0.5s ease; 
+          -moz-transition: all 0.5s ease; 
+          -o-transition: all 0.5s ease;
+          transition: all 0.5s ease;
+        }
+        .lable {
+          text-align: left;
+          font-weight: bold;
+          -moz-user-select: none; /* Mozilla Firefox */
+          -ms-user-select: none; /* Internet Explorer (не поддерживается) */
+          -o-user-select: none; /* Opera Presto (не поддерживается) */
+          -webkit-user-select: none; /* Google Chrome, Opera Next, Safari */
+          &:after {
+            content: ':';
+            font-weight: normal;
+            margin-left: 5px;
+          }
+        }
+        .descr {
+          margin: 0 1rem;
+          &.red {
+            color: red;
+            color: #0e75fdfd;
+          }
+        }
+      }
+      .lable-table {
+        text-align: center;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        -moz-user-select: none; /* Mozilla Firefox */
+        -ms-user-select: none; /* Internet Explorer (не поддерживается) */
+        -o-user-select: none; /* Opera Presto (не поддерживается) */
+        -webkit-user-select: none; /* Google Chrome, Opera Next, Safari */
+      }
+    }
+    &__lable-table {
+      margin: 2rem 0 2rem 1rem;
+      font-weight: bold;
+      -moz-user-select: none; /* Mozilla Firefox */
+      -ms-user-select: none; /* Internet Explorer (не поддерживается) */
+      -o-user-select: none; /* Opera Presto (не поддерживается) */
+      -webkit-user-select: none; /* Google Chrome, Opera Next, Safari */
+    }
+  }
+}
+
+.drawer-history {
+  // Форматирование комментария риск-фактора
+  .pWrite {
+    white-space: pre-line;
+  }
+  .empty-data {
+    margin: 0;
+    .ant-empty-image {
+      height: 24px;
+      margin: 0;
+    }
+  }
+  th.searching-copy-title {
+    width: 100px;
+  }
+  .searching-copy-text {
+    &:hover {
+      background-color: rgba(199, 199, 199, 0.24);
+    }
+  }
+  .ant-page-header-content {
+    padding-top: 0;
+  }
+  .ant-page-header-heading-extra {
+    position: absolute;
+    top: 0px;
+    right: 10px;
+  }
+}
+
+.conveyor-version {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  z-index: 1000;
+}
+
+// Цвет отредактированного риск-фактора
+.table-record-edited {
+  color: #129a0b;
+}

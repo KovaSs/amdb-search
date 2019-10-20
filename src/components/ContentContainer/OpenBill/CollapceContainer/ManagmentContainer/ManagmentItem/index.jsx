@@ -1,14 +1,27 @@
-import React, { PureComponent } from "react";
-import { Collapse, Icon, Spin, Descriptions, AutoComplete, Input, Button, Badge, notification } from "antd";
-import PropTypes from "prop-types";
-import { union, concat, compact } from "lodash";
-import LeaderHeader from "../LeaderHeader";
-import LeaderEditedHeader from "../LeaderEditedHeader";
-import {region, parsingFio, parsingPassport} from "../../../../../../services/utils";
-import CroinformDrawer from "../../../DrawerContainer/CroinformDrawer";
+import React, { PureComponent } from "react"
+import { 
+  Collapse, 
+  Icon, 
+  Spin, 
+  Descriptions, 
+  AutoComplete, 
+  Input, 
+  Button, 
+  Badge, 
+  notification, 
+  DatePicker, 
+  Select 
+} from "antd"
+import PropTypes from "prop-types"
+import { union, concat, compact } from "lodash"
+import LeaderHeader from "../LeaderHeader"
+import LeaderEditedHeader from "../LeaderEditedHeader"
+import { region, parsingFio, parsingPassport, getDatePickerValue, parsingAddress } from "../../../../../../services/utils"
+import CroinformDrawer from "../../../DrawerContainer/CroinformDrawer"
 
 export class ManagmentItem extends PureComponent {
   state = {
+    openDatePicker: false,
     showCroinformResponse: false,
     edited: false,
     error: false,
@@ -27,12 +40,14 @@ export class ManagmentItem extends PureComponent {
       inn: "",
       fio: "",
       passport: "",
-      birthday: "",
+      birthday: [],
       address: ""
     },
     userSelected: {
       inn: "",
       fio: "",
+      Seria: "",
+      Number: "",
       FirstName: "",
       MiddleName: "",
       SurName: "",
@@ -50,29 +65,29 @@ export class ManagmentItem extends PureComponent {
         last_name, 
         first_name,  
         middle_name, 
-        identifyInfo = { 
-          inn: [], 
-          fio: [], 
-          passport: "", 
-          birthday: [], 
-          address: ""
-        },
-        selectedInfo = {
-          INN: "",
-          FirstName: "", 
-          MiddleName: "",
-          SurName: "",
-          DateOfBirth: "", 
-          Seria: "",
-          Number: "",
-          RegionExp: "", 
-          CityExp: "", 
-          StreetExp: "", 
-          HouseExp: "", 
-          BuildExp: "", 
-          BuildingExp: "", 
-          FlatExp: "",
-        }
+      },
+      identifyInfo = { 
+        inn: [], 
+        fio: [], 
+        passport: "", 
+        birthday: [], 
+        address: ""
+      },
+      selectedInfo = {
+        INN: "",
+        FirstName: "", 
+        MiddleName: "",
+        SurName: "",
+        DateOfBirth: "", 
+        Seria: "",
+        Number: "",
+        RegionExp: "", 
+        CityExp: "", 
+        StreetExp: "", 
+        HouseExp: "", 
+        BuildExp: "", 
+        BuildingExp: "", 
+        FlatExp: "",
       }
     } = this.props
 
@@ -94,6 +109,8 @@ export class ManagmentItem extends PureComponent {
         FirstName: selectedInfo.FirstName ? selectedInfo.FirstName : first_name,
         MiddleName: selectedInfo.MiddleName ? selectedInfo.MiddleName : middle_name,
         SurName: selectedInfo.SurName ? selectedInfo.SurName : last_name,
+        Seria: selectedInfo.Seria ? selectedInfo.Seria : "",
+        Number: selectedInfo.Number ? selectedInfo.Number : "",
         passport: selectedInfo.Seria && selectedInfo.Number ? `${selectedInfo.Seria} ${selectedInfo.Number}` : "",
         birthday: selectedInfo.DateOfBirth ? selectedInfo.DateOfBirth : "",
       },
@@ -105,7 +122,7 @@ export class ManagmentItem extends PureComponent {
         BuildingExp: selectedInfo.BuildingExp ? selectedInfo.BuildingExp : "",
         FlatExp: selectedInfo.FlatExp ? selectedInfo.FlatExp : "", 
         RegionExp: selectedInfo.RegionExp ? selectedInfo.RegionExp : "",
-        RegionExpText: selectedInfo.RegionExpText ? selectedInfo.RegionExpText : ""
+        RegionExpText: selectedInfo.RegionExp ? region.filter(region => region.value === selectedInfo.RegionExp)[0].title : ""
       },
     });
   }
@@ -113,40 +130,18 @@ export class ManagmentItem extends PureComponent {
   /* Обновление данных state при идентификации физического лица */
   componentDidUpdate(prevProps) {
     const { 
-      item,
-      errors,
       item: { 
         id, 
         inn, 
         last_name, 
         first_name,  
         middle_name, 
-        identifyInfo = { 
-          inn: "", 
-          fio: "", 
-          passport: "", 
-          birthday: "", 
-          address: ""
-        },
-        selectedInfo = {
-          INN: "",
-          FirstName: "", 
-          MiddleName: "",
-          SurName: "",
-          DateOfBirth: "", 
-          Seria: "",
-          Number: "",
-          RegionExp: "", 
-          CityExp: "", 
-          StreetExp: "", 
-          HouseExp: "", 
-          BuildExp: "", 
-          BuildingExp: "", 
-          FlatExp: "",
-        }
-      }
+      },
+      identifyInfo,
+      selectedInfo,
+      errors
     } = this.props;
-    if (item !== prevProps.item) {
+    if (identifyInfo && identifyInfo !== prevProps.identifyInfo) {
       this.setState({
         user: {
           inn: union([inn], identifyInfo.inn).length >= 1 && identifyInfo.inn ?
@@ -156,15 +151,19 @@ export class ManagmentItem extends PureComponent {
           passport: identifyInfo.passport,
           birthday: identifyInfo.birthday,
           address: identifyInfo.address
-        },
+        }
+      });
+    }
+
+    if(selectedInfo && selectedInfo !== prevProps.selectedInfo) {
+      this.setState({
         userSelected: {
-          inn: selectedInfo.INN ? selectedInfo.INN : 
-            union([inn], identifyInfo.inn).length >= 1 && identifyInfo.inn ?
-              union([inn], identifyInfo.inn).filter(item => item !== "Не найден")[0] :
-              union([inn], identifyInfo.inn)[0],
+          inn: selectedInfo.INN,
           FirstName: selectedInfo.FirstName ? selectedInfo.FirstName : first_name,
           MiddleName: selectedInfo.MiddleName ? selectedInfo.MiddleName : middle_name,
           SurName: selectedInfo.SurName ? selectedInfo.SurName : last_name,
+          Seria: selectedInfo.Seria ? selectedInfo.Seria : "",
+          Number: selectedInfo.Number ? selectedInfo.Number : "",
           passport: selectedInfo.Seria && selectedInfo.Number ? `${selectedInfo.Seria} ${selectedInfo.Number}` : "",
           birthday: selectedInfo.DateOfBirth ? selectedInfo.DateOfBirth : "",
         },
@@ -176,9 +175,9 @@ export class ManagmentItem extends PureComponent {
           BuildingExp: selectedInfo.BuildingExp ? selectedInfo.BuildingExp : "",
           FlatExp: selectedInfo.FlatExp ? selectedInfo.FlatExp : "", 
           RegionExp: selectedInfo.RegionExp ? selectedInfo.RegionExp : "",
-          RegionExpText: selectedInfo.RegionExpText ? selectedInfo.RegionExpText : ""
+          RegionExpText: selectedInfo.RegionExp ? region.filter(region => region.value === selectedInfo.RegionExp)[0].title : ""
         },
-      });
+      })
     }
 
     if(
@@ -204,10 +203,13 @@ export class ManagmentItem extends PureComponent {
   };
 
   showNoEnoughData = prevProps => {
-    const { item, item: {identifyInfo : response, id, fio} } = this.props
+    const {
+      timeRequest,
+      item: {identifyInfo : response, id, fio}, 
+    } = this.props
     if(!response) return
     else if (response === prevProps) return
-    else if (item.timeRequest === prevProps.item.timeRequest) return
+    else if (timeRequest === prevProps.timeRequest) return
 
     const errMessage = `Данные ${!response.passport.length ? "паспорта, " : ""}${!response.birthday.length ? 'даты рождения, ' : ""}${!response.address.length ? 'адреса ' : ""} отсутствуют`
 
@@ -261,19 +263,19 @@ export class ManagmentItem extends PureComponent {
         userSelected.MiddleName !== " " ? userSelected.MiddleName : "" 
         : item.middle_name !== " " ? item.middle_name : "",
       SurName: userSelected.SurName ? userSelected.SurName : item.last_name,
-      DateOfBirth: userSelected.birthday, 
-      Seria: parsingPassport(userSelected.passport).Seria,
-      Number: parsingPassport(userSelected.passport).Number,
-      RegionExp: parseAddress.RegionExp, 
-      CityExp: parseAddress.CityExp, 
-      StreetExp: parseAddress.StreetExp, 
-      HouseExp: parseAddress.HouseExp, 
-      BuildExp: parseAddress.BuildExp, 
-      BuildingExp: parseAddress.BuildingExp, 
+      DateOfBirth: userSelected.birthday,
+      Seria: userSelected.Seria,
+      Number: userSelected.Number,
+      RegionExp: parseAddress.RegionExp,
+      CityExp: parseAddress.CityExp,
+      StreetExp: parseAddress.StreetExp,
+      HouseExp: parseAddress.HouseExp,
+      BuildExp: parseAddress.BuildExp,
+      BuildingExp: parseAddress.BuildingExp,
       FlatExp: parseAddress.FlatExp,
-      INNArr: userState.inn.filter(item => item === userSelected.inn).length ? 
+      INNArr: Array.isArray(userState.inn) && userState.inn.filter(item => item === userSelected.inn).length ? 
           userState.inn : compact(concat(userState.inn, userSelected.inn)),
-      DateOfBirthArr: userState.birthday.filter(item => item === userSelected.birthday).length ? 
+      DateOfBirthArr: Array.isArray(userState.birthday) && userState.birthday.filter(item => item === userSelected.birthday).length ? 
         userState.birthday : compact(concat(userState.birthday, userSelected.birthday))
     }
     console.log('INNArr',  userState.inn, userSelected.inn, user)
@@ -295,19 +297,54 @@ export class ManagmentItem extends PureComponent {
   /* Рендеринг физического лица */
   renderFoulderFlItem = (item, key, id) => {
     const { Item: DescriptionsItem } = Descriptions;
-    const { identifyUser, identifyUserloading, croinformRequestloading, companyName, croinformRes, fsspInfo } = this.props;
+    const { 
+      identifyUser, 
+      identifyUserloading, 
+      croinformRequestloading, 
+      companyName,
+      croinformInfo: croinformRes,
+      fsspInfo,
+      stopLists,
+      digets
+    } = this.props;
     const { edited, userSelected, openPanel, user } = this.state;
     const { Panel } = Collapse;
 
     const BtnExtra = ({ user }) => {
-      const { identifyUser, croinformRes, item: propsItem } = this.props;
+      const { identifyUser, updateUserSelectedInfo, item: propsItem, digets } = this.props;
       const { userSelected, parseAddress, edited } = this.state;
       const croinformDisabled = !userSelected.inn && !userSelected.fio && !userSelected.passport && !parseAddress.RegionExp && !parseAddress.CityExp && !parseAddress.StreetExp &&!parseAddress.HouseExp
-      const showBtn = propsItem.hasOwnProperty('identifyInfo') || croinformRes
+      const showBtn = propsItem.hasOwnProperty('identifyInfo') || propsItem.hasOwnProperty('croinform') || digets
 
       const editUserInfo = e => {
         if(openPanel) {
           e.stopPropagation();
+        }
+        if(edited) {
+          updateUserSelectedInfo({
+            user: {
+              INN: userSelected.inn ? 
+                userSelected.inn !== "Не найден" ? userSelected.inn : "" 
+                : user.inn !== "Не найден" ? user.inn : "",
+              FirstName: userSelected.FirstName ? userSelected.FirstName : item.first_name, 
+              SurName: userSelected.SurName ? userSelected.SurName : item.last_name,
+              MiddleName: userSelected.MiddleName ? 
+                userSelected.MiddleName !== " " ? userSelected.MiddleName : "" 
+                : item.middle_name !== " " ? item.middle_name : "",
+              DateOfBirth: userSelected.birthday, 
+              Seria: userSelected.Seria,
+              Number: userSelected.Number,
+              RegionExp: parseAddress.RegionExp, 
+              CityExp: parseAddress.CityExp,
+              StreetExp: parseAddress.StreetExp, 
+              HouseExp: parseAddress.HouseExp, 
+              BuildExp: parseAddress.BuildExp, 
+              BuildingExp: parseAddress.BuildingExp, 
+              FlatExp: parseAddress.FlatExp,
+              ogrn: user.organisation.ogrn ? user.organisation.ogrn : "",
+            },
+            id: user.id
+          })
         }
         this.toggleEdited();
       };
@@ -327,10 +364,10 @@ export class ManagmentItem extends PureComponent {
               userSelected.MiddleName !== " " ? userSelected.MiddleName : "" 
               : item.middle_name !== " " ? item.middle_name : "",
             DateOfBirth: userSelected.birthday, 
-            Seria: parsingPassport(userSelected.passport).Seria,
-            Number: parsingPassport(userSelected.passport).Number,
+            Seria: userSelected.Seria,
+            Number: userSelected.Number,
             RegionExp: parseAddress.RegionExp, 
-            CityExp: parseAddress.CityExp, 
+            CityExp: parseAddress.CityExp,
             StreetExp: parseAddress.StreetExp, 
             HouseExp: parseAddress.HouseExp, 
             BuildExp: parseAddress.BuildExp, 
@@ -371,8 +408,7 @@ export class ManagmentItem extends PureComponent {
             title="Поиск информации"
             size="small"
             style={{color: "rgba(14, 117, 253, 0.992)", marginRight: 5}}
-            // disabled={edited}
-            icon={identifyUserloading ? "loading" : "file-search"}
+            icon={identifyUserloading ? "loading" : "user"}
             onClick={e => identifyUserInfo(e)}
           />
           <Button
@@ -392,62 +428,130 @@ export class ManagmentItem extends PureComponent {
         user,
         user: { passport, birthday, address },
         userSelected,
+        userSelected: {
+          CityExp: selCityExp, 
+          StreetExp: selStreetExp, 
+          HouseExp: selHouseExp, 
+          BuildExp: selBuildExp, 
+          BuildingExp: selBuildingExp, 
+          FlatExp: selFlatExp, 
+          RegionExpText: selRegionExpText
+        },
         parseAddress: {CityExp, StreetExp, HouseExp, BuildExp, BuildingExp, FlatExp, RegionExpText},
         edited
       } = this.state;
+      const { item : { selectedInfo } } = this.props
       const descrArr = [];
       const id = "heads";
       for (const key in user) {
         if ( user.hasOwnProperty(key) && key === "passport" ) {
-          edited && descrArr.push(
-            <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Паспорт" span={1} >
-              { this._renderInut(passport, "passport") }
-            </DescriptionsItem>
-          )
-          !edited && (passport !== "" || userSelected.passport) && descrArr.push(
-            <DescriptionsItem  key={`${id}-${key}`} id={`${id}-${key}`} label="Паспорт" span={1} >
-              <label onDoubleClick={e => this.onDoubleClickEvent(e)}>{ userSelected.passport  ? userSelected.passport : passport.length ? `${passport[0].seria} ${passport[0].number}` : "" }</label>
-            </DescriptionsItem>
-          )
+          if(edited) {
+            descrArr.push(
+              <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Паспорт" span={1} >
+                { this._renderInut(passport, "passport") }
+              </DescriptionsItem>
+            )
+          } else if( selectedInfo && selectedInfo.Seria && selectedInfo.Number ) {
+            /** Рендеринг данных паспорта из сохраненных данных */
+            descrArr.push(
+              <DescriptionsItem  key={`${id}-${key}`} id={`${id}-${key}`} label="Паспорт" span={1} >
+                <label onDoubleClick={e => this.onDoubleClickEvent(e)}>
+                  { `${selectedInfo.Seria} ${selectedInfo.Number}` }
+                </label>
+              </DescriptionsItem>
+            )
+          } else if( userSelected.Seria && userSelected.Number ) {
+            /** Рендеринг данных паспорта из выбранных данных */
+            descrArr.push(
+              <DescriptionsItem  key={`${id}-${key}`} id={`${id}-${key}`} label="Паспорт" span={1} >
+                <label onDoubleClick={e => this.onDoubleClickEvent(e)}>
+                  { `${userSelected.Seria} ${userSelected.Number}` }
+                </label>
+              </DescriptionsItem> 
+            ) 
+          } else if(passport !== "") {
+            /** Рендеринг данных паспорта из пришедших данных с сервера */
+            descrArr.push(
+              <DescriptionsItem  key={`${id}-${key}`} id={`${id}-${key}`} label="Паспорт" span={1} >
+                <label onDoubleClick={e => this.onDoubleClickEvent(e)}>
+                  {  passport.length ? `${passport[0].seria} ${passport[0].number}` : "" }
+                </label>
+              </DescriptionsItem> 
+            )
+          }
         } else if ( user.hasOwnProperty(key) && key === "birthday" ) {
-          edited && descrArr.push(
-            <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Дата рождения" span={1} >
-              { this._renderInut(birthday, "birthday") }
-            </DescriptionsItem>
-          )
-          !edited && (birthday !== "" || userSelected.birthday) && descrArr.push(
-            <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Дата рождения" span={1} >
-              <label onDoubleClick={e => this.onDoubleClickEvent(e)}>{ userSelected.birthday  ? userSelected.birthday : birthday[0] }</label>
-            </DescriptionsItem>
-          )
+          if(edited) {
+            descrArr.push(
+              <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Дата рождения" span={1} >
+                { this._renderInut(birthday, "birthday") }
+              </DescriptionsItem>
+            )
+          } else if ( selectedInfo && selectedInfo.birthday ) {
+            /** Рендеринг данных даты рождения из сохраненных данных */
+            descrArr.push(
+              <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Дата рождения" span={1} >
+                <label onDoubleClick={e => this.onDoubleClickEvent(e)}>{ selectedInfo.birthday }</label>
+              </DescriptionsItem>
+            )
+          } else if (userSelected.birthday) {
+            /** Рендеринг данных даты рождения из выбранных данных */
+            descrArr.push(
+              <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Дата рождения" span={1} >
+                <label onDoubleClick={e => this.onDoubleClickEvent(e)}>{ userSelected.birthday }</label>
+              </DescriptionsItem>
+            )
+          } else if (birthday !== "") {
+            /** Рендеринг данных даты рождения из пришедших данных с сервера */
+            descrArr.push(
+              <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Дата рождения" span={1} >
+                <label onDoubleClick={e => this.onDoubleClickEvent(e)}>{ birthday[0] }</label>
+              </DescriptionsItem>
+            )
+          }
         } else if ( user.hasOwnProperty(key) && key === "address" ) {
-          edited && descrArr.push(
-            <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Адрес" span={1} >
-              { this._renderInut(address, "address") }
-            </DescriptionsItem>
-          );
-          !edited && (address !== "" || (CityExp || StreetExp || HouseExp || BuildExp || BuildingExp || FlatExp || RegionExpText)) && descrArr.push(
-            <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Адрес" span={1} >
-              <label onDoubleClick={e => this.onDoubleClickEvent(e)}>{ 
-                (CityExp || StreetExp || HouseExp || BuildExp || BuildingExp || FlatExp || RegionExpText) ?
-                `${
-                  RegionExpText ? RegionExpText.toUpperCase() : ""
-                } ${
-                  CityExp ? CityExp.toUpperCase(): ""
-                } ${
-                  StreetExp ? StreetExp.toUpperCase(): ""
-                } ${
-                  HouseExp ? HouseExp.toUpperCase() : ""
-                } ${
-                  BuildExp ? BuildExp.toUpperCase() : ""
-                } ${
-                  BuildingExp ? BuildingExp.toUpperCase() : ""
-                } ${
-                  FlatExp ? FlatExp.toUpperCase() : ""
-                }` : address[0]
-              }</label>
-            </DescriptionsItem>
-          );
+          if(edited) {
+            descrArr.push(
+              <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Адрес" span={1} >
+                { this._renderInut(address, "address") }
+              </DescriptionsItem>
+            );
+          } else if (selCityExp || selStreetExp || selHouseExp || selBuildExp || selBuildingExp || selFlatExp || selRegionExpText) {
+            descrArr.push(
+              <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Адрес" span={1} >
+                <label onDoubleClick={e => this.onDoubleClickEvent(e)}>{ 
+                  `${ 
+                    selRegionExpText ? selRegionExpText.toUpperCase() : "" } ${
+                    selCityExp ? selCityExp.toUpperCase(): "" } ${
+                    selStreetExp ? selStreetExp.toUpperCase(): "" } ${
+                    selHouseExp ? selHouseExp.toUpperCase() : "" } ${
+                    selBuildExp ? selBuildExp.toUpperCase() : "" } ${
+                    selBuildingExp ? selBuildingExp.toUpperCase() : "" } ${
+                    selFlatExp ? selFlatExp.toUpperCase() : "" }`
+                }</label>
+              </DescriptionsItem>
+            );
+          } else if (CityExp || StreetExp || HouseExp || BuildExp || BuildingExp || FlatExp || RegionExpText) {
+            descrArr.push(
+              <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Адрес" span={1} >
+                <label onDoubleClick={e => this.onDoubleClickEvent(e)}>{ 
+                  `${ 
+                    RegionExpText ? RegionExpText.toUpperCase() : "" } ${
+                    CityExp ? CityExp.toUpperCase(): "" } ${
+                    StreetExp ? StreetExp.toUpperCase(): "" } ${
+                    HouseExp ? HouseExp.toUpperCase() : "" } ${
+                    BuildExp ? BuildExp.toUpperCase() : "" } ${
+                    BuildingExp ? BuildingExp.toUpperCase() : "" } ${
+                    FlatExp ? FlatExp.toUpperCase() : "" }`
+                }</label>
+              </DescriptionsItem>
+            );
+          } else if (address !== "") {
+            descrArr.push(
+              <DescriptionsItem key={`${id}-${key}`} id={`${id}-${key}`} label="Адрес" span={1} >
+                <label onDoubleClick={e => this.onDoubleClickEvent(e)}> address[0] </label>
+              </DescriptionsItem>
+            );
+          }
         }
       }
       return descrArr
@@ -462,6 +566,8 @@ export class ManagmentItem extends PureComponent {
             userSelected={userSelected}
             item={item}
             fssp={fsspInfo}
+            digets={digets}
+            stopLists={stopLists}
             identifyUserloading={identifyUserloading}
             companyName={companyName}
             croinformRes={croinformRes}
@@ -471,21 +577,26 @@ export class ManagmentItem extends PureComponent {
               handleChangeSurName: this._handleChangeSurName,
               handleChangeMiddleName: this._handleChangeMiddleName,
               handleChangeFirstName: this._handleChangeFirstName,
+              showDrawer: this.showDrawer
             }}
           /> :
           <LeaderHeader 
             item={item}
+            stopLists={stopLists}
             fssp={fsspInfo}
+            digets={digets}
             croinformRes={croinformRes}
             userSelected={userSelected}
-            companyName={companyName} 
+            companyName={companyName}
+            onAction = {{
+              showDrawer: this.showDrawer
+            }}
           />
         }
         extra={<BtnExtra user={item} identifyUser={identifyUser} />}
       >
         <Spin spinning={identifyUserloading || croinformRequestloading ? true : false}>
-          {
-            (item.identifyInfo || edited || userSelected.passport) && 
+          { ( item.identifyInfo || edited || ( (userSelected.Seria && userSelected.Number) || userSelected.birthday )) ? 
             <Descriptions
               size="small"
               bordered
@@ -493,11 +604,8 @@ export class ManagmentItem extends PureComponent {
               column={{ md: 3, sm: 2, xs: 1 }}
             >
               {renderDescriptionItems()}
-            </Descriptions>
-          }
-          {
-            !item.identifyInfo && !edited && (!userSelected.passport)  && 
-            <div style={{textAlign: "center", cursor: "default", color: "gray"}} >
+            </Descriptions> : 
+            <div style={{textAlign: "center", cursor: "default", color: "#5a5a5a"}} >
               <label onDoubleClick={e => this.onDoubleClickEvent(e)}>
                 Для ввода информации необходимой для проверки данного субъекта дважды кликните по этому сообщению или по кнопке
               </label>
@@ -566,45 +674,18 @@ export class ManagmentItem extends PureComponent {
       }
     })) 
 
-    let p = address.split(' ');
-  
-    let RegionExp = ''; // Регион
-    let CityExp = ''; // Нас. пункт
-    let StreetExp = ''; // Улица
-    let HouseExp = ''; // Номер дома
-    let BuildExp = ''; // Корп
-    let BuildingExp = ''; // Стр
-    let FlatExp = ''; // Квар
-    let i = p.length - 1;
-    if (parseInt(p[i - 3])) {
-      FlatExp = p.pop();
-      BuildingExp = p.pop();
-      BuildExp = p.pop();
-      HouseExp = p.pop();
-    } else if (parseInt(p[i - 2])) {
-      FlatExp = p.pop();
-      BuildExp = p.pop();
-      HouseExp = p.pop();
-    } else if (parseInt(p[i - 1])) {
-      FlatExp = p.pop();
-      HouseExp = p.pop();
-    } else {
-      HouseExp = p.pop();
-    }
-    StreetExp = p.pop();
-    if (p.length) CityExp = p.pop();
-    if (p.length) RegionExp = region.filter(item => item.title.toUpperCase().indexOf(p[0].toUpperCase()) !== -1)[0]
-    if(!RegionExp) RegionExp = {value: "", title: ""}
+    const parsed = parsingAddress(address)
+
     this.setState(({parseAddress}) => ({
       parseAddress: {
-        CityExp, // Нас. пункт
-        StreetExp, // Улица
-        HouseExp, // Номер дома
-        BuildExp, // Корп
-        BuildingExp, // Стр
-        FlatExp, // Квар
-        RegionExp: RegionExp.value, // Регион
-        RegionExpText: RegionExp.title// Регион
+        CityExp: parsed.CityExp, // Нас. пункт
+        StreetExp: parsed.StreetExp, // Улица
+        HouseExp: parsed.HouseExp, // Номер дома
+        BuildExp: parsed.BuildExp, // Корп
+        BuildingExp: parsed.BuildingExp, // Стр
+        FlatExp: parsed.FlatExp, // Квар
+        RegionExp: parsed.RegionExp, // Регион
+        RegionExpText: parsed.RegionExpText// Регион
       }
     })) 
   }
@@ -614,23 +695,32 @@ export class ManagmentItem extends PureComponent {
     const { Option } = AutoComplete;
     const { user, userSelected, parseAddress } = this.state
 
-    const passportMask = str =>  str.replace(/^([0-9]{4})([0-9]{6,10})/g, '$1 $2')
-
     // Изменение state через onChange
-    const handleChangeBirthday = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, birthday: value } }))
-    const handleChangePassport = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, passport: value ? passportMask(value) : value } }))
+    const handleChangeBirthday = (dateObj, dateStr) => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, birthday: dateStr } }))
     // Изменение распарсенного адреса
     const handleChangeAddressRegionExp = value =>  this.setState(({ parseAddress }) => ( { parseAddress: { ...parseAddress, RegionExpText: value } }))
-    const handleChangeAddressCityExp = e => { const value = e.target.value; return this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, CityExp: value} })) }
-    const handleChangeAddressStreetExp = e => { const value = e.target.value; return this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, StreetExp: value} })) }
-    const handleChangeAddressHouseExp = e => { const value = e.target.value; return this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, HouseExp: value} })) }
-    const handleChangeAddressBuildExp = e => { const value = e.target.value; return this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, BuildExp: value} })) }
-    const handleChangeAddressBuildingExp = e => { const value = e.target.value; return this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, BuildingExp: value} })) }
-    const handleChangeAddressFlatExp = e => { const value = e.target.value; return this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, FlatExp: value} })) }
+    const handleChangeAddressCityExp = ({target: {value}}) => this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, CityExp: value} }))
+    const handleChangeAddressStreetExp = ({target: {value}}) => this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, StreetExp: value} }))
+    const handleChangeAddressHouseExp = ({target: {value}}) => this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, HouseExp: value} }))
+    const handleChangeAddressBuildExp = ({target: {value}}) => this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, BuildExp: value} })) 
+    const handleChangeAddressBuildingExp = ({target: {value}}) => this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, BuildingExp: value} }))
+    const handleChangeAddressFlatExp = ({target: {value}}) => this.setState(({ parseAddress }) => ({ parseAddress: { ...parseAddress, FlatExp: value} }))
+    // Изменение данных паспорта
+    const handleChangeSeriaPassport = ({target: {value}}) => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, Seria: value } }))
+    const handleChangeNumberPassport = (value, option) => {
+      if (!value) return this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, Number: "", Seria: "" } }))
+      else if(option.props.title)  return this.setState(({ userSelected }) => 
+        ({ userSelected: { ...userSelected, Seria: parsingPassport(option.props.title).Seria, Number: value } }))
+      else return this.setState(({ userSelected }) => 
+        ({ userSelected: { ...userSelected, Number: parsingPassport(value).Number } }))
+    }
+    const filterSeriaPassport = (value, option) => option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1
     // Изменение state через onSelect
-    const handleSelectOption = (value, option) =>  this.setState(({ userSelected }) => {
-      return { userSelected: { ...userSelected, [option.props.text]: value } }
-    })
+    const handleSelectPassportOption = (value, option) => {
+      if (!value) return this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, Seria: "", Number: "" } }))
+      return this.setState(({ userSelected }) => 
+        ({ userSelected: { ...userSelected, Seria: parsingPassport(value).Seria, Number: parsingPassport(value).Number } }))
+    }
 
     const handleSelectAddressOption = value =>  this.parsingSelectAddress(value)
 
@@ -653,6 +743,12 @@ export class ManagmentItem extends PureComponent {
       );
     };
     // Рендеринг опций выпадающего меню
+    const renderPassportOption = passport => (
+      <Option key={`${passport.seria} ${passport.number}`} text={keyId} value={`${passport.seria} ${passport.number}`} title={`${passport.seria} ${passport.number}`}>
+        {`${passport.seria} ${passport.number}`}
+      </Option>
+    )
+    // Рендеринг опций выпадающего меню
     const renderRegionOption = item => {
       return (
         <Option key={item.value} text="RegionExpText" title={item.title} value={item.title}>
@@ -662,18 +758,45 @@ export class ManagmentItem extends PureComponent {
     };
 
     if ( keyId === "birthday") {
+      const { openDatePicker } = this.state
+      const openStatus = status => this.setState({openDatePicker: status})
+      const renderFooter = () => {
+        const { user : {birthday = []} } = this.state
+        if( !birthday.length ) return
+        const { Option } = Select
+        const handleSelectChange = value => this.setState(({ userSelected }) => ({ userSelected: { ...userSelected, birthday: value }, openDatePicker: false}))
+        const dateOption = date => <Option key={date} value={date}>{date}</Option>
+        return (
+          <div style={{textAlign: "center"}}>
+            <label style={{marginRight: 10}}>Дата: </label>
+            <Badge count={data.length}>
+              <Select 
+                size="small" 
+                style={{width: 150}}
+                placeholder="Выберите дату"
+                onChange={handleSelectChange} 
+              >
+                {birthday.map(dateOption)}
+              </Select>
+            </Badge>
+          </div>
+        )
+      }
+
       return (
         <Badge count={data.length}>
-          <AutoComplete
+          <DatePicker
+            open={openDatePicker}
             key={keyId}
-            style={{ width: 200 }}
+            placeholder="Дата рождения"
             size="small"
-            value={userSelected[keyId]}
-            dataSource={user.birthday ? data.map(renderOption) : false}
-            onSelect={handleSelectOption}
+            format="DD.MM.YYYY"
+            showToday={false}
+            style={{ width: 200 }}
+            value={userSelected["birthday"] ? getDatePickerValue(userSelected["birthday"]) : null}
+            onOpenChange={openStatus}
             onChange={handleChangeBirthday}
-            placeholder="Введите дату рождения"
-            filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
+            renderExtraFooter={renderFooter}
             allowClear
           />
         </Badge>
@@ -700,7 +823,7 @@ export class ManagmentItem extends PureComponent {
           <Input value={parseAddress.BuildingExp} onChange={handleChangeAddressBuildingExp} placeholder="Строение" style={{ width: 80 }} size="small"/>
           <Input value={parseAddress.FlatExp} onChange={handleChangeAddressFlatExp} placeholder="Квартира" style={{ width: 80 }} size="small"/>
           {"  "}
-          { user.address &&
+          { user.address.length ?
             <Badge count={data.length}>
               <AutoComplete
                 key={keyId}
@@ -712,26 +835,35 @@ export class ManagmentItem extends PureComponent {
                 filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
                 allowClear
               />
-            </Badge>
+            </Badge> : null
           }
         </>
       );
     } else if ( keyId === "passport") {
       return (
-        <Badge count={data.length}>
-          <AutoComplete
-            key={keyId}
-            style={{ width: 250 }}
+        <div style={{ minWidth: 250, display: "inline-block" }} >
+          <Input
             size="small"
-            value={userSelected[keyId]}
-            dataSource={user.passport ? data.map(item => `${item.seria} ${item.number}`).map(renderOption) : false}
-            placeholder="Введите паспортные данные"
-            onSelect={handleSelectOption}
-            onChange={handleChangePassport}
-            filterOption={(value, option) =>  option.props.children.toUpperCase().indexOf(value.toUpperCase()) !== -1}
-            allowClear
+            placeholder="Серия"
+            style={{ width: 100 }} 
+            onChange={handleChangeSeriaPassport}
+            value={userSelected["Seria"]}
           />
-        </Badge>
+          <Badge count={data.length}>
+            <AutoComplete
+              key={keyId}
+              style={{ width: 150 }}
+              size="small"
+              value={userSelected.Number}
+              dataSource={user.passport ? data.map(renderPassportOption) : false}
+              placeholder="Номер"
+              onSelect={handleSelectPassportOption}
+              onChange={handleChangeNumberPassport}
+              filterOption={filterSeriaPassport}
+              allowClear
+            />
+          </Badge>
+        </div>
       );
     }
   }
@@ -742,13 +874,15 @@ export class ManagmentItem extends PureComponent {
 
   render() {
     const { 
-      item, 
-      item: { id }, 
+      item,
+      croinformInfo,
+      fsspInfo,
+      stopLists,
       fssploading, 
-      searchData, 
-      croinformRes, 
-      croinformRequestloading, 
-      fsspInfo 
+      searchData,
+      identifyInfo,
+      croinformRequestloading,
+      downloadReport
     } = this.props;
     const {error, showCroinformResponse, userSelected, parseAddress} = this.state
     if(error) return <div>В компоненте произошла ошибка</div>
@@ -763,17 +897,20 @@ export class ManagmentItem extends PureComponent {
             <Icon type={!isActive ? "plus-square" : "minus-square"} />
           )}
         >
-          {item.name && this.renderFoulderUlItem(item, id)}
-          {item.middle_name && this.renderFoulderFlItem(item, id, searchData)}
+          {item.name && this.renderFoulderUlItem(item, item.id)}
+          {item.middle_name && this.renderFoulderFlItem(item, item.id, searchData)}
         </Collapse>
         <CroinformDrawer 
           user={item}
+          identifyInfo={identifyInfo}
           userSelected={{...userSelected, ...parseAddress}}
           fsspInfo={fsspInfo}
+          stopLists={stopLists}
           fssploading={fssploading}
           loading={croinformRequestloading} 
           toggleDrawer={showCroinformResponse} 
-          croinformRes={croinformRes} 
+          croinformRes={croinformInfo} 
+          downloadReport={downloadReport} 
         />
       </>
     );
@@ -785,4 +922,4 @@ export default ManagmentItem;
 ManagmentItem.propTypes = {
   /** Данные о состоянии loaders */
   identifyUser: PropTypes.func.isRequired,
-};
+}

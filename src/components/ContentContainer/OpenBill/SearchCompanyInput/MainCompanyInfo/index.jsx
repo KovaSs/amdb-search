@@ -1,17 +1,16 @@
-import React, { Component } from 'react';
-import { Col, Row, Badge, Avatar, Button } from "antd";
+import React, { Component } from 'react'
+import { Col, Row, Badge, Avatar, Button, message } from "antd"
 import { connect } from "react-redux";
-import RiskInfoDrawer from "../../DrawerContainer/RiskInfoDrawer";
-import CompanyHistoryInfoDrawer from "../../DrawerContainer/CompanyHistoryInfoDrawer";
+import RiskInfoDrawer from "../../DrawerContainer/RiskInfoDrawer"
+import CompanyHistoryInfoDrawer from "../../DrawerContainer/CompanyHistoryInfoDrawer"
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { 
-  decodedCompanyResponse, 
+  decodedCompanyResponse,
+  decodedManagementSource,
   decodedisIp, 
-  decodedDigetsList, 
-  addRiskFactor, 
-  deleteRiskFactor, 
-  decodedRequestLoading 
-} from "../../../../../store/ducks/openBill";
-import "./main-organisation-info.scss";
+  storeMainDigest,
+  addNewUserToCheackList,
+} from "../../../../../store/ducks/openBill"
 
 const styleCss = {
   internetBtn : {
@@ -20,6 +19,29 @@ const styleCss = {
   },
   companyHistory : {
     backgroundColor : "#52c41a"
+  },
+  bange: {
+    backgroundColor: "rgb(255, 241, 240)",
+    color: "#f5222d",
+    boxShadow: "0 0 0 1px #ffa39e inset"
+  },
+  avatar: {
+    margin: "2px 2px 2px 5px",
+    fontSize: 11,
+    width: 25,
+    height: 25,
+    lineHeight: "25px"
+  },
+  btnContainer: {
+    margin: 3
+  },
+  mainInfoContainer: {
+    padding: 0,
+    margin: 0,
+    height: 30
+  },
+  mainDescr: {
+    marginTop: 3
   }
 }
 
@@ -44,28 +66,28 @@ class MainCompanyInfo extends Component {
   }
 
   renderNotIpInfo = () => {
-    const { companyResponse: { name, full_name, inn, ogrn } } = this.props;
+    const { companyResponse: { name, full_name, inn, ogrn }, collapced } = this.props;
     return (
       <>
         <Col span={1}>
-          <Avatar>ЮЛ</Avatar>
+          <Avatar style={collapced ? styleCss.avatar : null}>ЮЛ</Avatar>
         </Col>
-        <Col span={11}>
-          <small className="lable">Полное наименование</small>
-          <div className='descr'>{ full_name }</div>
-        </Col>
-        <Col span={5}>
-          <small className="lable">Сокращенное наименование</small>
-          <div className='descr'>{ name }</div>
-        </Col>
-        <Col span={4}>
-          <div style={{display : "inline-block"}}>
-            <small className="lable">ИНН</small>
-            <div style={{display : "inline-block"}} className='descr'>{ inn }</div>
+        <Col span={20}>
+          <div style={collapced ? {opacity: 0, height: 0, display: "none"} : null}>
+            <small className="lable">Полное наименование</small>
+            <label className='descr'>{ full_name }</label>
           </div>
-          <div style={{display : "inline-block"}}>
+          <div style={collapced ? styleCss.mainDescr : null}>
+            <small className="lable">Сокращенное наименование</small>
+            <label className='descr'>{ name }</label>
+            <small className="lable">ИНН</small>
+            <CopyToClipboard key="copy-inn" title="Скопировать" text={inn} onCopy={() => message.success(`${inn} - скопировано!`, 1)}>
+              <label style={{display : "inline-block", marginRight: 10, cursor: "pointer"}} className='descr'>{ inn }</label>
+            </CopyToClipboard>
             <small className="lable">ОГРН</small>
-            <div style={{display : "inline-block"}} className='descr'>{ ogrn }</div>
+            <CopyToClipboard key="copy-ogrn" title="Скопировать" text={ogrn} onCopy={() => message.success(`${ogrn} - скопировано!`, 1)}>
+              <label style={{display : "inline-block", cursor: "pointer"}} className='descr'>{ ogrn }</label>
+            </CopyToClipboard>
           </div>
         </Col>
       </>
@@ -73,43 +95,42 @@ class MainCompanyInfo extends Component {
   }
 
   renderIpInfo = () => {
-    const { companyResponse: { full_name, inn, ogrn, sex, birthdate, birth_place } } = this.props;
+    const {
+      collapced,
+      companyResponse: { 
+        full_name, 
+        inn, 
+        ogrn, 
+        sex = "", 
+        birthdate, 
+        birth_place 
+      } 
+    } = this.props;
     return (
       <>
         <Col span={1}>
-          <Avatar>ИП</Avatar>
+          <Avatar style={collapced ? styleCss.avatar : null}> ИП </Avatar>
         </Col>
-        <Col span={11}>
-          <div>
-            <small className="lable">Полное наименование</small>
-            <label className='descr'>{ full_name }</label>
+        <Col span={20}>
+          <div style={collapced ? styleCss.mainDescr : null}>
+            <small className="lable"> ФИО </small>
+            <label className='descr'> { full_name } </label>
+            <small className="lable"> ИНН </small>
+            <CopyToClipboard key="copy-inn" title="Скопировать" text={inn} onCopy={() => message.success(`${inn} - скопировано!`, 1)}>
+              <label style={{display : "inline-block", marginRight: 10, cursor: "pointer"}} className='descr'>{ inn }</label>
+            </CopyToClipboard>
+            <small className="lable"> ОГРН </small>
+            <CopyToClipboard key="copy-ogrn" title="Скопировать" text={ogrn} onCopy={() => message.success(`${ogrn} - скопировано!`, 1)}>
+              <label style={{display : "inline-block", cursor: "pointer"}} className='descr'>{ ogrn }</label>
+            </CopyToClipboard>
           </div>
-          { sex &&
-            <div>
-              <small className="lable">Пол</small>
-              <label className='descr'>{ sex ? sex : "—" }</label>
-            </div>
-          }
-          
-        </Col>
-        <Col span={5}>
-          <div>
-            <small className="lable">Дата рождения</small>
-            <label className='descr'>{ birthdate ? birthdate : "—" }</label>
-          </div>
-          <div>
-            <small className="lable">Место рождения</small>
-            <label className='descr'>{ birth_place ? birth_place :  "—" }</label>
-          </div>
-        </Col>
-        <Col span={4}>
-        <div style={{display : "inline-block"}}>
-            <small className="lable">ИНН</small>
-            <div style={{display : "inline-block"}} className='descr'>{ inn }</div>
-          </div>
-          <div style={{display : "inline-block"}}>
-            <small className="lable">ОГРН</small>
-            <div style={{display : "inline-block"}} className='descr'>{ ogrn }</div>
+          <div style={collapced ? {opacity: 0, height: 0, display: "none"} : null}>
+            <small className="lable"> Пол </small>
+            <label className='descr'> { sex ? sex : "—" } </label>
+            <small className="lable"> Дата рождения </small>
+            <label className='descr'> { birthdate ? birthdate : "—" } </label>
+            <small className="lable"> Место рождения </small>
+            <label className='descr'> { birth_place ? birth_place :  "—" } </label>
           </div>
         </Col>
       </>
@@ -117,39 +138,45 @@ class MainCompanyInfo extends Component {
   }
 
   render() {
-    const { 
-      companyResponse,
-      requestLoading,
-      digets, 
-      addRiskFactor, 
-      deleteRiskFactor, 
-      companyResponse: { fns, sanctions, isponlit_proizvodstva, leaders_list, name, full_name }, 
-      isIp 
+    const {
+      collapced,
+      digets,
+      companyResponse: { management_history, name, full_name }, 
+      isIp,
+      addNewUserToCheackList,
+      heads
     } = this.props;
     const { showRisk, showHistory, error } = this.state
-    if(error) return <div style={{textAlign: "center"}}>Ошибка в работе компонента "openBill -> SearchCompanyInput -> mainCompanyInfo", пожалуйста перезагрузите страницу</div>
+    if(error) return <div style={{textAlign: "center"}}>Ошибка в работе компонента "Открытие счета -> Информация о компании", пожалуйста перезагрузите страницу</div>
     return (
       <>
         <Col span={20}>
-          <Row className="main-info__organisation-info">
+          <Row className="main-info__organisation-info" style={collapced ? styleCss.mainInfoContainer : null}>
             { isIp ? this.renderIpInfo() : this.renderNotIpInfo() }
             <Col span={3} style={{textAlign : "center", minHeight: "1rem"}}>
-              <div className="show-btn-drawer-count">
-                <Button 
-                  size="small" 
-                  icon="ie" 
-                  href={ isIp ?
+              <div className="show-btn-drawer-count" style={collapced ? styleCss.btnContainer : null}>
+                <CopyToClipboard 
+                  key="search-word-1" 
+                  title="Поиск негативной информации в интернетe"
+                  style={styleCss.internetBtn} 
+                  text={ isIp ?
                     `https://www.google.com/search?hl=ru&as_oq=отзывы+криминал+компромат+обыск+уголовное+мошенник+обнал+откат+взятка+жулик+нарушения+претензии+конфликт+подан-иск+преследование+расследование+разбирательство+следствие+прокуратура+МВД+ФСБ+полиция+хищение+отмывание&as_q=${full_name}` :
                     `https://www.google.com/search?hl=ru&as_oq=отзывы+криминал+компромат+обыск+уголовное+мошенник+обнал+откат+взятка+жулик+нарушения+претензии+конфликт+подан-иск+преследование+расследование+разбирательство+следствие+прокуратура+МВД+ФСБ+полиция+хищение+отмывание&as_q=${name}`
                   }
-                  target="_blank"
-                  title="Поиск негативной информации в интернетe" 
-                  style={styleCss.internetBtn}
-                />
+                  onCopy={() => message.success(`Поисковой запрос - скопирован!`)}
+                >
+                  <Button 
+                    key="searh_in_internet"
+                    size="small" 
+                    icon="ie"
+                    style={styleCss.internetBtn}
+                  />
+                </CopyToClipboard>
                 <Badge 
-                  count={fns.length + sanctions.length + isponlit_proizvodstva.length} 
+                  count={digets && digets.digets ? digets.digets.length : null} 
                   offset={[-10, 0]} 
                   overflowCount={99}
+                  style={styleCss.bange}
                 >
                   <Button 
                     size="small" 
@@ -161,7 +188,7 @@ class MainCompanyInfo extends Component {
                 </Badge>
                 { !isIp &&
                   <Badge 
-                    count={leaders_list.length} 
+                    count={management_history.length} 
                     style={styleCss.companyHistory} 
                     overflowCount={99}
                   >
@@ -178,15 +205,15 @@ class MainCompanyInfo extends Component {
             </Col>
           </Row>
         </Col>
-        <RiskInfoDrawer 
-          addRiskFactor={addRiskFactor} 
-          deleteRiskFactor={deleteRiskFactor} 
-          digets={digets}
-          requestLoading={requestLoading}
-          toggleDrawer={showRisk} 
-          companyResponse={companyResponse}
-        /> 
-        {!isIp && <CompanyHistoryInfoDrawer toggleDrawer={showHistory} headHistory={leaders_list}/>}
+        <RiskInfoDrawer toggleDrawer={showRisk} /> 
+        { !isIp &&
+          <CompanyHistoryInfoDrawer
+            heads={heads}
+            addUser={addNewUserToCheackList}
+            toggleDrawer={showHistory} 
+            headHistory={management_history}
+          />
+        }
       </>
     )
   }
@@ -195,14 +222,13 @@ class MainCompanyInfo extends Component {
 const putStateToProps = state => {
   return {
     isIp: decodedisIp(state),
-    requestLoading: decodedRequestLoading(state),
+    heads: decodedManagementSource(state),
     companyResponse: decodedCompanyResponse(state),
-    digets: decodedDigetsList(state)
+    digets: storeMainDigest(state)
   }
 }
 const putActionToProps = {
-  addRiskFactor,
-  deleteRiskFactor
+  addNewUserToCheackList,
 }
 
 export default connect(putStateToProps, putActionToProps)(MainCompanyInfo)

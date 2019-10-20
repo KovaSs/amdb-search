@@ -1,16 +1,24 @@
 import React, { Component } from 'react'
-import { request_fl, request_ul } from '../../../../store/mock'
+import { connect } from "react-redux"
+import Inspector from "react-inspector"
+import { decodedEbgMainResponse } from "../../../../store/ducks/EBG";
+// import { ul } from "../mock/json/request_ul";
 
 export class ObjectRequestItem extends Component {
   render() {
-    const { objectInn } = this.props
+    const { ebgData } = this.props
     return (
       <div style={{ padding : '1rem'}}>
-        { objectInn === request_fl.client.selfEmployed.inn && <pre>{JSON.stringify(request_fl, null, 2)}</pre> }
-        { objectInn === request_ul.client.company.inn && <pre>{JSON.stringify(request_ul, null, 2)}</pre> }
+        <Inspector data={ebgData} expandLevel={666} />
       </div>
     )
   }
 }
 
-export default ObjectRequestItem
+const putStateToProps = state => {
+  return {
+    ebgData: decodedEbgMainResponse(state),
+  }
+}
+
+export default connect(putStateToProps)(ObjectRequestItem)

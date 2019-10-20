@@ -1,0 +1,205 @@
+.table-info{
+  margin:  0 1rem 1rem 1rem !important;
+  .ant-collapse-header {
+    // background-color: #24bbf718;
+    padding: 8px 16px !important;
+    background-color: #a3d3ff13;
+    .leader-name-header {
+      label {
+        cursor: pointer;
+        margin-right: 1rem;
+      }
+      &_fio {
+        &_history {
+          color: #7b7b7b;
+        }
+      }
+      &_position {
+        color: #7b7b7b;
+        font-size: 0.9rem;
+        font-style: italic;
+      }
+      &_date, &_history {
+        color: #7b7b7b;
+        font-size: 0.83rem;
+        font-style: italic;
+      }
+    }
+  }
+  .ant-descriptions-item-label {
+    -moz-user-select: none; /* Mozilla Firefox */
+    -ms-user-select: none; /* Internet Explorer (не поддерживается) */
+    -o-user-select: none; /* Opera Presto (не поддерживается) */
+    -webkit-user-select: none; /* Google Chrome, Opera Next, Safari */
+  }
+  .ant-descriptions.bordered.small .ant-descriptions-item-label, .ant-descriptions.bordered.small .ant-descriptions-item-content {
+    padding: 5px;
+  }
+
+  .ant-table-thead > tr > th, .ant-table-tbody > tr > td {
+    padding: 5px;
+  }
+
+  .ant-collapse-content > .ant-collapse-content-box {
+    padding: 5px;
+  }
+
+  .ant-divider-horizontal.ant-divider-with-text, .ant-divider-horizontal.ant-divider-with-text-left, .ant-divider-horizontal.ant-divider-with-text-right {
+    margin: 2px 0;
+    font-size: 0.8rem;
+  }
+
+  .stop-list {
+    color: red;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .label {
+      color: rgba(0, 0, 0, 0.85);
+      display: inline-block;
+      margin-right: 5px;
+      -moz-user-select: none; /* Mozilla Firefox */
+      -ms-user-select: none; /* Internet Explorer (не поддерживается) */
+      -o-user-select: none; /* Opera Presto (не поддерживается) */
+      -webkit-user-select: none; /* Google Chrome, Opera Next, Safari */
+      &:after {
+        content: ':';
+        font-weight: normal;
+        margin-left: 5px;
+      }
+    }
+  
+    .ant-divider-horizontal {
+      margin: 2px 0;
+    }
+  }
+
+  &-panel{
+    .ant-collapse-header {
+      padding: 8px 40px !important;
+    }
+  }
+
+  /* Кнопка поиска истории */
+  .heads-search {
+    position: absolute;
+    display: inline-block;
+    width: 150px;
+    right: 0px;
+    top: 1px;
+    &-btn, &-btn-green{
+      margin-right: 0.5rem;
+      background-color: #fff;
+      padding: 4px 8px;
+      border: 1px solid #d9d9d9;
+      border-radius: 2px;
+      color: rgba(14, 117, 253, 0.992);
+      cursor: pointer;
+      transition: 0.5 ease;
+  
+      &:hover {
+        border: 1px solid rgba(14, 117, 253, 0.992);
+      }
+    }
+    &-btn-green {
+      color: #52c41a;
+    }
+  }
+
+  .heads-search-panel {
+    position: absolute;
+    display: inline-block;
+    width: 150px;
+    right: 0px;
+    top: 4px;
+    &-btn, &-btn-green{
+      margin-right: 0.5rem;
+      background-color: #fff;
+      padding: 4px 8px;
+      border: 1px solid #d9d9d9;
+      border-radius: 2px;
+      color: rgba(14, 117, 253, 0.992);
+      cursor: pointer;
+      transition: 0.5 ease;
+  
+      &:hover {
+        border: 1px solid rgba(14, 117, 253, 0.992);
+      }
+    }
+    &-btn-green {
+      color: #52c41a;
+    }
+    button {
+      font-size: 15px;
+      height: 30px;
+    }
+  }
+
+  /* Отлючение бордера внизу элементов collapce menu*/
+  .managment {
+    .ant-collapse-item {
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  .arbiter-risk-info{
+    width: 25rem;
+    margin: 0 auto;
+  }
+
+  .edited-identify-info {
+    padding: 0 5px;
+  }
+
+  /* Анимация нажатия кнопки в модуле CheckList проверки руководителей */
+  .ant-btn-icon-only:active {
+    -moz-transform: translatey(1px); /* Для Firefox */ 
+    -ms-transform: translatey(1px); /* Для IE */ 
+    -webkit-transform: translatey(1px); /* Для Safari, Chrome, iOS */ 
+    -o-transform:translatey(1px); /* Для Opera */ 
+    transform: translatey(1px);
+    -webkit-transition: 0.2s time;
+    -o-transition: 0.2s time;
+    transition: 0.2s time;
+  }
+
+  /* Бордер для Descriptionlist добавления нового юзера в проверку*/ 
+  .description-border {
+    .ant-descriptions-view {
+      border: 1px solid #52c41a5c !important;
+    }
+  }
+
+  /* Сообщение о загрузке аффилированных лиц*/
+  .ant-alert.ant-alert-no-icon {
+    padding: 5px 15px;
+    margin-top: 5px;
+  }
+
+  .empty-data {
+    margin: 0;
+    .ant-empty-image {
+      height: 24px;
+      margin: 0;
+    }
+  }
+  .empty-data-documents {
+    margin: 5px;
+    .ant-empty-image {
+      height: 30px;
+      margin: 0;
+    }
+  }
+
+  .heads-search-panel {
+    .badge-icon-count {
+      color: #0e75fdfd;
+      z-index: 10
+    }
+  }
+}
+

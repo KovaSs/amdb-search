@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import "./open-bill.scss"
+import "./main-page.scss"
 
 class OpenAnAccount extends Component {
 
@@ -9,8 +9,8 @@ class OpenAnAccount extends Component {
 
   render() {
     return(
-      <div style={{textAlign: "center"}}>
-        Главная страница!
+      <div className="main-page">
+        <img style={{width: "40%"}} src={process.env.PUBLIC_URL + '/img/logo_big.png'} alt={"logo-gazprombank"} />
       </div>
     )
   }

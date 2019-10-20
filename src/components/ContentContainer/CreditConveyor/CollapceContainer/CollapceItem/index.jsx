@@ -7,9 +7,9 @@ const CollapceItem = props => {
   const { companySource, riskSource,  managementSource} = props
 
   /** Преобразование входящих данных из props */
-  const fullOrganistionInfo = trasform._companySource(companySource)
+  const fullOrganistionInfo = trasform.companySource(companySource)
   const managementInfo = trasform._managementSource(managementSource)
-  const riskInfo = trasform._riskSource(riskSource)
+  const riskInfo = trasform.riskSource(riskSource)
 
   /** Стандартный функционал отслеживания активный панелей */
   const callback = key => {

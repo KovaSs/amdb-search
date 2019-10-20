@@ -1,24 +1,25 @@
 stages:
+  # - build
   - test
-  - build
-  - deploy
+#   - deploy
 
 cache:
   untracked: true
   paths:
     - node_modules/
 
-Build:
-  stage: build
-  only:
-    - develop
-  before_script:
-    - npm install
-  script:
-    - CI="" npm run build
-  artifacts:
-    paths:
-      - build/
+# Build:
+#   stage: build
+#   only:
+#     - develop
+#   before_script:
+#     - npm install
+#   script:
+#     - CI="" npm run build
+#   artifacts:
+#     paths:
+#       - build/
+#     expire_in: 1 day
 
 Test:
   stage: test
@@ -27,9 +28,9 @@ Test:
   script:
     - npm run test
 
-Deploy:
-  stage: deploy
-  only:
-    - master
-  script:
-    - rsync -av -e 'ssh -i /.ssh/id_rsa' my-app.com:~/ ./build/*
+# Deploy:
+#   stage: deploy
+#   only:
+#     - master
+#   script:
+#     - rsync -av -e 'ssh -i /.ssh/id_rsa' my-app.com:~/ ./build/*

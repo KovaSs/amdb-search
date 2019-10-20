@@ -1,14 +1,24 @@
 import React from 'react'
-import { Tag, Popover, Badge } from 'antd'
+import { Tag, Popover, Badge, Button } from 'antd'
 import { getDate, uuid, sumTrans } from '../../../../../../services/utils'
 
 const styleCss = {
+  historyTitle: {
+    color: "gray",
+    fontStyle: "italic",
+    marginLeft: 5
+  },
   popover: {
     maxWidth: 300,
     maxHeight: 102,
     overflowY: "auto"
   },
   bange: {
+    blue: {
+      backgroundColor: "#e6f7ff",
+      color: "#1890ff",
+      boxShadow: "0 0 0 1px #91d5ff inset"
+    },
     cyan: {
       backgroundColor: "#e6fffb",
       color: "#13c2c2",
@@ -23,7 +33,17 @@ const styleCss = {
       backgroundColor: "rgb(255, 241, 240)",
       color: "#f5222d",
       boxShadow: "0 0 0 1px #ffa39e inset"
-    }
+    },
+    gray: {
+      backgroundColor: "#fafafa",
+      color: "rgba(0, 0, 0, 0.65)",
+      boxShadow: "0 0 0 1px #d9d9d9 inset"
+    },
+    green: {
+      backgroundColor: "#f6ffed",
+      color: "#52c41a",
+      boxShadow: "0 0 0 1px #b7eb8f inset"
+    },
   },
   stopList: {
     title: {
@@ -44,60 +64,139 @@ const styleCss = {
     }
   },
   tagInfo: {
-    borderTop: "1px #d9d9d9 solid"
+    fontStyle: "italic"
+  },
+  tagContent: {
+    borderBottom: "1px #d9d9d9 solid",
+    paddingBottom: 10
+  },
+  posTitle: {
+    margin: "10px 0",
+    // fontWeight: 500,
+    // color: "rgba(0, 0, 0, 0.85)",
   }
 }
 
 /** Рендеринг header title физического лица */
 const LeaderHeader = props => {
-  const { 
-    item: {first_name, last_name, middle_name, position, ActualDate, inn, organisation, stop_lists}, 
+  const {
+    item: {
+      id : itemId,
+      first_name, 
+      last_name, 
+      middle_name, 
+      position, 
+      ActualDate, 
+      inn, 
+      organisation,
+      history = false,
+      newUser = false
+    }, 
+    digets,
+    stopLists,
     companyName,
     fssp,
     croinformRes = {},
-    userSelected : {FirstName, MiddleName, SurName, inn: INN }
+    userSelected : {FirstName, MiddleName, SurName, inn: INN },
+    onAction: { showDrawer}
   } = props
 
-  const renderPositionTag = (tagTitle = "") => {
-    if(Array.isArray(position)) return position.map((tag, index )=> {
-      switch (tag.tagName) {
-        case "Акционер":
-          tagTitle = `${tag.tagName}${tag.share.hasOwnProperty('capitalSharesPercent') ? ` (${tag.share.capitalSharesPercent} / ${tag.share.capitalSharesPercent})` : ""}`
-          break;
-        case "Учредитель":
-          tagTitle = `${tag.tagName}${tag.share.hasOwnProperty('sum') ? ` (${sumTrans(tag.share.sum)})` : ""}`
-          break;
-        default:
-          tagTitle = tag.tagName
+  const renderPositionTag = () => {
+    if(position.length) {
+      const tag = position[0]
+
+      const posType = {
+        color: history ? false : newUser ? "green" : "blue",
+        tag: history ? styleCss.bange.gray : newUser ? styleCss.bange.green : styleCss.bange.blue
       }
+
       const content = (
-        <div style={styleCss.popover}> 
-          <div>Организация: {tag.organisation.name}</div>
-          <div>ИНН: {tag.organisation.inn}</div>
-          <div>ОГРН: {tag.organisation.ogrn}</div>
-          {
-            tag.organisation.hasOwnProperty('share') && tag.organisation.share.hasOwnProperty('sum') && tag.organisation.share.sum ?
-            <div style={styleCss.tagInfo}> {`Учредитель владеет: ${sumTrans(tag.organisation.share.sum)}`} </div> : null
+        <div className="position-tag" style={styleCss.popover}>
+          { position.map((item, index, tagTitle="") => {
+            switch (item.tagName) {
+              case "Акционер":
+                tagTitle = 
+                  <Tag key={uuid()} color={ posType.color }>
+                    { `${item.tagName}${item.share.hasOwnProperty('capitalSharesPercent') ? ` (${item.share.capitalSharesPercent} / ${item.share.capitalSharesPercent})` : ""}` }
+                  </Tag>
+                break;
+              case "Учредитель":
+                tagTitle = 
+                  <Tag key={uuid()} color={ posType.color }>
+                    { `${item.tagName}${item.share.hasOwnProperty('sum') ? ` (${sumTrans(item.share.sum)})` : ""}` }
+                  </Tag>
+                break;
+              default:
+                tagTitle = 
+                <Tag key={uuid()} color={ posType.color } style={history ? styleCss.historyTitle : null}>
+                  { item.tagName }
+                </Tag>
+            }
+            return (
+              <div style={styleCss.tagContent} key={`tag-content-${index}`}>
+                { index !== 0 ?  <div style={styleCss.posTitle}> {tagTitle} </div> : <div style={{margin: "0 0 10px 0"}}> {tagTitle} </div> }
+                <div>Организация: {item.organisation.name}</div>
+                <div>ИНН: {item.organisation.inn}</div>
+                <div>ОГРН: {item.organisation.ogrn}</div>
+                {
+                  item.organisation.hasOwnProperty('share') && item.organisation.share.hasOwnProperty('sum') && item.organisation.share.sum ?
+                  <div style={styleCss.tagInfo}> {`Учредитель владеет: ${sumTrans(item.organisation.share.sum)}`} </div> : null
+                }
+              </div>
+            )})
           }
         </div>
       )
-      if(tag !== "") return (
-      <Popover key={index} title={tagTitle} content={content} trigger="hover" style={styleCss.popover}>
-        <Tag key={uuid()} color="blue" >{tagTitle}</Tag>
-      </Popover>
+
+      return (
+        <Popover 
+          trigger="hover"
+          key={`position-tag-${itemId}` }
+          content={content} 
+          style={{...styleCss.popover, maxHeight: 150}}
+          // title={ posType.title }
+        >
+          <Badge 
+            count={position.length} 
+            offset={[-9,1]} 
+            style={posType.tag}
+            overflowCount={99}
+          >
+            <Tag key={uuid()} color={posType.color}> {tag.tagName} </Tag>
+          </Badge>
+        </Popover>
       )
-      else return null
-    })
+    }
   }
 
-  const renderStopListInfo = (arr =[]) => {
+  const renderTagsInfo = (arr =[]) => {
     const vector = croinformRes.vector ? croinformRes.vector : []
     const lists = croinformRes.lists ? croinformRes.lists : []
     if(vector.length) {
       const content = <div style={styleCss.popover}>{vector.map((item, index) => <div key={index} >{item}</div>)}</div>
       arr.push(
         <Popover key="vector" title="Найден в списках" content={content} trigger="hover" >
-          <Badge count={vector.length} offset={[-9,1]} style={styleCss.bange.cyan}>
+          <Badge 
+            count={vector.length} 
+            offset={[-9,1]} 
+            style={styleCss.bange.cyan}
+            overflowCount={99}
+          >
+            <Tag color="cyan" > Вектор заемщика </Tag> 
+          </Badge>
+        </Popover>
+      )
+    } else if (croinformRes.hasOwnProperty("vector")) {
+      const content = <div style={styleCss.popover}>Данных вектора заемщика по данному запросу не найдено</div>
+      arr.push(
+        <Popover key="vector" title="Данных в списках не найдено" content={content} trigger="hover" >
+          <Badge 
+            count={0} 
+            showZero 
+            offset={[-9,1]} 
+            style={styleCss.bange.cyan}
+            overflowCount={99}
+          >
             <Tag color="cyan" > Вектор заемщика </Tag> 
           </Badge>
         </Popover>
@@ -108,7 +207,27 @@ const LeaderHeader = props => {
       const content = <div style={styleCss.popover}>{lists.map((item, index) => <div key={index} >{item}</div>)}</div>
       arr.push(
         <Popover key="lists" title="Найден в списках" content={content} trigger="hover" style={styleCss.popover}>
-          <Badge count={lists.length} offset={[-9,1]} style={styleCss.bange.volcano}>
+          <Badge 
+            count={lists.length} 
+            offset={[-9,1]} 
+            style={styleCss.bange.volcano}
+            overflowCount={99}
+          >
+            <Tag color="volcano" > Списки </Tag> 
+          </Badge>
+        </Popover>
+      )
+    } else if (croinformRes.hasOwnProperty("lists")) {
+      const content = <div style={styleCss.popover}>Данных состояния в списках по данному запросу не найдено</div>
+      arr.push(
+        <Popover key="lists" title="Данных в списках не найдено" content={content} trigger="hover" >
+          <Badge 
+            count={0}  
+            showZero 
+            offset={[-9,1]} 
+            style={styleCss.bange.volcano}
+            overflowCount={99}
+          >
             <Tag color="volcano" > Списки </Tag> 
           </Badge>
         </Popover>
@@ -116,43 +235,42 @@ const LeaderHeader = props => {
     }
 
     try {
-      const stopLists = stop_lists ? stop_lists : []
-      if(stopLists.length) {
-        const renderRowsItem = (list, i, arr = []) => {
-          arr.push(<div key={uuid()} style={styleCss.stopList.rowKey}>{`Запись №${i+1}: `}</div>)
-          for (const key in list) {
-            if (list.hasOwnProperty(key) && list[key] !== "-" && list[key] !== "" && list[key] !== null && list[key] !== "!^!  \r") {
-              arr.push(
-                <div key={uuid()} >
-                  <label>{`${key} : `}</label>
-                  <label style={{color: "red"}}>{list[key]}</label>
-                </div>
-              )
-            }
-          }
-          return arr
-        }
+      if(stopLists && stopLists.length) {
         const content = 
           <div style={styleCss.popover}>
             {
               stopLists.map((item, index) => {
                 return (
                   <div key={index}>
-                    <label style={styleCss.stopList.rowTitle}> {`${item.report_name ? item.report_name : ""} ${item.ID_base ? `( ${item.ID_base} ${item.ID_table ? `/ ${item.ID_table} ` : ""})` : ""}`}</label>
-                    { item.rows.map((list, i) =>
-                      <div key={i}>
-                        { renderRowsItem(list, i) }
-                      </div>
-                      )
-                    }
+                    <label style={styleCss.stopList.rowTitle}> {`${item.report_name ? item.report_name : "Без названия"} ${item.ID_base ? `( ${item.ID_base} ${item.ID_table ? `/ ${item.ID_table} ` : ""})` : ""}`}</label>
                   </div>
                 )
               })
             }
           </div>
         arr.push(
-          <Popover key="stop-lists" title="Найден в стоп-листах" content={content} trigger="hover" >
-            <Badge count={stopLists.length} offset={[-9,1]} style={styleCss.bange.red}>
+          <Popover key={`stop-lists-${itemId}`} title="Найден в стоп-листах" content={content} trigger="hover" >
+            <Badge 
+              count={stopLists.length} 
+              offset={[-9,1]} 
+              style={styleCss.bange.red}
+              overflowCount={99}
+            >
+              <Tag color="red" > Стоп-листы </Tag> 
+            </Badge>
+          </Popover>
+        )
+      } else if (stopLists) {
+        const content = <div style={styleCss.popover}>Данных состояния в стоп-листах по данному запросу не найдено</div>
+        arr.push(
+          <Popover key="stop-lists" title="Данные стоп-листов" content={content} trigger="hover" >
+            <Badge 
+              count={0} 
+              showZero 
+              offset={[-9,1]} 
+              style={styleCss.bange.red}
+              overflowCount={99}
+            >
               <Tag color="red" > Стоп-листы </Tag> 
             </Badge>
           </Popover>
@@ -160,6 +278,36 @@ const LeaderHeader = props => {
       }
     } catch (error) {
       console.log('Stop lists', error)
+    }
+    try {
+      if(digets.history.length) {
+        const content = 
+          <div style={styleCss.popover}>
+            Найдены исторические данные с предыдущих проверок
+            <Button
+              title="Показать найденные риск факторы"
+              size="small"
+              type="link"
+              onClick={e => showDrawer(e)}
+            >
+              Подробнее
+            </Button>
+          </div>
+        arr.push(
+          <Popover key={`risk-factors-${itemId}`} title="Найдены риск факторы" content={content} trigger="hover" >
+            <Badge 
+              count={digets.digets.length} 
+              offset={[-9,1]} 
+              style={styleCss.bange.red}
+              overflowCount={99}
+            >
+              <Tag color="red" > Риск факторы </Tag> 
+            </Badge>
+          </Popover>
+        )
+      }
+    } catch (error) {
+      console.log('Risk fastors', error)
     }
     if(fssp && fssp.length) {
       const content = (
@@ -175,10 +323,8 @@ const LeaderHeader = props => {
         </Popover>
       )
     }
-
     return arr
   }
-
 
   return (
     <div className="leader-name-header">
@@ -198,7 +344,7 @@ const LeaderHeader = props => {
         { getDate(ActualDate) }
       </label>
       <label className="leader-name-header_date" onClick={e => e.stopPropagation(e)}>
-        { renderStopListInfo() }
+        { renderTagsInfo() }
       </label>
     </div>
   )

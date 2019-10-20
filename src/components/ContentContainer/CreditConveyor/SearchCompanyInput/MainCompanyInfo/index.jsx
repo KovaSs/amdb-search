@@ -51,12 +51,19 @@ class MainCompanyInfo extends Component {
               </div>
             </Col>
             <Col span={3} style={{textAlign : "center"}}>
-              <Badge count={fns.length + sanctions.length + isponlit_proizvodstva.length} style={{ marginRight: "1rem" }}>
+              <Badge 
+                count={fns.length + sanctions.length + isponlit_proizvodstva.length} 
+                style={{ marginRight: "1rem" }}
+                overflowCount={99}
+              >
                 <Button onClick={this.showDrawer} title="Факторы риска" style={{ marginRight: "1rem" }}>
                   <Icon type="warning" style={{ color: "#fd0e0efd" }} />
                 </Button>
               </Badge>
-              <Badge count={0}>
+              <Badge 
+                count={0}
+                overflowCount={99}
+              >
                 <Button title="История">
                   <Icon type="file-search" style={{ color: "#0e75fdfd" }} />
                 </Button>

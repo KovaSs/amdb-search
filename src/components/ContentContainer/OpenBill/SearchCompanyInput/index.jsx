@@ -1,14 +1,15 @@
 import React from 'react'
 import { connect } from "react-redux"
 import SearchCompanyInput from "./SearchCompanyInput"
+import { withRouter } from 'react-router-dom'
 import { 
-  actionChangeInn, 
-  loadCompanyInfo, 
-  clearCompanyInfo,
   decodedCompanyResponse, 
   decodedRenderData, 
   decodedInn,
-  decodedErrors
+  decodedErrors,
+  actionChangeInn, 
+  loadCompanyInfo, 
+  clearCompanyInfo
 } from "../../../../store/ducks/openBill"
 
 const Container = props => <SearchCompanyInput {...props}/>
@@ -28,4 +29,4 @@ const putActionsToProps = {
   clearCompanyInfo
 }
 
-export default connect(putStateToProps, putActionsToProps)(Container)
+export default connect(putStateToProps, putActionsToProps)(withRouter(Container))

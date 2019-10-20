@@ -1,0 +1,40 @@
+.drawer-history {
+  .empty-data {
+    margin: 0;
+    .ant-empty-image {
+      height: 24px;
+      margin: 0;
+    }
+  }
+  th.searching-copy-title {
+    width: 100px;
+  }
+  .searching-copy-text {
+    &:hover {
+      background-color: rgba(199, 199, 199, 0.24);
+    }
+  }
+  .ant-page-header-content {
+    padding-top: 0;
+  }
+
+  .ant-btn {
+    height: 25px;
+  }
+
+  .ant-page-header-heading-extra {
+    position: absolute;
+    top: 0px;
+    right: 10px;
+  }
+  
+  .risk-factors-digets {
+    .ant-table-thead > tr > th, .ant-table-tbody {
+      text-align: center;
+    }
+    .ant-table-thead > tr > th {
+      padding: 4px;
+      background: #fafafa !important;
+    }
+  }
+}

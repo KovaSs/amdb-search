@@ -1,0 +1,57 @@
+.arbiter-risk-info {
+  .empty-data {
+    margin: 0;
+    .ant-empty-image {
+      height: 24px;
+      margin: 0;
+    }
+  }
+  .ant-table-thead > tr > th, .ant-table-tbody {
+    text-align: center;
+  }
+  .ant-table-thead > tr > th {
+    padding: 4px;
+    background: #fafafa !important;
+  }
+}
+
+.add-risk-digest{
+  // padding: 0 20px;
+  .ant-table-thead > tr > th {
+    text-align: center;
+    padding: 4px;
+    background: #fafafa !important;
+  }
+  .ant-table-tbody{
+    td {
+      text-align: center;
+      padding: 4px;
+    }
+  }
+  .ant-btn {
+    height: 25px;
+  }
+  .ant-collapse-header {
+    padding: 10px 16px !important;
+    background-color: #a3d3ff13;
+    line-height: 10px !important;
+    -moz-user-select: none; /* Mozilla Firefox */
+    -ms-user-select: none; /* Internet Explorer (не поддерживается) */
+    -o-user-select: none; /* Opera Presto (не поддерживается) */
+    -webkit-user-select: none; /* Google Chrome, Opera Next, Safari */
+  }
+  .ant-page-header {
+    padding: 0;
+    .ant-page-header-heading-title {
+      font-size: 20px;
+    }
+  }
+}
+
+.arbiter-risk-info.digets-factor {
+  .ant-table-footer {
+    background-color: #fff;
+    padding: 10px 16px;
+    text-align: center;
+  }
+}

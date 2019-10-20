@@ -1,11 +1,11 @@
 import React from 'react';
-import { Drawer, Collapse, Icon } from "antd";
+import { Drawer, Collapse, Icon, PageHeader, Button } from "antd";
 import toggleDrawer from '../index'
 import { getDate } from '../../../../../services/utils'
 import './drawer-history.scss'
 
 const CompanyHistoryInfoDrawer = props => {
-  const {onClose, visible, headHistory} = props
+  const {onClose, visible, headHistory, addUser, heads} = props
   const { Panel } = Collapse;
 
   if(!headHistory) return <div style={{textAlign: "center"}}>Ошибка в работе компонента "openBill -> CompanyHistoryInfoDrawer", пожалуйста перезагрузите страницу</div>
@@ -31,7 +31,7 @@ const CompanyHistoryInfoDrawer = props => {
     }
 
     const _fouldersFl = (item, key, id) => {
-      const { inn, position} = item
+      const { inn, position } = item
       return (
         <Panel 
           key={String(key)}
@@ -39,7 +39,7 @@ const CompanyHistoryInfoDrawer = props => {
           extra={<BtnExtra user={item}/>}
         >
           <div>{`ИНН: ${inn}`}</div>
-          <div>{`Должность: ${position}`}</div>
+          <div>{`Должность: ${position[0].tagName}`}</div>
         </Panel>
       )
     } 
@@ -49,7 +49,7 @@ const CompanyHistoryInfoDrawer = props => {
       return (
         <Panel 
           key={String(key)}
-          header={ `${name}` } 
+          header={name}
           extra={<BtnExtra user={item}/>}
         >
           <div>{`Название: ${full_name || name}`}</div>
@@ -59,10 +59,22 @@ const CompanyHistoryInfoDrawer = props => {
     }
 
     const BtnExtra = ({user}) => {
+      const showBtn = heads[0].data.filter(head => head.fio === user.fio).length
       const identifyUserInfo = e => {
         e.stopPropagation()
+        addUser({...user, history: true})
       }
-      return <Icon title="Добавить на проверку" className='heads-search-btn' type="user-add" onClick={ (e) => identifyUserInfo(e) }/>
+      return <Button 
+        title={showBtn ? "Добален в проверку" : "Добавить на проверку"}
+        icon="user-add"
+        className='heads-search-btn'
+        style={{
+          color: showBtn ? "gray" : "rgba(14, 117, 253, 0.992)",
+          cursor: showBtn ? "not-allowed" : "pointer"
+        }}
+        onClick={ e => identifyUserInfo(e) }
+        disabled={showBtn}
+      />
     }
     
     
@@ -91,13 +103,16 @@ const CompanyHistoryInfoDrawer = props => {
         visible={visible}
         className="drawer-history"
       >
-        <p className="title-description">Исторические данные о кампании</p>
-        <Collapse 
-          defaultActiveKey={['1', '2', '3', '4']} 
-          expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"}/> }
+        <PageHeader
+          title="Исторические данные о кампании"
         >
-          {_renderHeadsHistory()}
-        </Collapse>
+          <Collapse 
+            defaultActiveKey={['1', '2', '3', '4']} 
+            expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"}/> }
+          >
+            {_renderHeadsHistory()}
+          </Collapse>
+        </PageHeader>
       </Drawer>
   );
 }

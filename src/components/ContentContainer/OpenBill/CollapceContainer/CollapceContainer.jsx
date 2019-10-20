@@ -3,20 +3,18 @@ import { Row, Col, Spin, Collapse, Icon, Button } from 'antd';
 import PropTypes from "prop-types";
 import MainCompanyData from './MainCompanyData';
 import StopListData from './StopListData';
+import DocumentsData from './DocumentsData';
 import ManagmentContainer from './ManagmentContainer';
 import LoaderMessage from './LoaderMessage';
-import { trasform } from "../../../../services/utils";
 import "./collapce-container.scss";
 
 const CollapceContainer = props => {
   const [addCheckUser, setAddCheckUser] = useState(false)
 
   const { Panel } = Collapse;
-  const {companySource, riskSource, riskSource: {arbiter}, requestLoading, company  } = props
+  const {companySource, riskSource, requestLoading, company, documents, getDocument } = props
 
-  /** Преобразование входящих данных из props */
-  const fullOrganistionInfo = trasform._companySource(companySource)
-  const riskInfo = trasform._riskSource(riskSource)
+  const arbiter = riskSource.filter(item => item.id === "arbiter")[0].data
 
   const renderAffiliatersULLoader = () => {
     const AffilatesUl = requestLoading.get("getAffilatesUl").toJS()
@@ -66,8 +64,9 @@ const CollapceContainer = props => {
               expandIcon={({isActive}) => <Icon type={ !isActive ? "plus-square" : "minus-square"}/> }
             >
               <Panel header="Общая информация" key="1" showArrow={false}>
-                <MainCompanyData loading={false} fields={fullOrganistionInfo}/>
-                <StopListData  loading={requestLoading.get("getStopListsUl")} riskInfo={riskInfo} arbiter={arbiter}/>
+                <MainCompanyData loading={false} fields={companySource}/>
+                <StopListData  loading={requestLoading.get("getStopListsUl")} riskInfo={riskSource} arbiter={arbiter}/>
+                <DocumentsData loading={requestLoading} onAction={{getDocument}} documents={documents} />
               </Panel>
               <Panel 
                 key="2" 
@@ -100,9 +99,7 @@ CollapceContainer.propTypes = {
     companyPCUpdate: PropTypes.bool
   }),
   /** Данные о кампании */
-  companySource: PropTypes.object,
+  companySource: PropTypes.array,
   /** Данные о риск факторах */
-  riskSource: PropTypes.shape({
-    arbiter: PropTypes.object
-  }),
+  riskSource: PropTypes.array,
 }

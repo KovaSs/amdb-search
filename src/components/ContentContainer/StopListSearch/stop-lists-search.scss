@@ -1,0 +1,34 @@
+.stop-list-search-table {
+  .ant-table-thead {
+    th {
+      text-align: center;
+    }
+  }
+  .search-selector{
+    .ant-select-selection {
+      color: #fff;
+      background-color: #1890ff;
+      border-color: #1890ff;
+      text-shadow: 0 -1px 0 #0000001f;
+      -webkit-box-shadow: 0 2px 0 #0000000b;
+      box-shadow: 0 2px 0 #0000000b;
+    }
+    .ant-select-arrow {
+      color: #fff;
+    }
+  }
+  .empty-data {
+    margin: 0;
+    .ant-empty-image {
+      height: 24px;
+      margin: 0;
+    }
+  }
+  .empty-data-documents {
+    margin: 5px;
+    .ant-empty-image {
+      height: 30px;
+      margin: 0;
+    }
+  }
+}
