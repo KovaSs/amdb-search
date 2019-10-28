@@ -66,7 +66,6 @@ const ReducerRecord = Record({
   reqnum: '',
   renderData: false,
   ebgData: null,
-
   risksSrc: [],
   croinformInfoFl: new Map({}),
   identifyInfoFl: new Map({}),
@@ -75,7 +74,6 @@ const ReducerRecord = Record({
   stopLists: new Map({}),
   riskFactors: new Map({}),
   timeRequest: new Map({}),
-
   ebgMainResponse: null,
   companyResponse: OrderedMap({ ...companyRes, key: uuid()}),
   companyResponseUl: OrderedMap({}),
@@ -694,6 +692,10 @@ export const downloadReport = ({checkType, key}) => {
 }
 
 /** Selectors */
+const storeRouter = state => state.router
+const storeRouterLocation = state => state.router.location.pathname
+const storeLoading = state => state[moduleName].get("requestLoading")
+
 export const companyResSelector = state => state[moduleName].get('companyResponse').toJS()
 export const mainObjectKeySelector = state => state[moduleName].get('mainObjectKey')
 export const companyUlResSelector = state => state[moduleName].get('companyResponseUl')
@@ -935,9 +937,7 @@ export const decodedManagementSource = createSelector(
   }
 )
 
-export const storeUlSource = createSelector(
-  companyUlSrcSelector, ulSrc => ulSrc
-)
+export const storeUlSource = createSelector( companyUlSrcSelector, ulSrc => ulSrc)
 
 export const storeEbgJsonInfo = createSelector( ebgMainResponseSelector, ebgSrc =>  {
   if(ebgSrc && ebgSrc.client.clientType === "COMPANY") {
@@ -955,16 +955,6 @@ export const storeEbgJsonInfo = createSelector( ebgMainResponseSelector, ebgSrc 
 
 /** Sagas */
 
-// Получение данных из store
-const storeRouter = state => state.router
-const storeIsIP = state => state[moduleName].get('isIp')
-const storeRouterLocation = state => state.router.location.pathname
-const storeReqnum = state => state[moduleName].get('reqnum')
-const storeEbgItemJson = state => state[moduleName].get('ebgMainResponse')
-const storeCompanySrc = state => state[moduleName].get('companyResponse')
-const storeHeads = state => state[moduleName].getIn(['companyResponse', 'heads'])
-const storeLoading = state => state[moduleName].get("requestLoading")
-
 /* Получение основных данных о кампании */
 const loadCompanyInfoSaga = function * (action) {
   try {
@@ -979,7 +969,7 @@ const loadCompanyInfoSaga = function * (action) {
 
     // Проверка является ли проверяемый объект ИП
     if(res.data.ip && res.status.success) {
-      const updatedData = yield call(trasform.updateIPComSrc, yield select(storeCompanySrc), data, res.reqnum)
+      const updatedData = yield call(trasform.updateIPComSrc, yield select(), data, res.reqnum)
       yield put({
         type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,
         id: res.reqnum,
@@ -997,7 +987,7 @@ const loadCompanyInfoSaga = function * (action) {
       })
 
     } else if (!res.data.ip && res.status.success) {
-      const updatedData = yield call(trasform.updateComSrc, yield select(storeCompanySrc), data, res.reqnum)
+      const updatedData = yield call(trasform.updateComSrc, yield select(), data, res.reqnum)
 
       yield spawn(getStopListsUlSaga, yield updatedData.get("inn"), res.reqnum, yield updatedData.get("key") )
 
@@ -1099,16 +1089,15 @@ const loadCompanyInfoUlSaga = function * (action) {
 /* Обогащение полученной информации данными из JSON */
 const updateEbgJsonInfoSaga = function * () {
   try {
-    const ebgStore = (yield select(storeEbgItemJson))
+    const ebgStore = yield select(decodedEbgMainResponse)
     const param = ebgStore.client.clientType === "COMPANY" ?
       ebgStore.client.management.companyPersons : [ebgStore.client.selfEmployed]
     // Обогащение найденных руководителей информацией полученной из Ebg
     const updatedStore = yield call(trasform.updateEbgHeads, {
-      prevStore: yield select(storeCompanySrc),
+      prevStore: yield select(),
       prevSelected: new Map({}),
       managment: param
     })
-
     console.log('%cSTORE', cloCss.info, updatedStore)
 
     yield put({
@@ -1153,7 +1142,7 @@ const updateEbgJsonInfoSaga = function * () {
     }))
 
     if(updatedStore.heads.length) {
-      const reqnum = yield select(storeReqnum)
+      const reqnum = yield select(decodedReqnum)
       yield all(updatedStore.heads.map(item =>  fork(getRiskFactorsFlSaga, {
         user: item, 
         reqnum
@@ -1194,9 +1183,9 @@ const getStopListsUlSaga = function * (ulinn, reqnum, key) {
 
 /* Получение данных по БД стоп-листов */
 const loadStopListDataSaga = function * (action) {
-  const heads = yield select(storeHeads)
-  const user = heads.filter(item => item.id === action.loading)[0]
-  yield spawn(getFsspInfoSaga, yield select(storeReqnum), action, user)
+  const heads = yield select(ebgHeads)
+  const user = heads.find(item => item.id === action.loading)
+  yield spawn(getFsspInfoSaga, yield select(decodedReqnum), action, user)
   // Стоп-листы
   yield spawn(getStopListSaga, user, action.payload)
 }
@@ -1210,7 +1199,7 @@ const getStopListSaga = function * (user, action) {
     })
 
     /* Запрос данных о стоп-листах */
-    const res = yield call(API.getStopListFl, action, yield select(storeReqnum), 4)
+    const res = yield call(API.getStopListFl, action, yield select(decodedReqnum), 4)
     console.log("%cRES | GET BLACK STOP LISTS ",  cloCss.green, res)
 
     if(res.data && res.data.length && res.Status !== "Error") {
@@ -1393,7 +1382,7 @@ const getRiskFactorsFlSaga = function * ({user, reqnum}) {
     console.log("%cRES | GET RISK FACTORS FL",  cloCss.green, res)
 
     const riskFactors = yield call(trasform.saveRiskFaktorsFl, {
-      heads: yield select(storeHeads),
+      heads: yield select(ebgHeads),
       factors: res.data, 
       id: user.id
     })
@@ -1424,11 +1413,11 @@ const getRiskFactorsNewUserSaga = function * ({payload: {newUser: user}}) {
     })
 
     /* Запрос данных по истории риск-факторов */
-    const res = yield call(API.getRiskFactorsFl, yield select(storeReqnum), user, 4)
+    const res = yield call(API.getRiskFactorsFl, yield select(decodedReqnum), user, 4)
     console.log("%cRES | GET RISK FACTORS FL",  cloCss.green, res)
 
     const riskFactors = yield call(trasform.saveRiskFaktorsFl, {
-      heads: yield select(storeHeads),
+      heads: yield select(ebgHeads),
       factors: res.data, 
       id: user.id
     })
@@ -1456,11 +1445,11 @@ const addRiskFactorFlSaga = function * (action) {
     })
 
     /* Запрос на добавление нового риск-фактора  */
-    const res = yield call(API.getAddRiskFactorFl, yield select(storeReqnum), action.payload, 4)
+    const res = yield call(API.getAddRiskFactorFl, yield select(decodedReqnum), action.payload, 4)
     console.log("%cRES | ADD RISK FACTOR IN DIGEST LIST",  cloCss.green, res)
 
     const riskFactors = yield call(trasform.saveRiskFaktorsFl, {
-      heads: yield select(storeHeads),
+      heads: yield select(ebgHeads),
       factors: res.data, 
       id: action.loading
     })
@@ -1488,11 +1477,11 @@ const editRiskFactorFlSaga = function * (action) {
     })
 
     /* Запрос на добавление нового риск-фактора  */
-    const res = yield call(API.editRiskFactorFlRequest, yield select(storeReqnum), action.payload, 4)
+    const res = yield call(API.editRiskFactorFlRequest, yield select(decodedReqnum), action.payload, 4)
     console.log("%cRES | EDIT RISK FACTOR IN DIGEST LIST",  cloCss.green, res)
 
     const riskFactors = yield call(trasform.saveRiskFaktorsFl, {
-      heads: yield select(storeHeads),
+      heads: yield select(ebgHeads),
       factors: res.data, 
       id: action.loading
     })
@@ -1520,11 +1509,11 @@ const deleteRiskFactorFlSaga = function * (action) {
     })
 
     /* Запрос на добавление нового риск-фактора  */
-    const res = yield call(API.getDeleteRiskFactorFl, yield select(storeReqnum), action.payload, 4)
+    const res = yield call(API.getDeleteRiskFactorFl, yield select(decodedReqnum), action.payload, 4)
     console.log("%cRES | DELETE RISK FACTOR IN DIGEST LIST",  cloCss.green, res)
 
     const riskFactors = yield call(trasform.saveRiskFaktorsFl, {
-      heads: yield select(storeHeads),
+      heads: yield select(ebgHeads),
       factors: res.data, 
       id: action.loading
     })
@@ -1553,7 +1542,11 @@ const identifyUserSaga = function * (action) {
     })
 
     /* Запрос на идентификацию проверяемого объекта */
-    const res = yield call(API.getIdentifyUser, yield select(storeIsIP), yield select(storeReqnum), action.payload.user)
+    const res = yield call(API.getIdentifyUser, 
+      yield select(decodedisIp),
+      yield select(decodedReqnum),
+      action.payload.user
+    )
     console.log("%cRES | GET USER INFO",  cloCss.green, res)
 
     if(res.data) {
@@ -1616,7 +1609,7 @@ const getCroinformInfoSaga = function * (action) {
     yield call(loadStopListDataSaga, action)
 
     /* Переключение на mock данные */
-    const res = yield call(API.getIdentifyUserInfo, yield select(storeReqnum), action.payload, 4)
+    const res = yield call(API.getIdentifyUserInfo, yield select(decodedReqnum), action.payload, 4)
     console.log("%cRES | GET CROINFORM USER INFO", cloCss.green, res)
 
     const croinform = yield call(trasform.croinformInfoResponse,
@@ -1634,7 +1627,7 @@ const getCroinformInfoSaga = function * (action) {
       loading: action.loading
     })
 
-    const heads = yield select(storeHeads)
+    const heads = yield select(ebgHeads)
     yield call(getRiskFactorsFlSaga, {
       user: heads.find(item => item.id === action.loading),
       reqnum: res.reqnum
@@ -1888,7 +1881,7 @@ const downloadReportFileSaga = function * (action) {
       // Для сохранения дайджеста по физическому лицу
       yield call(dowloadHtmlFile, {
         isFl: true,
-        info: (yield select(storeHeads)).find(item => item.id === action.key).fio,
+        info: (yield select(ebgHeads)).find(item => item.id === action.key).fio,
         identify:  (yield select(identifyInfoFlSelector)).has(action.key) ? (yield select(identifyInfoFlSelector)).get(action.key).html : null,
         croinform:  (yield select(croinformInfoFlSelector)).has(action.key) ? (yield select(croinformInfoFlSelector)).get(action.key).html : null,
         lists: (yield select(croinformInfoFlSelector)).has(action.key) ? (yield select(croinformInfoFlSelector)).get(action.key).lists : null,

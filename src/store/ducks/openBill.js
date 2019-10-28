@@ -548,6 +548,12 @@ export const downloadReport = ({checkType, key}) => {
 }
 
 /** Selectors */
+const storeInn = state => state[moduleName].getIn(['companyResponse', 'inn'])
+const storeKey = state => state[moduleName].getIn(['companyResponse', 'key'])
+const storeDoc = state => state[moduleName].getIn(['companyResponse','documents'])
+const storeHistoryIdentify = state => state[moduleName].getIn(['companyResponse', 'historyIdentify'])
+const storeLoading = state => state[moduleName].getIn(["requestLoading", "getRiskFactorsFl"])
+
 export const storeStateSelector = state => state[moduleName]
 export const companyResSelector = state => state[moduleName].get('companyResponse').toJS()
 export const companyImmutableResSelector = state => state[moduleName].get('companyResponse')
@@ -583,30 +589,30 @@ export const storeFsspInfo = createSelector( fsspInfoSelector, fsspInfo =>  fssp
 export const storeStopLists = createSelector( stopListsSelector, stopLists =>  stopLists )
 export const storeSelectedInfoFl = createSelector( selectedInfoFlSelector, selectedInfo =>  selectedInfo )
 export const storeCroinformInfoFl = createSelector( croinformInfoFlSelector, croinformInfo =>  croinformInfo )
-export const storeRisksSrc = createSelector( risksSrcSelector, (risksSrc) =>  risksSrc )
+export const storeRisksSrc = createSelector( risksSrcSelector, risksSrc =>  risksSrc )
 export const storeRiskFactors = createSelector( riskFactorsSelector, risks =>  risks )
 
 export const ebgHeads = createSelector( storeHeadsSelector, heads =>  heads )
-export const decodedCompanyResponse = createSelector( companyResSelector, (companyResponse) =>  companyResponse )
+export const decodedCompanyResponse = createSelector( companyResSelector, companyResponse =>  companyResponse )
 export const storeRiskFactorsItem = createSelector( riskFactorsItemSelector, riskItem =>  riskItem )
-export const decodedRisksList = createSelector( risksListSelector, (risksList) =>  risksList )
-export const decodedDocuments = createSelector( documentsSelector, (documents) =>  documents )
-export const decodedFsspInfo = createSelector( fsspSelector, (fssp) =>  fssp )
-export const decodedDigetsList = createSelector( digetsListSelector, (digets) =>  digets )
-export const decodedisIp = createSelector( isIpSelector, (isIp) =>  isIp )
-export const decodedСroinformResponse = createSelector( сroinformResSelector, (сroinformRes) =>  сroinformRes )
-export const decodedCompanyName = createSelector( nameCompanySelector, (companyName) =>  companyName )
-export const decodedReqnum = createSelector( reqnumSelector, (reqnum) => reqnum )
-export const decodedInn = createSelector( innSelector, (inn) => inn )
-export const decodedErrors = createSelector( errorsSelector, (errors) => errors )
-export const decodedRenderData = createSelector( renderDataSelector, (renderData) => renderData )
-export const decodedRequestLoading = createSelector( requestLoadingSelector, (requestLoading) => requestLoading )
+export const decodedRisksList = createSelector( risksListSelector, risksList =>  risksList )
+export const decodedDocuments = createSelector( documentsSelector, documents =>  documents )
+export const decodedFsspInfo = createSelector( fsspSelector, fssp =>  fssp )
+export const decodedDigetsList = createSelector( digetsListSelector, digets =>  digets )
+export const decodedisIp = createSelector( isIpSelector, isIp =>  isIp )
+export const decodedСroinformResponse = createSelector( сroinformResSelector, сroinformRes =>  сroinformRes )
+export const decodedCompanyName = createSelector( nameCompanySelector, companyName =>  companyName )
+export const decodedReqnum = createSelector( reqnumSelector, reqnum => reqnum )
+export const decodedInn = createSelector( innSelector, inn => inn )
+export const decodedErrors = createSelector( errorsSelector, errors => errors )
+export const decodedRenderData = createSelector( renderDataSelector, renderData => renderData )
+export const decodedRequestLoading = createSelector( requestLoadingSelector, requestLoading => requestLoading )
 
 export const storeMainDigest = createSelector( mainDigetsSelector, riskFactors =>  trasform.getMainDigest(riskFactors) )
 export const storeHeadItem = createSelector(storeHeadsSelector, keySelector, (heads, keyId) => heads.find((value, key) => value === keyId))
 
 export const decodedMainCompanySource = createSelector(
-  companyImmutableResSelector, (companyResponse) => {
+  companyImmutableResSelector, companyResponse => {
     const  companySource = companyResponse.filterNot((value, key) => 
       key === "heads" ||
       key === "management_companies" ||
@@ -640,7 +646,7 @@ export const decodedMainCompanySource = createSelector(
   }
 )
 export const decodedCompanySrc = createSelector(
-  companySrcSelector, (companyResponse) => {
+  companySrcSelector, companyResponse => {
     const companySrc = companyResponse.filter((value, key) => 
     key === "inn" ||
     key === "ogrn" ||
@@ -652,7 +658,7 @@ export const decodedCompanySrc = createSelector(
 )
 
 export const digetsSrc = createSelector(
-  companySrcSelector, (companyResponse) => {
+  companySrcSelector, companyResponse => {
     const companySrc = companyResponse.filter((value, key) => 
     key === "inn" ||
     key === "ogrn" ||
@@ -664,7 +670,7 @@ export const digetsSrc = createSelector(
   }
 )
 export const decodedRiskSource = createSelector(
-  companyImmutableResSelector, (companyResponse) => {
+  companyImmutableResSelector, companyResponse => {
     const riskSource = companyResponse.filter((value, key) => 
     key === "arbiter" ||
     key === "fns" ||
@@ -679,25 +685,13 @@ export const decodedRiskSource = createSelector(
   }
 )
 export const decodedManagementSource = createSelector(
-  companyImmutableResSelector, (companyResponse) => {
+  companyImmutableResSelector, companyResponse => {
     const managementSource = companyResponse.filter((value, key) => key === "heads").toJS()
     return trasform.getHeadsSrc(managementSource)
   }
 )
 
 /** Sagas */
-// Получение данных из store
-const storeIsIP = state => state[moduleName].get('isIp')
-const storeReqnum = state => state[moduleName].get('reqnum')
-const storeCompanySrc = state => state[moduleName].get('companyResponse')
-const storeSelInfoFl = state => state[moduleName].get('selectedInfoFl')
-const storeInn = state => state[moduleName].getIn(['companyResponse', 'inn'])
-const storeKey = state => state[moduleName].getIn(['companyResponse', 'key'])
-const storeCompName = state => state[moduleName].getIn(['companyResponse', 'name'])
-const storeDoc = state => state[moduleName].getIn(['companyResponse','documents'])
-const storeHeads = state => state[moduleName].getIn(['companyResponse', 'heads'])
-const storeHistoryIdentify = state => state[moduleName].getIn(['companyResponse', 'historyIdentify'])
-const storeLoading = state => state[moduleName].getIn(["requestLoading", "getRiskFactorsFl"])
 
 /* Получение основных данных о кампании */
 const loadCompanyInfoSaga = function * (action) {
@@ -711,7 +705,7 @@ const loadCompanyInfoSaga = function * (action) {
 
     if(res.data.ip && res.status.success) {
       yield call(loadDigestListSaga)
-      const updatedData = yield call(trasform.updateIPComSrc, yield select(storeCompanySrc), {
+      const updatedData = yield call(trasform.updateIPComSrc, yield select(decodedCompanyResponse), {
         ...res.data.company_info, 
         history_identify: res.data.history_identify
       })
@@ -733,7 +727,7 @@ const loadCompanyInfoSaga = function * (action) {
       yield call(loadDigestListSaga)
     } else if(!res.data.ip && res.status.success) {
       yield call(loadDigestListSaga)
-      const updatedData = yield call(trasform.updateComSrc, yield select(storeCompanySrc), {
+      const updatedData = yield call(trasform.updateComSrc, yield select(decodedCompanyResponse), {
         ...res.data.company_info, 
         history_identify: res.data.history_identify
       }, res.reqnum)
@@ -790,11 +784,11 @@ const getRiskFactorsNewUserSaga = function * ({payload: {newUser: user}}) {
     })
 
     /* Запрос данных по истории риск-факторов */
-    const res = yield call(API.getRiskFactorsFl, yield select(storeReqnum), user, 2)
+    const res = yield call(API.getRiskFactorsFl, yield select(decodedReqnum), user, 2)
     console.log("%cRES | GET RISK FACTORS FL",  cloCss.green, res)
 
     const riskFactors = yield call(trasform.saveRiskFaktorsFl, {
-      heads: yield select(storeHeads),
+      heads: yield select(ebgHeads),
       factors: res.data, 
       id: user.id
     })
@@ -847,7 +841,7 @@ const getDocumentItemSaga = function * (action) {
     })
 
     /* Запрос данных о приемниках */
-    const res = yield call(API.getDocumentItem, yield select(storeReqnum), action.payload.xhdoc)
+    const res = yield call(API.getDocumentItem, yield select(decodedReqnum), action.payload.xhdoc)
     console.log("%cRES | GET DOCUMENT",  cloCss.green, res)
 
     const updatedData = yield call(trasform.updateDocuments, yield select(storeDoc), res, action.payload.xhdoc)
@@ -868,7 +862,7 @@ const getDocumentItemSaga = function * (action) {
 
 /* Получение данных о связанных лицах */
 const loadAffilatesListSaga = function * () {
-  const isIp = yield select(storeIsIP)
+  const isIp = yield select(decodedisIp)
   if(!isIp) {
     try {
       yield put({
@@ -876,14 +870,14 @@ const loadAffilatesListSaga = function * () {
       })
 
       /* Запрос данных о приемниках */
-      const res = yield call(API.getAffilatesList, yield select(storeReqnum), yield select(storeInn), 2)
+      const res = yield call(API.getAffilatesList, yield select(decodedReqnum), yield select(storeInn), 2)
       console.log("%cRES | GET AFFILATES LIST",  cloCss.green, res)
 
-      const updatedData = yield call(trasform.updateManagmentSrc, yield select(storeCompanySrc), res.data)
+      const updatedData = yield call(trasform.updateManagmentSrc, yield select(decodedCompanyResponse), res.data)
       const selectedInfo = yield call(trasform.historySelectedInfo, {
         prevHeads: yield updatedData.get("heads"), 
         historyIdentify: yield select(storeHistoryIdentify), 
-        storeSelInfoFl: yield select(storeSelInfoFl)
+        storeSelInfoFl: yield select(storeSelectedInfoFl)
       })
 
       if(updatedData.get("heads").length) {
@@ -934,9 +928,9 @@ const loadAffilatesUlSaga = function * (action) {
 
 /* Получение данных по БД стоп-листов */
 const loadStopListDataSaga = function * (action) {
-  const heads = yield select(storeHeads)
-  const user = heads.filter(item => item.id === action.loading)[0]
-  yield spawn(getFsspInfoSaga, yield select(storeReqnum), action, user)
+  const heads = yield select(ebgHeads)
+  const user = heads.find(item => item.id === action.loading)
+  yield spawn(getFsspInfoSaga, yield select(decodedReqnum), action, user)
   // Стоп-листы
   yield spawn(getStopListSaga, user, action.payload)
 }
@@ -950,7 +944,7 @@ const getStopListSaga = function * (user, action) {
     })
 
     /* Запрос данных о стоп-листах */
-    const res = yield call(API.getStopListFl, action, yield select(storeReqnum), 2)
+    const res = yield call(API.getStopListFl, action, yield select(decodedReqnum), 2)
     console.log("%cRES | GET BLACK STOP LISTS ",  cloCss.green, res)
 
     if(res.data && res.data.length && res.Status !== "Error") {
@@ -986,14 +980,14 @@ const loadDigestListSaga = function * () {
     })
 
     /* Запрос данных для DigetsList */
-    const res = yield call(API.getDigestList, yield select(storeReqnum), 2)
+    const res = yield call(API.getDigestList, yield select(decodedReqnum), 2)
     console.log("%cRES | LOAD DIGEST LIST",  cloCss.green, res)
 
     const riskFactors = yield call(trasform.saveRiskFaktorsUl, {
       factors: res.data,
       info: {
         inn: yield select(storeInn), 
-        name: yield select(storeCompName)
+        name: yield select(decodedCompanyName)
       }
     })
 
@@ -1024,7 +1018,7 @@ const getRiskFactorsFlSaga = function * ({user, reqnum}) {
     console.log("%cRES | GET RISK FACTORS FL",  cloCss.green, res)
 
     const riskFactors = yield call(trasform.saveRiskFaktorsFl, {
-      heads: yield select(storeHeads),
+      heads: yield select(ebgHeads),
       factors: res.data, 
       id: user.id
     })
@@ -1051,14 +1045,14 @@ const addRiskFactorSaga = function * (action) {
     })
 
     /* Запрос на добавление нового риск-фактора  */
-    const res = yield call(API.getAddRiskFactor, yield select(storeReqnum), action.payload, 2)
+    const res = yield call(API.getAddRiskFactor, yield select(decodedReqnum), action.payload, 2)
     console.log("%cRES | ADD RISK FACTOR IN DIGEST LIST",  cloCss.green, res)
 
     const riskFactors = yield call(trasform.saveRiskFaktorsUl, {
       factors: res.data,
       info: {
         inn: yield select(storeInn), 
-        name: yield select(storeCompName)
+        name: yield select(decodedCompanyName)
       }
     })
 
@@ -1083,14 +1077,14 @@ const editRiskFactorSaga = function * (action) {
     })
 
     /* Запрос на добавление нового риск-фактора  */
-    const res = yield call(API.editRiskFactorRequest, yield select(storeReqnum), action.payload)
+    const res = yield call(API.editRiskFactorRequest, yield select(decodedReqnum), action.payload)
     console.log("%cRES | EDIT RISK FACTOR IN DIGEST LIST",  cloCss.green, res)
 
     const riskFactors = yield call(trasform.saveRiskFaktorsUl, {
       factors: res.data,
       info: {
         inn: yield select(storeInn), 
-        name: yield select(storeCompName)
+        name: yield select(decodedCompanyName)
       }
     })
 
@@ -1115,14 +1109,14 @@ const deleteRiskFactorSaga = function * (action) {
     })
 
     /* Запрос на добавление нового риск-фактора  */
-    const res = yield call(API.getDeleteRiskFactor, yield select(storeReqnum), action.payload)
+    const res = yield call(API.getDeleteRiskFactor, yield select(decodedReqnum), action.payload)
     console.log("%cRES | DELETE RISK FACTOR IN DIGEST LIST",  cloCss.green, res)
 
     const riskFactors = yield call(trasform.saveRiskFaktorsUl, {
       factors: res.data,
       info: {
         inn: yield select(storeInn), 
-        name: yield select(storeCompName)
+        name: yield select(decodedCompanyName)
       }
     })
 
@@ -1147,11 +1141,11 @@ const addRiskFactorFlSaga = function * (action) {
     })
 
     /* Запрос на добавление нового риск-фактора  */
-    const res = yield call(API.getAddRiskFactorFl, yield select(storeReqnum), action.payload, 2)
+    const res = yield call(API.getAddRiskFactorFl, yield select(decodedReqnum), action.payload, 2)
     console.log("%cRES | ADD RISK FACTOR IN DIGEST LIST",  cloCss.green, res)
 
     const riskFactors = yield call(trasform.saveRiskFaktorsFl, {
-      heads: yield select(storeHeads),
+      heads: yield select(ebgHeads),
       factors: res.data, 
       id: action.loading
     })
@@ -1177,11 +1171,11 @@ const editRiskFactorFlSaga = function * (action) {
     })
 
     /* Запрос на добавление нового риск-фактора  */
-    const res = yield call(API.editRiskFactorFlRequest, yield select(storeReqnum), action.payload, 2)
+    const res = yield call(API.editRiskFactorFlRequest, yield select(decodedReqnum), action.payload, 2)
     console.log("%cRES | EDIT RISK FACTOR IN DIGEST LIST",  cloCss.green, res)
 
     const riskFactors = yield call(trasform.saveRiskFaktorsFl, {
-      heads: yield select(storeHeads),
+      heads: yield select(ebgHeads),
       factors: res.data, 
       id: action.loading
     })
@@ -1207,11 +1201,11 @@ const deleteRiskFactorFlSaga = function * (action) {
     })
 
     /* Запрос на добавление нового риск-фактора  */
-    const res = yield call(API.getDeleteRiskFactorFl, yield select(storeReqnum), action.payload)
+    const res = yield call(API.getDeleteRiskFactorFl, yield select(decodedReqnum), action.payload)
     console.log("%cRES | ADD RISK FACTOR IN DIGEST LIST",  cloCss.green, res)
 
     const riskFactors = yield call(trasform.saveRiskFaktorsFl, {
-      heads: yield select(storeHeads),
+      heads: yield select(ebgHeads),
       factors: res.data, 
       id: action.loading
     })
@@ -1237,10 +1231,10 @@ const getRequestAffiliatesUlSaga = function * (inn, user) {
     })
 
     /* Запрос данных о приемниках */
-    const res = yield call(API.getRequestAffiliatesUl, yield select(storeReqnum), inn, 2)
+    const res = yield call(API.getRequestAffiliatesUl, yield select(decodedReqnum), inn, 2)
     console.log("%cRES | GET CHECK AFFILATES UL",  cloCss.green, res)
 
-    const updatedData = yield call(trasform.updateManagmentULSrc, yield select(storeHeads), res.data, user)
+    const updatedData = yield call(trasform.updateManagmentULSrc, yield select(ebgHeads), res.data, user)
 
     if(updatedData.length) {
       yield all(updatedData.map(item =>  spawn(getRiskFactorsFlSaga, {
@@ -1251,7 +1245,7 @@ const getRequestAffiliatesUlSaga = function * (inn, user) {
     const selectedInfo = yield call(trasform.historySelectedInfo, {
       prevHeads: updatedData, 
       historyIdentify: yield select(storeHistoryIdentify), 
-      storeSelInfoFl: yield select(storeSelInfoFl)
+      storeSelInfoFl: yield select(decodedCompanyResponse)
     })
 
     yield put({
@@ -1304,7 +1298,7 @@ const identifyUserSaga = function * (action) {
     })
 
     /* Запрос на идентификацию проверяемого объекта */
-    const res = yield call(API.getIdentifyUser, yield select(storeIsIP), yield select(storeReqnum), action.payload.user)
+    const res = yield call(API.getIdentifyUser, yield select(decodedisIp), yield select(decodedReqnum), action.payload.user)
     console.log("%cRES | GET USER INFO",  cloCss.green, res)
 
     if(res.data) {
@@ -1342,7 +1336,7 @@ const getCroinformInfoSaga = function * (action) {
     })
 
     /* Переключение на mock данные */
-    const res = yield call(API.getIdentifyUserInfo, yield select(storeReqnum), action.payload, 2)
+    const res = yield call(API.getIdentifyUserInfo, yield select(decodedReqnum), action.payload, 2)
     console.log("%cRES | GET CROINFORM USER INFO |", cloCss.green, res)
 
     const croinform = yield call(trasform.croinformInfoResponse,
@@ -1360,7 +1354,7 @@ const getCroinformInfoSaga = function * (action) {
       loading: action.loading
     })
 
-    const heads = yield select(storeHeads)
+    const heads = yield select(ebgHeads)
 
     yield call(loadStopListDataSaga, action)
     yield call(getRiskFactorsFlSaga, {
@@ -1445,7 +1439,7 @@ const downloadReportFileSaga = function * (action) {
       // Для сохранения дайджеста по физическому лицу
       yield call(dowloadHtmlFile, {
         isFl: true,
-        info: (yield select(storeHeads)).find(item => item.id === action.key).fio,
+        info: (yield select(ebgHeads)).find(item => item.id === action.key).fio,
         identify:  (yield select(identifyInfoFlSelector)).has(action.key) ? (yield select(identifyInfoFlSelector)).get(action.key).html : null,
         croinform:  (yield select(croinformInfoFlSelector)).has(action.key) ? (yield select(croinformInfoFlSelector)).get(action.key).html : null,
         lists: (yield select(croinformInfoFlSelector)).has(action.key) ? (yield select(croinformInfoFlSelector)).get(action.key).lists : null,
