@@ -12,12 +12,6 @@ export const cloCss = {
   info: "color: black; background-color: #40a9ff; padding: 0 5px",
 }
 
-/** Проверка на запрос из EBG */
-export const src = () => {
-  if(store.getState().router.location.pathname.indexOf("electronic-bank-garantees/") !== -1)  return "ebg"
-  else if (store.getState().router.location.pathname.indexOf("open-bill/") !== -1)  return "bill"
-  else return false
-}
 /** Формирование FormData для запроса */
 export const formData = (data, formData) => {
   formData = new FormData()
@@ -286,10 +280,11 @@ export const parsingAddress = address => {
   }
 }
 
-/** Преобразование сумм */
+/** Преобразование сумм (формат по 3) */
 // eslint-disable-next-line
 export const sumTrans = str => String(str).replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1' + '\u200A')
 
+/** Форматирование данных арбитража */
 export const updateArbiter = (str = "") => {
   if(!str) return "0 руб. (0)"
   const newStr = str.match(/(\d{0,}).(\d{0,})( руб. )\((\d{0,}.\d{0,})\)/)
@@ -297,7 +292,7 @@ export const updateArbiter = (str = "") => {
   return `${sumTrans(newStr[1])}.${newStr[2]}${newStr[3]}(${sumTrans(newStr[4])})`
 }
 
-/** Загрузка полученного ответа в формате html */
+/** Загрузка полученного отчета в формате html */
 export const dowloadHtmlFile = (content, contentType = 'application/octet-stream', filename) => {
   filename = `${content.info} - ${getDownloadTime(Date.now())}.html`
   var a = document.createElement('a');
@@ -308,6 +303,7 @@ export const dowloadHtmlFile = (content, contentType = 'application/octet-stream
   if(a.hasOwnProperty("click")) {
     a.click();
   } else {
+    // Создание синтетического события для браузеров их не поддерживающих
     const eventClick = new MouseEvent('click', {
       'view': window,
       'bubbles': true,
@@ -463,7 +459,7 @@ class TransformData {
     return compact(orgInfo)
   }
 
-  /** Иммутабельное обновление основыных данных об искомой кампании ЮЛ */
+  /** Иммутабельное обновление основных данных об искомой кампании ЮЛ */
   updateComSrc = (prevStore, serverData, reqnum) => {
     try {
       fieldsArr.map( fieldItem => {
@@ -677,9 +673,6 @@ class TransformData {
   }
 
   historySelectedInfo = ({prevHeads, historyIdentify, storeSelInfoFl}) => {
-    // console.log('%cprevHeads', cloCss.red, prevHeads)
-    // console.log('%chistoryIdentify', cloCss.red, historyIdentify)
-    // console.log('%cstoreSelInfoFl', cloCss.red, storeSelInfoFl)
     if(historyIdentify && historyIdentify.length) {
         historyIdentify.map(item => {
           if(item.type === "Request") {
@@ -714,7 +707,6 @@ class TransformData {
               }
               return head
             })
-            // console.log('%cRequest', cloCss.info, item)
           }
           return item
         })
@@ -971,7 +963,7 @@ class TransformData {
       let notFoundsHeadsFl = []
       const headPerson = prevHeads.map( (heads, i) => {
         if( serverData.heads_fl.filter(heads_fl => heads.fio === heads_fl.fio).length) {
-          const updatedHead = serverData.heads_fl.filter(heads_fl => heads.fio === heads_fl.fio)[0]
+          const updatedHead = serverData.heads_fl.find(heads_fl => heads.fio === heads_fl.fio)
           return {
             ...heads,
             position: concat(
@@ -1037,7 +1029,7 @@ class TransformData {
       let notFoundsFoundersFl = []
       const updatedHeads = prevHeads.map( heads => {
         if( serverData.founders_fl.filter(founders_fl => heads.fio === founders_fl.fio).length) {
-          const founders_fl = serverData.founders_fl.filter(founders_fl => heads.fio === founders_fl.fio)[0]
+          const founders_fl = serverData.founders_fl.find(founders_fl => heads.fio === founders_fl.fio)
           return {
             ...heads,
             position: concat(
@@ -1103,7 +1095,7 @@ class TransformData {
       let notFoundsShareHoldersFl = []
       const headPerson = prevHeads.map( heads => {
         if(serverData.share_holders_fl.filter(share_holders_fl => heads.fio === share_holders_fl.fio).length) {
-          const share_holders_fl = serverData.share_holders_fl.filter(share_holders_fl => heads.fio === share_holders_fl.fio)[0]
+          const share_holders_fl = serverData.share_holders_fl.find(share_holders_fl => heads.fio === share_holders_fl.fio)
           return {
             ...heads,
             position: concat(
