@@ -134,7 +134,7 @@ const ReducerRecord = Record({
 const EbgReducer = (state = new ReducerRecord(), action) => {
   const { type, payload, id } = action
   switch (type) {
-    // Сохранение ИНН запроса
+    // Сохранение данных поискового запроса
     case ACTION_CHANGE_INN:
       return state.set('inn', payload.inn)
 
@@ -144,7 +144,7 @@ const EbgReducer = (state = new ReducerRecord(), action) => {
         .set('selectedInfoFl', action.updatedStore.selected)
         .setIn(['companyResponse', 'heads'], action.updatedStore.heads)
 
-    // Получение данных об выюранном объекте
+    // Взятие выбранного из EBG таблицы объекта на проверку
     case TAKE_EBG_ITEM + START:
       return state
         .setIn(['requestLoading', 'ebgMainDataRequest'], true)
@@ -160,7 +160,7 @@ const EbgReducer = (state = new ReducerRecord(), action) => {
         .setIn(['requestLoading', 'ebgMainDataRequest'], false)
         .setIn(['errors', 'ebgMainDataRequest'], true)
 
-    // Получение данных об выюранном объекте
+    // Возврат в очередь EBG проверки
     case RETURN_EBG_ITEM + START:
       return state
         .setIn(['requestLoading', 'returnEbgItemRequest'], true) 
@@ -174,7 +174,7 @@ const EbgReducer = (state = new ReducerRecord(), action) => {
         .setIn(['requestLoading', 'returnEbgItemRequest'], false)
         .setIn(['errors', 'returnEbgItemRequest'], true)
 
-    // Звершение Ebg проверки по выбранному объекту
+    // Завершение Ebg проверки по проверяемому объекту
     case ACCEPT_EBG_ITEM + START:
       return state
         .setIn(['requestLoading', 'acceptEbgItemRequest'], true) 
@@ -226,7 +226,7 @@ const EbgReducer = (state = new ReducerRecord(), action) => {
         .setIn(['requestLoading', 'loadCompanyInfoUl', action.id], false)
         .setIn(['errors', 'loadCompanyInfoUl', action.id], { status: action.error.status, message: action.error.message, time: action.error.time })
 
-    // Сохранение данных об аффилированных лица
+    // Сохранение данных об аффилированных лицах
     case GET_AFFILATES_LIST + START:
       return state
         .setIn(['requestLoading', 'getAffilatesList'], true)
@@ -241,6 +241,7 @@ const EbgReducer = (state = new ReducerRecord(), action) => {
         .setIn(['requestLoading', 'getAffilatesList'], false)
         .setIn(['errors', 'getAffilatesList'], true)
 
+    // Сохранение данных об аффилированных лицах связанных ЮЛ
     case GET_AFFILATES_UL + START:
       return state
       .setIn(['requestLoading', 'getAffilatesUl', action.loading.inn], {loading: true, name: action.loading.name})
@@ -255,6 +256,7 @@ const EbgReducer = (state = new ReducerRecord(), action) => {
         .setIn(['requestLoading', 'getAffilatesUl', action.loading.inn], {loading: false, name: action.loading.name})
         .setIn(['errors', 'getAffilatesUl', action.loading.inn], {error: true, name: action.loading.name})
 
+    // Получение идентификационных данных на выбранное ФЛ
     case GET_IDENTIFY_USER + START:
       return state
         .setIn(['selectedInfoFl', action.loading], action.selected)
@@ -280,6 +282,7 @@ const EbgReducer = (state = new ReducerRecord(), action) => {
       return state
         .setIn(['errors', 'updateSelectedUserInfo'], action.error.status)
 
+    // Финальная проверка выбранного ФЛ
     case GET_CROINFORM_USER_INFO + START:
       return state
         .setIn(['selectedInfoFl', action.loading], action.selected)
@@ -296,6 +299,7 @@ const EbgReducer = (state = new ReducerRecord(), action) => {
         .setIn(['requestLoading', 'croinformRequest', action.loading], false)
         .setIn(['errors', 'croinformRequest', action.loading], { status: action.error.status, message: action.error.message, time: action.error.time })
 
+    // Получение ФССП данных
     case GET_FSSP_INFO + START:
       return state
         .setIn(['requestLoading', 'fsspInfo', action.loading], true)
@@ -310,6 +314,7 @@ const EbgReducer = (state = new ReducerRecord(), action) => {
         .setIn(['requestLoading', 'fsspInfo', action.loading], false)
         .setIn(['errors', 'fsspInfo', action.loading], true)
 
+    // Получение исторических и актуальных риск-факторов
     case LOAD_DIGEST_LIST + START:
       return state
         .setIn(['requestLoading', 'digestList'], true)
@@ -341,7 +346,7 @@ const EbgReducer = (state = new ReducerRecord(), action) => {
         .setIn(['requestLoading', 'digestListUl', action.id], false)
         .setIn(['errors', 'digestListUl', action.id], true)
 
-        // Добавление риск фактора в дайджест лист UL
+    // Добавление риск фактора в дайджест лист UL
     case ADD_RISK_FACTOR_UL_IN_DIGEST_LIST + START:
       return state
         .setIn(['requestLoading', 'deleteRistFactorInDigestList'], true)
@@ -386,7 +391,7 @@ const EbgReducer = (state = new ReducerRecord(), action) => {
         .setIn(['requestLoading', 'deleteRistFactorInDigestList'], false)
         .setIn(['errors', 'deleteRistFactorInDigestList'], true)
 
-    // Редактирование риск-фактора из дайджест листа
+    // Редактирование риск-фактора из дайджест листа ФЛ
     case ADD_RISK_FACTOR_FL_IN_DIGEST_LIST + START:
       return state
         .setIn(['requestLoading', 'addRistFactorInDigestListFl', action.loading], true)
@@ -401,7 +406,7 @@ const EbgReducer = (state = new ReducerRecord(), action) => {
         .setIn(['requestLoading', 'addRistFactorInDigestListFl', action.loading], false)
         .setIn(['errors', 'addRistFactorInDigestListFl', action.loading], true)
 
-    // Редактирование риск-фактора из дайджест листа
+    // Редактирование риск-фактора из дайджест листа ФЛ
     case EDIT_RISK_FACTOR_FL_IN_DIGEST_LIST + START:
       return state
         .setIn(['requestLoading', 'deleteRistFactorInDigestList'], true)
@@ -415,7 +420,8 @@ const EbgReducer = (state = new ReducerRecord(), action) => {
       return state
         .setIn(['requestLoading', 'deleteRistFactorInDigestList'], false)
         .setIn(['errors', 'deleteRistFactorInDigestList'], true)
-
+    
+    // Удвление риск-фактора из дайджест листа ФЛ   
     case DELETE_RISK_FACTOR_FL_IN_DIGEST_LIST + START:
       return state
         .setIn(['requestLoading', 'deleteRistFactorInDigestList'], true)
@@ -430,6 +436,7 @@ const EbgReducer = (state = new ReducerRecord(), action) => {
         .setIn(['requestLoading', 'deleteRistFactorInDigestList'], false)
         .setIn(['errors', 'deleteRistFactorInDigestList'], true)
 
+    // Получение данных по стоп-листам ЮЛ
     case GET_STOP_LISTS_UL_INFO + START:
       return state
         .setIn(['requestLoading', 'getStopListsUl', action.keyId], true)
@@ -473,7 +480,8 @@ const EbgReducer = (state = new ReducerRecord(), action) => {
       return state
         .setIn(['requestLoading', 'getDocumentItem', action.loading], false)
         .setIn(['errors', 'getDocumentItem', action.loading], true)
-
+    
+     // Получение данных по стоп-листам ФЛ
     case GET_BLACK_STOP_LISTS + START:
       return state
         .setIn(['requestLoading', 'stopLists', action.loading], true)
@@ -489,6 +497,7 @@ const EbgReducer = (state = new ReducerRecord(), action) => {
         .setIn(['requestLoading', 'stopLists', action.loading], false)
         .setIn(['errors', 'stopLists', action.loading], true)
 
+     // Получение данных по актуальным и историческим риск-факторам ФЛ
     case GET_RISK_FACTORS_FL_INFO + START:
       return state
         .setIn(['requestLoading', 'getRiskFactorsFl', action.loading], true)
@@ -518,10 +527,12 @@ const EbgReducer = (state = new ReducerRecord(), action) => {
         .setIn(['requestLoading', 'ebgSyncTableData'], false)
         .setIn(['errors', 'ebgSyncTableData'], true)
 
+    // Добавление нового лица в перечень связанных с кампанией лиц для проверки
     case ADD_USER_TO_CHECK_LIST:
       return state
         .mergeDeepIn(['companyResponse', 'heads'], [payload.newUser])
 
+    // Чистка store приложения
     case CLEAR_COMPANY_INFO:
       return new ReducerRecord()
 
