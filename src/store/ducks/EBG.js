@@ -969,7 +969,7 @@ const loadCompanyInfoSaga = function * (action) {
 
     // Проверка является ли проверяемый объект ИП
     if(res.data.ip && res.status.success) {
-      const updatedData = yield call(trasform.updateIPComSrc, yield select(), data, res.reqnum)
+      const updatedData = yield call(trasform.updateIPComSrc, yield select(companyImmutableResSelector), data, res.reqnum)
       yield put({
         type: LOAD_COMPANY_INFO + UPDATE + SUCCESS,
         id: res.reqnum,
@@ -987,7 +987,7 @@ const loadCompanyInfoSaga = function * (action) {
       })
 
     } else if (!res.data.ip && res.status.success) {
-      const updatedData = yield call(trasform.updateComSrc, yield select(), data, res.reqnum)
+      const updatedData = yield call(trasform.updateComSrc, yield select(companyImmutableResSelector), data, res.reqnum)
 
       yield spawn(getStopListsUlSaga, yield updatedData.get("inn"), res.reqnum, yield updatedData.get("key") )
 
