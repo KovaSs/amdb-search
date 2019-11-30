@@ -1,6 +1,4 @@
-import { getTimeAndDate } from '../services/utils'
-
-export const companyRes = {
+export const companyRes: object = {
   "company_type": "",
   "registration_date": "",
   "phone_list": "",
@@ -51,7 +49,7 @@ export const companyRes = {
   "reqnum" : ""
 }
 
-export const region = [
+export const region: object[] = [
   {
     value: "01",
     title: "Алтайский край"

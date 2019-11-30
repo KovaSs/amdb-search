@@ -2,7 +2,6 @@ import { cloneDeep, assign, concat, compact, filter } from 'lodash';
 import { createReportFl, createReportUl } from './reports';
 import moment from 'moment'
 import { fieldsArr, fieldsArrIP } from "./fields"
-import store from "../store"
 
 /** Стили для консольных команд */
 export const cloCss = { 

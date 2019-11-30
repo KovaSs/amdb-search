@@ -18,7 +18,7 @@ moment.locale('ru')
 
 class AppWrapper extends React.Component {
   dataBaseRef: any
-  componentWillMount() {
+  componentDidMount() {
     this.dataBaseRef = base.syncState( 'songs', {
       context: this,
       state: 'songs'
