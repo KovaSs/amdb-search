@@ -11,7 +11,7 @@ export class SiderContainer extends Component {
       {short: "Открытие счета", full: "Открытие счета", link: "/open-bill", icon: "pie-chart"},
       // {short: "Кредитный конвеер", full: "Кредитный конвейер", link: "/credit-conveyor", icon: "info-circle"},
       {short: "Электронные банковские гарантии", full: "Электронные банковские гарантии", link: "/electronic-bank-garantees", icon: "line-chart"},
-      {short: "Система раннего предупреждения", full: "Система раннего предупреждения", link: "/early-warning-system", icon: "desktop"},
+      // {short: "Система раннего предупреждения", full: "Система раннего предупреждения", link: "/early-warning-system", icon: "desktop"},
       {short: "Поиск по стоп-листам", full: "Поиск по стоп-листам", link: "/stop-lists-search", icon: "alert"},
     ]
   };

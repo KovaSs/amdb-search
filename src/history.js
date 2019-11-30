@@ -1,5 +1,3 @@
 import {createBrowserHistory as createHistory} from 'history'
 
-export default createHistory({
-  basename: 'AS_CHECK'
-})
+export default createHistory({ basename: 'AS_CHECK' })

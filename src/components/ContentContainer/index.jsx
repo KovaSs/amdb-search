@@ -10,14 +10,8 @@ import StopListSearch from "./StopListSearch";
 import EwsConponent from "./EarlyWarningSystem/EwsComponent";
 import ElectronicBankGarantees from "./ElectronicBankGarantees";
 import { Layout} from 'antd';
-import { API } from '../../services/api';
 
 export class ContentContainer extends Component {
-
-  componentDidMount() {
-    API.getDigestList()
-  }
-
   render() {
     const { Content } = Layout;
     return (

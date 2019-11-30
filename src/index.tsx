@@ -1,6 +1,6 @@
 import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
-import React from 'react';
+import * as React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ConfigProvider } from 'antd';
@@ -12,17 +12,30 @@ import * as serviceWorker from './serviceWorker';
 import 'moment/locale/ru'
 import './index.scss';
 import "antd/dist/antd.css";
+import { base } from './base';
 
 moment.locale('ru')
 
-const AppWrapper = () => {
-  return(
-    <Provider store={store}>
-      <ConfigProvider locale={ruRU}>
-        <App />
-      </ConfigProvider>
-    </Provider>
-  )
+class AppWrapper extends React.Component {
+  dataBaseRef: any
+  componentWillMount() {
+    this.dataBaseRef = base.syncState( 'songs', {
+      context: this,
+      state: 'songs'
+    })
+  }
+  componentWillUnmount() {
+    base.removeBinding(this.dataBaseRef)
+  }
+  render() {
+    return(
+      <Provider store={store}>
+        <ConfigProvider locale={ruRU}>
+          <App />
+        </ConfigProvider>
+      </Provider>
+    )
+  }
 }
 
 ReactDOM.render(<AppWrapper />, document.getElementById('root'));

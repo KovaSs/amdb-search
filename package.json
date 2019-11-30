@@ -1,22 +1,18 @@
 {
   "name": "as-check",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": false,
-  "proxy": "https://10.96.205.191:443/",
-  "homepage": "https://10.96.205.191/AS_CHECK/",
-  "author": "Denis Isaev <denis.isaev@gazprombank.ru>",
-  "repository": {
-    "type": "git",
-    "url": "http://gitlab-cos/gpbu7806/AS-Check"
-  },
+  "author": "Denis Isaev <denis@isaev.store>",
   "dependencies": {
     "antd": "3.22.0",
     "connected-react-router": "^6.5.2",
+    "firebase": "^7.5.0",
     "history": "^4.9.0",
     "immutable": "4.0.0-rc.12",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
+    "re-base": "^4.0.0",
     "react": "16.8.4",
     "react-app-polyfill": "^1.0.2",
     "react-copy-to-clipboard": "^5.0.1",
@@ -49,8 +45,5 @@
   "devDependencies": {
     "node-sass": "^4.11.0",
     "sass-loader": "^7.1.0"
-  },
-  "publishConfig": {
-    "registry": "http://10.147.4.221:8081/repository/npm/"
   }
 }
