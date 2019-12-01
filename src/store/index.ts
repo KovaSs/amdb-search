@@ -6,6 +6,13 @@ import rootReducer from './rootReduсer'
 import history from '../history'
 import config from '../config'
 
+declare global {
+  interface Window { 
+    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any;
+    store: any;
+  }
+}
+
 if(process.env.NODE_ENV === "production" && config.production) {
   const noop = () => {}
   console.log = noop
@@ -21,16 +28,15 @@ const sagaMiddleware = createSagaMiddleware()
 const enhancerDev = composeEnhancers(
   applyMiddleware(
     sagaMiddleware,
-    routerMiddleware(history),
-    // logger
-  )
+    routerMiddleware(history)
+  ),
 );
 
 const enhancerProd = composeEnhancers(
   applyMiddleware(
     sagaMiddleware,
     routerMiddleware(history)
-  )
+  ),
 );
 
 const enhancer = config.production ? enhancerProd : enhancerDev

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import * as React from "react";
 import { Route, Switch, Redirect } from 'react-router-dom';
 import MainPage from "./MainPage";
 import OpenBill from "./OpenBill";
@@ -11,8 +11,8 @@ import EwsConponent from "./EarlyWarningSystem/EwsComponent";
 import ElectronicBankGarantees from "./ElectronicBankGarantees";
 import { Layout} from 'antd';
 
-export class ContentContainer extends Component {
-  render() {
+export class ContentContainer extends React.Component {
+  public render() {
     const { Content } = Layout;
     return (
       <Content style={{ minHeight: "80vh" }}>
@@ -34,11 +34,11 @@ export class ContentContainer extends Component {
     );
   }
 
-  searchOpenBillItem = ({match}) => {
+  private searchOpenBillItem = ({match}:any) => {
     const { id } = match.params
     return <OpenBill billInn={id} />
   }
-  searchRbgItem = ({match}) => {
+  private searchRbgItem = ({match}:any) => {
     const { id } = match.params
     return <EbgItem ebgInn={id} />
   }

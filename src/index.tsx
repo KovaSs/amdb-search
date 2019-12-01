@@ -18,11 +18,19 @@ moment.locale('ru')
 
 class AppWrapper extends React.Component {
   dataBaseRef: any
-  componentDidMount() {
-    this.dataBaseRef = base.syncState( 'songs', {
+  componentWillMount() {
+    this.dataBaseRef = base.syncState( '/', {
       context: this,
-      state: 'songs'
+      state: 'db'
     })
+    // base.fetch('/', {
+    //   context: this,
+    //   asArray: true
+    // }).then(data => {
+    //   console.log(data);
+    // }).catch(error => {
+    //   //handle error
+    // })
   }
   componentWillUnmount() {
     base.removeBinding(this.dataBaseRef)
@@ -41,4 +49,3 @@ class AppWrapper extends React.Component {
 ReactDOM.render(<AppWrapper />, document.getElementById('root'));
 
 serviceWorker.unregister();
-
