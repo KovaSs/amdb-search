@@ -12,7 +12,6 @@ export class API {
   /** Загрузка данных о кампании */
   static getLoadCompanyInfo = (inn, type) => {
     if(this.useFireBaseApi) return getFBData('ipResMock')
-
     return fetch(
       `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
       { 
