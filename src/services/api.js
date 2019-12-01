@@ -1,8 +1,18 @@
 import { getUSDate, compactObj, formData, houseNum } from './utils'
+import { base } from '../base';
+
+const getFBData = dataName =>  
+  base
+    .fetch(dataName, { context: this, asArray: false })
+    .then(data => data)
+    .catch(err => err)
 
 export class API {
+  static useFireBaseApi = process.env.REACT_APP_USE_FIREBASE_API
   /** Загрузка данных о кампании */
   static getLoadCompanyInfo = (inn, type) => {
+    if(this.useFireBaseApi) return getFBData('ipResMock')
+
     return fetch(
       `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
       { 

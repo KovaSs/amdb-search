@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { Layout} from 'antd';
 import "./footer.scss"
 
-export class FooterContainer extends Component {
-  render() {
+export class FooterContainer extends React.Component {
+  public render() {
     const { Footer } = Layout;
     const date = new Date();
     return (

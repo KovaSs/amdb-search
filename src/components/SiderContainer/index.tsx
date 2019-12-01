@@ -1,9 +1,12 @@
-import React, { Component } from "react";
+import * as React from "react";
 import { Layout, Menu, Icon, Tooltip } from "antd";
-import { NavLink, withRouter } from "react-router-dom";
+import { NavLink, withRouter, RouteComponentProps } from "react-router-dom";
 import "./sider-container.scss";
 
-export class SiderContainer extends Component {
+interface IProps extends RouteComponentProps<any> {
+}
+
+export class SiderContainer extends React.Component<IProps> {
   state = {
     collapsed: true,
     activePage: null,
@@ -16,13 +19,7 @@ export class SiderContainer extends Component {
     ]
   };
 
-  changeActivePage = e => {
-    this.setState({
-      activePage: e.key
-    });
-  };
-
-  componentDidMount() {
+  public componentDidMount() {
     const { location } = this.props;
     setTimeout(() => {
       switch (location.pathname) {
@@ -59,13 +56,20 @@ export class SiderContainer extends Component {
     }, 100);
   }
 
-  onCollapse = collapsed => {
+  private changeActivePage = (e: any) => {
+    this.setState({
+      activePage: e.key
+    });
+  };
+
+
+  private onCollapse = (collapsed: boolean) => {
     this.setState({ collapsed });
   };
 
-  renderMenuItem = (data, collapsed, calback) => {
+  private renderMenuItem = (data:any, collapsed:any, calback:any) => {
     const { Item: MenuItem } = Menu;
-    return data.map( (item, key) => {
+    return data.map( (item:any, key:any) => {
       return (
         <MenuItem key={key} onClick={calback}>
           {!collapsed ? (
@@ -86,7 +90,7 @@ export class SiderContainer extends Component {
     })
   }
 
-  render() {
+  public render() {
     const { activePage, collapsed, menu } = this.state
     const { Sider } = Layout
     const hidden = collapsed ? " hidden" : ' '
