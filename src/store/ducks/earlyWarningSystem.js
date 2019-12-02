@@ -21,10 +21,10 @@ export const FAIL = '_FAIL'
 /** Reducer */
 const ReducerRecord = Record({
   mainData: [],
-  requestLoading: new Map({
+  requestLoading: Map({
     mainData: false,
   }),
-  errors: new Map({
+  errors: Map({
     mainData: false,
   })
 })

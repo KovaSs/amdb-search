@@ -24,12 +24,12 @@ const ReducerRecord = Record({
   reqnum: null,
   renderData: false,
   companyResponse: null,
-  requestLoading: new Map({
+  requestLoading: Map({
     companyMainInfo: false, 
     companyMainInfoUpdate: false, 
     companyPCUpdate: false
   }),
-  errors: new Map({
+  errors: Map({
     companyMainInfo: false, 
     companyMainInfoUpdate: false, 
     companyPCUpdate: false

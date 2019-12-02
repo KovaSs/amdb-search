@@ -23,10 +23,10 @@ export const FAIL = '_FAIL'
 const ReducerRecord = Record({
   searchRequest: null,
   searchData: [],
-  requestLoading: new Map({
+  requestLoading: Map({
     getSearchData: false,
   }),
-  errors: new Map({
+  errors: Map({
     getSearchData: null,
     message: null
   })

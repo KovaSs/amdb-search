@@ -59,14 +59,14 @@ const ReducerRecord = Record({
     historyIdentify: [],
     key: uuid() 
   }),
-  croinformInfoFl: new Map({}),
-  identifyInfoFl: new Map({}),
-  selectedInfoFl: new Map({}),
-  fsspInfo: new Map({}),
-  stopLists: new Map({}),
-  riskFactors: new Map({}),
-  timeRequest: new Map({}),
-  requestLoading: new Map({
+  croinformInfoFl: Map({}),
+  identifyInfoFl: Map({}),
+  selectedInfoFl: Map({}),
+  fsspInfo: Map({}),
+  stopLists: Map({}),
+  riskFactors: Map({}),
+  timeRequest: Map({}),
+  requestLoading: Map({
     companyMainInfo: false,
     getDocuments: false,
     getStopListsUl: false, 
@@ -76,15 +76,15 @@ const ReducerRecord = Record({
     addRistFactorInDigestList: false,
     deleteRistFactorInDigestList: false,
     updateSelectedUserInfo: false,
-    getDocumentItem: new Map({}),
-    getRiskFactorsFl: new Map({}),
-    stopLists: new Map({}),
-    fsspInfo: new Map({}),
-    getAffilatesUl: new Map({}),
-    identifyUser: new Map({}),
-    croinformRequest: new Map({})
+    getDocumentItem: Map({}),
+    getRiskFactorsFl: Map({}),
+    stopLists: Map({}),
+    fsspInfo: Map({}),
+    getAffilatesUl: Map({}),
+    identifyUser: Map({}),
+    croinformRequest: Map({})
   }),
-  errors: new Map({
+  errors: Map({
     companyMainInfo: false, 
     getDocuments: false,
     getStopListsUl: false, 
@@ -94,13 +94,13 @@ const ReducerRecord = Record({
     addRistFactorInDigestList: false,
     deleteRistFactorInDigestList: false,
     updateSelectedUserInfo: false,
-    getDocumentItem: new Map({}),
-    getRiskFactorsFl: new Map({}),
-    stopLists: new Map({}),
-    fsspInfo: new Map({}),
-    getAffilatesUl: new Map({}),
-    identifyUser: new Map({}),
-    croinformRequest: new Map({})
+    getDocumentItem: Map({}),
+    getRiskFactorsFl: Map({}),
+    stopLists: Map({}),
+    fsspInfo: Map({}),
+    getAffilatesUl: Map({}),
+    identifyUser: Map({}),
+    croinformRequest: Map({})
   })
 })
 
