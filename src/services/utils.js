@@ -299,7 +299,7 @@ export const updateArbiter = (str = "") => {
   return `${sumTrans(newStr[1])}.${newStr[2]}${newStr[3]}(${sumTrans(newStr[4])})`
 }
 
-/** Загрузка полученного отчета в формате html */
+/** Загрузка сформированного отчета в формате html */
 export const dowloadHtmlFile = (content, contentType = 'application/octet-stream', filename) => {
   filename = `${content.info} - ${getDownloadTime(Date.now())}.html`
   var a = document.createElement('a');
@@ -789,6 +789,7 @@ class TransformData {
       item.id === "management_companies"))
     return filteredManagementInfo
   }
+
   /** Преобразование данных о руководителях и связанных лицах */
   getHeadsSrc = inputData => {
     const cloneFieldsArr = cloneDeep(fieldsArr);
