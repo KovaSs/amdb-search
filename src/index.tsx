@@ -23,14 +23,6 @@ class AppWrapper extends React.Component {
       context: this,
       state: 'db'
     })
-    // base.fetch('/', {
-    //   context: this,
-    //   asArray: true
-    // }).then(data => {
-    //   console.log(data);
-    // }).catch(error => {
-    //   //handle error
-    // })
   }
   componentWillUnmount() {
     base.removeBinding(this.dataBaseRef)

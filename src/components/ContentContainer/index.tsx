@@ -9,7 +9,7 @@ import EarlyWarningSystem from "./EarlyWarningSystem";
 import StopListSearch from "./StopListSearch";
 import EwsConponent from "./EarlyWarningSystem/EwsComponent";
 import ElectronicBankGarantees from "./ElectronicBankGarantees";
-import { Layout} from 'antd';
+import { Layout } from 'antd';
 
 export class ContentContainer extends React.Component {
   public render() {
