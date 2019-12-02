@@ -12,21 +12,21 @@ import * as serviceWorker from './serviceWorker';
 import 'moment/locale/ru'
 import './index.scss';
 import "antd/dist/antd.css";
-import { base } from './base';
+// import { base } from './base';
 
 moment.locale('ru')
 
 class AppWrapper extends React.Component {
-  dataBaseRef: any
-  componentWillMount() {
-    this.dataBaseRef = base.syncState( '/', {
-      context: this,
-      state: 'db'
-    })
-  }
-  componentWillUnmount() {
-    base.removeBinding(this.dataBaseRef)
-  }
+  // dataBaseRef: any
+  // componentWillMount() {
+  //   this.dataBaseRef = base.syncState( '/', {
+  //     context: this,
+  //     state: 'db'
+  //   })
+  // }
+  // componentWillUnmount() {
+  //   base.removeBinding(this.dataBaseRef)
+  // }
   render() {
     return(
       <Provider store={store}>

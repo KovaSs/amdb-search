@@ -1,11 +1,4 @@
-import { getUSDate, compactObj, formData, houseNum } from './utils'
-import { app } from '../base';
-
-const getFBData = dataName => app
-  .database()
-  .ref(dataName)
-  .once('value')
-  .then(data => data.val())
+import { getUSDate, compactObj, formData, houseNum, getFBData } from './utils'
 
 export class API {
   static useFireBaseApi = process.env.REACT_APP_USE_FIREBASE_API
