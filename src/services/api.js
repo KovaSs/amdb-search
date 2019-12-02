@@ -4,7 +4,7 @@ export class API {
   static useFireBaseApi = process.env.REACT_APP_USE_FIREBASE_API
   /** Загрузка данных о кампании */
   static getLoadCompanyInfo = (inn, type) => {
-    if(this.useFireBaseApi) return getFBData('ipResMock')
+    if(this.useFireBaseApi) return getFBData('ipRes')
     return fetch(
       `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
       { 
