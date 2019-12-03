@@ -234,6 +234,7 @@ export class API {
 
   /** Получение данных о аффилированных лицах */
   static getRequestAffiliatesUl = (reqnum, inn, digetsType) => {
+    if(this.useFireBaseApi) return getFBData('getRequestAffiliatesUl')
     return fetch(
       `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
       { 
@@ -397,6 +398,7 @@ export class API {
 
   /** Получение данных ФССП */
   static getStopListsUlInfo = inn => {
+    if(this.useFireBaseApi) return getFBData('getStopListsUl')
     return fetch(
       "/cgi-bin/serg/0/6/9/reports/253/STOP_LIST_custom_search.pl", 
       { 
@@ -442,6 +444,7 @@ export class API {
 
   /** Получение данных по найденным риск-факторам о ФЛ */
   static getRiskFactorsFl = (reqnum, user, digest_type) => {
+    if(this.useFireBaseApi) return getFBData('getStopListsUl')
     return fetch(
       `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
       { 

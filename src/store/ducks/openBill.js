@@ -705,7 +705,7 @@ const loadCompanyInfoSaga = function * (action) {
 
     if(res.data.ip && res.status.success) {
       yield call(loadDigestListSaga)
-      const updatedData = yield call(trasform.updateIPComSrc, yield select(decodedCompanyResponse), {
+      const updatedData = yield call(trasform.updateIPComSrc, yield select(companySrcSelector), {
         ...res.data.company_info, 
         history_identify: res.data.history_identify
       })
@@ -727,7 +727,7 @@ const loadCompanyInfoSaga = function * (action) {
       yield call(loadDigestListSaga)
     } else if(!res.data.ip && res.status.success) {
       yield call(loadDigestListSaga)
-      const updatedData = yield call(trasform.updateComSrc, yield select(decodedCompanyResponse), {
+      const updatedData = yield call(trasform.updateComSrc, yield select(companySrcSelector), {
         ...res.data.company_info, 
         history_identify: res.data.history_identify
       }, res.reqnum)
@@ -873,7 +873,7 @@ const loadAffilatesListSaga = function * () {
       const res = yield call(API.getAffilatesList, yield select(decodedReqnum), yield select(storeInn), 2)
       console.log("%cRES | GET AFFILATES LIST",  cloCss.green, res)
 
-      const updatedData = yield call(trasform.updateManagmentSrc, yield select(decodedCompanyResponse), res.data)
+      const updatedData = yield call(trasform.updateManagmentSrc, yield select(companySrcSelector), res.data)
       const selectedInfo = yield call(trasform.historySelectedInfo, {
         prevHeads: yield updatedData.get("heads"), 
         historyIdentify: yield select(storeHistoryIdentify), 
@@ -1420,7 +1420,7 @@ const getDocumentsSaga = function * (reqnum, inn) {
       payload: res.data,
     })
   } catch (err){
-    console.log('%getDocuments@Saga', cloCss.red, err)
+    console.log('%cgetDocuments@Saga', cloCss.red, err)
     yield put({
       type: GET_DOCUMENTS + FAIL,
     })
