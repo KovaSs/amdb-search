@@ -4,7 +4,7 @@ export class API {
   static useFireBaseApi = process.env.REACT_APP_USE_FIREBASE_API
   /** Загрузка данных о кампании */
   static getLoadCompanyInfo = (inn, type) => {
-    if(this.useFireBaseApi) return getFBData('ipRes')
+    if(this.useFireBaseApi) return getFBData('getCompanyInfo')
     return fetch(
       `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
       { 
@@ -28,6 +28,7 @@ export class API {
 
   /** Загрузка данных о аффилированных лицах */
   static getAffilatesList = (reqnum, inn, type) => {
+    if(this.useFireBaseApi) return getFBData('getAffilates')
     return fetch(
       `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
       { 
@@ -138,6 +139,7 @@ export class API {
 
   /** Получение  данных  о риск факторах для дайджеста */
   static getDigestList = (reqnum = "666", digest_type=4) => {
+    if(this.useFireBaseApi) return getFBData('digest')
     return fetch(
       `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
       { 

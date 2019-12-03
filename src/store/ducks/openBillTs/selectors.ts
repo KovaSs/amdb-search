@@ -4,11 +4,11 @@ import { moduleName } from './index'
 
 
 /** Selectors */
-const storeInn = state => state[moduleName].getIn(['companyResponse', 'inn'])
-const storeKey = state => state[moduleName].getIn(['companyResponse', 'key'])
-const storeDoc = state => state[moduleName].getIn(['companyResponse','documents'])
-const storeHistoryIdentify = state => state[moduleName].getIn(['companyResponse', 'historyIdentify'])
-const storeLoading = state => state[moduleName].getIn(["requestLoading", "getRiskFactorsFl"])
+export const storeInn = state => state[moduleName].getIn(['companyResponse', 'inn'])
+export const storeKey = state => state[moduleName].getIn(['companyResponse', 'key'])
+export const storeDoc = state => state[moduleName].getIn(['companyResponse','documents'])
+export const storeHistoryIdentify = state => state[moduleName].getIn(['companyResponse', 'historyIdentify'])
+export const storeLoading = state => state[moduleName].getIn(["requestLoading", "getRiskFactorsFl"])
 
 export const storeStateSelector = state => state[moduleName]
 export const companyResSelector = state => state[moduleName].get('companyResponse').toJS()
