@@ -16,14 +16,7 @@ import {
 import { differenceBy, compact, uniqBy } from 'lodash'
 import { connect } from "react-redux"
 import { getTimeAndDate, getDate } from '../../../../../../services/utils'
-import {
-  decodedReqnum,
-  decodedRequestLoading,
-  storeRisksSrc,
-  storeRiskFactorsItem,
-  addRiskFactorFl,
-  updateDigetsFl
-} from "../../../../../../store/ducks/openBill";
+import { actions, sl } from "../../../../../../store/ducks/openBill";
 import { Btn, BtnEdit} from '../../BtnComponent'
 
 /** Инлайновые стили */
@@ -482,16 +475,16 @@ class RiskFactorsDigets extends Component {
 
 const putStateToProps = (state, props) => {
   return {
-    digets: storeRiskFactorsItem(state, props.user.id),
-    risks: storeRisksSrc(state),
-    reqnum: decodedReqnum(state),
-    requestLoading: decodedRequestLoading(state)
+    digets: sl.storeRiskFactorsItem(state, props.user.id),
+    risks: sl.storeRisksSrc(state),
+    reqnum: sl.decodedReqnum(state),
+    requestLoading: sl.decodedRequestLoading(state)
   }
 }
 
 const putActionsToProps = {
-  addRiskFactorFl,
-  updateDigetsFl
+  addRiskFactorFl: actions.addRiskFactorFl,
+  updateDigetsFl: actions.updateDigetsFl
 }
 
 export default connect(putStateToProps, putActionsToProps)(RiskFactorsDigets)

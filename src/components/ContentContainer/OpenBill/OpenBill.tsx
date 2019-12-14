@@ -1,18 +1,26 @@
-import React, { Component, Suspense } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { Spin, Col, Row } from "antd";
-import PropTypes from "prop-types";
 import CollapceContainer from "./CollapceContainer";
 import SearchCompanyInput from "./SearchCompanyInput";
-import { 
-  decodedCompanyResponse, 
-  decodedRequestLoading, 
-  decodedRenderData, 
-  decodedErrors, 
-  decodedReqnum 
-} from "../../../store/ducks/openBill";
+import { sl } from "../../../store/ducks/openBill";
 
-class OpenBill extends Component {
+interface OwnProps {
+  ebgInn: string;
+}
+
+interface StateProps {
+  // TODO add types
+  reqnum: any;
+  companyResponse: any;
+  requestLoading: any;
+  renderData: any;
+  errors: any;
+}
+
+type Props = OwnProps & StateProps
+
+class OpenBill extends React.Component<Props> {
   state = {
     showTable : false,
     loading : false,
@@ -64,7 +72,7 @@ class OpenBill extends Component {
     if(error) return <div style={{textAlign: "center"}}>Ошибка в работе компонента "openBill", пожалуйста перезагрузите страницу</div>
 
     return (
-      <Suspense fallback={<div></div>}>
+      <React.Suspense fallback={<div></div>}>
         <Row className="credit-conveyor">
           <Col span={24}>
             <SearchCompanyInput ebgInn={ebgInn} toHideTableInfo={this.toHideTableInfo} />
@@ -83,27 +91,19 @@ class OpenBill extends Component {
             }
           </Col>
         </Row>
-      </Suspense>
+      </React.Suspense>
     );
   }
 }
 
 const putStateToProps = state => {
   return {
-    companyResponse: decodedCompanyResponse(state),
-    requestLoading: decodedRequestLoading(state) ,
-    renderData: decodedRenderData(state),
-    errors: decodedErrors(state),
-    reqnum: decodedReqnum(state)
+    companyResponse: sl.decodedCompanyResponse(state),
+    requestLoading: sl.decodedRequestLoading(state),
+    renderData: sl.decodedRenderData(state),
+    errors: sl.decodedErrors(state),
+    reqnum: sl.decodedReqnum(state)
   }
 }
 
 export default connect(putStateToProps)(OpenBill)
-
-/** Проверка на входящие параметры */
-OpenBill.propTypes = {
-  companyResponse: PropTypes.object,
-  requestLoading: PropTypes.object,
-  renderData: PropTypes.bool,
-  errors: PropTypes.object
-}

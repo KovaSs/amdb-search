@@ -60,7 +60,7 @@ const ReducerRecord = Record({
   })
 })
 
-const openBillReducer = (state = new ReducerRecord(), action) => {
+export const openBillReducer = (state = new ReducerRecord(), action) => {
   const { type, payload, id } = action
   switch (type) {
     // Сохранение ИНН запроса

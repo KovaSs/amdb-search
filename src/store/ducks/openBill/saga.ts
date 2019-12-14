@@ -761,14 +761,14 @@ const downloadReportFileSaga = function * (action) {
       yield call(dowloadHtmlFile, {
         isFl: true,
         info: (yield select(sl.ebgHeads)).find(item => item.id === action.key).fio,
-        identify:  (yield select(sl.identifyInfoFlSelector)).has(action.key) ? (yield select(sl.identifyInfoFlSelector)).get(action.key).html : null,
-        croinform:  (yield select(sl.croinformInfoFlSelector)).has(action.key) ? (yield select(sl.croinformInfoFlSelector)).get(action.key).html : null,
-        lists: (yield select(sl.croinformInfoFlSelector)).has(action.key) ? (yield select(sl.croinformInfoFlSelector)).get(action.key).lists : null,
-        vector:  (yield select(sl.croinformInfoFlSelector)).has(action.key) ? (yield select(sl.croinformInfoFlSelector)).get(action.key).vector : null,
-        stopLists: (yield select(sl.stopListsSelector)).has(action.key) ? (yield select(sl.stopListsSelector)).get(action.key) : null,
-        fsspInfo: (yield select(sl.fsspInfoSelector)).has(action.key) ? (yield select(sl.fsspInfoSelector)).get(action.key) : null,
-        digets: (yield select(sl.riskFactorsSelector)).has(action.key) ? (yield select(sl.riskFactorsSelector)).get(action.key).digets : null,
-        risks: yield select(sl.risksSrcSelector)
+        identify:  (yield select(sl.storeIdentifyInfoFl)).has(action.key) ? (yield select(sl.storeIdentifyInfoFl)).get(action.key).html : null,
+        croinform:  (yield select(sl.storeCroinformInfoFl)).has(action.key) ? (yield select(sl.storeCroinformInfoFl)).get(action.key).html : null,
+        lists: (yield select(sl.storeCroinformInfoFl)).has(action.key) ? (yield select(sl.storeCroinformInfoFl)).get(action.key).lists : null,
+        vector:  (yield select(sl.storeCroinformInfoFl)).has(action.key) ? (yield select(sl.storeCroinformInfoFl)).get(action.key).vector : null,
+        stopLists: (yield select(sl.storeStopLists)).has(action.key) ? (yield select(sl.storeStopLists)).get(action.key) : null,
+        fsspInfo: (yield select(sl.storeFsspInfo)).has(action.key) ? (yield select(sl.storeFsspInfo)).get(action.key) : null,
+        digets: (yield select(sl.storeRiskFactors)).has(action.key) ? (yield select(sl.storeRiskFactors)).get(action.key).digets : null,
+        risks: yield select(sl.storeRisksSrc)
       })
     } else {
       // Для сохранения дайджеста по юридическому лицу

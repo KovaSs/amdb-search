@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { ConnectedRouter } from 'connected-react-router'
 import { Layout } from "antd";
 import SiderContainer from "../SiderContainer";
