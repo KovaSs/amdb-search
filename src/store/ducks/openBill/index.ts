@@ -5,10 +5,4 @@ import { saga } from './saga'
 
 const moduleName = 'openBill'
 
-export { 
-  sl,
-  actions,
-  moduleName,
-  openBillReducer,
-  saga
-}
+export { sl, actions, moduleName, openBillReducer, saga }
