@@ -1,7 +1,7 @@
 import config from '../../../config'
-import { moduleName } from './index'
 
-export const prefix = `${config.appName}/${moduleName}`
+export const moduleName = 'openBill'
+const prefix = `${config.appName}/${moduleName}`
 
 const actionTypeBase = {
   ACTION_CHANGE_INN: `${prefix}/ACTION_CHANGE_INN`,
