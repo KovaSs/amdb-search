@@ -13,14 +13,7 @@ import {
   DatePicker, 
   notification 
 } from 'antd';
-import {
-  ewsSearchData, 
-  ewsRequestLoading,
-  ewsErrors, 
-  getSearchRequest,
-  ewsSearchRequest,
-  clearSearchData
-} from "../../../store/ducks/stopListSearch"
+import { sl, actions } from "../../../store/ducks/stopListSearch"
 import { getDatePickerValue, getDPValue, getDate, uuid } from '../../../services/utils';
 import config from '../../../config';
 import "./stop-lists-search.scss"
@@ -527,16 +520,16 @@ class SlsComponent extends Component {
 
 const putStateToProps = state => {
   return {
-    searchData: ewsSearchData(state),
-    searchFields: ewsSearchRequest(state),
-    requestLoading: ewsRequestLoading(state),
-    errors: ewsErrors(state).get('message'),
+    searchData: sl.ewsSearchData(state),
+    searchFields: sl.ewsSearchRequest(state),
+    requestLoading: sl.ewsRequestLoading(state),
+    errors: sl.ewsErrors(state).get('message'),
   }
 }
 
 const putActionToProps = {
-  getSearchRequest,
-  clearSearchData
+  getSearchRequest: actions.getSearchRequest,
+  clearSearchData: actions.clearSearchData
 }
 
 export default connect(putStateToProps, putActionToProps)(SlsComponent)
