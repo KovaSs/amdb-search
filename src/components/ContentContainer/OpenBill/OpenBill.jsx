@@ -5,6 +5,7 @@ import CollapceContainer from "./CollapceContainer";
 import SearchCompanyInput from "./SearchCompanyInput";
 import { sl } from "../../../store/ducks/openBill";
 
+/* Types to TSX
 interface OwnProps {
   ebgInn: string;
 }
@@ -19,8 +20,9 @@ interface StateProps {
 }
 
 type Props = OwnProps & StateProps
+*/
 
-class OpenBill extends React.Component<Props> {
+class OpenBill extends React.Component {
   state = {
     showTable : false,
     loading : false,

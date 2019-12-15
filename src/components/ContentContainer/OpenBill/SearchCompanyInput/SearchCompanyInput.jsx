@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React from 'react'
 import { Row, Col, Form, Input, notification, Button, Affix } from "antd"
 import { validateInn } from "../../../../services/utils"
 import MainCompanyInfo from "./MainCompanyInfo"
@@ -16,7 +16,7 @@ const styleCss = {
   }
 }
 
-class SearchCompanyInput extends PureComponent {
+class SearchCompanyInput extends React.PureComponent {
   state = {
     showInfo : false,
     clearField : false,

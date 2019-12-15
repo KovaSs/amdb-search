@@ -34,10 +34,10 @@ export class ContentContainer extends React.Component {
     );
   }
 
-  private searchOpenBillItem = ({match}:any) => {
-    const { id } = match.params
-    return <OpenBill billInn={id} />
-  }
+  // private searchOpenBillItem = ({match}:any) => {
+  //   const { id } = match.params
+  //   return <OpenBill billInn={id} />
+  // }
   private searchRbgItem = ({match}:any) => {
     const { id } = match.params
     return <EbgItem ebgInn={id} />

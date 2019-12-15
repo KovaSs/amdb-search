@@ -4,8 +4,7 @@ import SearchCompanyInput from "./SearchCompanyInput"
 import { withRouter } from 'react-router-dom'
 import { actions, sl } from "../../../../store/ducks/openBill"
 
-
-const Container: React.FC = props => <SearchCompanyInput {...props}/>
+const Container = props => <SearchCompanyInput {...props}/>
 
 const putStateToProps = state => {
   return {

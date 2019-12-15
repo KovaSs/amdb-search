@@ -29,15 +29,16 @@ interface OwnProps {
     befenicials:any[];
   };
   // Информация для отображения Loader cocтояния
-  requestLoading: object;
+  requestLoading: any;
 }
 
 interface DispatchProps {
-  identifyUser(): void;
-  updateUserSelectedInfo(): void;
-  actionGetUserCroinformInfo(): void;
-  addNewUserToCheackList(): void;
-  downloadReport(): void;
+  // TODO add real types
+  identifyUser(): any;
+  updateUserSelectedInfo(): any;
+  actionGetUserCroinformInfo(): any;
+  addNewUserToCheackList(): any;
+  downloadReport(): any;
 }
 
 type Props = OwnProps & DispatchProps;

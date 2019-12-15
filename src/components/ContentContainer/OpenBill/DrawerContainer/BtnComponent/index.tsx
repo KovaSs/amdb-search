@@ -1,16 +1,37 @@
 import React from 'react'
 import { Button, Icon, Popconfirm } from 'antd'
 import { connect } from "react-redux"
-import {
-  decodedCompanyResponse,
-  deleteRiskFactor,
-  deleteRiskFactorFl,
-  editRiskFactor,
-  editRiskFactorFl
-} from "../../../../../store/ducks/openBill";
+import { actions, sl } from "../../../../../store/ducks/openBill";
+
+interface OwnProps {
+  digetsFl: any;
+  userFl: boolean;
+  factor: {
+    id: string;
+    object: string;
+    kod: string;
+    comment: string;
+  }
+}
+
+interface StoreProps {
+  companyResponse: {
+    name: string;
+    heads: any[];
+  };
+}
+
+interface DispatchProps {
+  deleteRiskFactor(riskFaktor: object): void;
+  deleteRiskFactorFl(riskFaktor: object, riskId: string): void;
+  editRiskFactor(riskFaktor: object): void;
+  editRiskFactorFl(riskFaktor: object, riskId: string): void;
+}
+
+type Props = OwnProps & StoreProps & DispatchProps
 
 /** Функционал удаления риск-факторов */
-const Btn = props => {
+const Btn: React.FC<Props> = props => {
   const {
     companyResponse: {name, heads},
     digetsFl,
@@ -57,8 +78,26 @@ const Btn = props => {
   )
 }
 
+interface BtnEditOwnProps {
+  // TODO add real types
+  changedComment: any;
+  checkType: any;
+  digetsFl: any;
+
+  userFl: boolean;
+  factor: {
+    id: string;
+    object: string;
+    kod: string;
+    comment: string;
+  }
+  canselEdit(): any;
+}
+
+type BtnEditProps = BtnEditOwnProps & StoreProps & DispatchProps
+
 /** Функционал редактирования риск-факторов */
-const BtnEdit = props => {
+const BtnEdit: React.FC<BtnEditProps> = props => {
   const {
     companyResponse: {
       name, 
@@ -146,14 +185,14 @@ const BtnEdit = props => {
 
 const putStateToProps = state => {
   return {
-    companyResponse: decodedCompanyResponse(state),
+    companyResponse: sl.decodedCompanyResponse(state),
   }
 }
 const putActionsToProps = {
-  deleteRiskFactor,
-  deleteRiskFactorFl,
-  editRiskFactor,
-  editRiskFactorFl
+  deleteRiskFactor: actions.deleteRiskFactor,
+  deleteRiskFactorFl: actions.deleteRiskFactorFl,
+  editRiskFactor: actions.editRiskFactor,
+  editRiskFactorFl: actions.editRiskFactorFl
 }
 
 const ConnectedBtn = connect(putStateToProps, putActionsToProps)(Btn)

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from "react-redux";
 import { 
   Drawer, 
@@ -24,20 +24,7 @@ import {
   getDate, 
   getDownloadTime 
 } from '../../../../../services/utils';
-import { 
-  decodedCompanyResponse,
-  decodedManagementSource,
-  decodedisIp,
-  storeMainDigest,
-  storeRisksSrc,
-  addRiskFactor, 
-  deleteRiskFactor,
-  deleteRiskFactorFl,
-  decodedRequestLoading,
-  addRiskFactorFl,
-  updateDigets,
-  downloadReport
-} from "../../../../../store/ducks/openBill"
+import { actions, sl } from "../../../../../store/ducks/openBill"
 
 /** Инлайновые стили */
 const styleCss = {
@@ -81,7 +68,49 @@ const styleCss = {
   },
 }
 
-class RiskInfoDrawer extends Component {
+/*
+interface OwnProps {
+  visible: boolean;
+  // TODO add real types
+  onClose: any;
+}
+
+interface StoreProps {
+  // TODO add real types
+  isIp: any;
+  risks: any;
+  heads: any;
+  requestLoading: any;
+  companyResponse: any;
+  digets: any;
+}
+
+interface StateProps {
+  // TODO add real types
+  riskFactors: any[];
+  digestSourse: any[];
+  historySourse: any[];
+  editFaktorKey: string;
+  editFaktorText: string;
+  selectedKod: string;
+  selectedText: string;
+  selectedComment: string;
+}
+
+interface DispatchProps {
+  // TODO add real types
+  addRiskFactorFl(riskFactor: object, riskId: string): void;
+  addRiskFactor(riskFactor: object): void;
+  deleteRiskFactor(): void;
+  deleteRiskFactorFl(): void;
+  updateDigets(): void;
+  downloadReport(): void;
+}
+
+type Props = OwnProps & StoreProps & DispatchProps
+*/
+
+class RiskInfoDrawer extends React.Component {
   state = {
     riskFactors: [],
     digestSourse: [],
@@ -521,21 +550,21 @@ class RiskInfoDrawer extends Component {
 
 const putStateToProps = state => {
   return {
-    isIp: decodedisIp(state),
-    risks: storeRisksSrc(state),
-    heads: decodedManagementSource(state),
-    requestLoading: decodedRequestLoading(state),
-    companyResponse: decodedCompanyResponse(state),
-    digets: storeMainDigest(state)
+    isIp: sl.decodedisIp(state),
+    risks: sl.storeRisksSrc(state),
+    heads: sl.decodedManagementSource(state),
+    requestLoading: sl.decodedRequestLoading(state),
+    companyResponse: sl.decodedCompanyResponse(state),
+    digets: sl.storeMainDigest(state)
   }
 }
 const putActionsToProps = {
-  addRiskFactorFl,
-  addRiskFactor,
-  deleteRiskFactor,
-  deleteRiskFactorFl,
-  updateDigets,
-  downloadReport
+  addRiskFactorFl: actions.addRiskFactorFl,
+  addRiskFactor: actions.addRiskFactor,
+  deleteRiskFactor: actions.deleteRiskFactor,
+  deleteRiskFactorFl: actions.deleteRiskFactorFl,
+  updateDigets: actions.updateDigets,
+  downloadReport: actions.downloadReport
 }
 
 

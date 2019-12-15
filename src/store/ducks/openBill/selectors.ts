@@ -10,7 +10,6 @@ export const storeDoc = state => state[moduleName].getIn(['companyResponse','doc
 export const storeHistoryIdentify = state => state[moduleName].getIn(['companyResponse', 'historyIdentify'])
 export const storeLoading = state => state[moduleName].getIn(["requestLoading", "getRiskFactorsFl"])
 
-const storeStateSelector = state => state[moduleName]
 const companyResSelector = state => state[moduleName].get('companyResponse').toJS()
 const companyImmutableResSelector = state => state[moduleName].get('companyResponse')
 const documentsSelector = state => state[moduleName].getIn(['companyResponse', 'documents'])
@@ -39,6 +38,7 @@ const timeRequestSelector = state => state[moduleName].get('timeRequest')
 const riskFactorsItemSelector = (state, keyId) => state[moduleName].getIn(['riskFactors', keyId], {digets: [], history: []})
 const keySelector = (state, key) => key
 
+export const storeCompanySrc = createSelector( companySrcSelector, companyResponse =>  companyResponse )
 export const storeTimeRequest = createSelector( timeRequestSelector, timeRequest =>  timeRequest )
 export const storeIdentifyInfoFl = createSelector( identifyInfoFlSelector, identifyInfo =>  identifyInfo )
 export const storeFsspInfo = createSelector( fsspInfoSelector, fsspInfo =>  fsspInfo )

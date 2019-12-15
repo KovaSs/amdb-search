@@ -22,7 +22,7 @@ const loadCompanyInfoSaga = function * (action) {
 
     if(res.data.ip && res.status.success) {
       yield call(loadDigestListSaga)
-      const updatedData = yield call(trasform.updateIPComSrc, yield select(sl.decodedCompanyResponse), {
+      const updatedData = yield call(trasform.updateIPComSrc, yield select(sl.storeCompanySrc), {
         ...res.data.company_info, 
         history_identify: res.data.history_identify
       })
@@ -44,7 +44,7 @@ const loadCompanyInfoSaga = function * (action) {
       yield call(loadDigestListSaga)
     } else if(!res.data.ip && res.status.success) {
       yield call(loadDigestListSaga)
-      const updatedData = yield call(trasform.updateComSrc, yield select(sl.decodedCompanyResponse), {
+      const updatedData = yield call(trasform.updateComSrc, yield select(sl.storeCompanySrc), {
         ...res.data.company_info, 
         history_identify: res.data.history_identify
       }, res.reqnum)
@@ -622,10 +622,10 @@ const identifyUserSaga = function * (action) {
     )
     console.log("%cRES | GET USER INFO",  cloCss.green, res)
 
-    if(res.data) {
+    if(res) {
       yield put({
         type: constants.GET_IDENTIFY_USER_SUCCESS,
-        info: yield call(trasform.updateIdentifyInfo, res.data),
+        info: yield call(trasform.updateIdentifyInfo, res),
         timeRequest: Date.now(),
         loading: action.id
       })

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Col, Row, Badge, Avatar, Button, message } from "antd"
 import { connect } from "react-redux";
 import RiskInfoDrawer from "../../DrawerContainer/RiskInfoDrawer"
@@ -248,4 +248,4 @@ const putActionToProps = {
   addNewUserToCheackList: actions.addNewUserToCheackList,
 }
 
-export default connect(putStateToProps, putActionToProps)(MainCompanyInfo)
+export default connect(putStateToProps, putActionToProps)(MainCompanyInfo as any) 
