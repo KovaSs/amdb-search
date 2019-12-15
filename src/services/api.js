@@ -139,7 +139,7 @@ export class API {
 
   /** Получение  данных  о риск факторах для дайджеста */
   static getDigestList = (reqnum = "666", digest_type=4) => {
-    if(this.useFireBaseApi) return getFBData('digest')
+    if(this.useFireBaseApi) return getFBData('digestList')
     return fetch(
       `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
       { 
@@ -260,6 +260,7 @@ export class API {
   /** Получение первоначальных идентификационных данных о проверяемом лице */
   static getIdentifyUser = (ip, reqnum, action, storeOgrn) => {
     console.log('IDENTYFY', action)
+    if(this.useFireBaseApi) return getFBData('identifyInfo')
     if(!ip) {
       const compact = compactObj({
         FirstName: action.FirstName,

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Layout, Menu, Icon, Tooltip } from "antd";
 import { NavLink, withRouter, RouteComponentProps } from "react-router-dom";
 import "./sider-container.scss";

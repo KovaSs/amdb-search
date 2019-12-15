@@ -1,16 +1,10 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Col, Row, Badge, Avatar, Button, message } from "antd"
 import { connect } from "react-redux";
 import RiskInfoDrawer from "../../DrawerContainer/RiskInfoDrawer"
 import CompanyHistoryInfoDrawer from "../../DrawerContainer/CompanyHistoryInfoDrawer"
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { 
-  decodedCompanyResponse,
-  decodedManagementSource,
-  decodedisIp, 
-  storeMainDigest,
-  addNewUserToCheackList,
-} from "../../../../../store/ducks/openBill"
+import { actions, sl } from "../../../../../store/ducks/openBill"
 
 const styleCss = {
   internetBtn : {
@@ -45,7 +39,30 @@ const styleCss = {
   }
 }
 
-class MainCompanyInfo extends Component {
+interface StateProps {
+  collapced: any;
+  digets: any;
+  companyResponse: { 
+    inn: string;
+    ogrn: string;
+    sex: string;
+    birthdate: string;
+    birth_place: string;
+    management_history: any;
+    name: string;
+    full_name : string;
+  }, 
+  isIp: boolean;
+  heads: any[];
+}
+
+interface DispatchProps {
+  addNewUserToCheackList(): void;
+}
+
+type Props = StateProps & DispatchProps
+
+class MainCompanyInfo extends React.Component<Props> {
   state = {
     showRisk: false,
     showHistory: false,
@@ -221,14 +238,14 @@ class MainCompanyInfo extends Component {
 
 const putStateToProps = state => {
   return {
-    isIp: decodedisIp(state),
-    heads: decodedManagementSource(state),
-    companyResponse: decodedCompanyResponse(state),
-    digets: storeMainDigest(state)
+    isIp: sl.decodedisIp(state),
+    heads: sl.decodedManagementSource(state),
+    companyResponse: sl.decodedCompanyResponse(state),
+    digets: sl.storeMainDigest(state)
   }
 }
 const putActionToProps = {
-  addNewUserToCheackList,
+  addNewUserToCheackList: actions.addNewUserToCheackList,
 }
 
-export default connect(putStateToProps, putActionToProps)(MainCompanyInfo)
+export default connect(putStateToProps, putActionToProps)(MainCompanyInfo as any) 

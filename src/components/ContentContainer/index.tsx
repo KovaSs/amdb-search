@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Route, Switch, Redirect } from 'react-router-dom';
 import MainPage from "./MainPage";
 import OpenBill from "./OpenBill";
@@ -34,10 +34,10 @@ export class ContentContainer extends React.Component {
     );
   }
 
-  private searchOpenBillItem = ({match}:any) => {
-    const { id } = match.params
-    return <OpenBill billInn={id} />
-  }
+  // private searchOpenBillItem = ({match}:any) => {
+  //   const { id } = match.params
+  //   return <OpenBill billInn={id} />
+  // }
   private searchRbgItem = ({match}:any) => {
     const { id } = match.params
     return <EbgItem ebgInn={id} />

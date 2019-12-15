@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import {  
   Row, 
   Col, 
@@ -16,15 +16,8 @@ import {
 import { differenceBy, compact, uniqBy } from 'lodash'
 import { connect } from "react-redux"
 import { getTimeAndDate, getDate } from '../../../../../../services/utils'
-import {
-  decodedReqnum,
-  decodedRequestLoading,
-  storeRisksSrc,
-  storeRiskFactorsItem,
-  addRiskFactorFl,
-  updateDigetsFl
-} from "../../../../../../store/ducks/openBill";
 import { Btn, BtnEdit} from '../../BtnComponent'
+import { actions, sl } from "../../../../../../store/ducks/openBill";
 
 /** Инлайновые стили */
 const styleCss = {
@@ -62,7 +55,32 @@ const styleCss = {
   },
 }
 
-class RiskFactorsDigets extends Component {
+/* Type to TSX
+interface OwnProps {
+  // TODO add real types
+  user: any;
+  visible: any;
+  userSelected: any;
+}
+
+interface StateProps {
+  // TODO add real types
+  digets: any;
+  risks: any;
+  reqnum: any;
+  requestLoading: any;
+}
+
+interface DispatchProps {
+  // TODO add real types
+  addRiskFactorFl(riskFactor: object, riskId: string): void;
+  updateDigetsFl(user: any, reqnum: string): void;
+}
+
+type Props = OwnProps & StateProps & DispatchProps
+*/
+
+class RiskFactorsDigets extends React.Component {
   state = {
     riskFactors: [],
     digestSourse: [],
@@ -157,8 +175,8 @@ class RiskFactorsDigets extends Component {
     const { Option } = AutoComplete
     if(item.is_fl === "1") return (
       <Option 
+        text="risks"
         key={item.kod} 
-        text="risks" 
         title={`${item.kod} / ${item.risk_faktor}`} 
         value={item.rowid}
       >
@@ -482,16 +500,16 @@ class RiskFactorsDigets extends Component {
 
 const putStateToProps = (state, props) => {
   return {
-    digets: storeRiskFactorsItem(state, props.user.id),
-    risks: storeRisksSrc(state),
-    reqnum: decodedReqnum(state),
-    requestLoading: decodedRequestLoading(state)
+    digets: sl.storeRiskFactorsItem(state, props.user.id),
+    risks: sl.storeRisksSrc(state),
+    reqnum: sl.decodedReqnum(state),
+    requestLoading: sl.decodedRequestLoading(state)
   }
 }
 
 const putActionsToProps = {
-  addRiskFactorFl,
-  updateDigetsFl
+  addRiskFactorFl: actions.addRiskFactorFl,
+  updateDigetsFl: actions.updateDigetsFl
 }
 
 export default connect(putStateToProps, putActionsToProps)(RiskFactorsDigets)

@@ -1301,10 +1301,10 @@ const identifyUserSaga = function * (action) {
     const res = yield call(API.getIdentifyUser, yield select(decodedisIp), yield select(decodedReqnum), action.payload.user)
     console.log("%cRES | GET USER INFO",  cloCss.green, res)
 
-    if(res.data) {
+    if(res) {
       yield put({
         type: GET_IDENTIFY_USER + SUCCESS,
-        info: yield call(trasform.updateIdentifyInfo, res.data),
+        info: yield call(trasform.updateIdentifyInfo, res),
         timeRequest: Date.now(),
         loading: action.id
       })
