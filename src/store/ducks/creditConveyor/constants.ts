@@ -12,7 +12,6 @@ const actionTypeBase = {
   LOAD_COMPANY_INFO_UPDATE_FAIL: `${prefix}/LOAD_COMPANY_INFO_UPDATE_FAIL`,
 
   CLEAR_COMPANY_INFO: `${prefix}/CLEAR_COMPANY_INFO`,
-
 }
 
 const constants: Readonly<typeof actionTypeBase> = actionTypeBase;

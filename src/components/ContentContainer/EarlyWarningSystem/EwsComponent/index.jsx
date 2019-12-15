@@ -2,9 +2,8 @@ import React, { Component } from 'react'
 import { Table, Input, Button, Icon, ConfigProvider, Empty } from 'antd';
 import { connect } from "react-redux";
 import Highlighter from 'react-highlight-words';
-import {ewsMainData, getMainData, ewsRequestLoading } from "../../../../store/ducks/earlyWarningSystem";
+import { sl, actions } from "../../../../store/ducks/earlyWarningSystem";
 import { filter } from 'lodash';
-// import { decoderUtf8 } from '../../../../services/utils'
 
 class EwsComponent extends Component {
   state = {
@@ -203,13 +202,13 @@ class EwsComponent extends Component {
 
 const putStateToProps = state => {
   return {
-    mainData: ewsMainData(state),
-    requestLoading: ewsRequestLoading(state),
+    mainData: sl.ewsMainData(state),
+    requestLoading: sl.ewsRequestLoading(state),
   }
 }
 
 const putActionToProps = {
-  getMainData
+  getMainData: actions.getMainData
 }
 
 export default connect(putStateToProps, putActionToProps)(EwsComponent)
