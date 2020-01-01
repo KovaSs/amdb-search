@@ -2,7 +2,7 @@ import { Record, Map } from 'immutable'
 import { createSelector } from 'reselect'
 import { all, put, call, select, spawn, takeEvery } from 'redux-saga/effects'
 import { trasform, getShortCompName, cloCss} from "../../services/utils"
-import { companyRes } from '../mock'
+// import { companyRes } from '../mock'
 import { 
   getLoadCompanyInfo,
   getAffilatesList,
@@ -19,11 +19,11 @@ import {
 } from '../../services/api'
 
 /* Mock данные */
-// import { delay } from 'redux-saga/effects'
-// import { companyRes, identifyInfoMock, bicompactResMock, ipResMock, ipCroinformMock } from '../mock'
-// const dataMock = { companyRes, identifyInfoMock, bicompactResMock, ipResMock, ipCroinformMock }
+import { delay } from 'redux-saga/effects'
+import { companyRes, identifyInfoMock, bicompactResMock, ipResMock, ipCroinformMock } from '../mock'
+const dataMock = { companyRes, identifyInfoMock, bicompactResMock, ipResMock, ipCroinformMock }
 
-const dataMock = { companyRes }
+// const dataMock = { companyRes }
 
 /** Constants */
 export const moduleName = 'openBill'
@@ -403,10 +403,10 @@ const loadCompanyInfoSaga = function * (action) {
       type: LOAD_COMPANY_INFO + UPDATE + START
     })
     // Запрос на получение основных данных о кампании
-    const res = yield call(getLoadCompanyInfo, action.inn)
+    // const res = yield call(getLoadCompanyInfo, action.inn)
 
     /* Mock данные о ЮЛ */
-    // yield delay(2000); const res = {...dataMock.bicompactResMock}
+    yield delay(2000); const res = {...dataMock.bicompactResMock}
     /** Mock данные о ФЛ */
     // const res = {ip: true, data: dataMock.ipResMock.data, reqnum: 666}
 
@@ -801,10 +801,10 @@ const identifyUserSaga = function * (action) {
     })
     
     /* Запрос на идентификацию проверяемого объекта */
-    const res = yield call(getIdentifyUser, storeIsIP, storeReqnum, action.payload.user, storeCR)
+    // const res = yield call(getIdentifyUser, storeIsIP, storeReqnum, action.payload.user, storeCR)
 
     /** Mock данные о Идентификационных данных */
-    // yield delay(2000); const res = {ip: true, data: dataMock.identifyInfoMock, reqnum: 666}
+    yield delay(2000); const res = {ip: true, data: dataMock.identifyInfoMock, reqnum: 666}
 
     const data = res.data
     console.log("%cRES | GET USER INFO",  cloCss.green, res)
@@ -848,10 +848,10 @@ const identifyUserInfoSaga = function * (action) {
     })
 
     /* Переключение на mock данные */
-    const res = yield call(getIdentifyUserInfo, storeReqnum, action.payload)
+    // const res = yield call(getIdentifyUserInfo, storeReqnum, action.payload)
 
     /** Mock данные о Идентификационных данных */
-    // yield delay(2000); const res = {ip: true, data: dataMock.ipCroinformMock.data, reqnum: 666}
+    yield delay(2000); const res = {ip: true, data: dataMock.ipCroinformMock.data, reqnum: 666}
 
     console.log("%cRES | GET CROINFORM USER INFO |", cloCss.green, res)
     const html = res.data.html
