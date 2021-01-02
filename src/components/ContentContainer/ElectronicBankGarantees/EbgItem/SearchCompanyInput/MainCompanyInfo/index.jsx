@@ -208,7 +208,7 @@ class MainCompanyInfo extends Component {
       heads
     } = this.props;
     const { showRisk, showHistory, error } = this.state
-    if(error) return <div style={{textAlign: "center"}}>Ошибка в работе компонента "Открытие счета -> Информация о компании", пожалуйста перезагрузите страницу</div>
+    if(error) return <div style={{textAlign: "center"}}>{'Ошибка в работе компонента "Открытие счета -> Информация о компании", пожалуйста перезагрузите страницу'}</div>
     return (
       <>
         <Col span={20}>
