@@ -177,7 +177,7 @@ class SearchCompanyInput extends React.PureComponent {
 
   render() {
     const {error, collapced} = this.state
-    if(error) return <div style={{textAlign: "center"}}>Ошибка в работе компонента "openBill -> SearchCompanyInput", пожалуйста перезагрузите страницу</div>
+    if(error) return <div style={{textAlign: "center"}}>{ 'Ошибка в работе компонента "openBill -> SearchCompanyInput", пожалуйста перезагрузите страницу' }</div>
     return (
       <Affix offsetTop={-8} onChange={affixed => this.changeCollapced(affixed)}>
         <Form 

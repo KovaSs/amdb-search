@@ -8,7 +8,7 @@ const CompanyHistoryInfoDrawer = props => {
   const {onClose, visible, headHistory, addUser, heads} = props
   const { Panel } = Collapse;
 
-  if(!headHistory) return <div style={{textAlign: "center"}}>Ошибка в работе компонента "openBill -> CompanyHistoryInfoDrawer", пожалуйста перезагрузите страницу</div>
+  if(!headHistory) return <div style={{textAlign: "center"}}>{ 'Ошибка в работе компонента "openBill -> CompanyHistoryInfoDrawer", пожалуйста перезагрузите страницу' }</div>
 
   const _renderHeadsHistory = () => {
     return (
