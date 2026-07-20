@@ -1,8 +1,6 @@
 import { http, HttpResponse } from 'msw'
 
 const buildViewerPage = (params: URLSearchParams): string => {
-  const baseid = params.get('baseid') || ''
-  const tableid = params.get('tableid') || ''
   const basename = params.get('basename') || ''
   const tablename = params.get('tablename') || ''
   const pk = params.get('pk') || ''

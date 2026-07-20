@@ -37,7 +37,7 @@ npm run publish    # npm publish ./build
 ## API & config
 - `src/config.ts` — toggle `production: false/true` to switch between `devServer` / `prodServer` URLs
 - API calls target internal CGI endpoints (`/cgi-bin/serg/...`) with `fetch`, `mode: 'cors'`, `credentials: 'include'`
-- **Optional Firebase backend** — enable via `REACT_APP_USE_FIREBASE_API` env var, configure with `REACT_APP_FIREBASE_*` env vars (defined in `src/base.ts`)
+- **Mocks** — optional MSW-based mock backend (enable via `localStorage.debugMocks = true` or `REACT_APP_USE_MOCKS=true`)
 - `.htaccess` serves under `/AS_CHECK` subdirectory with `RewriteBase /AS_CHECK`
 
 ## CI (GitLab)

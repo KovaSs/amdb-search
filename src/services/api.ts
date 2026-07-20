@@ -1,10 +1,8 @@
-import { getUSDate, compactObj, formData, houseNum, getFBData } from './utils'
+import { getUSDate, compactObj, formData, houseNum } from './utils'
 
 export class API {
-  static useFireBaseApi: any = process.env.REACT_APP_USE_FIREBASE_API
   /** Загрузка данных о кампании */
   static getLoadCompanyInfo = (inn: any, type: any): Promise<any> => {
-    if(this.useFireBaseApi) return getFBData('getCompanyInfo')
     return fetch(
       `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
       { 
@@ -28,7 +26,6 @@ export class API {
 
   /** Загрузка данных о аффилированных лицах */
   static getAffilatesList = (reqnum: any, inn: any, type: any): Promise<any> => {
-    if(this.useFireBaseApi) return getFBData('getAffilates')
     return fetch(
       `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
       { 
@@ -139,7 +136,6 @@ export class API {
 
   /** Получение  данных  о риск факторах для дайджеста */
   static getDigestList = (reqnum: any = "666", digest_type: any = 4): Promise<any> => {
-    if(this.useFireBaseApi) return getFBData('digestList')
     return fetch(
       `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
       { 
@@ -234,7 +230,6 @@ export class API {
 
   /** Получение данных о аффилированных лицах */
   static getRequestAffiliatesUl = (reqnum: any, inn: any, digetsType: any): Promise<any> => {
-    if(this.useFireBaseApi) return getFBData('getRequestAffiliatesUl')
     return fetch(
       `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
       { 
@@ -260,7 +255,6 @@ export class API {
   /** Получение первоначальных идентификационных данных о проверяемом лице */
   static getIdentifyUser = (ip: any, reqnum: any, action: any, storeOgrn: any): Promise<any> => {
     console.log('IDENTYFY', action)
-    if(this.useFireBaseApi) return getFBData('identifyInfo')
     if(!ip) {
       const compact = compactObj({
         FirstName: action.FirstName,
@@ -396,7 +390,6 @@ export class API {
 
   /** Получение данных ФССП */
   static getStopListsUlInfo = (inn: any): Promise<any> => {
-    if(this.useFireBaseApi) return getFBData('getStopListsUl')
     return fetch(
       "/cgi-bin/serg/0/6/9/reports/253/STOP_LIST_custom_search.pl", 
       { 
@@ -442,7 +435,6 @@ export class API {
 
   /** Получение данных по найденным риск-факторам о ФЛ */
   static getRiskFactorsFl = (reqnum: any, user: any, digest_type: any): Promise<any> => {
-    if(this.useFireBaseApi) return getFBData('getStopListsUl')
     return fetch(
       `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
       { 

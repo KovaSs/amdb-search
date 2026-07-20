@@ -52,7 +52,6 @@
 | lodash | ^4.17.15 |
 | moment | ^2.24.0 |
 | MSW | 2.15.0 (dev, мок-режим) |
-| Firebase | 7.x (опционально) |
 
 ---
 
@@ -105,7 +104,6 @@ src/
 │   ├── fields.ts               # маппинг полей ЮЛ/ИП (fieldsArr)
 │   └── reports.js              # генерация HTML-отчётов
 ├── config.ts                   # настройки серверов
-├── base.ts                     # Firebase (опционально)
 ├── antd-override.d.ts          # типы antd (обход совместимости с TS 4)
 ├── index.tsx                   # точка входа
 └── index.scss                  # глобальные стили
@@ -320,10 +318,6 @@ config = {
   prodServer: "https://10.96.51.138"
 }
 ```
-
-### Firebase (опционально)
-
-При `REACT_APP_USE_FIREBASE_API=1` часть запросов перенаправляется в Firebase Realtime Database через `getFBData(dataName)`.
 
 ---
 

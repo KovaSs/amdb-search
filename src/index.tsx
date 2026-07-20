@@ -11,7 +11,6 @@ import { setupMocks, mocksReady } from './api/mocks';
 import 'moment/locale/ru'
 import './index.scss';
 import "antd/dist/antd.css";
-// import { base } from './base';
 
 setupMocks()
 moment.locale('ru')

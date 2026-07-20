@@ -2,14 +2,6 @@ import { cloneDeep, assign, concat, compact, filter } from 'lodash';
 import { createReportFl, createReportUl } from './reports';
 import moment from 'moment'
 import { fieldsArr, fieldsArrIP } from "./fields"
-import { app } from '../base';
-
-/** Запрос данных из firebase */
-export const getFBData = (dataName: any): any => app
-  .database()
-  .ref(dataName)
-  .once('value')
-  .then((data: any) => data.val())
 
 /** Стили для консольных команд */
 export const cloCss: any = { 
