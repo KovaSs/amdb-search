@@ -2,6 +2,7 @@
 import { createSelector } from 'reselect'
 import { Record, Map, OrderedMap } from 'immutable'
 import { all, put, call, fork, select, spawn, takeEvery, delay} from 'redux-saga/effects'
+import { push } from 'connected-react-router'
 import { 
   trasform, 
   clearStopListsArr, 
@@ -155,6 +156,8 @@ const EbgReducer = (state = new ReducerRecord(), action) => {
       return state
         .set('ebgMainResponse', payload.json)
         .setIn(['companyResponse', 'founders_ul'],  payload.foundersUl)
+        .setIn(['requestLoading', 'ebgMainDataRequest'], false)
+        .setIn(['requestLoading', 'companyMainInfoUpdate'], false)
         .setIn(['errors', 'ebgMainDataRequest'], false)
     case TAKE_EBG_ITEM + FAIL:
       return state
@@ -1106,7 +1109,7 @@ const updateEbgJsonInfoSaga = function * () {
       ebgStore.client.management.companyPersons : [ebgStore.client.selfEmployed]
     // Обогащение найденных руководителей информацией полученной из Ebg
     const updatedStore = yield call(trasform.updateEbgHeads, {
-      prevStore: yield select(),
+      prevStore: yield select(companyImmutableResSelector),
       prevSelected: new Map({}),
       managment: param
     })
@@ -1754,16 +1757,7 @@ const takeEbgItemSaga = function * (action) {
           }
         })
 
-        if(router.location.pathname !== pathName)  yield put({
-          type: LOCATION_CHANGE,
-          payload: {
-            ...router,
-            location: {
-              ...router.location,
-              pathname: pathName
-            }
-          }
-        })
+        if(router.location.pathname !== pathName)  yield put(push(pathName))
       }
     } else {
       // Условие того что мы находимся в компоненте отображения
@@ -1810,7 +1804,6 @@ const returnEbgItemSaga = function * (action) {
       type: RETURN_EBG_ITEM + START
     })
 
-    const router = yield select(storeRouter)
     const pathName = `/electronic-bank-garantees`
 
     /* Запрос на возврат в очередь */
@@ -1822,16 +1815,7 @@ const returnEbgItemSaga = function * (action) {
         type: CLEAR_COMPANY_INFO
       })
   
-      yield put({
-        type: LOCATION_CHANGE,
-        payload: {
-          ...router,
-          location: {
-            ...router.location,
-            pathname: pathName
-          }
-        }
-      })
+      yield put(push(pathName))
     }
 
   } catch (err){
@@ -1849,7 +1833,6 @@ const acceptEbgItemSaga = function * (action) {
       type: ACCEPT_EBG_ITEM + START
     })
 
-    const router = yield select(storeRouter)
     const pathName = `/electronic-bank-garantees`
 
     /* Зпрос - закончить проверку */
@@ -1861,16 +1844,7 @@ const acceptEbgItemSaga = function * (action) {
         type: CLEAR_COMPANY_INFO
       })
   
-      yield put({
-        type: LOCATION_CHANGE,
-        payload: {
-          ...router,
-          location: {
-            ...router.location,
-            pathname: pathName
-          }
-        }
-      })
+      yield put(push(pathName))
     }
 
   } catch (err){

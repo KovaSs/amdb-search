@@ -1,6 +1,22 @@
 # Changelog
 
-## 3.0.0 (текущая)
+## 3.1.0
+
+### Мок-сервер (MSW)
+
+- `src/api/mocks/` — полная инфраструктура моков на MSW v2
+- `handlers/` — 5 модулей: openBill, stopList, fkdo, ebg, ews + viewer (HTML-заглушки для iframe/ссылок)
+- `generators/stopListData.ts` — генерация реалистичных записей стоп-листов (ФЛ/ЮЛ)
+- Активация: `localStorage.debugMocks = true` или `REACT_APP_USE_MOCKS=true`
+- `mocksReady()` — старт MSW до рендера приложения, исключение 404 на первом запросе
+
+#### Исправления
+- **EBG**: статус заявок `"0"/"1"` вместо `"new"/"in_work"`, очистка `ebgMainDataRequest` при SUCCESS
+- **Навигация**: замена ручного `LOCATION_CHANGE` на `push()` из `connected-react-router`
+- **Transform**: защита от `prevStore.get(...).map is not a function`, `serverData.ps && serverData.ps.Data`
+- **Форматы данных**: `LeaderList`, `LegalAddresses`, `OKVED2List`, `StaffNumberFTS`, `arbitrazh`, даты (ISO), `WorkersRange`, `fns`
+
+## 3.0.0
 
 ### Миграция на Node 20 + CRA 5 + полный TypeScript
 

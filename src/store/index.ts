@@ -44,6 +44,6 @@ const enhancer = config.production ? enhancerProd : enhancerDev
 const store = createStore(rootReducer, enhancer)
 window.store = store
 
-sagaMiddleware.run(rootSaga)
-
 export default store
+
+export const runSagas = () => sagaMiddleware.run(rootSaga)

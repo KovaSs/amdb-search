@@ -11,7 +11,7 @@
 
 ## Стек
 
-React 17, Redux, Redux-Saga, reselect, Immutable.js 4 RC, Ant Design 3.22, React Router 4, connected-react-router, SCSS (dart-sass), TypeScript 4.9
+React 17, Redux, Redux-Saga, reselect, Immutable.js 4 RC, Ant Design 3.22, React Router 4, connected-react-router, SCSS (dart-sass), TypeScript 4.9, MSW 2.15
 
 ## Быстрый старт
 
@@ -35,6 +35,21 @@ production: true    // промышленный сервер (prodServer)
 ```
 
 Все запросы уходят на внутренние CGI-эндпоинты (`/cgi-bin/serg/...`).
+
+### Мок-режим (MSW)
+
+Для разработки без реального бэкенда:
+
+```bash
+REACT_APP_USE_MOCKS=true npm start
+```
+
+Или через `localStorage`:
+```js
+localStorage.setItem('debugMocks', 'true')
+```
+
+Все 14+ CGI-эндпоинтов замоканы: информация о компаниях, стоп-листы, очереди ЕБГ, система раннего предупреждения. Состояние очереди ЕБГ (взятие/возврат/акцепт) хранится в памяти и сбрасывается при перезагрузке страницы.
 
 ### Firebase (опционально)
 
@@ -70,10 +85,16 @@ src/
 │   │   ├── creditConveyor/
 │   │   ├── earlyWarningSystem/
 │   │   ├── stopListSearch/
-│   │   └── EBG.js              # монолитный модуль (1957 строк)
+│   │   └── EBG.ts              # монолитный модуль (~1960 строк)
 │   ├── index.ts                # создание store
 │   ├── rootReduсer.ts
 │   └── rootSaga.ts
+├── api/
+│   └── mocks/                  # MSW-моки для разработки
+│       ├── index.ts            # setupMocks() — точка входа
+│       ├── handlers/           # обработчики эндпоинтов
+│       ├── generators/         # генераторы тестовых данных
+│       └── data/               # импорт существующих JSON-моков
 ├── services/
 │   ├── api.js                  # API-клиент (fetch + CGI)
 │   ├── utils.js                # утилиты и трансформеры данных
@@ -88,7 +109,8 @@ src/
 
 - Ant Design 3.x — типы несовместимы с TypeScript 4.x, используются через переопределение `src/antd-override.d.ts`
 - `strict: false` — в проекте свободно соседствуют JSX и TSX файлы
-- Модуль EBG существует как монолитный `EBG.js` (константы + action'ы + reducer + saga + селекторы в одном файле)
+- Модуль EBG — монолитный `EBG.ts` (константы + action'ы + reducer + saga + селекторы в одном файле)
+- MSW-моки в `src/api/mocks/` — для разработки без реального бэкенда
 - Иммутабельное состояние: `window.store` доступен для отладки
 - Консоль-логи подавляются в production при `config.production: true`
 - Локализация: `ru_RU` (antd, moment)

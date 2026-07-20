@@ -472,9 +472,9 @@ class TransformData {
       fieldsArr.map( (fieldItem: any) => {
         for (const key in serverData) {
           if( fieldItem.search === "Predecessor" && fieldItem.func ) {
-            return prevStore = prevStore.set(fieldItem.id, serverData.ps.Data ? fieldItem.func(serverData.ps.Data.Report.Reorganizations[fieldItem.search]) : "")
+            return prevStore = prevStore.set(fieldItem.id, serverData.ps && serverData.ps.Data ? fieldItem.func(serverData.ps.Data.Report.Reorganizations[fieldItem.search]) : "")
           } else if( fieldItem.search === "Successor" && fieldItem.func ) {
-            return prevStore = prevStore.set(fieldItem.id, serverData.ps.Data ? fieldItem.func(serverData.ps.Data.Report.Reorganizations[fieldItem.search]) : "")
+            return prevStore = prevStore.set(fieldItem.id, serverData.ps && serverData.ps.Data ? fieldItem.func(serverData.ps.Data.Report.Reorganizations[fieldItem.search]) : "")
           } else if(fieldItem.search === key && !fieldItem.func) {
             return prevStore = prevStore.set(fieldItem.id, serverData[fieldItem.search])
           } else if(fieldItem.search === key && fieldItem.func) {
@@ -484,7 +484,8 @@ class TransformData {
         return fieldItem
       })
 
-      const updateHeads = prevStore.get("heads").map((item: any) => ({
+      const heads = prevStore.get("heads")
+      const updateHeads = (heads && typeof heads.map === 'function' ? heads : []).map((item: any) => ({
         ...item,
         fio: (`${item.last_name} ${item.first_name} ${item.middle_name}`).trim(),
         id: uuid(),
@@ -1459,9 +1460,9 @@ class TransformData {
       fieldsArr.map((fieldItem: any) => {
         for (const key in serverData) {
           if( fieldItem.search === "Predecessor" && fieldItem.func ) {
-            return prevStore = prevStore.set(fieldItem.id, serverData.ps.Data ? fieldItem.func(serverData.ps.Data.Report.Reorganizations[fieldItem.search]) : "")
+            return prevStore = prevStore.set(fieldItem.id, serverData.ps && serverData.ps.Data ? fieldItem.func(serverData.ps.Data.Report.Reorganizations[fieldItem.search]) : "")
           } else if( fieldItem.search === "Successor" && fieldItem.func ) {
-            return prevStore = prevStore.set(fieldItem.id, serverData.ps.Data ? fieldItem.func(serverData.ps.Data.Report.Reorganizations[fieldItem.search]) : "")
+            return prevStore = prevStore.set(fieldItem.id, serverData.ps && serverData.ps.Data ? fieldItem.func(serverData.ps.Data.Report.Reorganizations[fieldItem.search]) : "")
           } else if(fieldItem.search === key && !fieldItem.func) {
             return prevStore = prevStore.set(fieldItem.id, serverData[fieldItem.search])
           } else if(fieldItem.search === key && fieldItem.func) {
@@ -1471,7 +1472,8 @@ class TransformData {
         return fieldItem
       })
 
-      const updateHeads = prevStore.get("heads").map((item: any) => ({
+      const heads = prevStore.get("heads")
+      const updateHeads = (heads && typeof heads.map === 'function' ? heads : []).map((item: any) => ({
         ...item,
         fio: (`${item.last_name} ${item.first_name} ${item.middle_name}`).trim(),
         id: uuid(),

@@ -4,27 +4,19 @@ import { Provider } from 'react-redux';
 import { ConfigProvider } from 'antd';
 import ruRU from 'antd/es/locale/ru_RU'
 import moment from 'moment'
-import store from './store';
+import store, { runSagas } from './store';
 import App from './components/App';
 import * as serviceWorker from './serviceWorker';
+import { setupMocks, mocksReady } from './api/mocks';
 import 'moment/locale/ru'
 import './index.scss';
 import "antd/dist/antd.css";
 // import { base } from './base';
 
+setupMocks()
 moment.locale('ru')
 
 class AppWrapper extends React.Component {
-  // dataBaseRef: any
-  // componentWillMount() {
-  //   this.dataBaseRef = base.syncState( '/', {
-  //     context: this,
-  //     state: 'db'
-  //   })
-  // }
-  // componentWillUnmount() {
-  //   base.removeBinding(this.dataBaseRef)
-  // }
   render() {
     return(
       <Provider store={store}>
@@ -36,6 +28,9 @@ class AppWrapper extends React.Component {
   }
 }
 
-ReactDOM.render(<AppWrapper />, document.getElementById('root'));
+mocksReady().then(() => {
+  runSagas()
+  ReactDOM.render(<AppWrapper />, document.getElementById('root'))
+})
 
 serviceWorker.unregister();
