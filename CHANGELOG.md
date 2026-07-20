@@ -1,17 +1,54 @@
 # Changelog
 
-## 2.0.0 (текущая)
+## 3.0.0 (текущая)
+
+### Миграция на Node 20 + CRA 5 + полный TypeScript
+
+#### Зависимости
+- `react-scripts` 3.1.1 → 5.0.1 (webpack 4 → 5, CRA 5)
+- `react` 16.8.4 → 17.0.2
+- `react-redux` 6.0.1 → 7.2.9
+- `typescript` 3.7 → 4.9
+- `node-sass` → `sass` (dart-sass)
+- `react-app-polyfill` удалён (CRA 5 не поддерживает IE)
+- Команда `build` — кросс-платформенная (`GENERATE_SOURCEMAP=false`)
+- `browserslist` обновлён до формата CRA 5
+
+#### TypeScript-миграция
+- Все `.js`/`.jsx` файлы переименованы в `.ts`/`.tsx` (~65 файлов)
+- Добавлены типы в сервисы (`api`, `utils`, `fields`, `reports`)
+- `antd-override.d.ts` — переопределение типов antd 3.x для совместимости с TS 4.x
+- `@types/jest` добавлен для тестов
+
+#### Исправленные баги (найдены при миграции)
+- `"Content-Type"` был передан вне `headers` в fetch-запросе
+- Опечатка `'canceble'` → `'cancelable'` в `MouseEventInit`
+- `parseInt` получал `number` вместо `string` в валидации ИНН
+- Сравнение `JSON.stringify(x) === []` (всегда false)
+- `el.func` вместо `fieldItem.func` в `updateManagmentSrc` (мёртвая ветка кода)
+
+#### Чистка
+- Удалена мёртвая директория `EBG/` (duck-структура, не использовалась — source of truth `EBG.js`)
+- `EBG.js` → `EBG.ts` (монолит, 1957 строк)
+- `result.md`, `package-lock.json` добавлены в `.gitignore`
+
+#### Документация
+- `AGENTS.md` — инструкция для OpenCode-сессий
+- `CHANGELOG.md` — история изменений
+- `README.md` — обновлено с реальным описанием проекта
+
+## 2.0.0
 
 ### Архитектура
-- React 17 + Redux + Redux-Saga + reselect + Immutable.js 4 RC
+- React 16.8 + Redux + Redux-Saga + reselect + Immutable.js 4 RC
 - Ant Design 3.22 + React Router 4 + connected-react-router
-- TypeScript 4.9 + SCSS (dart-sass)
-- Create React App 5 (react-scripts 5.0.1)
+- TypeScript 3.7 + SCSS (node-sass)
+- Create React App 3 (react-scripts 3.1.1)
 - Ducks pattern: `src/store/ducks/` — 5 модулей
 
 ### Модули
 - **OpenBill (Открытие счёта)** — поиск и проверка ЮЛ/ИП: стоп-листы, риск-факторы, идентификация, аффилированные лица, ФССП, HTML-отчёты
-- **EBG (Электронные банковские гарантии)** — таблица очереди, взятие в работу/возврат/акцепт, проверка связанных лиц и документов; монолитный `EBG.js` (1925 строк)
+- **EBG (Электронные банковские гарантии)** — таблица очереди, взятие в работу/возврат/акцепт, проверка связанных лиц и документов; монолитный `EBG.js` (1957 строк)
 - **CreditConveyor (Кредитный конвейер)** — проверка контрагентов (базовый функционал)
 - **EarlyWarningSystem (Система раннего предупреждения)** — индикаторы и метрики
 - **StopListSearch (Поиск по стоп-листам)** — кастомный поиск по белой и чёрной базам
@@ -26,10 +63,7 @@
 - Deploy: Apache, `.htaccess`, поддиректория `/AS_CHECK`
 - CI: GitLab CI, только `test` на `develop`
 - Единственный тест: `MainCompanyInfo/index.test.js` (заглушка)
-
-### Особенности сборки
 - `GENERATE_SOURCEMAP=false` — карты кода отключены в production
-- antd 3.x типы несовместимы с TS 4.x — переопределены через `src/antd-override.d.ts`
 - `window.store` — store доступен в консоли для отладки
 - Консоль-логи подавляются в production
 

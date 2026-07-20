@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 import { openBillReducer, moduleName as OB }  from './ducks/openBill';

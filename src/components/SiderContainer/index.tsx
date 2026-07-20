@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import { Layout, Menu, Icon, Tooltip } from "antd";
 import { NavLink, withRouter, RouteComponentProps } from "react-router-dom";

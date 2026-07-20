@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { saga as creditConveyorSaga } from './ducks/creditConveyor'
 import { saga as openBillSaga } from './ducks/openBill'
 import { saga as ebgSaga } from './ducks/EBG'

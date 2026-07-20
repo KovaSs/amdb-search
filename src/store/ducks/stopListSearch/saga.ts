@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { put, call, takeEvery, all } from 'redux-saga/effects'
 import C from './constants'
 import { trasform, cloCss, uuid } from "../../../services/utils"

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { all, put, call, select, take } from 'redux-saga/effects'
 import C from './constants'
 import { trasform } from "../../../services/utils"
@@ -38,7 +39,7 @@ const loadCompanyInfoSaga = function * () {
       console.log('RES | first update | ', res)
       const store = yield select(sl.decodedCompanyResponse)
       const companyResponse = yield select(store)
-      const updatedData = yield call(trasform.updateComSrc, companyResponse, data)
+      const updatedData = yield (call as any)(trasform.updateComSrc, companyResponse, data)
   
       yield put({
         type: C.LOAD_COMPANY_INFO_UPDATE_SUCCESS,

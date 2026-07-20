@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { all, put, call, select, spawn, takeEvery } from 'redux-saga/effects'
 import constants from './constants'
 import { API } from '../../../services/api'

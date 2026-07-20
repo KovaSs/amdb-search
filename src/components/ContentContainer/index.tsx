@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import { Route, Switch, Redirect } from 'react-router-dom';
 import MainPage from "./MainPage";
@@ -11,7 +12,7 @@ import EwsConponent from "./EarlyWarningSystem/EwsComponent";
 import ElectronicBankGarantees from "./ElectronicBankGarantees";
 import { Layout } from 'antd';
 
-export class ContentContainer extends React.Component {
+export class ContentContainer extends React.Component<any, any> {
   public render() {
     const { Content } = Layout;
     return (

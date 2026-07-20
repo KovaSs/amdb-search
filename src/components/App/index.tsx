@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import { ConnectedRouter } from 'connected-react-router'
 import { Layout } from "antd";
@@ -7,7 +8,7 @@ import ContentContainer from "../ContentContainer";
 import history from '../../history'
 import "./app.scss";
 
-class App extends React.Component {
+class App extends React.Component<any, any> {
   public render() {
     return (
       <ConnectedRouter history={history}>

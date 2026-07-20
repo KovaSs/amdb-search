@@ -1,0 +1,753 @@
+import { getUSDate, compactObj, formData, houseNum, getFBData } from './utils'
+
+export class API {
+  static useFireBaseApi: any = process.env.REACT_APP_USE_FIREBASE_API
+  /** Загрузка данных о кампании */
+  static getLoadCompanyInfo = (inn: any, type: any): Promise<any> => {
+    if(this.useFireBaseApi) return getFBData('getCompanyInfo')
+    return fetch(
+      `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify({ 
+          type: 'get_company_info',
+          data: {
+            code: inn,
+            digest_type: type
+          }
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Загрузка данных о аффилированных лицах */
+  static getAffilatesList = (reqnum: any, inn: any, type: any): Promise<any> => {
+    if(this.useFireBaseApi) return getFBData('getAffilates')
+    return fetch(
+      `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify({ 
+          type: 'get_affilates',
+          reqnum,
+          data: {
+            code: inn,
+            digest_type: type
+          }
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Получение данных из скрытой БД (стоп-листы) */
+  static getBlackStopList = (action: any): Promise<any> => {
+    return fetch(
+      `/cgi-bin/ser4/0/6/9/reports/253/STOP_LIST_deb_search_2.pl`, 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify({ 
+          type: 'fl',
+          method: 'bases',
+          surname: action.SurName,
+          firstname: action.FirstName,
+          middlename: action.MiddleName,
+          series: action.Seria,
+          number: action.Number,
+          inn: action.INNArr,
+          birthdate: getUSDate(action.DateOfBirthArr)
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Получение данных из скрытой БД (стоп-листы) */
+  static getStopListFl = (action: any, reqnum: any, type: any): Promise<any> => {
+    return fetch(
+      "/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl", 
+      {
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify({
+          data: {
+            type: 'fl',
+            method: 'bases',
+            surname: action.SurName,
+            firstname: action.FirstName,
+            middlename: action.MiddleName,
+            series: action.Seria,
+            number: action.Number,
+            inn: action.INNArr,
+            birthdate: getUSDate(action.DateOfBirthArr),
+            digest_type: type
+          },
+          reqnum,
+          type: "stoplist"
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Получение данных из белой БД (стоп-листы) */
+  static getWhiteStopList = (action: any): Promise<any> => {
+    return fetch(
+      `/cgi-bin/serg/0/6/9/reports/253/STOP_LIST_custom_search.pl`, 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify({ 
+          type: 'fl',
+          method: 'bases',
+          surname: action.SurName,
+          firstname: action.FirstName,
+          middlename: action.MiddleName,
+          series: action.Seria,
+          number: action.Number,
+          inn: action.INNArr,
+          birthdate: getUSDate(action.DateOfBirthArr)
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Получение  данных  о риск факторах для дайджеста */
+  static getDigestList = (reqnum: any = "666", digest_type: any = 4): Promise<any> => {
+    if(this.useFireBaseApi) return getFBData('digestList')
+    return fetch(
+      `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify({ 
+          type: 'digest',
+          reqnum: reqnum,
+          digest_type,
+          data: {}
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Добавление нового риск фактора в дайджест */
+  static getAddRiskFactor = (reqnum: any, data: any, digest_type: any): Promise<any> => {  
+    return fetch(
+      `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify({ 
+          type: 'digest',
+          reqnum: reqnum,
+          digest_type,
+          data: {
+            ...data
+          }
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Редактирование риск фактора из дайджеста */
+  static editRiskFactorRequest = (reqnum: any, data: any, digest_type: any): Promise<any> => {  
+    return fetch(
+      `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify({ 
+          type: 'digest',
+          reqnum: reqnum,
+          digest_type,
+          data: {
+            ...data
+          }
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Удаление нового риск фактора в дайджест */
+  static getDeleteRiskFactor = (reqnum: any, data: any, digest_type: any): Promise<any> => {
+    return fetch(
+      `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify({ 
+          type: 'digest',
+          reqnum: reqnum,
+          digest_type,
+          data: {
+            ...data
+          }
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Получение данных о аффилированных лицах */
+  static getRequestAffiliatesUl = (reqnum: any, inn: any, digetsType: any): Promise<any> => {
+    if(this.useFireBaseApi) return getFBData('getRequestAffiliatesUl')
+    return fetch(
+      `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify({ 
+          type: 'get_affilates',
+          reqnum: reqnum,
+          data: {
+            code: inn,
+            digest_type: digetsType
+          }
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Получение первоначальных идентификационных данных о проверяемом лице */
+  static getIdentifyUser = (ip: any, reqnum: any, action: any, storeOgrn: any): Promise<any> => {
+    console.log('IDENTYFY', action)
+    if(this.useFireBaseApi) return getFBData('identifyInfo')
+    if(!ip) {
+      const compact = compactObj({
+        FirstName: action.FirstName,
+        MiddleName: action.MiddleName,
+        SurName: action.SurName,
+        INN: action.INN,
+        OGRN: action.ogrn ? action.ogrn : storeOgrn.ogrn,
+        DateOfBirth: action.DateOfBirth,
+        Seria: action.Seria,
+        Number: action.Number,
+        Address: `${
+          action.RegionExp ? action.RegionExp : "" }${
+          action.CityExp ? " " + action.CityExp.toUpperCase() : "" }${
+          action.StreetExp ? " " + action.StreetExp.toUpperCase() : "" }${
+          action.HouseExp ? " " + houseNum(action.HouseExp) : ""
+        }`
+      })
+      return fetch(
+        `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+        { 
+          method: 'POST',
+          mode: 'cors',
+          credentials: 'include',
+          body : JSON.stringify({ 
+            type: 'identify_user',
+            reqnum: reqnum,
+            data: compact
+          }),
+        }
+      )
+      .then(res => {
+        if (res.ok) return res.json()
+        throw new TypeError("Ошибка получения данных!")
+      })
+    } else {
+      const compact = compactObj({
+        FirstName: action.FirstName,
+        MiddleName: action.MiddleName,
+        SurName: action.SurName,
+        INNIP: action.INN,
+        DateOfBirth: action.DateOfBirth,
+        Seria: action.Seria,
+        Number: action.Number,
+        Address: `${
+          action.RegionExp ? action.RegionExp : "" }${
+          action.CityExp ? " " + action.CityExp.toUpperCase() : "" }${
+          action.StreetExp ? " " + action.StreetExp.toUpperCase() : "" }${
+          action.HouseExp ? " " + houseNum(action.HouseExp) : ""
+        }`
+      })
+      return fetch(
+        `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+        { 
+          method: 'POST',
+          mode: 'cors',
+          credentials: 'include',
+          body : JSON.stringify({ 
+            type: 'identify_user',
+            reqnum: reqnum,
+            data: compact
+          }),
+        }
+      )
+      .then(res => {
+        if (res.ok) return res.json()
+        throw new TypeError("Ошибка получения данных!")
+      })
+    }
+  }
+
+  /** Полная получение данных из Croinform на проверяемое лицо */
+  static getIdentifyUserInfo = (reqnum: any, action: any, type: any): Promise<any> => {
+    return fetch(
+      `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify({ 
+          type: 'request_user',
+          reqnum: reqnum,
+          data: {
+            INNExp: action.INN && action.INN !== "Не указан"  ? action.INN : "",
+            FirstName: action.FirstName,
+            FirstNameArch: action.FirstNameArch,
+            MiddleName: action.MiddleName,
+            SurName:action.SurName,
+            DateOfBirth: action.DateOfBirth,
+            Seria: action.Seria,
+            Number: action.Number,
+            RegionExp: action.RegionExp,
+            CityExp: action.CityExp,
+            StreetExp: action.StreetExp,
+            HouseExp: houseNum(action.HouseExp),
+            AFF: 1,
+            Exp: 1,
+            ExpArch: 1,
+            digest_type: type
+          }
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Ошибка получения данных!")
+    })
+  }
+
+  /** Получение данных ФССП */
+  static getFsspInfo = (reqnum: any, action: any, digetsType: any): Promise<any> => {
+    return fetch(
+      `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify({ 
+          type: 'fssp',
+          reqnum: reqnum,
+          data: {
+            ...action,
+            HouseExp: houseNum(action.HouseExp),
+            digest_type: digetsType
+          }
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Ошибка получения данных!")
+    })
+  }
+
+  /** Получение данных ФССП */
+  static getStopListsUlInfo = (inn: any): Promise<any> => {
+    if(this.useFireBaseApi) return getFBData('getStopListsUl')
+    return fetch(
+      "/cgi-bin/serg/0/6/9/reports/253/STOP_LIST_custom_search.pl", 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify({ 
+          type: 'ul', 
+          method: 'bases',
+          ulinn: inn
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Ошибка получения данных!")
+    })
+  }
+
+  /** Получение данных ФССП */
+  static getStopLists = (data: any, reqnum: any, type: any): Promise<any> => {
+    return fetch(
+      "/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl", 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify({ 
+          data: {
+            ...data,
+            digest_type: type
+          },
+          reqnum,
+          type: "stoplist"
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Ошибка получения данных!")
+    })
+  }
+
+  /** Получение данных по найденным риск-факторам о ФЛ */
+  static getRiskFactorsFl = (reqnum: any, user: any, digest_type: any): Promise<any> => {
+    if(this.useFireBaseApi) return getFBData('getStopListsUl')
+    return fetch(
+      `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify({
+          type:"digest_fl_search",
+          digest_type,
+          reqnum,
+          data:{
+            SurName: user.last_name,
+            FirstName: user.first_name,
+            MiddleName: user.middle_name,
+            DateOfBirth:"",
+            Seria:"",
+            Number:"",	
+            INN: user.inn !== "Не найден" ? user.inn : ""
+          }
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Редактирование риск фактора Fl из дайджеста */
+  static editRiskFactorFlRequest = (reqnum: any, data: any, digest_type: any): Promise<any> => {
+    return fetch(
+      `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify({ 
+          type: 'digest_fl_edit',
+          reqnum: reqnum,
+          digest_type,
+          data: {
+            ...data
+          }
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Добавление нового риск фактора в дайджест */
+  static getAddRiskFactorFl = (reqnum: any, data: any, digest_type: any): Promise<any> => {
+    console.log('data', data)
+    return fetch(
+      `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify({ 
+          type: 'digest_fl_write',
+          reqnum: reqnum,
+          digest_type,
+          data: {
+            ...data,
+            INN: data.INN !== "Не найден" ? data.INN : ""
+          }
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Удаление нового риск фактора в дайджест */
+  static getDeleteRiskFactorFl = (reqnum: any, data: any, digest_type: any): Promise<any> => {
+    return fetch(
+      `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta.pl`, 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify({ 
+          type: 'digest_fl_delete',
+          reqnum: reqnum,
+          digest_type,
+          data: {
+            ...data
+          }
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Запрос приложенных к заявке документов */
+  static getDocuments = (reqnum: any, inn: any): Promise<any> => {
+    return fetch(
+      `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta_fkdo.pl`, 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify({ 
+          type: 'get_fkdo_info',
+          reqnum: reqnum,
+          data: { inn }
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Получение выбранного документа для отображения */
+  static getDocumentItem = (reqnum: any, xhdoc: any): Promise<any> => {
+    return fetch(
+      `/cgi-bin/serg/0/6/9/reports/276/otkrytie_scheta_fkdo.pl`, 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        headers: { "Content-Type": "application/pdf" },
+        body : JSON.stringify({ 
+          type: 'fkdo_load_file',
+          reqnum: reqnum,
+          data: { xhdoc: xhdoc }
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.blob()
+        .then(blob => URL.createObjectURL(blob))
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Запрос данных для отображения таблицы "Система раннего предупреждения" */
+  static getEwsData = (data: any): Promise<any> => {
+    return fetch(
+      `/cgi-bin/serg/0/6/9/reports/274/aprove_indicators_server.pl`, 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : formData(data),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Запрос данных для таблицы ЕБГ */
+  static getEbgSyncData = (): Promise<any> => {
+    return fetch(
+      `/cgi-bin/serg/0/6/9/reports/276/ebg_get_queues.pl`, 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include'
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Получение данных по взятому в работу элементу */
+  static getEbgDataItemInfo = (data: any): Promise<any> => {
+    return fetch(
+      "/cgi-bin/serg/0/6/9/reports/276/ebg_queue_detail.pl", 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body: JSON.stringify({ 
+          ...data
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Взятие в работу выбранного объекта */
+  static takeEbgItemToWork = (inn: any): Promise<any> => {
+    return fetch(
+      "/cgi-bin/serg/0/6/9/reports/276/ebg_change_status.pl", 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body: JSON.stringify({
+          inn,
+          action: "take_to_work"
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Возврат в очередь Ebg проверки */
+  static returnEbgItemToQueue = (inn: any): Promise<any> => {
+    return fetch(
+      "/cgi-bin/serg/0/6/9/reports/276/ebg_change_status.pl", 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body: JSON.stringify({
+          inn,
+          action: "return_queue"
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Акцептирование Ebg объекта проверки */
+  static acceptEbgItem = (inn: any): Promise<any> => {
+    return fetch(
+      "/cgi-bin/serg/0/6/9/reports/276/ebg_change_status.pl", 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body: JSON.stringify({
+          inn,
+          action: "accept"
+        }),
+      }
+    )
+    .then(res => {
+      if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Получение данных из белой БД (стоп-листы) для кастомного поиска */
+  static getSearchStopListWhite = (data: any, type: any): Promise<any> => {
+    return fetch(
+      "/cgi-bin/serg/0/6/9/reports/253/STOP_LIST_custom_search_all.pl", 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify({ 
+          type,
+          method: 'bases',
+          ...data
+        }),
+      }
+    )
+    .then(res => {
+      if(res.status !== 200) return {
+        Response: [],
+        Status: "Error"
+      }
+      else if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+
+  /** Получение данных из скрытой БД (стоп-листы) для кастомного поиска*/
+  static getSearchStopListBlack = (data: any, type: any): Promise<any> => {
+    return fetch(
+      "/cgi-bin/ser4/0/6/9/reports/253/STOP_LIST_deb_search_all.pl", 
+      { 
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body : JSON.stringify({ 
+          type,
+          method: 'bases',
+          ...data
+        }),
+      }
+    )
+    .then(res => {
+      if(res.status !== 200) return {
+        Response: [],
+        Status: "Error"
+      }
+      else if (res.ok) return res.json()
+      throw new TypeError("Данные о кампании не обновлены!")
+    })
+  }
+}

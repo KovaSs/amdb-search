@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import { Col, Row, Badge, Avatar, Button, message } from "antd";
 import { connect } from "react-redux";

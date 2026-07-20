@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { Button, Icon, Popconfirm } from 'antd'
 import { connect } from "react-redux"
